@@ -31,21 +31,11 @@ class DynamicRateTracker
 
     protected $seperator = ':';
 
-    public function __construct(string $resourceKey, $limits = [], $testMode = false) // RateLimit class
+    public function __construct(string $resourceKey, $limits = []) // RateLimit class
     {
-        if (empty($limits)) {
-            throw new Exception('RateLimit $limits must not be empty');
-        }
-
         $this->resourceKey = $resourceKey;
         $this->reservedUntilKey = $resourceKey."-reserved-until";
-
-        if ($testMode) {
-            // for testing multiple client on the same PC
-            $this->reservedPath = "/tmp/dynamic-rate-tracker-test-".rand(1,100000);
-        } else {
-            $this->reservedPath = "/tmp/dynamic-rate-tracker-".md5($this->resourceKey);
-        }
+        $this->reservedPath = "/tmp/dynamic-rate-tracker-pid-".getmypid();
 
         $this->limits = $limits;
 
@@ -83,7 +73,7 @@ class DynamicRateTracker
         file_put_contents($this->reservedPath, "{$until->timestamp}{$this->seperator}{$credits}");
     }
 
-    public function testAndCount(Carbon $now, $fopen)
+    private function testAndCount(Carbon $now, $fopen)
     {
         list($until, $credits) = $this->parseReservedCredits($fopen);
 
@@ -99,6 +89,10 @@ class DynamicRateTracker
     // Used by DelayedJob
     public function test(Carbon $now = null)
     {
+        if (empty($this->limits)) {
+            return;
+        }
+
         $now = $now ?: Carbon::now();
         list($until, $credits) = $this->parseReservedCredits();
 
@@ -108,13 +102,17 @@ class DynamicRateTracker
             if ($this->isReservedByOthers($now)) {
                 // no local reserved
                 // and there is a reserved-until key (by other)
-                throw new RateLimitExceeded('Rate limit exceeded (reserved by others)');
+                throw new RateLimitExceeded("Rate limit exceeded ({$this->getMinCredits()}/{$this->getShortestLimitPeriod()})");
             }
         }
     }
 
     public function count(Carbon $now = null)
     {
+        if (empty($this->limits)) {
+            return;
+        }
+
         $now = $now ?: Carbon::now();
         $available = false;
 
@@ -137,7 +135,7 @@ class DynamicRateTracker
             if ($this->isReservedByOthers($now)) {
                 // no local reserved
                 // and there is a reserved-until key (by other)
-                throw new RateLimitExceeded('Rate limit exceeded (reserved by others)');
+                throw new RateLimitExceeded("Rate limit exceeded ({$this->getMinCredits()}/{$this->getShortestLimitPeriod()})");
             }
 
             // Okie, so ready

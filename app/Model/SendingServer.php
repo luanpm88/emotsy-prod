@@ -32,6 +32,7 @@ use Acelle\Library\Facades\Hook;
 use Acelle\Library\RateLimit;
 use Acelle\Library\RateTracker;
 use Acelle\Library\InMemoryRateTracker;
+use Acelle\Library\DynamicRateTracker;
 use Exception;
 use Acelle\Library\Traits\HasUid;
 
@@ -1625,18 +1626,13 @@ class SendingServer extends Model
     {
         if (config('custom.distributed_worker')) {
             $key = "server-send-email-rate-tracking-log-{$this->uid}";
-            $tracker = new InMemoryRateTracker($key, $this->getRateLimits());
+            $tracker = new DynamicRateTracker($key, $this->getRateLimits());
         } else {
             $file = storage_path('app/quota/server-send-email-rate-tracking-log-'.$this->uid);
             $tracker = new RateTracker($file, $this->getRateLimits());
         }
 
         return $tracker;
-    }
-
-    public function getCreditsUsed()
-    {
-        return $this->getRateLimitTracker()->getCreditsUsed();
     }
 
     public function dryrun($message)

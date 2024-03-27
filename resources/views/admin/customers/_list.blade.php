@@ -43,7 +43,7 @@
                                     </div>
                                 </div>
                                 <span class="text-muted" title="{{ trans('messages.sending_credits.last_month_used') }}">
-                                    <strong>{{ {{ ($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send')) }}</strong>
+                                    <strong>{{ ($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send')) }}</strong>
                                     <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
                                 </span>
                             </div>

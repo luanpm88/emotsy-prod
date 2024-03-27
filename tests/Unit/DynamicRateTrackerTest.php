@@ -71,16 +71,33 @@ class DynamicRateTrackerTest extends TestCase
 	    $tracker->count();
 	}
 
+	function test_with_no_limits_at_all()
+	{
+		$key = 'test-dynamic-rate-tracker';
+	    $tracker = new DynamicRateTracker($key, $limits = []);
+
+	    // clean up reserved file
+	    $tracker->clearReservation();
+
+	    // So the selected limit for reserving is: "4 per 1 minute"
+	    $this->assertNull($tracker->getMinCredits());
+
+	    $tracker->count();
+	    $tracker->count();
+	    $tracker->count();
+
+	    $tracker->test();
+	}
+
 	function test_with_multi_process()
 	{
-		// remember to delete /tmp/test-multi-process before test
 		$key = 'test-dynamic-rate-tracker';
 	    $limits = [
 	        new RateLimit(2, 5, 'seconds', '2 per 30 secs'),
 	        new RateLimit(200, 12, 'hour', '5 per 24 hours (per day)'),
 	    ];
 
-	    $tracker = new DynamicRateTracker($key, $limits, $test = true);
+	    $tracker = new DynamicRateTracker($key, $limits);
 
 	    // !!!!!!!!!!!!!!! IMPORTANT - do not clear here
 	    // $tracker->clearReservation();
@@ -88,6 +105,15 @@ class DynamicRateTrackerTest extends TestCase
 	    // So the selected limit for reserving is: "4 per 1 minute"
 	    $this->assertEquals($tracker->getShortestLimitPeriod(), '5 seconds');
 	    $this->assertEquals($tracker->getMinCredits(), 2);
+
+	    // Only test it manually, by running two consoles separately with the following command
+	    //
+	    //     ./vendor/bin/pest --filter=test_with_multi_process
+	    //
+	    // And monitor the outcome:
+	    //
+	    //    tail -f /tmp/test-multi-process
+	    //
 
 	    return;
 
