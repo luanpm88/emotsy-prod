@@ -87,6 +87,13 @@ class LoadCampaign implements ShouldQueue
 
             $count += 1;
             $plogger->info(sprintf("LoadCampaign: job loaded %s/%s", $count, $total));
+            $this->campaign->logger()->info(sprintf("LoadCampaign: job loaded %s/%s", $count, $total));
+
+            $delayFlag = $this->campaign->checkDelayFlag();
+            if ($delayFlag) {
+                $plogger->info(sprintf("Rate limit hit! Quit loading jobs at %s/%s", $count, $total));
+                $this->campaign->logger()->info(sprintf("Rate limit hit! Quit loading jobs at %s/%s", $count, $total));
+            }
         }, $this->page, $this->listOfIds);
 
         $plogger->info(sprintf("LoadCampaign: DONE loading all %s job(s)", $total));
