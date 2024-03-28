@@ -37,6 +37,7 @@ class InvoiceNewSubscription extends Invoice
                 // Hiện giờ code bên dưới đang error do $this->subscription đang null
                 // ==> FIX bằng cách thêm field tường minh cho invoices table
                 $this->subscription->setDefaultEmailCredits();
+                $this->subscription->setDefaultVerificationCredits();
 
                 break;
 

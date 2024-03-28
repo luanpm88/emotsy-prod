@@ -12,7 +12,8 @@ use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Library\CreditTracker;
 use Acelle\Library\InMemoryCreditTracker;
 use Acelle\Library\RateTracker;
-use Acelle\Library\InMemoryRateTracker;
+//use Acelle\Library\InMemoryRateTracker;
+use Acelle\Library\DynamicRateTracker;
 use Acelle\Library\RateLimit;
 use Illuminate\Database\Eloquent\Builder;
 use DB;
@@ -990,9 +991,6 @@ class Subscription extends Model
         $subscription->plan_id = $plan->id;
         $subscription->save();
 
-        // $emailCredits = (int)$plan->getOption('email_max');
-        // $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
-
         return $subscription;
     }
 
@@ -1013,7 +1011,7 @@ class Subscription extends Model
     {
         if (config('custom.distributed_worker')) {
             $key = 'subscription-send-email-rate-tracking-log-'.$this->uid;
-            $tracker = new InMemoryRateTracker($key, $this->planGeneral->getSendEmailRateLimits());
+            $tracker = new DynamicRateTracker($key, $this->planGeneral->getSendEmailRateLimits());
         } else {
             // Get the limits from plan
             $file = storage_path('app/quota/subscription-send-email-rate-tracking-log-'.$this->uid);
@@ -1047,10 +1045,13 @@ class Subscription extends Model
 
     public function setDefaultEmailCredits()
     {
-        // Or, set it to just unlimited
-        // $defaultCredits = CreditTracker::UNLIMITED;
-
         $defaultCredits = (int)$this->planGeneral->getOption('email_max');
         $this->getSendEmailCreditTracker()->setCredits($defaultCredits);
+    }
+
+    public function setDefaultVerificationCredits()
+    {
+        $defaultCredits = (int)$this->planGeneral->getOption('verification_credits_limit');
+        $this->getVerifyEmailCreditTracker()->setCredits($defaultCredits);
     }
 }

@@ -60,3 +60,45 @@ test('Rollback just works', function () {
     expect($used)->toBe(2);
     expect($linesCount)->toBe(1);
 });
+
+test('Clean up tracker', function() {
+
+    $file = '/tmp/test-rate';
+    $tracker = new RateTracker($file);
+
+    $tracker->cleanup();
+
+    $this->assertEquals($tracker->getCreditsUsed(), 0);
+
+    $now = now();
+    $twoMinuteAgo = $now->copy()->add('2 minute ago');
+    $oneMinuteAgo = $now->copy()->add('1 minute ago');
+
+    // 2 time
+    $tracker->count($twoMinuteAgo);
+    $tracker->count($twoMinuteAgo);
+
+    // 3 times
+    $tracker->count($oneMinuteAgo);
+    $tracker->count($oneMinuteAgo);
+    $tracker->count($oneMinuteAgo);
+
+    // two: 2
+    // one: 3
+    $this->assertEquals($tracker->getCreditsUsed(), 5);
+
+    // 1 time
+    $tracker->count($now);
+
+    // two: 2
+    // one: 3
+    // now: 1
+    $this->assertEquals($tracker->getCreditsUsed(), 6);
+
+    // Clean up
+    $tracker->cleanup('2 minute'); // keep records during the last 2 minute, including 'two', 'one' and 'now'
+    $this->assertEquals($tracker->getCreditsUsed(), 6);
+
+    $tracker->cleanup('1 minute'); // keep records during the last 1 minute, including 'one' and 'now'
+    $this->assertEquals($tracker->getCreditsUsed(), 4);
+});

@@ -359,4 +359,46 @@ class RateTracker
     {
         return $this->limits;
     }
+
+    public function cleanup(string $period = null)
+    {
+        $lock = new Lockable($this->filepath);
+        $lock->getExclusiveLock(function ($fopen) use ($period) {
+            if (is_null($period)) {
+                ftruncate($fopen, 0);
+                rewind($fopen);
+                return;
+            }
+
+            $fromDatetime = now()->subtract($period); // Current date
+            $fromDatetimeStr = $this->makeBlock($fromDatetime);
+
+            $newStore = [];
+
+            rewind($fopen);
+            while (!feof($fopen)) {
+                $record = trim(fgets($fopen));
+
+                if (empty($record)) {
+                    break;
+                }
+
+                list($block, $count) = $this->parseBlock($record);
+
+                if (empty($block)) {
+                    throw new Exception("Invalid block {$record}");
+                }
+
+                if ($block >= $fromDatetimeStr) {
+                    $newStore[] = $record;
+                }
+            }
+
+            // Write back truncated records
+            ftruncate($fopen, 0);
+            rewind($fopen);
+            fwrite($fopen, implode("\n", $newStore));
+
+        }, $timeout = 15);
+    }
 }

@@ -13,6 +13,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Library\RateTracker;
 use Acelle\Library\InMemoryRateTracker;
+use Acelle\Library\DynamicRateTracker;
 use Acelle\Library\RateLimit;
 
 // Services
@@ -461,7 +462,7 @@ class EmailVerificationServer extends Model
 
         if (config('custom.distributed_worker')) {
             $key = 'verification-server-verify-email-rate-tracking-log-'.$this->uid;
-            $tracker = new InMemoryRateTracker($key, $limits);
+            $tracker = new DynamicRateTracker($key, $limits);
         } else {
             $file = storage_path('app/quota/verification-server-verify-email-rate-tracking-log-'.$this->uid);
             $tracker = new RateTracker($file, $limits);
@@ -492,10 +493,5 @@ class EmailVerificationServer extends Model
         }
 
         return $this->logger;
-    }
-
-    public function getCreditsUsed()
-    {
-        return $this->getRateTracker()->getCreditsUsed();
     }
 }

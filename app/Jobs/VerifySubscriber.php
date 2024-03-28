@@ -42,7 +42,7 @@ class VerifySubscriber extends Base
      */
     public function retryUntil()
     {
-        return now()->addHours(12);
+        return now()->addHours(72);
     }
 
     /**

@@ -18,8 +18,16 @@ class InvoiceEmailVerificationCredits extends Invoice
      */
     public function process()
     {
-        // add credits to customer......
-        // $this->email_credits 1000
+        // @important BIG dependencies and assumption here
+        // - Need explicit subscription_id
+        $tracker = $this->customer->getCurrentActiveGeneralSubscription()->getVerifyEmailCreditTracker();
+
+        if ($tracker->isUnlimited()) {
+            // Right now, just do nothing
+            // throw new \Exception('Cannot add more sending credits, already UNLIMITED');
+        } else {
+            $tracker->topup($this->email_verification_credits);
+        }
     }
 
     /**

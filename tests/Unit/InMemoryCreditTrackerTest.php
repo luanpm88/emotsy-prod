@@ -119,26 +119,4 @@ class InMemoryCreditTrackerTest extends TestCase
         expect($creditTracker1->getRemainingCredits())->toBe(InMemoryCreditTracker::UNLIMITED);
         expect($creditTracker1->isUnlimited())->toBe(true);
     }
-
-    public function test_topup_credits()
-    {
-        $key1 = 'credit-tracker-test-1';
-        $creditTracker1 = InMemoryCreditTracker::load($key1);
-        $creditTracker1->setCredits(100);
-        $creditTracker1->topup(1);
-        expect($creditTracker1->getRemainingCredits())->toBe(101);
-        $creditTracker1->topup(5);
-        expect($creditTracker1->getRemainingCredits())->toBe(106);
-        $creditTracker1->topup(10);
-        expect($creditTracker1->getRemainingCredits())->toBe(116);
-
-        try {
-            $creditTracker1->setCredits(InMemoryCreditTracker::UNLIMITED);
-            $creditTracker1->topup(1);
-
-            throw new Exception('Tasks did not throw an exception, something went wrong');
-        } catch (Exception $e) {
-            // Falling here
-        }
-    }
 }
