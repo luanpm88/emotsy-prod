@@ -352,6 +352,9 @@ class Automation2Controller extends Controller
             'woo-abandoned-cart' => [
                 'options.source_uid' => 'required',
             ],
+            Automation2::TRIGGER_TAG_BASED => [
+                'options.tags' => 'required',
+            ],
         ];
     }
 

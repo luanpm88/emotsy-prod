@@ -63,6 +63,7 @@ class Automation2 extends Model
     public const TRIGGER_API = 'api-3-0';
     public const TRIGGER_WEEKLY_RECURRING = 'weekly-recurring';
     public const TRIGGER_MONTHLY_RECURRING = 'monthly-recurring';
+    public const TRIGGER_TAG_BASED = 'tag-based';
 
     /**
      * Items per page.
@@ -525,6 +526,9 @@ class Automation2 extends Model
             case 'woo-abandoned-cart':
                 $this->checkForAbandonedCart();
                 // no break
+            case self::TRIGGER_TAG_BASED:
+                // no break
+                break;
             case 'others':
                 // others
                 break;
@@ -1349,6 +1353,7 @@ class Automation2 extends Model
             'api-3-0',
             'weekly-recurring',
             'monthly-recurring',
+            Automation2::TRIGGER_TAG_BASED,
         ];
 
         if (config('custom.woo')) {
@@ -1536,6 +1541,20 @@ class Automation2 extends Model
                     'source_uid' => $params['options']['source_uid'],
                     'wait' => $params['options']['wait'],
                     'init' => 'true',
+                ],
+                'last_executed' => null,
+                'evaluationResult' => null,
+            ];
+        } elseif ($type == self::TRIGGER_TAG_BASED) {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tag-based'),
+                'type' => 'ElementTrigger',
+                'child' => null,
+                'options' => [
+                    'key' => self::TRIGGER_TAG_BASED,
+                    'type' => self::TRIGGER_TAG_BASED,
+                    'tags' => $params['tags'],
                 ],
                 'last_executed' => null,
                 'evaluationResult' => null,
