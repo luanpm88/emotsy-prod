@@ -1554,7 +1554,8 @@ class Automation2 extends Model
                 'options' => [
                     'key' => self::TRIGGER_TAG_BASED,
                     'type' => self::TRIGGER_TAG_BASED,
-                    'tags' => $params['tags'],
+                    'tags' => $params['options']['tags'],
+                    'init' => 'true',
                 ],
                 'last_executed' => null,
                 'evaluationResult' => null,
