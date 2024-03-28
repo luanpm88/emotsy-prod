@@ -158,13 +158,15 @@ class SendMessage implements ShouldQueue
             $getLockAt = null;
             // END DEBUG
 
-            execute_with_limits($rateTrackers, $creditTrackers, function () use ($startAt, $message, $logger, $plogger, $msgId, $email, &$finishDeliveryAt, &$getLockAt) {
+            $startGettingLock = Carbon::now()->getTimestampMs();
+            execute_with_limits($rateTrackers, $creditTrackers, function () use ($startAt, $message, $logger, $plogger, $msgId, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock) {
 
                 $getLockAt = Carbon::now()->getTimestampMs();
                 $getLockDiff = ($getLockAt - $startAt) / 1000;
+                $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
 
-                $logger->info(sprintf('Got lock for %s after "%s" seconds', $email, $getLockDiff));
-                $plogger->info(sprintf('Got lock for %s after "%s" seconds', $email, $getLockDiff));
+                $logger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime ));
+                $plogger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime ));
 
                 if (!$this->subscriber->isSubscribed()) {
                     // @important: do not throw an exception here
