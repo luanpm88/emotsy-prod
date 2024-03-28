@@ -33,7 +33,10 @@ class DynamicRateTracker
     public function __construct(string $resourceKey, $limits = []) // RateLimit class
     {
         $this->resourceKey = $resourceKey;
-        $this->reservedPath = "/tmp/dynamic-rate-tracker-pid-".getmypid();
+
+        // IMPORTANT: both "resourceKey" and "pid" are required
+        // Otherwise, different trackers of the same process might conflict
+        $this->reservedPath = "/tmp/dynamic-rate-tracker-pid-".md5($this->resourceKey)."-".getmypid();
 
         $this->limits = $limits;
 
@@ -118,7 +121,7 @@ class DynamicRateTracker
             if ($this->isReservedByOthers($now)) {
                 // no local reserved
                 // and there is a reserved-until key (by other)
-                throw new RateLimitExceeded("Rate limit exceeded ({$this->getMinCredits()}/{$this->getShortestLimitPeriod()})");
+                throw new RateLimitExceeded("Calculated rate limit exceeded ({$this->getMinCredits()}/{$this->getShortestLimitPeriod()})");
             }
 
             if (!$count) {

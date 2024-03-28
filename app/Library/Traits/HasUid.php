@@ -17,7 +17,7 @@ trait HasUid
 
     public static function findByUid($uid)
     {
-        return self::where('uid', '=', $uid)->first();
+        return static::where('uid', '=', $uid)->first();
     }
 
     public function generateUid()
