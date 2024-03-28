@@ -228,7 +228,7 @@ class BaseCampaign extends Model
         // Be careful before increase this value, otherwise, jobs release/retry may prevents
         //     other campaigns from sending
         $perPage = 50;
-        $maxPageToLoad = 3;
+        $maxPageToLoad = 2;
         $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
@@ -244,11 +244,14 @@ class BaseCampaign extends Model
             $campaignLoaders[] = new LoadCampaign($this, 0, []);
         }
 
+        $campaignId = $this->uid;
+        $className = get_called_class(); // Something like App\Model\Campaign (late binding, inherited class name)
+
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
             $campaignLoaders,
-            function ($batch) {
+            function ($batch) use ($campaignId, $className) {
                 // THEN callback of a batch
                 //
                 // Important:
@@ -257,24 +260,26 @@ class BaseCampaign extends Model
                 // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
                 //
                 // IMPORTANT: refresh() is required!
-                if ($this->refresh()->isPaused()) {
+                $campaign = $className::findByUid($campaignId);
+
+                if ($campaign->refresh()->isPaused()) {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
                     // It seems that if a batch is cancelled, it shall not trigger any callback!
-                    $this->logger()->warning('Campaign is paused');
+                    $campaign->logger()->warning('Campaign is paused');
                     return;
                 }
 
-                $count = $this->subscribersToSend()->count();
+                $count = $campaign->subscribersToSend()->count();
                 if ($count > 0) {
                     // Run over and over again until there is no subscribers left to send
                     // Because each LoadCampaign jobs only load a fixed number of subscribers
-                    $this->logger()->warning('Load another batch of the remaining '.$count);
-                    $this->run();
+                    $campaign->logger()->warning('Load another batch of the remaining '.$count);
+                    $campaign->run();
                 } else {
-                    $this->logger()->warning('No contact left, campaign finishes successfully!');
-                    $this->setDone();
+                    $campaign->logger()->warning('No contact left, campaign finishes successfully!');
+                    $campaign->setDone();
 
-                    $this->debug(function ($info) {
+                    $campaign->debug(function ($info) {
                         $startAt = $info['start_at'];
                         $finishAt = Carbon::now();
                         $info['finish_at'] = $finishAt->toString();
@@ -285,16 +290,18 @@ class BaseCampaign extends Model
 
                 return;
             },
-            function (Batch $batch, Throwable $e) {
+            function (Batch $batch, Throwable $e) use ($campaignId, $className) {
                 // CATCH callback
+                $campaign = $className::findByUid($campaignId);
                 $errorMsg = "Campaign stopped. ".$e->getMessage()."\n".$e->getTraceAsString();
-                $this->logger()->info($errorMsg);
-                $this->setError($errorMsg);
+                $campaign->logger()->info($errorMsg);
+                $campaign->setError($errorMsg);
             },
-            function () {
+            function () use ($campaignId, $className) {
                 // FINALLY callback
-                $this->logger()->info('Finally callback of batch! Updating cache');
-                $this->updateCache();
+                $campaign = $className::findByUid($campaignId);
+                $campaign->logger()->info('Finally callback of batch! Updating cache');
+                $campaign->updateCache();
             }
         );
 
