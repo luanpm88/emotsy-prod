@@ -15,6 +15,10 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
+        if (config('app.emotsy')) {
+            \Artisan::call('db:seed', ['class'=>'UserListSeeder']);
+        }
+
         // authorize
         if (\Gate::denies('read', new \Acelle\Model\Customer())) {
             return $this->notAuthorized();

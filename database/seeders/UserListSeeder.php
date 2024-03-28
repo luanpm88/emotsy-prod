@@ -14,9 +14,23 @@ class UserListSeeder extends Seeder
     public function run()
     {
         $user = \Acelle\Model\User::where('email', '=', 'anna@emotsy.com')->first();
+
+        if (!$user) {
+            return;
+        }
+
         $customer = $user->customer;
+
+        if (!$customer) {
+            return;
+        }
+
         $listName = '#UserList';
         $list = \Acelle\Model\MailList::where('name', '=', $listName)->first();
+
+        if (!$list) {
+            return;
+        }
 
         if (!$list) {
             $contact = $contact = \Acelle\Model\Contact::create([
@@ -35,6 +49,8 @@ class UserListSeeder extends Seeder
             $list->save();
         }
 
+        $processed = 0;
+        // add/update subscribers
         foreach(\Acelle\Model\User::all() as $user) {
             $subscriber = $list->subscribers()->firstOrNew(['email' => strtolower(trim($user->email))]);
             $subscriber->from = \Acelle\Model\Subscriber::SUBSCRIPTION_TYPE_ADDED;
@@ -48,7 +64,22 @@ class UserListSeeder extends Seeder
                 'LAST_NAME' => $user->last_name,
             ]);
 
-            var_dump($subscriber);
+            $processed += 1;
         }
+
+        // remove all subscribers that user not exist anymore
+        $removeSubscribers = $list->subscribers()->whereNotIn('email', \Acelle\Model\User::select('email'));
+        $removed = 0;
+        foreach ($removeSubscribers->get() as $subscriber) {
+            $subscriber->delete();
+
+            $removed += 1;
+        }
+
+        \Log::info("Update user list:");
+        \Log::info("-- $processed users added/updated!");
+        \Log::info("-- $removed users removed!");
+
+        return;
     }
 }
