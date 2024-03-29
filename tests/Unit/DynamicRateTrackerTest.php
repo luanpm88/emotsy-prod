@@ -133,9 +133,6 @@ class DynamicRateTrackerTest extends TestCase
             $this->assertEquals($credits1, 5);
             $this->assertEquals($credits2, 0);
         }
-
-
-
     }
 
     function test_with_multi_process()
