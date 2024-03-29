@@ -407,18 +407,26 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         throw $exception;
     }
 
+    $rateCounted = [];
     try {
         // Might throw \Acelle\Library\Exception\RateLimitExceeded
         foreach ($rateTrackers as $rateTracker) {
             $rateTracker->count();
+            $rateCounted[] = $rateTracker;
         }
     } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {
-        // Rollback 1: when OutOfCredits
-        // @important: rate is counted even for a failed operation attempt
-        // So there is no need to roll it back (that's why the rollback() method is @deprecated)
-        // However, credits must be rolled back before exit
+        // Credits must not be counted
         foreach ($creditCounted as $creditTracker) {
             $creditTracker->rollback();
+        }
+
+        // In case of more than one rate trackers
+        // + Tracker A works just fine
+        // + Tracker B works just fine
+        // + Tracker C fails
+        // Rollback tracker A and B
+        foreach ($rateCounted as $rateTracker) {
+            $rateTracker->rollback();
         }
 
         // This exception is safely handled in SendMessage ( i.e. catch (RateLimitExceeded $ex) )
