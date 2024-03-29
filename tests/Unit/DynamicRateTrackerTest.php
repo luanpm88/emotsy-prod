@@ -89,6 +89,55 @@ class DynamicRateTrackerTest extends TestCase
         $tracker->test();
     }
 
+    function test_with_multi_trackers()
+    {
+        $key1 = 'test-dynamic-rate-tracker-1';
+        $key2 = 'test-dynamic-rate-tracker-2';
+
+        $tracker1 = new DynamicRateTracker($key1, [ new RateLimit(10, 1, 'minute') ]);
+        $tracker2 = new DynamicRateTracker($key2, [ new RateLimit(5, 1, 'minute') ]);
+
+        $tracker1->clearReservation();
+        $tracker2->clearReservation();
+
+        // The idea is: tracker2 will hit rate limit
+        // However, make sure tracker1 remaining credits are not counted!
+        for($i = 1; $i <= 5; $i += 1) {
+            execute_with_limits([$tracker1, $tracker2], $credits = [], function() {
+                // do nothing
+            });
+
+            list($until1, $credits1) = $tracker1->parseReservedCredits();
+            list($until2, $credits2) = $tracker2->parseReservedCredits();
+
+            $this->assertEquals($credits1, 10 - $i);
+            $this->assertEquals($credits2, 5 - $i);
+        }
+
+
+        for($i = 1; $i <= 2; $i += 1) {
+
+            try {
+                execute_with_limits([$tracker1, $tracker2], $credits = [], function() {
+                    // do nothing
+                });
+
+                throw new Exception('Exception must be thrown');
+            } catch (RateLimitExceeded $ex) {
+                // expected
+            }
+
+            list($until1, $credits1) = $tracker1->parseReservedCredits();
+            list($until2, $credits2) = $tracker2->parseReservedCredits();
+
+            $this->assertEquals($credits1, 5);
+            $this->assertEquals($credits2, 0);
+        }
+
+
+
+    }
+
     function test_with_multi_process()
     {
         $key = 'test-dynamic-rate-tracker';

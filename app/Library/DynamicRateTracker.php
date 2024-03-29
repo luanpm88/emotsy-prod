@@ -54,7 +54,11 @@ class DynamicRateTracker
     // @deprecated: rollback is not needed as even a failed operation is also counted in rate limits
     public function rollback()
     {
-        throw new Exception('Rollback not supported with DynamicRateTracker');
+        $lock = new Lockable($this->reservedPath);
+        $lock->getExclusiveLock(function ($fopen) {
+            list($until, $credits) = $this->parseReservedCredits($fopen);
+            $this->updateReservedCredits($until, $credits + 1);
+        });
     }
 
     public function getRateLimits()

@@ -122,13 +122,13 @@ class QuotaTest extends TestCase
         $this->assertEquals($subscription->getSendEmailCreditTracker()->getRemainingCredits(), 99);
 
 
-        // 2st execution
+        // 2st execution, hit subscription rate limit
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server, $subscription);
         $sendMsgJob->send(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
 
-        $this->assertEquals($server->getRateLimitTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 2); // Server counts
+        $this->assertEquals($server->getRateLimitTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 1); // Server counts
         $this->assertEquals($subscription->getSendEmailRateTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 1); // sub fails to count, so still 1 (max 1/minute)
         $this->assertEquals(RateLimitExceeded::class, get_class($outcome));
         // FAILED, as credits tracking is commented out in SendMessage
