@@ -274,7 +274,7 @@ class SendMessage implements ShouldQueue
                     } else {
                         // Releease the job, have it tried again later on, after 1 minutes
 
-                        $delayInSeconds = 25;
+                        $delayInSeconds = 60; // reservation stategy, so 60 seconds is good enough
 
                         $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
                         $plogger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));

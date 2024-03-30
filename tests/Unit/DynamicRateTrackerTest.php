@@ -182,4 +182,18 @@ class DynamicRateTrackerTest extends TestCase
             }
         }
     }
+
+    function test_reserved_by_others()
+    {
+    	$key = 'test-dynamic-rate-tracker';
+        $limits = [
+            new RateLimit(2, 5, 'seconds', '2 per 30 secs'),
+            new RateLimit(200, 12, 'hour', '5 per 24 hours (per day)'),
+        ];
+
+        $tracker = new DynamicRateTracker($key, $limits);
+        $tracker->clearReservation();
+
+        $this->assertFalse($tracker->isReservedByOthers(now()));
+    }
 }

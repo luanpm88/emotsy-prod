@@ -36,9 +36,8 @@ class DynamicRateTracker
     {
         $this->resourceKey = $resourceKey;
 
-        // IMPORTANT: both "resourceKey" and "pid" are required
-        // Otherwise, different trackers of the same process might conflict
-        $this->reservedPath = "/tmp/dynamic-rate-tracker-pid-".md5($this->resourceKey)."-".getmypid();
+        // IMPORTANT: this path is shard among processes of the same server (same filesystem)
+        $this->reservedPath = "/tmp/dynamic-rate-tracker-pid-".md5($this->resourceKey);
 
         $this->limits = $limits;
 
@@ -165,9 +164,9 @@ class DynamicRateTracker
 
     public function isReservedByOthers(Carbon $now)
     {
-        $reservedUntil = (int)Cache::get($this->resourceKey);
+        $reservedUntil = Cache::get($this->resourceKey);
 
-        if (!is_null($reservedUntil) && (new Carbon($reservedUntil))->gte($now)) {
+        if (!is_null($reservedUntil) && (new Carbon((int)$reservedUntil))->gte($now)) {
             return true;
         } else {
             return false;
