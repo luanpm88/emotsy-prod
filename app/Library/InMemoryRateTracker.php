@@ -214,4 +214,14 @@ class InMemoryRateTracker
             Cache::put($this->resourceKey, $newStore);
         });
     }
+
+    public function getLimitsDescription()
+    {
+        $str = [];
+        foreach ($this->getRateLimits() as $limit) {
+            $str[] = $limit->getDescription();
+        }
+
+        return implode(', ', $str);
+    }
 }

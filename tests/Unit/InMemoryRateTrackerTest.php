@@ -119,8 +119,8 @@ class InMemoryRateTrackerTest extends TestCase
     {
         $key = 'test-in-memory-rate-tracker';
         $limits = [
-            new RateLimit(2, 1, 'minute', '2 per minute'),
-            new RateLimit(5, 24, 'hour', '5 per 24 hours (per day)'),
+            new RateLimit(2, 1, 'minute', '#'),
+            new RateLimit(5, 24, 'hour', '#'),
         ];
 
         $tracker = new InMemoryRateTracker($key, $limits);
@@ -130,6 +130,7 @@ class InMemoryRateTrackerTest extends TestCase
         $tracker->count();
         $tracker->count();
 
+        $this->assertEquals($tracker->getLimitsDescription(), "#, #");
         $this->assertEquals($tracker->getCreditsUsed(), 2);
         $this->expectException(RateLimitExceeded::class);
         $tracker->count();
