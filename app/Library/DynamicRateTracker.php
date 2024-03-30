@@ -227,4 +227,14 @@ class DynamicRateTracker
         file_put_contents($this->getReservedPath(), '');
         Cache::forget($this->resourceKey);
     }
+
+    public function getLimitsDescription()
+    {
+        $str = [];
+        foreach ($this->getRateLimits() as $limit) {
+            $str[] = $limit->getDescription();
+        }
+
+        return implode(', ', $str);
+    }
 }
