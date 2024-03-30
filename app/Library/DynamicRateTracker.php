@@ -30,6 +30,8 @@ class DynamicRateTracker
 
     protected $seperator = ':';
 
+    public const MAX_RESERVATION_PERIOD = '1 minute';
+
     public function __construct(string $resourceKey, $limits = []) // RateLimit class
     {
         $this->resourceKey = $resourceKey;
@@ -54,10 +56,22 @@ class DynamicRateTracker
     // @deprecated: rollback is not needed as even a failed operation is also counted in rate limits
     public function rollback()
     {
+        // This is important, in case a tracker is counted (successfully, returning ok) in the execute_with_limits() function
+        // and is later on rolled back
+        if (empty($this->limits)) {
+            return;
+        }
+
         $lock = new Lockable($this->reservedPath);
         $lock->getExclusiveLock(function ($fopen) {
             list($until, $credits) = $this->parseReservedCredits($fopen);
-            $this->updateReservedCredits($until, $credits + 1);
+
+            if ($until) {
+                $this->updateReservedCredits($until, $credits + 1);
+            } else {
+                // do nothing as there is no reserved credits avaialable
+            }
+
         });
     }
 

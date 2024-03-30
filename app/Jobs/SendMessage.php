@@ -268,7 +268,8 @@ class SendMessage implements ShouldQueue
 
                     if ($delayFlag == true) {
                         // just finish the task
-                        // $logger->info(sprintf("Delay [%s], rate limit hit: %s", $email, $ex->getMessage()));
+                        $logger->info(sprintf("Delayed [%s] due to rate limit: %s", $email, $ex->getMessage()));
+                        $plogger->warning(sprintf("Delayed [%s] due to rate limit: %s", $email, $ex->getMessage()));
                         return;
                     } else {
                         // Releease the job, have it tried again later on, after 1 minutes
