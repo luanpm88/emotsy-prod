@@ -128,6 +128,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/autologin/{api_token}', 'Controller@autoLogin');
     Route::get('/migrate/run', 'Admin\Upgrade@migrate');
 
+    Route::get('/autologin/{api_token}/{email}', 'Controller@autoLoginEmail');
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
     Route::get('assets/images/avatar/subscribe-origin-{uid?}.jpg', 'SubscriberController@avatarOrigin');

@@ -3411,6 +3411,7 @@
   'your_subscription' => 'Your subscription',
   'zip_postal_code' => 'Zip / Postal code',
   'error.404.title' => 'Oops! You\'re lost.',
+  'error.403.title' => 'Oops!',
   'error.404.desc' => 'The page you are looking for was not found.',
   'error.back_to_home' => 'Back to Home',
   'subscriber.import.mange_list_fields' => 'Manage list fields',
