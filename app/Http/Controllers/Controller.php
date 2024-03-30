@@ -245,9 +245,11 @@ class Controller extends BaseController
             throw new \Exception("Can not find user with email $email");
         }
 
+        // login as
         \Auth::login($loginAsUser);
         $loginAsUser->set2FAAuthenticated();
 
+        // return to home
         return redirect()->action('HomeController@index');
     }
 }
