@@ -139,7 +139,11 @@ class DynamicRateTracker
             if ($this->isReservedByOthers($now)) {
                 // no local reserved
                 // and there is a reserved-until key (by other)
-                throw new RateLimitExceeded("Calculated rate limit exceeded ({$this->getMinCredits()}/{$this->getShortestLimitPeriod()})");
+
+                $reservedUntil = (int)Cache::get($this->resourceKey);
+                $until = new Carbon($reservedUntil);
+
+                throw new RateLimitExceeded("Calculated rate limit exceeded: {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} | {$this->getLimitsDescription()}. Will be availalbe in {$until->diffForHumans()}, at {$until->toString()}");
             }
 
             if (!$count) {
@@ -226,5 +230,15 @@ class DynamicRateTracker
     {
         file_put_contents($this->getReservedPath(), '');
         Cache::forget($this->resourceKey);
+    }
+
+    public function getLimitsDescription()
+    {
+        $str = [];
+        foreach ($this->getRateLimits() as $limit) {
+            $str[] = $limit->getDescription();
+        }
+
+        return implode(', ', $str);
     }
 }

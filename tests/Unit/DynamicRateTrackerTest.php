@@ -15,10 +15,10 @@ class DynamicRateTrackerTest extends TestCase
     {
         $key = 'test-dynamic-rate-tracker';
         $limits = [
-            new RateLimit(10, 1, 'minute', '2 per minute'),
-            new RateLimit(200, 12, 'hour', '5 per 24 hours (per day)'),
-            new RateLimit(4, 1, 'minute', '5 per 24 hours (per day)'),
-            new RateLimit(5, 1, 'day', '5 per 24 hours (per day)'),
+            new RateLimit(10, 1, 'minute', '#'),
+            new RateLimit(200, 12, 'hour', '#'),
+            new RateLimit(4, 1, 'minute', '#'),
+            new RateLimit(5, 1, 'day', '#'),
         ];
 
         $tracker = new DynamicRateTracker($key, $limits);
@@ -27,6 +27,7 @@ class DynamicRateTrackerTest extends TestCase
         $tracker->clearReservation();
 
         // So the selected limit for reserving is: "4 per 1 minute"
+        $this->assertEquals($tracker->getLimitsDescription(), "#, #, #, #");
         $this->assertEquals($tracker->getShortestLimitPeriod(), '1 minute');
         $this->assertEquals($tracker->getMinCredits(), 4);
 

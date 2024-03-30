@@ -401,4 +401,14 @@ class RateTracker
 
         }, $timeout = 15);
     }
+
+    public function getLimitsDescription()
+    {
+        $str = [];
+        foreach ($this->getRateLimits() as $limit) {
+            $str[] = $limit->getDescription();
+        }
+
+        return implode(', ', $str);
+    }
 }
