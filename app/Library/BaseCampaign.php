@@ -208,7 +208,7 @@ class BaseCampaign extends Model
     public function run($check = true)
     {
         if ($check) {
-            $this->withLock(function() {
+            $this->withLock(function () {
                 if ($this->isSending()) {
                     throw new Exception('Campaign is already in progress');
                 }
@@ -505,7 +505,7 @@ class BaseCampaign extends Model
     public function withLock(Closure $task)
     {
         $key = "lock-campaign-{$this->uid}";
-        with_cache_lock($key, function() use ($task) {
+        with_cache_lock($key, function () use ($task) {
             $task();
         });
     }

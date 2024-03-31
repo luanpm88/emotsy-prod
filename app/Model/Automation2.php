@@ -527,7 +527,6 @@ class Automation2 extends Model
                 $this->checkForAbandonedCart();
                 // no break
             case self::TRIGGER_TAG_BASED:
-                // no break
                 break;
             case 'others':
                 // others

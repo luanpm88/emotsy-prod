@@ -9,16 +9,14 @@ use Closure;
 use Illuminate\Support\Facades\Cache;
 
 /*
- * Log every credit used to a log file, group by $mode, which could be 'minute' (default), hour, day, month...
- * For example, a log file grouped by minute may look like this ( lines of YYYYMMDDHHMM:COUNT format)
+ * Limitation of this algorithm
  *
- * 202307230913:1200
- * 202307230914:1250
- * 202307230914:1052
- * 202307230930:1178
+ *   + What if a process reserves all the credits but did not use it all?
+ *   + It is even worse if the credits reservation is too long (no other process of another server can use it)
+ *       - even if we use only 01 dedicated worker per campaign,
+ *         we still have to deal with resource sharing for global sending servers (used by many customers and campaigns)
  *
- * Group by 'minute' supports minute granularity limits (emails per 1 minute)
- * Group by 'hour' supports hour granularity limits (emails per 1 hour), but does not support minute (lower than 1 hour) granularity limits
+ *   + Doubled credits used at window point
  *
  */
 
@@ -30,13 +28,11 @@ class DynamicRateTracker
 
     protected $seperator = ':';
 
-    public const MAX_RESERVATION_PERIOD = '1 minute';
-
     public function __construct(string $resourceKey, $limits = []) // RateLimit class
     {
         $this->resourceKey = $resourceKey;
 
-        // IMPORTANT: this path is shard among processes of the same server (same filesystem)
+        // IMPORTANT: this path is shared among processes of the same server (same filesystem)
         $this->reservedPath = "/tmp/dynamic-rate-tracker-pid-".md5($this->resourceKey);
 
         $this->limits = $limits;

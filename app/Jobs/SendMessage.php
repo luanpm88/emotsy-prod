@@ -165,8 +165,8 @@ class SendMessage implements ShouldQueue
                 $getLockDiff = ($getLockAt - $startAt) / 1000;
                 $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
 
-                $logger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime ));
-                $plogger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime ));
+                $logger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
+                $plogger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
 
                 if (!$this->subscriber->isSubscribed()) {
                     // @important: do not throw an exception here
