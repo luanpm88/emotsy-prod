@@ -71,7 +71,7 @@ class Domain
     {
         $raw = $this->getDkimDnsRecord();
         $quoted = doublequote($raw);
-        $escaped = return str_replace(';', '\;', $quoted);
+        $escaped = str_replace(';', '\;', $quoted);
 
         $possibles = collect([$raw, $quoted, $quoted]);
         $possibles = $possibles->map(function ($item, $key) {

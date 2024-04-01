@@ -143,6 +143,8 @@ class SendingDomain extends Model
             $this->dkim_public,
             $this->dkim_private,
         );
+
+        return $domain;
     }
 
     /**
@@ -277,7 +279,7 @@ class SendingDomain extends Model
             'dkim' => [
                 [
                     'type' => 'TXT',
-                    'name' => $this->getFullDkimHostName(),
+                    'name' => $this->getDomain()->getFullDkimHostName(),
                     'value' => doublequote($this->getDomain()->getDkimDnsRecord()),
                 ]
             ],
