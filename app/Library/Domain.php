@@ -86,4 +86,13 @@ class Domain
 
         return $results->isEmpty() ? false : true;
     }
+
+    public function generateDnsRecords()
+    {
+        return [
+            'type' => 'TXT',
+            'name' => $this->getFullDkimHostName(),
+            'value' => doublequote($this->getDkimDnsRecord()),
+        ];
+    }
 }
