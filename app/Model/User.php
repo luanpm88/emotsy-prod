@@ -788,7 +788,7 @@ class User extends Authenticatable
 
         // remove current role if it exists
         if ($this->getRole()) {
-            $this->getRole()->delete();
+            $this->roles()->detach($this->getRole());
         }
 
         // set new role
