@@ -26,6 +26,7 @@ use Acelle\Library\HtmlHandler\InjectMessageIdToBody;
 use Acelle\Library\Lockable;
 use Cache;
 use Soundasleep\Html2Text;
+use Acelle\Library\Domain;
 
 trait HasTemplate
 {
@@ -256,7 +257,10 @@ trait HasTemplate
         }
 
         if ($this->sign_dkim) {
-            $message = $this->sign($message);
+            $sendingDomain = $this->findSendingDomain($this->from_email);
+            if (!is_null($sendingDomain)) {
+                $message = $this->sign($message, $sendingDomain->getDomain());
+            }
         }
 
         if ($this->attachments) {
@@ -362,19 +366,15 @@ trait HasTemplate
      *
      * @return mixed
      */
-    public function sign($message)
+    public function sign($message, Domain $domain)
     {
-        $sendingDomain = $this->findSendingDomain($this->from_email);
+        $privateKey = $domain->getPrivateKey();
+        $domainName = $domain->getName();
+        $selector = $domain->getDkimSelector();
 
-        if (is_null($sendingDomain)) {
-            return $message;
-        }
-
-        $privateKey = $sendingDomain->dkim_private;
-        $domainName = $sendingDomain->name;
-        $selector = $sendingDomain->getDkimSelectorParts()[0];
         $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
         $signer->ignoreHeader('Return-Path');
+
         $message->attachSigner($signer);
 
         return $message;
