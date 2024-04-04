@@ -558,3 +558,33 @@ function plogger($name = null)
     $logger->pushHandler($stream);
     return $logger;
 }
+
+function get_default_auth_domain()
+{
+    $config = config('default_auth_domain');
+
+    if (empty($config)) {
+        throw new \Exception("There is no default authentication domain available");
+    }
+
+    return new \Acelle\Library\Domain(
+        $config['domain'],
+        $config['selector'],
+        $config['public_key'],
+        $config['private_key'],
+    );
+}
+
+function dkim_sign(\Swift_Message $message, \Acelle\Library\Domain $domain)
+{
+    $privateKey = $domain->getPrivateKey();
+    $domainName = $domain->getName();
+    $selector = $domain->getDkimSelector();
+
+    $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
+    $signer->ignoreHeader('Return-Path');
+
+    $message->attachSigner($signer);
+
+    return $message;
+}

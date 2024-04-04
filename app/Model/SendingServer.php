@@ -919,6 +919,12 @@ class SendingServer extends Model
         $message->addPart($params['plain'], 'text/plain');
 
         $this->setupBeforeSend($params['from_email']);
+
+        if (config('custom.use_default_auth')) {
+            $domain = get_default_auth_domain();
+            dkim_sign($message, $domain);
+        }
+
         $this->send($message);
 
         return true;

@@ -1229,6 +1229,23 @@ class MailList extends Model
                         $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
                     }
 
+                    // Process tag values
+                    // @important: status field must be lower-case
+                    if (array_key_exists('status', $record) && !empty($record['status'])) {
+                        $allowed = [
+                            Subscriber::STATUS_SUBSCRIBED,
+                            Subscriber::STATUS_UNSUBSCRIBED,
+                            Subscriber::STATUS_UNCONFIRMED,
+                        ];
+
+                        if (!in_array($record['status'], $allowed)) {
+                            $record['status'] = Subscriber::STATUS_SUBSCRIBED; // remove invalid status
+                        }
+                    } else {
+                        // default status
+                        $record['status'] = Subscriber::STATUS_SUBSCRIBED;
+                    }
+
                     // In certain cases, a UTF-8 BOM is added to email
                     // For example: "﻿madxperts@gmail.com" (open with Sublime to see the char)
                     // So we need to remove it, at least for email field
@@ -1283,6 +1300,7 @@ class MailList extends Model
                     UPDATE %subscribers main
                     INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
                     SET main.tags = tmp.tags,
+                        main.status = tmp.status,
                     %set_fields_values
                     WHERE main.mail_list_id = %list_id',
                     [
@@ -1329,7 +1347,7 @@ class MailList extends Model
                         SUBSTRING(MD5(UUID()), 1, 13),
                         %list_id,
                         tmp.%email_field,
-                        %status,
+                        tmp.status,
                         %type,
                         tmp.tags,
                         \'%import_batch_id\',
@@ -1344,7 +1362,6 @@ class MailList extends Model
                         '%custom_fields' => $customFields,
                         '%custom_fields_with_prefix' => $customFieldsWithPrefix,
                         '%list_id' => $this->id,
-                        '%status' => db_quote(Subscriber::STATUS_SUBSCRIBED),
                         '%type' => db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED),
                         '%import_batch_id' => $importBatchId,
                         '%tmp' => $tmpTable,
