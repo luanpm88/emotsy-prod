@@ -333,7 +333,12 @@ class DatabaseInit extends Seeder
             }
 
             // create
-            \Acelle\Model\Country::create($data);
+            $country = new \Acelle\Model\Country();
+            $country->name = $data['name'];
+            $country->code = $data['code'];
+            $country->status = $data['status'];
+            $country->save();
+
         }
     }
 

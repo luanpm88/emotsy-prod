@@ -331,7 +331,7 @@ class SubscriberController extends Controller
         }
 
         //
-        foreach ($subscribers as $subscriber) {
+        foreach ($subscribers->get() as $subscriber) {
             // check if item unsubscribed
             if ($subscriber->status == 'unsubscribed') {
                 continue;
