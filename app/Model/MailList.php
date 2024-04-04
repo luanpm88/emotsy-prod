@@ -1386,8 +1386,13 @@ class MailList extends Model
                 // Trigger updating related campaigns cache
                 $this->updateCachedInfo();
 
-                // blacklist new emails (if any)
-                Blacklist::doBlacklist($this->customer);
+                try {
+                    // blacklist new emails (if any)
+                    Blacklist::doBlacklist($this->customer);
+                } catch (\Exception $ex) {
+                    // It might cause "Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction"
+                    // Temporarily ignore this issue
+                }
 
                 // Event MailListImported($list)
                 MailListImported::dispatch($this, $importBatchId);
