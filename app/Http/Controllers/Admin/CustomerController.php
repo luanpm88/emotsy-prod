@@ -127,6 +127,10 @@ class CustomerController extends Controller
             ]);
         }
 
+        if (config('app.emotsy')) {
+            \Artisan::call('db:seed', ['class'=>'UserListSeeder']);
+        }
+
         return redirect()->action('Admin\CustomerController@index')
             ->with('alert-success', trans('messages.customer.created'));
     }
