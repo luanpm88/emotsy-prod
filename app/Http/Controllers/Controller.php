@@ -233,6 +233,7 @@ class Controller extends BaseController
     public function autoLoginEmail($api_token, $email)
     {
         $user = \Acelle\Model\User::where('api_token', $api_token)->first();
+        $orig_id = $user->uid;
 
         if (!$user->can('admin_access', $user)) {
             return response()->view('notAuthorized', [
@@ -248,6 +249,9 @@ class Controller extends BaseController
         // login as
         \Auth::login($loginAsUser);
         $loginAsUser->set2FAAuthenticated();
+
+        // login back to this admin
+        \Session::put('orig_customer_id', $orig_id);
 
         // return to home
         return redirect()->action('HomeController@index');
