@@ -178,6 +178,9 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('pub/campaigns/{uid}/preview/content/{subscriber_uid?}', 'Pub\CampaignController@previewContent');
     Route::get('pub/campaigns/{uid}/preview', 'Pub\CampaignController@preview');
+
+
+    Route::get('pub/campaign/speedtest', 'Pub\CampaignController@speedtest');
 });
 
 // Without authentication
