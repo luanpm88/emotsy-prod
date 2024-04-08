@@ -1214,7 +1214,7 @@ class MailList extends Model
                     $record = $map->processRecord($r, function ($field, $value) {
                         if ($field->isDate()) {
                             // Do not count hours, this field is DATE only
-                            return $this->customer->parseDateTime($value, true)->format(config('custom.date_format'));
+                            return $value ? $this->customer->parseDateTime($value, true)->format(config('custom.date_format')) : '';
                         } else {
                             return $value;
                         }
