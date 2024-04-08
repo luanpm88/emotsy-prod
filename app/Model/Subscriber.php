@@ -382,7 +382,7 @@ class Subscriber extends Model
     {
         $value = $this[$field->custom_field_name];
         if ($field->isDate()) {
-            return $value;
+            return $value == '1900-01-01' ? '' : $value;
         } else {
             return $value;
         }
