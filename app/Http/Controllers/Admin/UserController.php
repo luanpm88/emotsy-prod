@@ -18,6 +18,10 @@ class UserController extends Controller
     {
         $customer = Customer::findByUid($customer_uid);
 
+        if (config('app.emotsy')) {
+            \Artisan::call('db:seed', ['class'=>'UserListSeeder']);
+        }
+
         return view('admin.users.index', [
             'customer' => $customer,
         ]);
@@ -80,6 +84,10 @@ class UserController extends Controller
                 'user' => $user,
                 'errors' => $errors,
             ], 400);
+        }
+
+        if (config('app.emotsy')) {
+            \Artisan::call('db:seed', ['class'=>'UserListSeeder']);
         }
 
         return redirect()->action('Admin\UserController@index', [
