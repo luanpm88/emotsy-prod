@@ -1741,9 +1741,9 @@ ul.automation-confirm li.child-row h5 {
     margin-top: 4px;
     display: inline-block;
 }
-.control-with-mask {
+/* .control-with-mask {
     color: rgba(0,0,0,0);
-}
+} */
 .mask-control {
     height: 26px;
     display: block;
@@ -4657,9 +4657,9 @@ pagination {
     margin-right: 5px;
     border-top: 2px solid #F44336;
 }
-.control-with-mask {
+/* .control-with-mask {
     color: transparent!important;
-}
+} */
 /* ------------------------------------------------------------------------------
 *
 *  # Anytime picker

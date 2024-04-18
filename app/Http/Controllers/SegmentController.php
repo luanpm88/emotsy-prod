@@ -192,7 +192,10 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
-        $subscribers = $segment->subscribers();
+        $subscribers = $segment->subscribers()
+            ->search($request->keyword)
+            ->filter($request);
+        
 
         if ($request->sort_order) {
             $subscribers->orderBy($request->sort_order, $request->sort_direction);
