@@ -915,13 +915,18 @@ class Subscriber extends Model
      *
      * @return collect
      */
-    public function scopeSearch($query, $keyword)
+    public function scopeSearch($query, $keyword, $listFields = [])
     {
         // Keyword
         if (!empty(trim($keyword))) {
             foreach (explode(' ', trim($keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
+                $query = $query->where(function ($q) use ($keyword, $listFields) {
                     $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
+
+                    foreach ($listFields as $f) {
+                        $q->orwhere("subscribers.{$f->custom_field_name}", 'LIKE', '%'.$keyword.'%');;
+                    }
+
                 });
             }
         }

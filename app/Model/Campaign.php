@@ -495,8 +495,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      *
      * @return collect
      */
-    public static function scopeFilter($query, $request)
+    public static function scopeFilter($query, $request = null)
     {
+        if (is_null($request)) {
+            return $query;
+        }
+
         // Get campaign from ... (all|normal|automated)
         if ($request->source == 'template') {
             $query = $query->where('html', '!=', null);
@@ -2271,6 +2275,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 $query = $query->where('tracking_logs.status', '=', $val);
             }
         }
+
         // keyword
         if (isset($params['keyword']) && !empty(trim($params['keyword']))) {
             foreach (explode(' ', trim($params['keyword'])) as $keyword) {
