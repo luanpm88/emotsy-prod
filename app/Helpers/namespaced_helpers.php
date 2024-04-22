@@ -588,3 +588,14 @@ function dkim_sign(\Swift_Message $message, \Acelle\Library\Domain $domain)
 
     return $message;
 }
+
+function dkim_sign_with_default_domain(\Swift_Message $message)
+{
+    $name = config('default_auth_domain.domain');
+    $selector = config('default_auth_domain.selector');
+    $publicKey = config('default_auth_domain.public_key');
+    $privateKey = config('default_auth_domain.private_key');
+
+    $domain = new \Acelle\Library\Domain($name, $selector, $publicKey, $privateKey);
+    return \Acelle\Helpers\dkim_sign($message, $domain);
+}
