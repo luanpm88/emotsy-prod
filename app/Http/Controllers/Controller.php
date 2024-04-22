@@ -276,6 +276,5 @@ class Controller extends BaseController
 
         // return to home
         return redirect()->action('HomeController@index');
->>>>>>> origin/develop
     }
 }
