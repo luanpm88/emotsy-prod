@@ -70,7 +70,7 @@
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
                 root: '{{ AppUrl::asset('builder') }}/',
                 templates: templates,
-                filemanager: '{{ AppUrl::asset('filemanager2/dialog.php') }}',
+                filemanager: '{{ AppUrl::asset('filemanager2/dialog.php?admin=1') }}',
                 logo: '{{ getSiteLogoUrl('light') }}',
                 backgrounds: [
                     '{{ url('/images/backgrounds/images1.jpg') }}',

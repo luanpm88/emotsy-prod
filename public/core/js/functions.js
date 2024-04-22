@@ -20,7 +20,7 @@ function initJs(container)
 
     // pick a date
     if (container.find(".pickadate-control").length) {
-        pickadateMask2(container.find('.pickadate-control'));
+        // pickadateMask2(container.find('.pickadate-control'));
         container.find('.pickadate-control').pickadate({
             format: 'yyyy-mm-dd',
             selectMonths: true,

@@ -16,8 +16,8 @@
                 <h2 class="d-flex justify-content-center align-items-center gap-2 mb-4">
                 <span class="display-1 fw-bold">401</span>
                 </h2>
-                <h3 class="h2 mb-2">{{ trans('messages.something_went_wrong') }}</h3>
-                <p class="mb-5 text-danger">{{ trans('messages.not_authorized_message') }}</p>
+                <h3 class="h2 mb-2">{{ trans('messages.error.403.title') }}</h3>
+                <p class="mb-5 text-danger">{{ $message ?? trans('messages.not_authorized_message') }}</p>
                 <a href="javascript:;" onclick="history.back()" class="btn bsb-btn-5xl btn-dark rounded-pill px-5 fs-6 m-0" role="button">
                     {{ trans('messages.go_back') }}
                 </a>

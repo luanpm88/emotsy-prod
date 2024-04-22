@@ -1790,6 +1790,7 @@ class Customer extends Model
             // Assign sending credits
             // Notice that the following method is available for a SubscriptionGeneralPlan only
             $subscription->setDefaultEmailCredits();
+            $subscription->setDefaultVerificationCredits();
 
             // log
             SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
@@ -1961,37 +1962,12 @@ class Customer extends Model
         return $this->transactions()->whereIn('invoice_id', $this->emailVerificationCreditsInvoices()->select('id'));
     }
 
-    public function getEmailVerificationCredits()
-    {
-        return $this->emailVerificationCreditsInvoices()->paid()->sum('email_verification_credits');
-    }
-
-    public function getUsedEmailVerificationCredits()
-    {
-        return $this->getEmailVerificationCredits() == 0 ? 0 : 8500;
-    }
-
     public function getLastPaidEmailVerificationCreditsInvoice()
     {
         return $this->emailVerificationCreditsInvoices()
             ->paid()
             ->orderBy('created_at', 'DESC')
             ->first();
-    }
-
-    public function getEmailVerificationCreditsUsage()
-    {
-        $max = $this->getEmailVerificationCredits();
-        $count = $this->getUsedEmailVerificationCredits();
-
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
     }
 
     public function createSendingCreditsInvoice($amount, $currency, $credits)
@@ -2055,31 +2031,11 @@ class Customer extends Model
         return $this->sendingCreditsInvoices()->paid()->sum('sending_credits');
     }
 
-    public function getUsedSendingCredits()
-    {
-        return $this->getSendingCredits() == 0 ? 0 : 8500;
-    }
-
     public function getLastPaidSendingCreditsInvoice()
     {
         return $this->sendingCreditsInvoices()
             ->paid()
             ->orderBy('created_at', 'DESC')
             ->first();
-    }
-
-    public function getSendingCreditsUsage()
-    {
-        $max = $this->getSendingCredits();
-        $count = $this->getUsedSendingCredits();
-
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
     }
 }

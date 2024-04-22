@@ -78,7 +78,7 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-4">
-                        <span class="text-muted"><strong>{{ number_with_delimiter($item->getCreditsUsed()) }}</strong> {{ trans('messages.sending_server.email_sent') }}</span>
+                        <span class="text-muted">###</span>
                         <br />
                         <span class="text-muted2">{{ trans('messages.sending_server.speed', ['limit' => $item->displayQuota()]) }}</span>
                     </div>

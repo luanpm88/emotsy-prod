@@ -468,7 +468,7 @@ class User extends Authenticatable
         return join_paths($appSubDirectory, $subpath);
     }
 
-    public function getFilemanagerConfig()
+    public function getFilemanagerConfig($isAdmin = false)
     {
         // Create user directories if not exists
         $this->createUserDirectories();
@@ -486,14 +486,25 @@ class User extends Authenticatable
         // Limitation
         // Since this method is called from within the dialog.php file, there is no way to know if whether or not it is an admin or customer session
         // So, there is no chance to apply quota here
-        if ($this->customer) {
-            // Limited by plan
-            $maxSizeTotal = get_tmp_quota($this->customer, "max_size_upload_total") > 0 ? get_tmp_quota($this->customer, "max_size_upload_total") : 2048;
-            $maxSizeUpload = get_tmp_quota($this->customer, "max_file_size_upload") > 0 ? get_tmp_quota($this->customer, "max_file_size_upload") : 2048;
-        } else {
+        if ($isAdmin) {
             // Virtually unlimited
             $maxSizeTotal = 2048;
             $maxSizeUpload = 2048;
+        } else {
+            // @todo this is a temporary fix
+            $maxSizeTotal = 2048;
+            $maxSizeUpload = 2048;
+
+            /* The correct way to handle it is as below
+             * However, in certain cases, the $isAdmin param cannot be passed correctly from filemanager
+             * (we have to modify the filemanager source)
+             *
+             * /
+
+            /*
+            $maxSizeTotal = get_tmp_quota($this->customer, "max_size_upload_total") > 0 ? get_tmp_quota($this->customer, "max_size_upload_total") : 2048;
+            $maxSizeUpload = get_tmp_quota($this->customer, "max_file_size_upload") > 0 ? get_tmp_quota($this->customer, "max_file_size_upload") : 2048;
+            */
         }
 
         $config = [

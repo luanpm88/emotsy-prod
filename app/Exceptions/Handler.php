@@ -54,7 +54,7 @@ class Handler extends ExceptionHandler
     {
         if (in_array(get_class($exception), $this->dontReport)) {
             // Do nothing
-        } elseif (App::runningInConsole() && isInitiated()) {
+        } elseif (class_exists('\App') && App::runningInConsole() && isInitiated()) {
             try {
                 // IMPORTANT: do not use Model here, what if DB connect is not initiated correctly
                 // resulting in "exception loop stack" => "PHP Fatal error:  Uncaught Error: Maximum function nesting level of '256' reached, aborting"

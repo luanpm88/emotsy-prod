@@ -243,7 +243,7 @@ class Segment extends Model
 
             // If conditions with fields
             if (isset($condition->field_id)) {
-                $field = "`subscribers`.`{$condition->field->custom_field_name}`";
+                $field = "`".\DB::getTablePrefix()."subscribers`.`{$condition->field->custom_field_name}`";
                 $type = $condition->field->type;
                 switch ($condition->operator) {
                     case 'equal':

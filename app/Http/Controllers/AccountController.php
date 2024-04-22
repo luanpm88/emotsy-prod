@@ -152,9 +152,6 @@ class AccountController extends Controller
 
             $sendCreditRemaining = $sendCreditTracker->getRemainingCredits();
             $sendingCreditsLimit = $subscription->getCreditsLimit('send');
-            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(now()->subtract('30 days'));
-
-            $sendingCreditsUsedPercentage = $subscription->getRemainingEmailCreditsPercentage();
         } else {
             $remainingEmailCredits = -1;
             $emailCredits = -1;
@@ -188,9 +185,7 @@ class AccountController extends Controller
 
         return view('account.quota_log', [
             'sendCreditRemaining' => $sendCreditRemaining,
-            'sendingCreditsUsed' => $sendingCreditsUsed,
             'sendingCreditsLimit' => $sendingCreditsLimit,
-            'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
             'maxLists' => $maxLists,
             'listsCount' => $listsCount,
             'listsUsed' => $listsUsed,
@@ -222,8 +217,6 @@ class AccountController extends Controller
             $subscription = $customer->getCurrentActiveGeneralSubscription(); // saas safe
             $sendCreditTracker = $subscription->getSendEmailCreditTracker();
             $sendingCreditsLimit = $subscription->getCreditsLimit('send');
-            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(now()->subtract('30 days'));
-            $sendingCreditsUsedPercentage = $subscription->getRemainingEmailCreditsPercentage();
         } else {
             $remainingEmailCredits = -1;
             $emailCredits = -1;
@@ -256,9 +249,7 @@ class AccountController extends Controller
         $domainsUsed = ($maxDomains == -1) ? 0 : (($maxDomains == 0) ? 1 : $domainsCount / $maxDomains);
 
         return view('account.quota_log_2', [
-            'sendingCreditsUsed' => $sendingCreditsUsed,
             'sendingCreditsLimit' => $sendingCreditsLimit,
-            'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
             'maxLists' => $maxLists,
             'listsCount' => $listsCount,
             'listsUsed' => $listsUsed,

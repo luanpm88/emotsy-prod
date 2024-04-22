@@ -527,8 +527,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      *
      * @return collect
      */
-    public static function scopeFilter($query, $request)
+    public static function scopeFilter($query, $request = null)
     {
+        if (is_null($request)) {
+            return $query;
+        }
+
         // Get campaign from ... (all|normal|automated)
         if ($request->source == 'template') {
             $query = $query->where('html', '!=', null);
@@ -2182,6 +2186,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
             $this->logger()->info('Setting up before send (page 1 only) for server '.$server->uid);
             $server->setupBeforeSend($fromEmailAddress);
+            $server->getRateLimitTracker()->cleanup('24 hours');
         }
 
         // Reset max_execution_time so that command can run for a long time without being terminated
@@ -2193,6 +2198,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // Last chance for campaign to setup
         // @todo Find a better place for the following method, afterSave for example
         $this->updateLinks();
+
+        if (config('app.saas')) {
+            $subscription = $this->customer->getCurrentActiveGeneralSubscription();
+            $subscription->getSendEmailRateTracker()->cleanup('24 hours');
+        } else {
+            $subscription = null;
+        }
     }
 
     /**
@@ -2304,6 +2316,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 $query = $query->where('tracking_logs.status', '=', $val);
             }
         }
+
         // keyword
         if (isset($params['keyword']) && !empty(trim($params['keyword']))) {
             foreach (explode(' ', trim($params['keyword'])) as $keyword) {

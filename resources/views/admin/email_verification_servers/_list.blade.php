@@ -31,7 +31,7 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-4">
-                        <span class="text-muted"><strong>{{ trans('messages.email_verification_server.credits_usage', ['count' => number_with_delimiter($server->getCreditsUsed()) ]) }}</strong></span>
+                        <span class="text-muted">###</span>
                         <br />
                         <span class="text-muted2">{{ trans('messages.sending_server.speed', ['limit' => $server->getSpeedLimitString()]) }}</span>
                     </div>

@@ -407,18 +407,26 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         throw $exception;
     }
 
+    $rateCounted = [];
     try {
         // Might throw \Acelle\Library\Exception\RateLimitExceeded
         foreach ($rateTrackers as $rateTracker) {
             $rateTracker->count();
+            $rateCounted[] = $rateTracker;
         }
     } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {
-        // Rollback 1: when OutOfCredits
-        // @important: rate is counted even for a failed operation attempt
-        // So there is no need to roll it back (that's why the rollback() method is @deprecated)
-        // However, credits must be rolled back before exit
+        // Credits must not be counted
         foreach ($creditCounted as $creditTracker) {
             $creditTracker->rollback();
+        }
+
+        // In case of more than one rate trackers
+        // + Tracker A works just fine
+        // + Tracker B works just fine
+        // + Tracker C fails
+        // Rollback tracker A and B
+        foreach ($rateCounted as $rateTracker) {
+            $rateTracker->rollback();
         }
 
         // This exception is safely handled in SendMessage ( i.e. catch (RateLimitExceeded $ex) )
@@ -576,4 +584,58 @@ function isSendingCreditPluginActive()
 {
     return \Acelle\Model\Plugin::isInstalled('acelle/sending-credit') &&
         \Acelle\Model\Plugin::getByName('acelle/sending-credit')->isActive();
+}
+
+function plogger($name = null)
+{
+    $formatter = new \Monolog\Formatter\LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+    $pid = getmypid();
+    $logfile = storage_path(join_paths('logs', php_sapi_name(), '/process-'.$pid.'.log'));
+    $stream = new \Monolog\Handler\RotatingFileHandler($logfile, 0, config('custom.log_level'));
+    $stream->setFormatter($formatter);
+
+    $logger = new \Monolog\Logger($name ?: 'process');
+    $logger->pushHandler($stream);
+    return $logger;
+}
+
+function get_default_auth_domain()
+{
+    $config = config('default_auth_domain');
+
+    if (empty($config)) {
+        throw new \Exception("There is no default authentication domain available");
+    }
+
+    return new \Acelle\Library\Domain(
+        $config['domain'],
+        $config['selector'],
+        $config['public_key'],
+        $config['private_key'],
+    );
+}
+
+function dkim_sign(\Swift_Message $message, \Acelle\Library\Domain $domain)
+{
+    $privateKey = $domain->getPrivateKey();
+    $domainName = $domain->getName();
+    $selector = $domain->getDkimSelector();
+
+    $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
+    $signer->ignoreHeader('Return-Path');
+
+    $message->attachSigner($signer);
+
+    return $message;
+}
+
+function dkim_sign_with_default_domain(\Swift_Message $message)
+{
+    $name = config('default_auth_domain.domain');
+    $selector = config('default_auth_domain.selector');
+    $publicKey = config('default_auth_domain.public_key');
+    $privateKey = config('default_auth_domain.private_key');
+
+    $domain = new \Acelle\Library\Domain($name, $selector, $publicKey, $privateKey);
+    return \Acelle\Helpers\dkim_sign($message, $domain);
 }

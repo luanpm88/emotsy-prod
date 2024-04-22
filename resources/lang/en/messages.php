@@ -3843,6 +3843,13 @@
   '2fa.verification_code' => 'Verfication Code',
   'subscriber.import.mange_list_fields' => 'Manage list fields',
   'error.404.title' => 'Oops! You\'re lost.',
+  'error.403.title' => 'Oops!',
   'error.404.desc' => 'The page you are looking for was not found.',
   'error.back_to_home' => 'Back to Home',
+  'subscriber.import.mange_list_fields' => 'Manage list fields',
+  'automation.trigger.tag-based' => 'Tag based',
+  'automation.trigger.tree.tag-based' => 'Tag based',
+  'automation.trigger.tag-based.desc' => 'Trigger the automation for your contacts if a specified tag is assigned to them',
+  'automation.trigger.tag-based.intro' => 'Specify the TAGS that shall trigger the automation',
+  'automation.brief-intro.tag-based' => 'Automate actions based on tag assignments',
 ) ?>
