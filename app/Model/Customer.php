@@ -1206,6 +1206,12 @@ class Customer extends Model
 
     public function allowUnverifiedFromEmailAddress()
     {
+        if (config('custom.sign_with_default_domain')) {
+            // cho phép FROM EMAIL nào cũng được
+            return true;
+        }
+
+
         $server = null;
         if (!config('app.saas')) {
             $server = get_tmp_primary_server();
