@@ -599,22 +599,6 @@ function plogger($name = null)
     return $logger;
 }
 
-function get_default_auth_domain()
-{
-    $config = config('default_auth_domain');
-
-    if (empty($config)) {
-        throw new \Exception("There is no default authentication domain available");
-    }
-
-    return new \Acelle\Library\Domain(
-        $config['domain'],
-        $config['selector'],
-        $config['public_key'],
-        $config['private_key'],
-    );
-}
-
 function dkim_sign(\Swift_Message $message, \Acelle\Library\Domain $domain)
 {
     $privateKey = $domain->getPrivateKey();
@@ -631,6 +615,10 @@ function dkim_sign(\Swift_Message $message, \Acelle\Library\Domain $domain)
 
 function dkim_sign_with_default_domain(\Swift_Message $message)
 {
+    if (empty(config('default_auth_domain'))) {
+        throw new \Exception('"sign_with_default_domain" is set to TRUE but no default domain found');
+    }
+
     $name = config('default_auth_domain.domain');
     $selector = config('default_auth_domain.selector');
     $publicKey = config('default_auth_domain.public_key');

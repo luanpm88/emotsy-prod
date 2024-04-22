@@ -29,6 +29,7 @@ use Cache;
 use Soundasleep\Html2Text;
 use Acelle\Library\Domain;
 use function \Acelle\Helpers\dkim_sign;
+use function \Acelle\Helpers\dkim_sign_with_default_domain;
 
 trait HasTemplate
 {
@@ -265,9 +266,8 @@ trait HasTemplate
             }
         }
 
-        if (config('custom.use_default_auth')) {
-            $domain = get_default_auth_domain();
-            dkim_sign($message, $domain);
+        if (config('custom.sign_with_default_domain')) {
+            $message = dkim_sign_with_default_domain($message);
         }
 
         if ($this->attachments) {

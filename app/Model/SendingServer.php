@@ -896,36 +896,11 @@ class SendingServer extends Model
     /**
      * Send a test email for the sending server.
      */
-    public function sendTestEmail($params)
+    public function sendTestEmail($message)
     {
-        /*
-         * Required keys include
-         *     + from_email
-         *     + to_email
-         *     + subject
-         *     + plain
-         */
-        $message = new ExtendedSwiftMessage();
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
-        $message->setId($msgId);
-        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId); // this header is required for SendGrid API sending server
-        $message->setContentType('text/plain; charset=utf-8');
-        $message->setSubject($params['subject']);
-        $message->setFrom($params['from_email']);
-        $message->setTo($params['to_email']);
-        $message->setReplyTo($params['from_email']);
-        // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->addPart($params['plain'], 'text/plain');
-
-        $this->setupBeforeSend($params['from_email']);
-
-        if (config('custom.use_default_auth')) {
-            $domain = get_default_auth_domain();
-            dkim_sign($message, $domain);
-        }
-
-        $this->send($message);
+        $fromEmail = array_keys($message->getFrom())[0];
+        $this->setupBeforeSend($fromEmail);
+        $result = $this->send($message);
 
         return true;
     }
