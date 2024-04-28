@@ -1175,4 +1175,40 @@ class SubscriberController extends Controller
     {
         return view('subscribers.noList');
     }
+
+    public function addTag(Request $request, $list_uid)
+    {
+        // init
+        $list = MailList::findByUid($request->list_uid);
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $request->uids);
+
+        // Select all items
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $validator = \Acelle\Model\Subscriber::addSubscribersTags($subscribers, $request->tags);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscribers.addTag', [
+                    'list' => $list,
+                    'subscribers' => $subscribers,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscribers.tag_added'),
+            ]);
+        }
+
+        return view('subscribers.addTag', [
+            'list' => $list,
+            'subscribers' => $subscribers,
+        ]);
+    }
 }
