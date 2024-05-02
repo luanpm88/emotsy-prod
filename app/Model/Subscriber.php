@@ -1213,4 +1213,29 @@ class Subscriber extends Model
 
         }
     }
+
+    /**
+     * assgin values.
+     */
+    public static function addSubscribersTags($subscribers, $tags)
+    {
+        // make validator
+        $validator = \Validator::make([
+            'tags' => $tags,
+        ], [
+            'tags' => 'required|array',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // add tags
+        foreach ($subscribers->get() as $subscriber) {
+            $subscriber->addTags($tags);
+        }
+
+        return $validator;
+    }
 }

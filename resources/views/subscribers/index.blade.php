@@ -45,6 +45,14 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li>
+									<a data-control="add-tag" href="#" class="dropdown-item"
+										data-url="{{ action('SubscriberController@addTag', [
+											'list_uid' => $list->uid,
+										]) }}">
+											<span class="material-symbols-rounded">sell</span> {{ trans('messages.subscriber.add_tag') }}
+									</a>
+								</li>
+								<li>
 									<a class="dropdown-item assign-values-button"
 									href="{{ action('SubscriberController@assignValues', $list->uid) }}">
 										<span class="material-symbols-rounded">control_point_duplicate</span> {{ trans('messages.subscriber.assign_values') }}
@@ -203,6 +211,37 @@
 
 		</div>
 	</div>
+
+	<script>
+		$(function() {
+			window.addTagManager = new AddTagManager({
+				actions: $('[data-control="add-tag"]'),
+			});
+		});
+
+		var AddTagManager = class {
+			constructor(options) {
+				this.actions = options.actions;
+				this.popup = new Popup({
+					url: this.actions.attr('data-url'),
+				});
+
+				//
+				this.events();
+			}
+
+			events() {
+				var _this = this;
+				$(document).on('click', '[data-control="add-tag"]', function(e) {
+					e.preventDefault();
+
+					_this.popup.load({
+						data: SubscribersIndex.getList().data(),
+					});
+				});
+			}
+		}
+	</script>
 
 	<script>
         var SubscribersIndex = {
