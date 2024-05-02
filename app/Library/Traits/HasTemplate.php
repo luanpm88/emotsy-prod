@@ -27,8 +27,9 @@ use Acelle\Library\Lockable;
 use Cache;
 use Soundasleep\Html2Text;
 use Acelle\Library\Domain;
-use function \Acelle\Helpers\dkim_sign;
-use function \Acelle\Helpers\dkim_sign_with_default_domain;
+
+use function Acelle\Helpers\dkim_sign;
+use function Acelle\Helpers\dkim_sign_with_default_domain;
 
 trait HasTemplate
 {

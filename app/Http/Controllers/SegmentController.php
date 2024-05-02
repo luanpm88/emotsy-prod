@@ -195,7 +195,7 @@ class SegmentController extends Controller
         $subscribers = $segment->subscribers()
             ->search($request->keyword)
             ->filter($request);
-        
+
 
         if ($request->sort_order) {
             $subscribers->orderBy($request->sort_order, $request->sort_direction);

@@ -11,7 +11,7 @@ use Acelle\Model\SendingDomain;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Library\StringHelper;
 
-use function \Acelle\Helpers\dkim_sign_with_default_domain;
+use function Acelle\Helpers\dkim_sign_with_default_domain;
 
 class SendingServerController extends Controller
 {

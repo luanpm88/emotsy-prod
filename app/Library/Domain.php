@@ -11,7 +11,7 @@ class Domain
     protected $publicKey;
     protected $privateKey;
 
-    function __construct($name, $selector, $publicKey, $privateKey)
+    public function __construct($name, $selector, $publicKey, $privateKey)
     {
         $this->name = $name;
         $this->selector = $selector;
