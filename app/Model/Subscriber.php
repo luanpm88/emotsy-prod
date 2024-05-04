@@ -924,7 +924,8 @@ class Subscriber extends Model
                     $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
 
                     foreach ($listFields as $f) {
-                        $q->orwhere("subscribers.{$f->custom_field_name}", 'LIKE', '%'.$keyword.'%');;
+                        $q->orwhere("subscribers.{$f->custom_field_name}", 'LIKE', '%'.$keyword.'%');
+                        ;
                     }
 
                 });
