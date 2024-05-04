@@ -1214,7 +1214,7 @@ class Subscriber extends Model
     }
 
     /**
-     * assgin values.
+     * assgin tags.
      */
     public static function addSubscribersTags($subscribers, $tags)
     {
