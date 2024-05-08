@@ -240,7 +240,7 @@
 
                                      
 
-                                    <div class="col-12 col-md-12">
+                                    {{-- <div class="col-12 col-md-12">
                                         <div class="content-group-sm mb-2">
                                             <div class="something">
                                                 <div class="d-flex">
@@ -259,7 +259,7 @@
                                             </div>
  
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     <div class="col-12 col-md-12">
                                         <div class="content-group-sm mb-2">

@@ -43,9 +43,9 @@ class HomeController extends Controller
             $campaign = $request->campaign_uid ? \Acelle\Model\Campaign::findByUid($request->campaign_uid) : $customer->campaigns()->done()->first();
 
             return view('emotsy.dashboard', [
-                'sendingCreditsUsed' => $sendingCreditsUsed,
-                'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
-                'sendingCreditsLimit' => $sendingCreditsLimit,
+                // 'sendingCreditsUsed' => $sendingCreditsUsed,
+                // 'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
+                // 'sendingCreditsLimit' => $sendingCreditsLimit,
                 'currentTimezone' => $currentTimezone,
                 'maxLists' => $maxLists,
                 'listsCount' => $listsCount,
