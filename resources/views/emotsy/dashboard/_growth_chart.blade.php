@@ -96,7 +96,7 @@
 
     <div class="mt-4">
         <div class="d-flex align-items-top">
-            <div id="chartsub" class="chart w-40">
+            <div id="chartsub" class="chart w-30">
                 @if (true)
                     <!-- Basic column chart -->
                     <div class="w-100">
@@ -104,7 +104,7 @@
                             <div class="chart-container">
                                 <div id="listPieChart"
                                     class="has-fixed-height"
-                                    style="width: 100%; height:150px;"
+                                    style="width: 100%; height:140px;"
                                 ></div>
                             </div>
                         </div>
@@ -147,11 +147,11 @@
                                     var i = 0;
                                     response.data.forEach(item => {
                                         $('.chart-iters ul').append(`
-                                            <li class="subscrib text-nowrap">
+                                            <li class="subscrib text-nowrap small">
                                                 <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <circle cx="6.22217" cy="6.42929" r="5.63916" fill="`+colors[i]+`"/>
                                                 </svg>  
-                                                `+item.name+` `+item.percent+` % (`+item.value+`)
+                                                `+item.name+` `+item.percent+` (`+item.value+`)
                                             </li>
                                         `);
 

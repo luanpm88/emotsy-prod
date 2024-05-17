@@ -125,7 +125,7 @@
                                             </div>
                                         </div>
                                         <div class="chart-alias" style="text-transform:lowercase;white-space:nowrap;">
-                                            {{ $campaign->readCache('NotOpenCount') }} {{ trans('messages.clicks') }} /<br>
+                                            {{ $campaign->readCache('NotOpenCount') }} {{ trans('messages.opened') }} /<br>
                                             {{ ($campaign->deliveredCount()) }} {{ trans('messages.dashboard.messages') }}
                                         </div>
                                     </div>
@@ -142,7 +142,7 @@
                                             </div> 
                                         </div>
                                         <div class="chart-alias" style="text-transform:lowercase;white-space:nowrap;">
-                                            {{ $campaign->uniqueClickCount() }} {{ trans('messages.dashboard.unique') }} / {{ $campaign->openUniqCount() }} {{ trans('messages.opens') }} 
+                                            {{ $campaign->uniqueClickCount() }} {{ trans('messages.clicks') }} / {{ $campaign->openUniqCount() }} {{ trans('messages.opens') }} 
                                             <br>
                                             {{ ($campaign->deliveredCount()) }} {{ trans('messages.dashboard.messages') }}
                                         </div>

@@ -3227,7 +3227,7 @@
   'use_all_email_verification_servers' => 'Use all email verification servers',
   'use_all_sending_servers' => 'Use all sending servers',
   'use_sending_server_default_value' => 'Use sending server\'s default value',
-  'used_quota' => 'Credits used',
+  'used_quota' => 'Credits',
   'user' => 'User',
   'user.activated' => 'Your account was successfully activated!<br>Please login to continue',
   'user.add_new' => 'Add new User',

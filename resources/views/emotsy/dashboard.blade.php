@@ -223,7 +223,7 @@
                                     </div>
                                 </div>
                                 <div class="progress-new-title pt-5">
-                                    <h2 class="pl-2">Credits used</h2>
+                                    <h2 class="pl-2 text-nowrap">Credits</h2>
                                     <p class="pt-3"> 
                                         <a href="{{ action('SubscriptionController@index') }}" class="btn btn-emotsys text-white">
                                             <span class="material-symbols-rounded me-2">
