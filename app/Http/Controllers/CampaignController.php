@@ -1386,10 +1386,6 @@ class CampaignController extends Controller
                 'value' => $campaign->deliveredCount(),
             ],
             [
-                'name' => trans('messages.failed'),
-                'value' => $campaign->failedCount(),
-            ],
-            [
                 'name' => trans('messages.Open'),
                 'value' => $campaign->openUniqCount(),
             ],
@@ -1398,16 +1394,20 @@ class CampaignController extends Controller
                 'value' => $campaign->uniqueClickCount(),
             ],
             [
+                'name' => trans('messages.failed'),
+                'value' => $campaign->failedCount(),
+            ],
+            [
+                'name' => trans('messages.unsubscribe'),
+                'value' => $campaign->unsubscribeCount(),
+            ],
+            [
                 'name' => trans('messages.Bounce'),
                 'value' => $campaign->bounceCount(),
             ],
             [
                 'name' => trans('messages.report'),
                 'value' => $campaign->feedbackCount(),
-            ],
-            [
-                'name' => trans('messages.unsubscribe'),
-                'value' => $campaign->unsubscribeCount(),
             ],
         ];
 

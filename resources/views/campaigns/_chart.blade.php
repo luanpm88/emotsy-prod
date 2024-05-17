@@ -36,7 +36,7 @@
         </div>
 
         <div class="badge-row">
-            <span class="badge bg-secondaryx bg-color1 badge-big me-2">{{ number_to_percentage($campaign->readCache('NotOpenRate', 0)) }}</span>
+            <span class="badge bg-secondaryx bg-color0 badge-big me-2">{{ number_to_percentage($campaign->readCache('NotOpenRate', 0)) }}</span>
             {{ trans('messages.not_opened') }}
             <span class="fw-600">
                 {{ trans('messages.not_open_per_total', [
@@ -67,7 +67,7 @@
         </div>
 
         <div class="badge-row">
-            <span class="badge bg-secondaryx bg-color3 badge-big me-2">{{ number_to_percentage($campaign->unsubscribeRate()) }}</span>
+            <span class="badge bg-secondaryx bg-color7 badge-big me-2">{{ number_to_percentage($campaign->unsubscribeRate()) }}</span>
             {{ trans('messages.unsubscribed') }}
             <span class="fw-600">
                 {{ trans('messages.count_unsubscribed', [
@@ -135,14 +135,19 @@
                 // based on prepared DOM, initialize echarts instance
                 var myChart = echarts.init(CampaignsChart.chart[0], ECHARTS_THEME);
                 var colors = [
-                    '#76ddc2',
+                    '#888888',
+                    
                     '#08c6e1',
+                    
+                    '#76ddc2',
                     '#10a6bc',
-                    '#ffaa6f',
-                    '#ffd773',
                     '#ff4640',
+                    '#aa2bf3',
+                    
+                    '#ffd773',
                     '#ff8068',
-                    '#00bffd',
+                    
+                    
                     '#aa2bf3',
                 ];
                 
