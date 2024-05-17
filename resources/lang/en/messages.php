@@ -3473,7 +3473,7 @@
   'type_to_search' => 'Type to search',
   'unconfirmed' => 'Unconfirmed',
   'uninstall' => 'Uninstall',
-  'uniq_opens' => 'Uniq opens',
+  'uniq_opens' => 'Unique opens',
   'unknown' => 'Unknown',
   'unlimited' => 'Unlimited',
   'unsubscribe' => 'Unsubscribe',
