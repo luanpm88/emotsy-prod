@@ -288,7 +288,7 @@
                                         </div>                                               
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <div class="progress progress-sm">{{ $campaign->readCache('SubscriberCount', 0) }}
+                                        <div class="progress progress-sm">
                                             <div class="progress-bar bg-primary" style="width: {{ !$campaign->readCache('SubscriberCount', 0) ? '--' : ($campaign->bounceCount()/$campaign->readCache('SubscriberCount', 0))*100 }}%">
                                             </div>
                                         </div> 
