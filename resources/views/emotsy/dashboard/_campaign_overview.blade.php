@@ -19,7 +19,14 @@
                                 <div class="inquery d-flex flex-column  justify-content-between ">
                                     <!-- Example single danger button -->
                                     <div class="btn-group e-type mb-4">  
-                                        <button type="button" class="btn revert btn-outline-emotsy dropdown-toggle" data-bs-toggle="dropdown"  aria-expanded="false">
+                                        <button type="button" class="btn revert btn-outline-emotsy dropdown-toggle xtooltip" data-bs-toggle="dropdown"  aria-expanded="false"
+                                            style="max-width: 310px;
+                                            text-overflow: ellipsis;
+                                            white-space: nowrap;
+                                            overflow: hidden;
+                                            display: block;"
+                                            title="{{ $campaign->name }}"
+                                        >
                                             {{ $campaign->name }}
                                         </button>
                                         <ul class="dropdown-menu">
