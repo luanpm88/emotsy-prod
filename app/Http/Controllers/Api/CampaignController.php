@@ -258,7 +258,7 @@ class CampaignController extends Controller
         }
 
         // authorize
-        if (!$user->can('restart', $campaign)) {
+        if (!$user->can('resume', $campaign)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
