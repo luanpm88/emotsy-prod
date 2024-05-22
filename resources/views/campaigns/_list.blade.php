@@ -109,7 +109,7 @@
                                             <span class="material-symbols-rounded me-2">assessment</span>Performance Report</a></li>
                                     @endif
 
-                                    @if (true || \Gate::allows('resendHighPriority', $campaign))
+                                    @if (\Gate::allows('resendHighPriority', $campaign))
                                         <li>
                                             <a class="dropdown-item list-action-single"
                                             link-method="POST"

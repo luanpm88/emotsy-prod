@@ -142,8 +142,15 @@ class CampaignPolicy
     {
         $customer = $user->customer;
 
-        $can = (null !== \Session::get('orig_customer_id') && \Auth::user()->customer) || $user->admin;
-        $can = $can && $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused());
+        // is admin or log as customer from admin
+        $can = ((null !== \Session::get('orig_customer_id') && \Auth::user()->customer) || $user->admin);
+
+        // same as resume policy
+        $can = $can && $item->customer_id == $customer->id && in_array($item->status, [
+            Campaign::STATUS_PAUSED,
+            Campaign::STATUS_ERROR,
+            Campaign::STATUS_SCHEDULED,
+        ]);
 
         return $can;
     }
