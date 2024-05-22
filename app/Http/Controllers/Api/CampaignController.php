@@ -225,7 +225,7 @@ class CampaignController extends Controller
         }
 
         // @todo
-        $campaign->execute();
+        $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
 
         // statistics
         $campaign = [
@@ -263,7 +263,7 @@ class CampaignController extends Controller
         }
 
         // @todo
-        $campaign->resume();
+        $campaign->resume(ACM_QUEUE_TYPE_BATCH);
 
         // statistics
         $campaign = [

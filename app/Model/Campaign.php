@@ -1278,7 +1278,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         // and queue again
-        $this->execute();
+        $this->execute($force = false, ACM_QUEUE_TYPE_BATCH);
     }
 
     /**
@@ -2813,7 +2813,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             if ($diffInSeconds > $triggerIfExceeds) {
                 $notice = sprintf("Audit: Campaign '%s' is pending (last updated '%s'), force resuming...", $campaign->name, $lastActivityAt->diffForHumans());
                 $campaign->logger()->warning($notice);
-                $campaign->execute($force = true);
+                $campaign->execute($force = true, ACM_QUEUE_TYPE_BATCH);
             } else {
                 // Just fine
                 $campaign->logger()->warning(sprintf("Audit: campaign '%s' was last updated '%s', it is just fine", $campaign->name, $lastActivityAt->diffForHumans()));

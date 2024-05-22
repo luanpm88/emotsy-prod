@@ -675,7 +675,7 @@ class CampaignController extends Controller
 
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
-            $campaign->execute();
+            $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
 
             // Log
             $campaign->log('started', $customer);

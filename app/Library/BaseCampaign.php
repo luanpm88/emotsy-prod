@@ -126,7 +126,7 @@ class BaseCampaign extends Model
 
         $lock->getExclusiveLock(function ($f) {
             foreach (static::scheduled()->get() as $campaign) {
-                $campaign->execute();
+                $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
             }
         }, $timeout, $timeoutCallback);
     }
@@ -149,9 +149,9 @@ class BaseCampaign extends Model
 
     // This method called when user clicks CONFIRM button on the web UI
     // This method is also called by a cronjob which periodically check for campaigns to run
-    public function execute($force = false)
+    public function execute($force = false, string $queue = ACM_QUEUE_TYPE_BATCH)
     {
-        DB::transaction(function () use ($force) {
+        DB::transaction(function () use ($force, $queue) {
             $now = Carbon::now();
 
             if (!is_null($this->run_at) && $this->run_at->gte($now)) {
@@ -173,7 +173,7 @@ class BaseCampaign extends Model
             $this->cancelAndDeleteJobs($jobType = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES);
 
             // Schedule Job initialize
-            $job = (new RunCampaign($this));
+            $job = (new RunCampaign($this, $queue));
 
             // Dispatch using the method provided by TrackJobs
             // to also generate job-monitor record
@@ -191,21 +191,15 @@ class BaseCampaign extends Model
         return $this;
     }
 
-    public function rerun()
-    {
-        $this->logger()->warning('Rerun campaign!');
-        $this->execute();
-    }
-
     // Manually resume via web UI
-    public function resume()
+    public function resume(string $queue)
     {
-        $this->logger()->warning('Resume campaign');
-        $this->execute();
+        $this->logger()->warning('Resume campaign in queue: '.$queue);
+        $this->execute($force = false, $queue);
     }
 
     // Should be called by RunCampaign
-    public function run($check = true)
+    public function run($check = true, string $queue = ACM_QUEUE_TYPE_BATCH)
     {
         if ($check) {
             $this->withLock(function () {
@@ -257,7 +251,7 @@ class BaseCampaign extends Model
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
-            $queue = ACM_QUEUE_TYPE_BATCH,
+            $queue,
             $campaignLoaders,
             function ($batch) use ($campaignId, $className) {
                 // THEN callback of a batch
