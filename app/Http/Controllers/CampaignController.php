@@ -1514,7 +1514,7 @@ class CampaignController extends Controller
             $request->uids = explode(',', $request->uids);
         }
 
-        $items = Campaign::whereIn('uid', $request->uids);
+        $campaigns = Campaign::whereIn('uid', $request->uids)->get();
 
         // Japan + not license
         if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
@@ -1524,17 +1524,17 @@ class CampaignController extends Controller
             ], 400);
         }
 
-        foreach ($items->get() as $item) {
-            if (\Gate::allows('restart', $item)) {
+        foreach ($campaigns as $campaign) {
+            if (\Gate::allows('restart', $campaign)) {
 
                 if ($request->input('queue') == ACM_QUEUE_TYPE_HIGH) {
-                    $item->resume(ACM_QUEUE_TYPE_HIGH);
+                    $campaign->resume(ACM_QUEUE_TYPE_HIGH);
                 } else {
-                    $item->resume(ACM_QUEUE_TYPE_BATCH);
+                    $campaign->resume(ACM_QUEUE_TYPE_BATCH);
                 }
 
                 // Log
-                $item->log('restarted', $customer);
+                $campaign->log('Resumed!', $customer);
             }
         }
 
