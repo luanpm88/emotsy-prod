@@ -24,6 +24,7 @@ use function Acelle\Helpers\xml_to_array;
 
 // List of constants
 define('ACM_QUEUE_TYPE_DEFAULT', 'default');
+define('ACM_QUEUE_TYPE_HIGH', 'high');
 define('ACM_QUEUE_TYPE_BATCH', 'batch');
 define('ACM_QUEUE_TYPE_SINGLE', 'single');
 

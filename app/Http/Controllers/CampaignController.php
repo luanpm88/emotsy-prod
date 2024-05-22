@@ -1526,7 +1526,12 @@ class CampaignController extends Controller
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {
-                $item->resume();
+
+                if ($request->input('queue') == ACM_QUEUE_TYPE_HIGH) {
+                    $item->resume(ACM_QUEUE_TYPE_HIGH);
+                } else {
+                    $item->resume(ACM_QUEUE_TYPE_BATCH);
+                }
 
                 // Log
                 $item->log('restarted', $customer);
