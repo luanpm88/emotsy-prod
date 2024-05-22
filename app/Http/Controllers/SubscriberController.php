@@ -229,6 +229,7 @@ class SubscriberController extends Controller
             // Update field
             $subscriber->updateFields($request->all());
 
+            event(new \Acelle\Events\SubscriptionUpdated($subscriber));
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
             // Log

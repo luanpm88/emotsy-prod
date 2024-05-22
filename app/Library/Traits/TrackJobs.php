@@ -63,7 +63,7 @@ trait TrackJobs
     }
 
     // IMPORTANT: this is normally for jobs that create other jobs
-    public function dispatchWithBatchMonitor(string $jobType, array $jobs, $thenCallback, $catchCallback, $finallyCallback)
+    public function dispatchWithBatchMonitor(string $jobType, string $queue, array $jobs, $thenCallback, $catchCallback, $finallyCallback)
     {
         // IMPORTANT:
         // UPdate QUEUE events in order NOT to set AFTER / FAILING... for job used in a batch (only BEFORE event is OK);
@@ -121,7 +121,7 @@ trait TrackJobs
             if (!is_null($finallyCallback)) {
                 $finallyCallback($batch);
             }
-        })->onQueue('batch')->dispatch();
+        })->onQueue($queue)->dispatch();
 
         $monitor->batch_id = $batch->id;
         $monitor->save();
