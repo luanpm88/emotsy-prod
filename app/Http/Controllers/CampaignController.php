@@ -1507,7 +1507,7 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function restart(Request $request)
+    public function resume(Request $request)
     {
         $customer = $request->user()->customer;
         if (!is_array($request->uids)) {

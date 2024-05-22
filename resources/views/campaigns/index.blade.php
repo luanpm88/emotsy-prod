@@ -43,8 +43,8 @@
                                 <li>
                                     <a class="action dropdown-item"
                                         link-method="POST"
-                                        link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart') }}">
-                                        <span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.restart") }}</a></li>
+                                        link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@resume') }}">
+                                        <span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.resume") }}</a></li>
                                 <li><a class="action dropdown-item"
                                     link-method="POST"
                                     link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause') }}">

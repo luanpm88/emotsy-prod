@@ -144,7 +144,7 @@ class Kernel extends ConsoleKernel
         // Queued import/export/campaign
         // Allow overlapping: max 10 proccess as a given time (if cronjob interval is every minute)
         // Job is killed after timeout
-        $schedule->command('queue:work --queue=default,batch --tries=1 --max-time=180')->everyMinute();
+        $schedule->command('queue:work --queue=default,high,batch,single --tries=1 --max-time=180')->everyMinute();
     }
 
     /**

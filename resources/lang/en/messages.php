@@ -2272,8 +2272,8 @@
   'reset_password_email_subject' => 'Your Password Reset Link',
   'resources_statistics' => 'Resources statistics',
   'resources_statistics_intro' => 'An overview of system resource usage',
-  'restart' => 'Resume',
-  'restart_campaigns_confirm' => 'You\'re about to restart :number campaign(s).',
+  'resume' => 'Resume',
+  'restart_campaigns_confirm' => 'You\'re about to resume :number campaign(s).',
   'retry' => 'Retry',
   'return_back' => 'Go back',
   'return_to_login' => 'Back to login',
@@ -3425,4 +3425,5 @@
   'subscriber.add_tag.wording' => 'Your are about to add tag(s) to <span class="font-weight-semibold">:count</span> contacts',
   'subscriber.add_tag.choose_tags' => 'Choose one or many tags',
   'subscriber.add_tag.loading' => 'Adding tag(s). Please wait...',
+  'campaign.resume.high_priority' => 'Resume (high priority)',
 ) ?>
