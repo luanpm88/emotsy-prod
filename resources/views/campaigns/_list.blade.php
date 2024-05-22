@@ -109,18 +109,6 @@
                                             <span class="material-symbols-rounded me-2">assessment</span>Performance Report</a></li>
                                     @endif
 
-                                    @if (\Gate::allows('resendHighPriority', $campaign))
-                                        <li>
-                                            <a class="dropdown-item list-action-single"
-                                            link-method="POST"
-                                            link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}"
-                                            href="{{ action('CampaignController@resume', [
-                                                'uids' => $campaign->uid,
-                                                'queue' => 'high',
-                                            ]) }}">
-                                            <span class="material-symbols-rounded me-2">restart_alt</span> {{ trans("messages.campaign.resume.high_priority") }}</a></li>
-                                    @endif
-
                                     @if (\Gate::allows('resend', $campaign))
                                         @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
                                             <li><a license-required class="dropdown-item" href="">
@@ -161,6 +149,17 @@
                                                 link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@resume', ["uids" => $campaign->uid]) }}">
                                                 <span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.resume") }}</a></li>
                                         @endif
+                                    @endif
+                                    @if (\Gate::allows('resendHighPriority', $campaign))
+                                        <li>
+                                            <a class="dropdown-item list-action-single"
+                                            link-method="POST"
+                                            link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}"
+                                            href="{{ action('CampaignController@resume', [
+                                                'uids' => $campaign->uid,
+                                                'queue' => 'high',
+                                            ]) }}">
+                                            <span class="material-symbols-rounded me-2">restart_alt</span> {{ trans("messages.campaign.resume.high_priority") }}</a></li>
                                     @endif
                                     @if (\Gate::allows('copy', $campaign))
                                         <li>
