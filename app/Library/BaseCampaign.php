@@ -177,7 +177,7 @@ class BaseCampaign extends Model
 
             // Dispatch using the method provided by TrackJobs
             // to also generate job-monitor record
-            $this->dispatchWithMonitor($job, $jobType = static::JOB_TYPE_RUN_CAMPAIGN);
+            $this->dispatchWithMonitor($job, $jobType = static::JOB_TYPE_RUN_CAMPAIGN, $queue);
 
             // After this job is dispatched successfully, set status to "queued"
             $this->setQueued();

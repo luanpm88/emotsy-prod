@@ -20,7 +20,7 @@ trait TrackJobs
 
     // DO NOT USE DB TRANSACTION
     // OTHERWISE BATCH_ID OR JOB_ID MAY NOT BE AVAILABLE
-    public function dispatchWithMonitor($job, string $jobType = null)
+    public function dispatchWithMonitor($job, string $jobType = null, $queue = ACM_QUEUE_TYPE_DEFAULT)
     {
         // A job TYPE is helpful when we need to retrieve a list of jobs of a given type.
         // For example, get all verification jobs of a list
@@ -43,6 +43,8 @@ trait TrackJobs
         // Destroy closure attributes which cannot be serialized
         // Otherwise Laravel will throw an exception when dispatching
         $job->eventAfterDispatched = null; // Destroy the closure
+
+        $job->onQueue($queue);
 
         // Actually dispatch
         $dispatchedJobId = app(Dispatcher::class)->dispatch($job);
