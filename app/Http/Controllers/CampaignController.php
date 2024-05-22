@@ -1525,7 +1525,7 @@ class CampaignController extends Controller
         }
 
         foreach ($campaigns as $campaign) {
-            if (\Gate::allows('restart', $campaign)) {
+            if (\Gate::allows('resume', $campaign)) {
 
                 if ($request->input('queue') == ACM_QUEUE_TYPE_HIGH) {
                     $campaign->resume(ACM_QUEUE_TYPE_HIGH);
