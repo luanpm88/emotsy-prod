@@ -228,7 +228,7 @@ class BaseCampaign extends Model
         // So there will be 200 x 2 = 400 jobs in queue (in case of sending speed limit)
         // Be careful before increase this value, otherwise, jobs release/retry may prevents
         //     other campaigns from sending
-        $perPage = 50;
+        $perPage = 100;
         $maxPageToLoad = 2;
         $subscribersQuery = $this->subscribersToSend();
 
@@ -253,7 +253,7 @@ class BaseCampaign extends Model
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
             $queue,
             $campaignLoaders,
-            function ($batch) use ($campaignId, $className) {
+            function ($batch) use ($campaignId, $className, $queue) {
                 // THEN callback of a batch
                 //
                 // Important:
@@ -276,7 +276,7 @@ class BaseCampaign extends Model
                     // Run over and over again until there is no subscribers left to send
                     // Because each LoadCampaign jobs only load a fixed number of subscribers
                     $campaign->logger()->warning('Load another batch of the remaining '.$count);
-                    $campaign->run($check = false); // Campaign is already in 'sending' status, set $check = false to bypass locking
+                    $campaign->run($check = false, $queue); // Campaign is already in 'sending' status, set $check = false to bypass locking
                 } else {
                     $campaign->logger()->warning('No contact left, campaign finishes successfully!');
                     $campaign->setDone();
