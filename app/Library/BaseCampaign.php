@@ -208,6 +208,8 @@ class BaseCampaign extends Model
                 }
                 $this->setSending();
             });
+        } else {
+            $this->logger()->info('Run without status check');
         }
 
 
@@ -249,7 +251,7 @@ class BaseCampaign extends Model
         $className = get_called_class(); // Something like App\Model\Campaign (late binding, inherited class name)
 
         // Dispatch it with a batch monitor
-        $this->dispatchWithBatchMonitor(
+        $monitor = $this->dispatchWithBatchMonitor(
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
             $queue,
             $campaignLoaders,
@@ -306,6 +308,9 @@ class BaseCampaign extends Model
                 $campaign->updateCache();
             }
         );
+
+        $this->logger()->info('Batch dispatched, JobMonitor #'.$monitor->id);
+
 
         /**** MORE NOTES ****/
         //
