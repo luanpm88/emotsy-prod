@@ -85,7 +85,7 @@ class CampaignPolicy
         ]);
     }
 
-    public function restart(User $user, Campaign $item)
+    public function resume(User $user, Campaign $item)
     {
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
@@ -136,5 +136,15 @@ class CampaignPolicy
             Campaign::STATUS_DONE,
             Campaign::STATUS_SCHEDULED,
         ]);
+    }
+
+    public function resendHighPriority(User $user, Campaign $item)
+    {
+        $customer = $user->customer;
+
+        $can = (null !== \Session::get('orig_customer_id') && \Auth::user()->customer) || $user->admin;
+        $can = $can && $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused());
+
+        return $can;
     }
 }

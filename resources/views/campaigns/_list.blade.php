@@ -99,7 +99,7 @@
                             >
                                 <i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
                         @endif
-                        @if (\Gate::allows('delete', $campaign) || \Gate::allows('pause', $campaign) || \Gate::allows('restart', $campaign))
+                        @if (\Gate::allows('delete', $campaign) || \Gate::allows('pause', $campaign) || \Gate::allows('resume', $campaign))
                             <div class="btn-group ms-1" role="group">
                                 <button id="btnGroupDrop1" role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
@@ -107,6 +107,18 @@
                                         <li><a class="dropdown-item"
                                             href="{{ action('CampaignController@debug', ["uid" => $campaign->uid]) }}">
                                             <span class="material-symbols-rounded me-2">assessment</span>Performance Report</a></li>
+                                    @endif
+
+                                    @if (true || \Gate::allows('resendHighPriority', $campaign))
+                                        <li>
+                                            <a class="dropdown-item list-action-single"
+                                            link-method="POST"
+                                            link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}"
+                                            href="{{ action('CampaignController@resume', [
+                                                'uids' => $campaign->uid,
+                                                'queue' => 'high',
+                                            ]) }}">
+                                            <span class="material-symbols-rounded me-2">restart_alt</span> {{ trans("messages.campaign.resume.high_priority") }}</a></li>
                                     @endif
 
                                     @if (\Gate::allows('resend', $campaign))
@@ -139,15 +151,15 @@
                                             href="{{ action('CampaignController@pause', ["uids" => $campaign->uid]) }}">
                                             <span class="material-symbols-rounded me-2">motion_photos_pause</span>{{ trans("messages.pause") }}</a></li>
                                     @endif
-                                    @if (\Gate::allows('restart', $campaign))
+                                    @if (\Gate::allows('resume', $campaign))
                                         @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
                                             <li><a license-required class="dropdown-item" href="">
-                                                <span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.restart") }}</a></li>
+                                                <span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.resume") }}</a></li>
                                         @else
                                             <li><a class="dropdown-item list-action-single"
                                                 link-method="POST"
-                                                link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
-                                                <span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.restart") }}</a></li>
+                                                link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@resume', ["uids" => $campaign->uid]) }}">
+                                                <span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.resume") }}</a></li>
                                         @endif
                                     @endif
                                     @if (\Gate::allows('copy', $campaign))
@@ -179,7 +191,6 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $campaigns])
-
 
     <script>
         var CampaignsList = {
