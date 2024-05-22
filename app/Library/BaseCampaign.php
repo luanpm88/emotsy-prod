@@ -257,6 +257,7 @@ class BaseCampaign extends Model
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
+            $queue = ACM_QUEUE_TYPE_BATCH,
             $campaignLoaders,
             function ($batch) use ($campaignId, $className) {
                 // THEN callback of a batch

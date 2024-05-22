@@ -251,9 +251,6 @@ class SendMessage implements ShouldQueue
                 $info['total_time'] = ($timeSinceCampaignStart == 0) ? 1 : $timeSinceCampaignStart;
                 $info['messages_sent_per_second'] = $info['send_message_count'] / $info['total_time'];
 
-                // Info
-                $info['delay_note'] = null;
-
                 return $info;
             });
         } catch (RateLimitExceeded $ex) {

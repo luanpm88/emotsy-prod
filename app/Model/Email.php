@@ -205,7 +205,7 @@ class Email extends Model implements HasTemplateInterface
             $triggerId
         );
 
-        $job->onQueue('batch');
+        $job->onQueue(ACM_QUEUE_TYPE_SINGLE);
 
         safe_dispatch($job);
     }
