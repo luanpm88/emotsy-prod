@@ -28,7 +28,7 @@ class DynamicRateTracker
     protected $limits;
 
     protected $seperator = ':';
-    private $hostname;
+    protected $hostname;
 
     public function __construct(string $resourceKey, $limits = []) // RateLimit class
     {
@@ -153,7 +153,7 @@ class DynamicRateTracker
                 $reservedUntil = (int)Cache::get($this->resourceKey);
                 $until = new Carbon($reservedUntil);
 
-                throw new RateLimitReservedByAnotherFileSystem("Currently reserved by another process/filesystem (current host: {$this->hostname}): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} | {$this->getLimitsDescription()}. Will be availalbe for booking in {$until->diffForHumans()}, at {$until->format('H:i T')}");
+                throw new RateLimitReservedByAnotherFileSystem("Currently reserved by another process/filesystem (current host: {$this->hostname}): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Will be available for booking in {$until->diffForHumans()}, at {$until->format('H:i T')}");
             }
 
             if (!$count) {

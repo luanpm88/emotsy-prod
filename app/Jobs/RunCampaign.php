@@ -62,9 +62,9 @@ class RunCampaign implements ShouldQueue
 
             $this->campaign->logger()->info("Launch campaign from job: session {$sessionId}");
 
-            $this->campaign->logger()->warning('Pre: set up campaign before send');
+            $this->campaign->logger()->warning('Set up campaign before sending');
             $this->campaign->prepare();
-            $this->campaign->logger()->warning('After: set up campaign after send');
+            $this->campaign->logger()->warning('Done setting up campaign before sending');
             $this->campaign->run($check = true, $this->campaignQueue);
 
             // after executing campaign.run(), this job just finishes
