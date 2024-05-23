@@ -105,7 +105,7 @@ class DynamicRateTracker
                 return true;
             } else {
                 // if locally reserved but no credits left
-                throw new RateLimitExceeded("Calculated rate limit exceeded (still in reserved period by host {$this->hostname}, but no credits left): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} | {$this->getLimitsDescription()}. Will be availalbe for booking in {$until->diffForHumans()}, at {$until->toString()}");
+                throw new RateLimitExceeded("Calculated rate limit exceeded, currently reserved by this host {$this->hostname}, but no credits left: {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Reserved until {$until->toString()}, {$until->diffForHumans()}");
 
             }
         } else {
