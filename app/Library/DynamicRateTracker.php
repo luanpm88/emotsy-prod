@@ -105,7 +105,7 @@ class DynamicRateTracker
                 return true;
             } else {
                 // if locally reserved but no credits left
-                throw new RateLimitExceeded("Calculated rate limit exceeded, currently reserved by this host {$this->hostname}, but no credits left: {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Reserved until {$until->toString()}, {$until->diffForHumans()}");
+                throw new RateLimitExceeded("Calculated rate limit exceeded. Currently reserved by this host {$this->hostname}, but no credits left: {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Reserved until {$until->format('H:i T')}, {$until->diffForHumans()}");
 
             }
         } else {
@@ -153,7 +153,7 @@ class DynamicRateTracker
                 $reservedUntil = (int)Cache::get($this->resourceKey);
                 $until = new Carbon($reservedUntil);
 
-                throw new RateLimitReservedByAnotherFileSystem("Currently reserved by another process/filesystem (current host: {$this->hostname}): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} | {$this->getLimitsDescription()}. Will be availalbe for booking in {$until->diffForHumans()}, at {$until->toString()}");
+                throw new RateLimitReservedByAnotherFileSystem("Currently reserved by another process/filesystem (current host: {$this->hostname}): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} | {$this->getLimitsDescription()}. Will be availalbe for booking in {$until->diffForHumans()}, at {$until->format('H:i T')}");
             }
 
             if (!$count) {

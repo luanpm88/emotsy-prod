@@ -256,11 +256,13 @@ class SendMessage implements ShouldQueue
             });
         } catch (RateLimitReservedByAnotherFileSystem $ex) {
 
-            // Simply finish this batch LoadCampaign/SendMessage batch
-            // and it will dispatch another LoadCampaign/SendMessage to the queue
-            // hopefully it will be executed by the filesystem which currently owns the reservation
+            // This is for Dynamic Rate Limit tracking only
             $logger->info(sprintf("Exit sending process on this filesystem for [%s] due to rate limit: %s", $email, $ex->getMessage()));
             $plogger->warning(sprintf("Exit sending process on this filesystem for [%s] due to rate limit: %s", $email, $ex->getMessage()));
+
+            // Simply release the job back to queue, hopefully it will picked up again by a process of the filesystem that owns the reservation.
+            sleep(3);
+            $this->release();
 
             return;
         } catch (RateLimitExceeded $ex) {
