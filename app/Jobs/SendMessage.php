@@ -253,6 +253,15 @@ class SendMessage implements ShouldQueue
 
                 return $info;
             });
+        } catch (RateLimitReservedByAnotherFileSystem $ex) {
+
+            // Simply finish this batch LoadCampaign/SendMessage batch
+            // and it will dispatch another LoadCampaign/SendMessage to the queue
+            // hopefully it will be executed by the filesystem which currently owns the reservation
+            $logger->info(sprintf("Exit sending process on this filesystem for [%s] due to rate limit: %s", $email, $ex->getMessage()));
+            $plogger->warning(sprintf("Exit sending process on this filesystem for [%s] due to rate limit: %s", $email, $ex->getMessage()));
+
+            return;
         } catch (RateLimitExceeded $ex) {
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
@@ -292,6 +301,7 @@ class SendMessage implements ShouldQueue
                 });
 
             } else {
+                // Single queue, no batch
                 $logger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
                 $plogger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
                 $this->release(600); // should be only 60 seconds
