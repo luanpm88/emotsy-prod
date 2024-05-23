@@ -14,6 +14,7 @@ use Acelle\Model\Subscriber;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscription;
 use Acelle\Library\Exception\RateLimitExceeded;
+use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
 use Acelle\Library\Exception\OutOfCredits;
 use Exception;
 use Throwable;
