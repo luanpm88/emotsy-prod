@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Campaign;
 use Acelle\Library\Exception\RateLimitExceeded;
+use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
 use Exception;
 use Carbon\Carbon;
 
@@ -89,6 +90,12 @@ class Delay implements ShouldQueue
             $this->campaign->logger()->warning('RESUME Campaign');
 
             return;
+
+        } catch (RateLimitReservedByAnotherFileSystem $ex) {
+
+            // simply release the job, waiting for a process from a filesystem that owns the reservation to check it
+            $this->campaign->logger()->warning('Release Delay job, waiting for process of the filesystem that owns the credit reservation');
+            $this->release();
 
         } catch (RateLimitExceeded $ex) {
 
