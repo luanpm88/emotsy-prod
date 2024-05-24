@@ -22,14 +22,8 @@
                             {{ $subscriber->email }}
                         </a>
                         <br />
-                        <span data-popup="tooltip" title="{{ 
-                            $subscriber->bounced_message ?:
-                            $subscriber->feedback_message ?:
-                            $subscriber->failed_message ?:
-                            $subscriber->skipped_message ?:
-                            $subscriber->new_message
-                        }}" class="label label-flat bg-{{ $subscriber->delivery_status }} kq_search">{{ trans('messages.tracking_log_status_' . $subscriber->delivery_status) }}
-                        </span>
+                        <span class="label label-flat bg-{{ $subscriber->status }}">{{ trans('messages.' . $subscriber->status) }}</span>
+                        <span class="label label-flat bg-{{ $subscriber->verification_status }}">{{ trans('messages.email_verification_result_' . $subscriber->verification_status) }}</span>
                     </div>
                 </td>
 
