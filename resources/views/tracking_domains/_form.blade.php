@@ -11,7 +11,9 @@
 				'label' => '',
 				'value' => $domain->scheme,
 				'help_class' => 'tracking_domain',
-				'options' => [
+				'options' => Acelle\Model\Setting::isYes('tracking_domain.enable_https') == false ? [
+					['text' => 'HTTP', 'value' => 'http'],
+				] : [
 					['text' => 'HTTP', 'value' => 'http'],
 					['text' => 'HTTPS', 'value' => 'https'],
 				],
