@@ -3426,4 +3426,6 @@
   'subscriber.add_tag.choose_tags' => 'Choose one or many tags',
   'subscriber.add_tag.loading' => 'Adding tag(s). Please wait...',
   'campaign.resume.high_priority' => 'Resume (high priority)',
+  'segment.copy' => 'Copy <span class="fw-600">:name</span> segment',
+  'segment.copied' => 'Segment was successfully copied',
 ) ?>

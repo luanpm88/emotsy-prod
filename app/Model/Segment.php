@@ -483,4 +483,23 @@ class Segment extends Model
             $condition->save();
         }
     }
+
+    public function copy($name)
+    {
+        $copySegment = new self();
+        $copySegment->mail_list_id = $this->mail_list_id;
+        $copySegment->name = $name;
+        $copySegment->matching = $this->matching;
+        $copySegment->save();
+
+        // Fields
+        foreach ($this->segmentConditions as $condition) {
+            $condition = $condition->replicate();
+            $condition->uid = uniqid();
+            $condition->segment_id = $copySegment->id;
+            $condition->save();
+        }
+
+        return $copySegment;
+    }
 }

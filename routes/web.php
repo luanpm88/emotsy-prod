@@ -465,6 +465,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/export/{job_uid}/cancel', 'SubscriberController@cancelExport');
 
     // Segment
+    Route::match(['get', 'post'], 'segments/{uid}/copy', 'SegmentController@copy');
     Route::get('segments/no-list', 'SegmentController@noList');
     Route::get('segments/condition-value-control', 'SegmentController@conditionValueControl');
     Route::get('segments/select_box', 'SegmentController@selectBox');
