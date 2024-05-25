@@ -486,10 +486,9 @@ class Segment extends Model
 
     public function copy($name)
     {
-        $copySegment = new self();
-        $copySegment->mail_list_id = $this->mail_list_id;
+        $copySegment = $this->replicate();
+        $copySegment->uid = uniqid();
         $copySegment->name = $name;
-        $copySegment->matching = $this->matching;
         $copySegment->save();
 
         // Fields
