@@ -1487,6 +1487,7 @@ class CampaignController extends Controller
         foreach ($campaigns->get() as $campaign) {
             if (\Gate::allows('pause', $campaign)) {
                 $campaign->pause();
+                $campaign->logger()->warning('Campaign was manually paused'); // write to Apahe log, not cli log
 
                 // Log
                 $campaign->log('paused', $customer);

@@ -225,6 +225,13 @@ class BaseCampaign extends Model
         // Clean up DELAY flag
         $this->setDelayFlag(null);
 
+        $this->debug(function ($info) {
+            $info['delay_note'] = null;
+
+            // Must return;
+            return $info;
+        });
+
         // Option 1: load multiple Campaign loader jobs
         // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
         // So there will be 200 x 2 = 400 jobs in queue (in case of sending speed limit)
