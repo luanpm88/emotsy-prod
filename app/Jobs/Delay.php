@@ -92,14 +92,9 @@ class Delay implements ShouldQueue
             return;
 
         } catch (RateLimitReservedByAnotherFileSystem $ex) {
-            $until = $ex->getReservedUntil();
-
             // simply release the job, waiting for a process from a filesystem that owns the reservation to check it
-            // Notice that $until value is different from $this->wait
-            // $until value is only available with DynamicRateTracker in a distributed deployment
-            $this->campaign->logger()->warning('Release Delay job, limit reserved by another filesystem, wait until '.$until->diffForHumans());
-
-            $this->release($until);
+            $this->campaign->logger()->warning('Release Delay job, wait for a process from the filesystem that owns the reservation to try it again');
+            $this->release(1);
 
         } catch (RateLimitExceeded $ex) {
 
