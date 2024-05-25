@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Acelle\Library\DynamicRateTracker;
 use Acelle\Library\RateLimit;
 use Acelle\Library\Exception\RateLimitExceeded;
+use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
 use function \Acelle\Helpers\execute_with_limits;
 
 class DynamicRateTrackerTest extends TestCase
@@ -195,5 +196,16 @@ class DynamicRateTrackerTest extends TestCase
         $tracker->clearReservation();
 
         $this->assertFalse($tracker->isReservedByOthers(now()));
+    }
+
+    function test_get_reserved_until_value_from_reserved_by_another_exception()
+    {
+        $until = now()->add('1 hour');
+
+        try {
+            throw new RateLimitReservedByAnotherFileSystem('Hello', $code = 0, $previous = null, $until);
+        } catch (RateLimitReservedByAnotherFileSystem $ex) {
+            $this->assertTrue($until->eq($ex->getReservedUntil()));
+        }
     }
 }

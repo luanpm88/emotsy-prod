@@ -2,7 +2,7 @@
 
 namespace Acelle\Library;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Exception;
 use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
@@ -153,7 +153,12 @@ class DynamicRateTracker
                 $reservedUntil = (int)Cache::get($this->resourceKey);
                 $until = new Carbon($reservedUntil);
 
-                throw new RateLimitReservedByAnotherFileSystem("Currently reserved by another process/filesystem (current host: {$this->hostname}): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Will be available for booking in {$until->diffForHumans()}, at {$until->format('H:i T')}");
+                throw new RateLimitReservedByAnotherFileSystem(
+                    "Currently reserved by another process/filesystem (current host: {$this->hostname}): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Will be available for booking in {$until->diffForHumans()}, at {$until->format('H:i T')}",
+                    $code = 0,
+                    $previous = null,
+                    $until // pass this additional parameter to Exception
+                );
             }
 
             if (!$count) {
