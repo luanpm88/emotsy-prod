@@ -486,12 +486,13 @@ class Segment extends Model
 
     public function copy($name)
     {
+        // copy segment
         $copySegment = $this->replicate();
         $copySegment->uid = uniqid();
         $copySegment->name = $name;
         $copySegment->save();
 
-        // Fields
+        // copy all segment conditions
         foreach ($this->segmentConditions as $condition) {
             $condition = $condition->replicate();
             $condition->uid = uniqid();
