@@ -255,14 +255,12 @@ class SendMessage implements ShouldQueue
                 return $info;
             });
         } catch (RateLimitReservedByAnotherFileSystem $ex) {
-            $until = $ex->getReservedUntil();
-
             // This is for Dynamic Rate Limit tracking only
-            $logger->info(sprintf("Delay [%s] due to rate limit RESERVATION: %s. Release/delay this job until %s", $email, $ex->getMessage(), $until->diffForHumans()));
-            $plogger->info(sprintf("Delay [%s] due to rate limit RESERVATION: %s. Release/delay this job until %s", $email, $ex->getMessage(), $until->diffForHumans()));
+            $logger->info(sprintf("Delay [%s] due to rate limit RESERVATION: %s. Release, waiting for a process from the filesystem that owns the reservation", $email, $ex->getMessage()));
+            $plogger->info(sprintf("Delay [%s] due to rate limit RESERVATION: %s. Release, waiting for a process from the filesystem that owns the reservation", $email, $ex->getMessage()));
 
             // Simply release the job back to queue, hopefully it will picked up again by a process of the filesystem that owns the reservation.
-            $this->release($until);
+            $this->release(1);
 
             return;
         } catch (RateLimitExceeded $ex) {
