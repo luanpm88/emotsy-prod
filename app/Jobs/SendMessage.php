@@ -260,6 +260,7 @@ class SendMessage implements ShouldQueue
             $plogger->info(sprintf("Delay [%s] due to rate limit RESERVATION: %s. Release, waiting for a process from the filesystem that owns the reservation", $email, $ex->getMessage()));
 
             // Simply release the job back to queue, hopefully it will picked up again by a process of the filesystem that owns the reservation.
+            // So "attempts" will be >0
             $this->release(1);
 
             return;
