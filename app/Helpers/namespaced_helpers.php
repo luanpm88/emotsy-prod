@@ -587,3 +587,21 @@ function dkim_sign_with_default_domain(\Swift_Message $message)
     $domain = new \Acelle\Library\Domain($name, $selector, $publicKey, $privateKey);
     return \Acelle\Helpers\dkim_sign($message, $domain);
 }
+
+function generate_supervisor_config($templateFile)
+{
+    // Replace the templates with actual plugin names
+    $loader = new \Twig\Loader\FilesystemLoader(base_path('templates/'));
+    // $file = 'supervisor_master_config.tmpl';
+    $twig = new \Twig\Environment($loader);
+
+    $phpBinPath = \Acelle\Model\Setting::get('php_bin_path');
+    $artisanPath = join_paths(base_path(), 'artisan');
+    $cronjob  = "{$phpBinPath} -q {$artisanPath}";
+
+    $params = [
+        'php_artisan' => $cronjob, // The only parameter
+    ];
+
+    echo $twig->render($templateFile, $params);
+}
