@@ -73,6 +73,10 @@ class AFormPopup {
                     es[0].classList.add("acelle-popup-loaded");
                 }
             }
+
+            if (typeof(event.data.redirect) != 'undefined') {
+                window.location = event.data.redirect;
+            }
         });
 
         document.getElementById('Popup'+_this.id+'Close').addEventListener("click", function() {

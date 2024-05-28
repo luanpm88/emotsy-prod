@@ -26,6 +26,8 @@
                 loaded: true
             }, '*');
         });
+
+        
     });
 
     var FormPopupContent = {
@@ -148,6 +150,26 @@
             return $('#' + this.formId);
         },
 
+        getReturnUrl: function() {
+            var link = this.getSubmitButton().closest('a');
+
+            if (!link.length) {
+                return false;
+            }
+
+            var href = link.attr('href');
+
+            if (!href) {
+                return false;
+            }
+
+            return href;
+        },
+
+        getSubmitButton: function() {
+            return this.getForm().find('[type="submit"]');
+        },
+
         wrapForm: function() {
             $( "[builder-wrapper]" ).wrap( '<form style="padding:0;margin:0" id="'+this.formId+'" action="'+this.formUrl+'"></form>' );
             this.getForm().prepend('{{ csrf_field() }}');
@@ -161,6 +183,7 @@
 
         save: function() {
             var _this = this;
+            var returnUrl = null;
 
             if (!_this.getForm().valid()) {
                 _this.autoHeight();
@@ -176,6 +199,14 @@
                 globalError: false
             })
             .done(function(res) {
+
+                if (_this.getReturnUrl()) {
+                    parent.postMessage({
+                        redirect: _this.getReturnUrl()
+                    }, '*');
+                    return;
+                }
+
                 _this.showSuccessMessage();
                 removeMaskLoading();
             })
