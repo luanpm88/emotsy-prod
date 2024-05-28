@@ -153,15 +153,6 @@ trait HasTemplate
     {
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
 
-        if ($this->isStdClassSubscriber($subscriber)) {
-            $unsubscribeUrl = null;
-        } else {
-            $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
-            if ($this->trackingDomain) {
-                $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
-            }
-        }
-
         $headers = array(
             'X-Acelle-Campaign-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
@@ -171,14 +162,25 @@ trait HasTemplate
             'Precedence' => 'bulk',
         );
 
-        // One-click unsubscribe header
-        // Reference: https://aws.amazon.com/fr/blogs/messaging-and-targeting/using-one-click-unsubscribe-with-amazon-ses
-        if ($unsubscribeUrl) {
-            $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
-            $headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
-        } else {
-            $sampleUnsubscribeUrl = route('campaign_message', ['message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
-            $headers['List-Unsubscribe'] = "<{$sampleUnsubscribeUrl}>";
+        if (Setting::isYes('email.enable_one_click_unsubscribe_headers')) {
+            if ($this->isStdClassSubscriber($subscriber)) {
+                $unsubscribeUrl = null;
+            } else {
+                $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
+                if ($this->trackingDomain) {
+                    $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+                }
+            }
+
+            // One-click unsubscribe header
+            // Reference: https://aws.amazon.com/fr/blogs/messaging-and-targeting/using-one-click-unsubscribe-with-amazon-ses
+            if ($unsubscribeUrl) {
+                $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+                $headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+            } else {
+                $sampleUnsubscribeUrl = route('campaign_message', ['message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
+                $headers['List-Unsubscribe'] = "<{$sampleUnsubscribeUrl}>";
+            }
         }
 
         return $headers;
