@@ -325,6 +325,29 @@
             styleManager: null,
             displayOption: null,
             settings: null,
+            popup: null,
+            previewPopup: null,
+
+            init: function() {
+                var _this = this;
+
+                this.popup = new AFormPopup({
+                    url: '{{ action('FormController@frontendContent', [
+                        'uid' => $form->uid,
+                    ]) }}',
+                    overlayOpacity: this.settings.overlay_opacity/100
+                });
+                this.popup.init();
+
+                this.previewPopup = new AFormPopup({
+                    url: '{{ action('FormController@frontendContent', [
+                        'uid' => $form->uid,
+                        'preview' => true,
+                    ]) }}',
+                    overlayOpacity: _this.settings.overlay_opacity/100
+                });
+                this.previewPopup.init();
+            },
 
             // STYLE MANAGER
             getSettingsManager: function() {
@@ -504,14 +527,7 @@
             },
 
             openPopup: function() {
-                popup = new AFormPopup({
-                    url: '{{ action('FormController@frontendContent', [
-                        'uid' => $form->uid,
-                    ]) }}',
-                    overlayOpacity: this.settings.overlay_opacity/100
-                });
-
-                popup.load();
+                this.popup.load();
             },
 
             preview: function() {
@@ -528,15 +544,7 @@
                     }
                 })
                 .done(function(res) {
-                    popup = new AFormPopup({
-                        url: '{{ action('FormController@frontendContent', [
-                            'uid' => $form->uid,
-                            'preview' => true,
-                        ]) }}',
-                        overlayOpacity: _this.settings.overlay_opacity/100
-                    });
-
-                    popup.load();
+                    _this.previewPopup.load();
                 });
                 
             },
@@ -622,6 +630,7 @@
         }
         
         $(function() {
+            FormsEdit.init();
             FormsEdit.getSettingsManager();
             FormsEdit.getDisplayManager();
             
