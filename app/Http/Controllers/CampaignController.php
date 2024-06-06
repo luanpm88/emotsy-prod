@@ -1090,6 +1090,11 @@ class CampaignController extends Controller
      */
     public function click(Request $request)
     {
+        if (ClickLog::isUrlBlacklisted($request->url)) {
+            return response('Malicious URL detected', 403)
+                  ->header('Content-Type', 'text/plain');
+        }
+
         list($url, $log) = ClickLog::createFromRequest($request);
 
         if ($log && $log->trackingLog && $log->trackingLog->campaign) {

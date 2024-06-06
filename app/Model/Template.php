@@ -749,7 +749,7 @@ class Template extends Model
                 // url is with a host like "http://" or "//"
                 if (!is_null($urlTransform)) {
                     // Make trackable links like. For example:
-                    // StringHelper::makeTrackableLink('http://google.com', 'MSGID')
+                    // call to StringHelper::makeTrackableLink('http://google.com', 'MSGID')
                     // ==> https://localhost/p/aHR0cDovL2dvb2dsZS5jb20/click/TVNHSUQ
                     $url = $urlTransform($url, $element);
                 }

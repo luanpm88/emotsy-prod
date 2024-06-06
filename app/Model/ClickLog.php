@@ -84,6 +84,18 @@ class ClickLog extends Model
         return [$url, $log];
     }
 
+
+    public static function isUrlBlacklisted($url)
+    {
+        $path = base_path('blacklisted_click_url');
+        $blacklist = preg_split('/[\r\n]+/', trim(file_get_contents($path)));
+
+        print_r($url);
+        print_r($blacklist);
+
+        return in_array($url, $blacklist);
+    }
+
     public function createRelatedOpenLogIfNotExist()
     {
         $openLog = OpenLog::firstOrNew(['message_id' => $this->message_id]);
