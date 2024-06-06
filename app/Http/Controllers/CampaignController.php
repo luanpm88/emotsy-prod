@@ -1091,7 +1091,7 @@ class CampaignController extends Controller
     public function click(Request $request)
     {
         if (ClickLog::isUrlBlacklisted($request->url)) {
-            return response('Malicious URL detected', 403)
+            return response('SendMails has detected that this URL is malicious and has dropped it.', 403)
                   ->header('Content-Type', 'text/plain');
         }
 
