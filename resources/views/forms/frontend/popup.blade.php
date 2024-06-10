@@ -29,6 +29,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     @elseif ($form->getMetadata('display') == 'first_visit')
         popup.loadOneTime();
     @else
-        popup.show();
+        setTimeout(function() {
+            popup.show();
+        }, 500);
     @endif
 });
