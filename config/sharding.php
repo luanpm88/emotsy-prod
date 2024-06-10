@@ -1,14 +1,14 @@
 <?php
 
 return [
-	'server-jp-1' => [
+    'server-jp-1' => [
         'driver' => 'mysql',
         'url' => '',
-        'host' => '0.0.0.1',
+        'host' => '127.0.0.1',
         'port' => 3306,
-        'database' => 'userdb1',
-        'username' => 'user',
-        'password' => 'password!',
+        'database' => 'userdb',
+        'username' => 'root',
+        'password' => 'root',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -27,9 +27,9 @@ return [
         'url' => '',
         'host' => '0.0.0.2',
         'port' => 3306,
-        'database' => 'userdb2',
-        'username' => 'user',
-        'password' => 'password!',
+        'database' => 'userdb',
+        'username' => 'root',
+        'password' => 'root',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
