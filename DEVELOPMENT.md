@@ -52,7 +52,7 @@ stderr_logfile=/var/log/supervisor/error
 
 [program:app-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=/usr/bin/php -q /home/worker/app/artisan queue:work --queue=batch --tries=1 --max-time=180
+command=/usr/bin/php -q /home/worker/app/artisan queue:work --queue=high,batch,single --tries=1 --max-time=180
 autostart=true
 autorestart=true
 user=sendmails

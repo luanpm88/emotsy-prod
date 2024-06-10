@@ -20,16 +20,6 @@ class HomeController extends Controller
         // Last month
         $customer = $request->user()->customer;
 
-        if (config('app.saas')) {
-            $sendingCreditsUsed = $customer->getCurrentActiveGeneralSubscription()->getSendEmailRateTracker()->getCreditsUsed(now()->subtract('30 days'));
-            $sendingCreditsLimit = $customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send');
-            $sendingCreditsUsedPercentage = $customer->getCurrentActiveGeneralSubscription()->getRemainingEmailCreditsPercentage();
-        } else {
-            $sendingCreditsUsed = 0; // all time sending credits used
-            $sendingCreditsLimit = -1;
-            $sendingCreditsUsedPercentage = 0;
-        }
-
         $maxLists = get_tmp_quota($customer, 'list_max');
         $maxCampaigns = get_tmp_quota($customer, 'campaign_max');
         $maxSubscribers = get_tmp_quota($customer, 'subscriber_max');
@@ -47,9 +37,6 @@ class HomeController extends Controller
             return view('dashboard.cartpaye');
         } else {
             return view('dashboard', [
-                'sendingCreditsUsed' => $sendingCreditsUsed,
-                'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
-                'sendingCreditsLimit' => $sendingCreditsLimit,
                 'currentTimezone' => $currentTimezone,
                 'maxLists' => $maxLists,
                 'listsCount' => $listsCount,

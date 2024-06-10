@@ -155,16 +155,6 @@ class PageController extends Controller
 
         // Create subscriber
         if ($request->isMethod('post')) {
-            try {
-                list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_WEB);
-            } catch (\Exception $ex) {
-                return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-            }
-
-            if ($validator->fails()) {
-                return back()->withErrors($validator)->withInput();
-            }
-
             // Captcha check
             if (\Acelle\Model\Setting::isListSignupCaptchaEnabled()) {
                 // @hCaptcha
@@ -186,6 +176,16 @@ class PageController extends Controller
                         ]);
                     }
                 }
+            }
+
+            try {
+                list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_WEB);
+            } catch (\Exception $ex) {
+                return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+            }
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
             }
 
             if ($request->redirect_url) {

@@ -192,7 +192,10 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
-        $subscribers = $segment->subscribers();
+        $subscribers = $segment->subscribers()
+            ->search($request->keyword)
+            ->filter($request);
+
 
         if ($request->sort_order) {
             $subscribers->orderBy($request->sort_order, $request->sort_direction);
@@ -402,5 +405,42 @@ class SegmentController extends Controller
     public function noList()
     {
         return view('segments.noList');
+    }
+
+    public function copy(Request $request, $uid)
+    {
+        $segment = \Acelle\Model\Segment::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $segment)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('segments.copy', [
+                    'segment' => $segment,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // copy
+            $segment->copy($request->name);
+
+            // update cached information
+            event(new \Acelle\Events\MailListUpdated($segment->mailList));
+            
+            return trans('messages.segment.copied');
+        }
+
+        return view('segments.copy', [
+            'segment' => $segment,
+        ]);
     }
 }

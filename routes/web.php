@@ -128,6 +128,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/autologin/{api_token}', 'Controller@autoLogin');
     Route::get('/migrate/run', 'Admin\Upgrade@migrate');
 
+    Route::get('/autologin/{api_token}/{email}', 'Controller@autoLoginEmail');
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
     Route::get('assets/images/avatar/subscribe-origin-{uid?}.jpg', 'SubscriberController@avatarOrigin');
@@ -177,6 +178,9 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('pub/campaigns/{uid}/preview/content/{subscriber_uid?}', 'Pub\CampaignController@previewContent');
     Route::get('pub/campaigns/{uid}/preview', 'Pub\CampaignController@preview');
+
+
+    Route::get('pub/campaign/speedtest', 'Pub\CampaignController@speedtest');
 });
 
 // Without authentication
@@ -415,6 +419,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
+    Route::match(['post', 'get'], 'subscribers/{list_uid}/add-tag', 'SubscriberController@addTag');
     Route::get('lists/{list_uid}/subscribers/import2/progress/content', 'SubscriberController@import2ProgressContent');
     Route::get('lists/{list_uid}/subscribers/import2/progress', 'SubscriberController@import2Progress');
     Route::post('lists/{list_uid}/subscribers/import2/run', 'SubscriberController@import2Run');
@@ -460,6 +465,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/export/{job_uid}/cancel', 'SubscriberController@cancelExport');
 
     // Segment
+    Route::match(['get', 'post'], 'segments/{uid}/copy', 'SegmentController@copy');
     Route::get('segments/no-list', 'SegmentController@noList');
     Route::get('segments/condition-value-control', 'SegmentController@conditionValueControl');
     Route::get('segments/select_box', 'SegmentController@selectBox');
@@ -617,7 +623,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('campaigns/delete', 'CampaignController@delete');
     Route::get('campaigns/select2', 'CampaignController@select2');
     Route::post('campaigns/pause', 'CampaignController@pause');
-    Route::post('campaigns/restart', 'CampaignController@restart');
+    Route::post('campaigns/resume', 'CampaignController@resume');
     Route::resource('campaigns', 'CampaignController');
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');

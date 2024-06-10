@@ -7,6 +7,10 @@ use Acelle\Http\Controllers\Controller;
 use Acelle\Model\SendingServer;
 use Acelle\Library\Facades\Hook;
 use Acelle\Model\SendingDomain;
+use Acelle\Library\ExtendedSwiftMessage;
+use Acelle\Library\StringHelper;
+
+use function Acelle\Helpers\dkim_sign_with_default_domain;
 
 class SendingServerController extends Controller
 {
@@ -405,14 +409,25 @@ class SendingServerController extends Controller
         }
 
         if ($request->isMethod('post')) {
-            // @todo testing method and return result here. Ex: echo json_encode($server->test())
+            $message = new ExtendedSwiftMessage();
+            $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($request->from_email));
+            $message->setId($msgId);
+            $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId); // required for SendGrid API sending server
+            $message->setContentType('text/plain; charset=utf-8');
+            $message->setSubject($request->subject);
+            $message->setFrom($request->from_email);
+            $message->setTo($request->to_email);
+            $message->setReplyTo($request->from_email);
+            // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
+            $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+            $message->addPart($request->content, 'text/plain');
+
+            if (config('custom.sign_with_default_domain')) {
+                $message = dkim_sign_with_default_domain($message);
+            }
+
             try {
-                $server->mapType()->sendTestEmail([
-                    'from_email' => $request->from_email,
-                    'to_email' => $request->to_email,
-                    'subject' => $request->subject,
-                    'plain' => $request->content
-                ]);
+                $server->mapType()->sendTestEmail($message);
             } catch (\Exception $ex) {
                 return response()->json([
                     'status' => 'error', // or success

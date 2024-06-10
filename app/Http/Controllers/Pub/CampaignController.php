@@ -842,4 +842,13 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
+
+    public function speedtest(Request $request)
+    {
+        $campaigns = Campaign::latest()->paginate(10);
+
+        return view('campaigns._list', [
+            'campaigns' => $campaigns,
+        ]);
+    }
 }

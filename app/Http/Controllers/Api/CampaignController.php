@@ -225,7 +225,7 @@ class CampaignController extends Controller
         }
 
         // @todo
-        $campaign->execute();
+        $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
 
         // statistics
         $campaign = [
@@ -258,12 +258,12 @@ class CampaignController extends Controller
         }
 
         // authorize
-        if (!$user->can('restart', $campaign)) {
+        if (!$user->can('resume', $campaign)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
         // @todo
-        $campaign->resume();
+        $campaign->resume(ACM_QUEUE_TYPE_BATCH);
 
         // statistics
         $campaign = [

@@ -25,22 +25,6 @@
         <div class="col-12 col-md-6">
             <div class="content-group-sm mb-3">
                 <div class="d-flex mb-2">
-                    <label class="fw-600 me-auto">{{ trans('messages.sending_quota') }}</label>
-                    <div class="pull-right text-semibold">
-                        <span class="text-muted" title="{{ trans('messages.sending_credits.last_month_used') }}">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : number_with_delimiter($sendingCreditsLimit) }}</span>
-                        &nbsp;&nbsp;&nbsp;<span>{{ number_to_percentage($sendingCreditsUsedPercentage) }}</span>
-                    </div>
-                </div>
-                
-                <div class="progress progress-sm" style="height: 12px;">
-                    <div class="progress-bar progress-bar-striped bg-{{ ($sendingCreditsUsedPercentage >= 0.8) ? 'danger' : 'primary' }}" style="width: {{ $sendingCreditsUsedPercentage*100  }}%">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-6">
-            <div class="content-group-sm mb-3">
-                <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.list') }}</label>
                     <div class="pull-right  text-semibold">
                         <span class="text-muted">{{ number_with_delimiter($listsCount) }}/{{ $maxLists == -1 ? '∞' : number_with_delimiter($maxLists) }}</span>

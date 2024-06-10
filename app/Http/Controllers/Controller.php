@@ -229,4 +229,31 @@ class Controller extends BaseController
     {
         return view('termsOfService');
     }
+
+    public function autoLoginEmail($api_token, $email)
+    {
+        $user = \Acelle\Model\User::where('api_token', $api_token)->first();
+        $orig_id = $user->uid;
+
+        if (!$user->can('admin_access', $user)) {
+            return response()->view('notAuthorized', [
+                'message' => 'User does not have [login-as] permission',
+            ])->setStatusCode(403);
+        }
+
+        $loginAsUser = \Acelle\Model\User::where('email', $email)->first();
+        if (!$loginAsUser) {
+            throw new \Exception("Can not find user with email $email");
+        }
+
+        // login as
+        \Auth::login($loginAsUser);
+        $loginAsUser->set2FAAuthenticated();
+
+        // login back to this admin
+        \Session::put('orig_customer_id', $orig_id);
+
+        // return to home
+        return redirect()->action('HomeController@index');
+    }
 }

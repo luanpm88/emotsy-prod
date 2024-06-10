@@ -126,7 +126,7 @@ class BaseCampaign extends Model
 
         $lock->getExclusiveLock(function ($f) {
             foreach (static::scheduled()->get() as $campaign) {
-                $campaign->execute();
+                $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
             }
         }, $timeout, $timeoutCallback);
     }
@@ -149,9 +149,9 @@ class BaseCampaign extends Model
 
     // This method called when user clicks CONFIRM button on the web UI
     // This method is also called by a cronjob which periodically check for campaigns to run
-    public function execute($force = false)
+    public function execute($force = false, string $queue = ACM_QUEUE_TYPE_BATCH)
     {
-        DB::transaction(function () use ($force) {
+        DB::transaction(function () use ($force, $queue) {
             $now = Carbon::now();
 
             if (!is_null($this->run_at) && $this->run_at->gte($now)) {
@@ -173,11 +173,11 @@ class BaseCampaign extends Model
             $this->cancelAndDeleteJobs($jobType = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES);
 
             // Schedule Job initialize
-            $job = (new RunCampaign($this));
+            $job = (new RunCampaign($this, $queue));
 
             // Dispatch using the method provided by TrackJobs
             // to also generate job-monitor record
-            $this->dispatchWithMonitor($job, $jobType = static::JOB_TYPE_RUN_CAMPAIGN);
+            $this->dispatchWithMonitor($job, $jobType = static::JOB_TYPE_RUN_CAMPAIGN, $queue);
 
             // After this job is dispatched successfully, set status to "queued"
             $this->setQueued();
@@ -191,24 +191,27 @@ class BaseCampaign extends Model
         return $this;
     }
 
-    public function rerun()
-    {
-        $this->logger()->warning('Rerun campaign!');
-        $this->execute();
-    }
-
     // Manually resume via web UI
-    public function resume()
+    public function resume(string $queue)
     {
-        $this->logger()->warning('Resume campaign');
-        $this->execute();
+        $this->logger()->warning('Resume campaign in queue: '.$queue);
+        $this->execute($force = false, $queue);
     }
 
     // Should be called by RunCampaign
-    public function run()
+    public function run($check = true, string $queue = ACM_QUEUE_TYPE_BATCH)
     {
-        // Update status
-        $this->setSending();
+        if ($check) {
+            $this->withLock(function () {
+                if ($this->isSending()) {
+                    throw new Exception('Campaign is already in progress');
+                }
+                $this->setSending();
+            });
+        } else {
+            $this->logger()->info('Run without status check');
+        }
+
 
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
@@ -222,13 +225,20 @@ class BaseCampaign extends Model
         // Clean up DELAY flag
         $this->setDelayFlag(null);
 
+        $this->debug(function ($info) {
+            $info['delay_note'] = null;
+
+            // Must return;
+            return $info;
+        });
+
         // Option 1: load multiple Campaign loader jobs
         // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
         // So there will be 200 x 2 = 400 jobs in queue (in case of sending speed limit)
         // Be careful before increase this value, otherwise, jobs release/retry may prevents
         //     other campaigns from sending
-        $perPage = 200;
-        $maxPageToLoad = 3;
+        $perPage = 100;
+        $maxPageToLoad = 2;
         $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
@@ -244,11 +254,15 @@ class BaseCampaign extends Model
             $campaignLoaders[] = new LoadCampaign($this, 0, []);
         }
 
+        $campaignId = $this->uid;
+        $className = get_called_class(); // Something like App\Model\Campaign (late binding, inherited class name)
+
         // Dispatch it with a batch monitor
-        $this->dispatchWithBatchMonitor(
+        $monitor = $this->dispatchWithBatchMonitor(
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
+            $queue,
             $campaignLoaders,
-            function ($batch) {
+            function ($batch) use ($campaignId, $className, $queue) {
                 // THEN callback of a batch
                 //
                 // Important:
@@ -257,24 +271,26 @@ class BaseCampaign extends Model
                 // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
                 //
                 // IMPORTANT: refresh() is required!
-                if ($this->refresh()->isPaused()) {
+                $campaign = $className::findByUid($campaignId);
+
+                if ($campaign->refresh()->isPaused()) {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
                     // It seems that if a batch is cancelled, it shall not trigger any callback!
-                    $this->logger()->warning('Campaign is paused');
+                    $campaign->logger()->warning('Campaign is paused');
                     return;
                 }
 
-                $count = $this->subscribersToSend()->count();
+                $count = $campaign->subscribersToSend()->count();
                 if ($count > 0) {
                     // Run over and over again until there is no subscribers left to send
                     // Because each LoadCampaign jobs only load a fixed number of subscribers
-                    $this->logger()->warning('Load another batch of the remaining '.$count);
-                    $this->run();
+                    $campaign->logger()->warning('Load another batch of the remaining '.$count);
+                    $campaign->run($check = false, $queue); // Campaign is already in 'sending' status, set $check = false to bypass locking
                 } else {
-                    $this->logger()->warning('No contact left, campaign finishes successfully!');
-                    $this->setDone();
+                    $campaign->logger()->warning('No contact left, campaign finishes successfully!');
+                    $campaign->setDone();
 
-                    $this->debug(function ($info) {
+                    $campaign->debug(function ($info) {
                         $startAt = $info['start_at'];
                         $finishAt = Carbon::now();
                         $info['finish_at'] = $finishAt->toString();
@@ -285,18 +301,23 @@ class BaseCampaign extends Model
 
                 return;
             },
-            function (Batch $batch, Throwable $e) {
+            function (Batch $batch, Throwable $e) use ($campaignId, $className) {
                 // CATCH callback
+                $campaign = $className::findByUid($campaignId);
                 $errorMsg = "Campaign stopped. ".$e->getMessage()."\n".$e->getTraceAsString();
-                $this->logger()->info($errorMsg);
-                $this->setError($errorMsg);
+                $campaign->logger()->info($errorMsg);
+                $campaign->setError($errorMsg);
             },
-            function () {
+            function () use ($campaignId, $className) {
                 // FINALLY callback
-                $this->logger()->info('Finally callback of batch! Updating cache');
-                $this->updateCache();
+                $campaign = $className::findByUid($campaignId);
+                $campaign->logger()->info('Finally callback of batch! Updating cache');
+                $campaign->updateCache();
             }
         );
+
+        $this->logger()->info('Batch dispatched, JobMonitor #'.$monitor->id);
+
 
         /**** MORE NOTES ****/
         //
@@ -486,5 +507,13 @@ class BaseCampaign extends Model
     public static function scopeByCustomer($query, $customer)
     {
         $query->where('customer_id', $customer->id);
+    }
+
+    public function withLock(Closure $task)
+    {
+        $key = "lock-campaign-{$this->uid}";
+        with_cache_lock($key, function () use ($task) {
+            $task();
+        });
     }
 }

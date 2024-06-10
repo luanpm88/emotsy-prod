@@ -41,6 +41,7 @@ class InvoiceRenewSubscription extends Invoice
 
                 // Refill sending credits
                 $this->subscription->setDefaultEmailCredits();
+                $this->subscription->setDefaultVerificationCredits();
 
                 break;
 

@@ -33,17 +33,23 @@
 							</button>
 							<ul class="dropdown-menu dropdown-menu-end">
 								<li>
-									<a  link-method="POST" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
+									<a class="dropdown-item"  link-method="POST" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}"
+										href="{{ action('SubscriberController@subscribe', $list->uid) }}">
 										<span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribe') }}
 									</a>
 								</li>
 								<li>
-									<a link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
+									<a class="dropdown-item"
+										link-method="POST"
+										link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}"
+										href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
 										<span class="material-symbols-rounded">logout</span> {{ trans('messages.unsubscribe') }}
 									</a>
 								</li>
 								<li>
-									<a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
+									<a class="dropdown-item list-action-single"
+										link-confirm="{{ trans('messages.delete_subscribers_confirm') }}"
+										href="{{ action('SubscriberController@delete', $list->uid) }}">
 										<span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
 									</a>
 								</li>

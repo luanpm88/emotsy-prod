@@ -19,12 +19,10 @@ class SubscriberController extends Controller
      */
     public function search($list, $request)
     {
-        $customer = $request->user()->customer;
-        $subscribers = $customer->subscribers()
-            ->search($request->keyword)
+        $subscribers = $list->subscribers()
+            ->search($request->keyword, $list->fields)
             ->filter($request)
-            ->orderBy($request->sort_order ? $request->sort_order : 'created_at', $request->sort_direction ? $request->sort_direction : 'asc')
-            ->where('mail_list_id', '=', $list->id);
+            ->orderBy($request->sort_order ? $request->sort_order : 'created_at', $request->sort_direction ? $request->sort_direction : 'asc');
 
         return $subscribers;
     }
@@ -231,6 +229,7 @@ class SubscriberController extends Controller
             // Update field
             $subscriber->updateFields($request->all());
 
+            event(new \Acelle\Events\SubscriptionUpdated($subscriber));
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
             // Log
@@ -1176,5 +1175,41 @@ class SubscriberController extends Controller
     public function noList()
     {
         return view('subscribers.noList');
+    }
+
+    public function addTag(Request $request, $list_uid)
+    {
+        // init
+        $list = MailList::findByUid($request->list_uid);
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $request->uids);
+
+        // Select all items
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $validator = \Acelle\Model\Subscriber::addSubscribersTags($subscribers, $request->tags);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscribers.addTag', [
+                    'list' => $list,
+                    'subscribers' => $subscribers,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscribers.tag_added'),
+            ]);
+        }
+
+        return view('subscribers.addTag', [
+            'list' => $list,
+            'subscribers' => $subscribers,
+        ]);
     }
 }

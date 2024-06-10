@@ -221,6 +221,7 @@ class MailList extends Model
         $jobTypeName = static::JOB_TYPE_VERIFY_LIST;
         $monitor = $this->dispatchWithBatchMonitor(
             $jobTypeName, // a helpful name for future filtering/querying
+            $queue = ACM_QUEUE_TYPE_BATCH,
             [$job],
             $then = null,
             $catch = null,
@@ -1214,7 +1215,7 @@ class MailList extends Model
                     $record = $map->processRecord($r, function ($field, $value) {
                         if ($field->isDate()) {
                             // Do not count hours, this field is DATE only
-                            return $this->customer->parseDateTime($value, true)->format(config('custom.date_format'));
+                            return $value ? $this->customer->parseDateTime($value, true)->format(config('custom.date_format')) : '';
                         } else {
                             return $value;
                         }
@@ -1227,6 +1228,23 @@ class MailList extends Model
                     // @important: tags field must be lower-case
                     if (array_key_exists('tags', $record) && !empty($record['tags'])) {
                         $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
+                    }
+
+                    // Process tag values
+                    // @important: status field must be lower-case
+                    if (array_key_exists('status', $record) && !empty($record['status'])) {
+                        $allowed = [
+                            Subscriber::STATUS_SUBSCRIBED,
+                            Subscriber::STATUS_UNSUBSCRIBED,
+                            Subscriber::STATUS_UNCONFIRMED,
+                        ];
+
+                        if (!in_array($record['status'], $allowed)) {
+                            $record['status'] = Subscriber::STATUS_SUBSCRIBED; // remove invalid status
+                        }
+                    } else {
+                        // default status
+                        $record['status'] = Subscriber::STATUS_SUBSCRIBED;
                     }
 
                     // In certain cases, a UTF-8 BOM is added to email
@@ -1283,6 +1301,7 @@ class MailList extends Model
                     UPDATE %subscribers main
                     INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
                     SET main.tags = tmp.tags,
+                        main.status = tmp.status,
                     %set_fields_values
                     WHERE main.mail_list_id = %list_id',
                     [
@@ -1329,7 +1348,7 @@ class MailList extends Model
                         SUBSTRING(MD5(UUID()), 1, 13),
                         %list_id,
                         tmp.%email_field,
-                        %status,
+                        tmp.status,
                         %type,
                         tmp.tags,
                         \'%import_batch_id\',
@@ -1344,7 +1363,6 @@ class MailList extends Model
                         '%custom_fields' => $customFields,
                         '%custom_fields_with_prefix' => $customFieldsWithPrefix,
                         '%list_id' => $this->id,
-                        '%status' => db_quote(Subscriber::STATUS_SUBSCRIBED),
                         '%type' => db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED),
                         '%import_batch_id' => $importBatchId,
                         '%tmp' => $tmpTable,
@@ -1369,8 +1387,13 @@ class MailList extends Model
                 // Trigger updating related campaigns cache
                 $this->updateCachedInfo();
 
-                // blacklist new emails (if any)
-                Blacklist::doBlacklist($this->customer);
+                try {
+                    // blacklist new emails (if any)
+                    Blacklist::doBlacklist($this->customer);
+                } catch (\Exception $ex) {
+                    // It might cause "Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction"
+                    // Temporarily ignore this issue
+                }
 
                 // Event MailListImported($list)
                 MailListImported::dispatch($this, $importBatchId);

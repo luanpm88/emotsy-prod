@@ -15,7 +15,7 @@ class VerifySubscriber extends Base
 {
     use Batchable;
 
-    public $timeout = 120;
+    public $timeout = 300;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
 
@@ -42,7 +42,7 @@ class VerifySubscriber extends Base
      */
     public function retryUntil()
     {
-        return now()->addHours(12);
+        return now()->addHours(72);
     }
 
     /**

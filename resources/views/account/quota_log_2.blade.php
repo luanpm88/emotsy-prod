@@ -8,19 +8,6 @@
 
     <div class="row quota_box">
         <div class="col-md-12 mb-4">
-            <div class="content-group-sm mt-20">
-                <div class="pull-right text-primary text-semibold">
-                    <span class="text-muted" title="{{ trans('messages.sending_credits.last_month_used') }}">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : number_with_delimiter($sendingCreditsLimit) }}</span>
-                        &nbsp;&nbsp;&nbsp;{{ number_to_percentage($sendingCreditsUsedPercentage) }}
-                </div>
-                <label class="text-semibold">{{ trans('messages.sending_quota') }}</label>
-                <div class="progress">
-                    <div class="progress-bar bg-warning" style="width: {{ $sendingCreditsUsedPercentage*100 }}%">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12 mb-4">
             <div class="content-group-sm">
                 <div class="pull-right text-primary text-semibold">
                     <span class="text-muted">{{ number_with_delimiter($listsCount) }}/{{ ($maxLists == -1) ? '∞' : number_with_delimiter($maxLists) }}</span>

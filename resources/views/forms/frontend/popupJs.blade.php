@@ -1,6 +1,7 @@
 class AFormPopup {
     constructor(options) {
         var _this = this;
+        _this.id = 
 
         _this.id = '_' + Math.random().toString(36).substr(2, 9);
         _this.options = options;
@@ -51,6 +52,7 @@ class AFormPopup {
             </div>`;
         div.classList.add("acelle-popup");
         div.id = 'Popup_' + _this.id;
+        div.style.display = 'none';
         document.body.appendChild(div);
 
         this.node = div;
@@ -68,10 +70,14 @@ class AFormPopup {
             }
 
             if (typeof(event.data.loaded) != 'undefined') {
-                var es = document.getElementsByClassName('acelle-popup');
-                if(es.length > 0){
-                    es[0].classList.add("acelle-popup-loaded");
+                var es = document.getElementById('Popup_' + _this.id);
+                if(es){
+                    es.classList.add("acelle-popup-loaded");
                 }
+            }
+
+            if (typeof(event.data.redirect) != 'undefined') {
+                window.location = event.data.redirect;
             }
         });
 
@@ -85,17 +91,17 @@ class AFormPopup {
 
     setOverlayOpacity() {
         if (this.options.overlayOpacity) {
-            var es = document.getElementsByClassName('acelle-popup');
-            if(es.length > 0){
-                es[0].style.background = 'rgba(0,0,0,'+this.options.overlayOpacity+')';
+            var es = document.getElementById('Popup_' + this.id);
+            if(es){
+                es.style.background = 'rgba(0,0,0,'+this.options.overlayOpacity+')';
             }
         }
     }
 
     remove() {
-        var oldEs = document.getElementsByClassName('acelle-popup');
-        if(oldEs.length > 0){
-            oldEs[0].parentNode.removeChild(oldEs[0]);
+        var oldEs = document.getElementById('Popup_' + this.id);
+        if(oldEs){
+            oldEs.parentNode.removeChild(oldEs[0]);
         }
     }
 
@@ -119,10 +125,12 @@ class AFormPopup {
 
     show() {
         document.body.classList.add("acelle-popup-open");
+        document.getElementById('Popup_' + this.id).style.display = 'flex';
     }
 
     hide() {
         document.body.classList.remove("acelle-popup-open");
+        document.getElementById('Popup_' + this.id).style.display = 'none';
     }
 
     loadOneTime() {

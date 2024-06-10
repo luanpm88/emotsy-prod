@@ -636,6 +636,18 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
+            'tracking_domain.enable_https' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'email.enable_one_click_unsubscribe_headers' => [
+                'cat' => 'general',
+                'value' => 'yes',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
         ];
     }
 

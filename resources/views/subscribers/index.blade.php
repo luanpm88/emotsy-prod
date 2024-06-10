@@ -45,6 +45,14 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li>
+									<a data-control="add-tag" href="#" class="dropdown-item"
+										data-url="{{ action('SubscriberController@addTag', [
+											'list_uid' => $list->uid,
+										]) }}">
+											<span class="material-symbols-rounded">sell</span> {{ trans('messages.subscriber.add_tag') }}
+									</a>
+								</li>
+								<li>
 									<a class="dropdown-item assign-values-button"
 									href="{{ action('SubscriberController@assignValues', $list->uid) }}">
 										<span class="material-symbols-rounded">control_point_duplicate</span> {{ trans('messages.subscriber.assign_values') }}
@@ -142,9 +150,25 @@
 						<button role="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
 							{{ trans('messages.columns') }} <span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu list-columns-checkbox dropdown-menu-end">
+						<ul class="dropdown-menu list-columns-checkbox dropdown-menu-end" style="max-height:300px;overflow-y:auto;">
 							@foreach ($list->getFields as $key => $field)
 								@if ($field->tag != "EMAIL")
+									<li>
+										<a href="javascript:;" class="dropdown-item">
+											<label class="d-flex align-items-center">
+												<input {{ ($field->required || $key <= 3 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<span class="ms-2">{{ $field->label }}</span>
+											</label>
+										</a>
+									</li>
+									<li>
+										<a href="javascript:;" class="dropdown-item">
+											<label class="d-flex align-items-center">
+												<input {{ ($field->required || $key <= 3 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<span class="ms-2">{{ $field->label }}</span>
+											</label>
+										</a>
+									</li>
 									<li>
 										<a href="javascript:;" class="dropdown-item">
 											<label class="d-flex align-items-center">
@@ -187,6 +211,37 @@
 
 		</div>
 	</div>
+
+	<script>
+		$(function() {
+			window.addTagManager = new AddTagManager({
+				actions: $('[data-control="add-tag"]'),
+			});
+		});
+
+		var AddTagManager = class {
+			constructor(options) {
+				this.actions = options.actions;
+				this.popup = new Popup({
+					url: this.actions.attr('data-url'),
+				});
+
+				//
+				this.events();
+			}
+
+			events() {
+				var _this = this;
+				$(document).on('click', '[data-control="add-tag"]', function(e) {
+					e.preventDefault();
+
+					_this.popup.load({
+						data: SubscribersIndex.getList().data(),
+					});
+				});
+			}
+		}
+	</script>
 
 	<script>
         var SubscribersIndex = {

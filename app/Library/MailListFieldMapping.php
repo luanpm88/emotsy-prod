@@ -13,7 +13,7 @@ class MailListFieldMapping
     public $list;
 
     // Use lower-case here
-    public $preservedFields = ['tags'];
+    public $preservedFields = ['tags', 'status'];
 
     private function __construct($mapping, $list)
     {

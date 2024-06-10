@@ -352,6 +352,9 @@ class Automation2Controller extends Controller
             'woo-abandoned-cart' => [
                 'options.source_uid' => 'required',
             ],
+            Automation2::TRIGGER_TAG_BASED => [
+                'options.tags' => 'required',
+            ],
         ];
     }
 
@@ -766,6 +769,7 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
+        $trackingDomain = Setting::isYes('campaign.tracking_domain');
 
         if ($request->email_uid) {
             $email = Email::findByUid($request->email_uid);
@@ -811,6 +815,7 @@ class Automation2Controller extends Controller
                 return response()->view('automation2.email.setup', [
                     'automation' => $automation,
                     'email' => $email,
+                    'trackingDomain' => $trackingDomain,
                     'errors' => $validator->errors(),
                 ], 400);
             }
@@ -832,7 +837,7 @@ class Automation2Controller extends Controller
             ], 201);
         }
 
-        $trackingDomain = Setting::isYes('campaign.tracking_domain');
+
 
         return view('automation2.email.setup', [
             'automation' => $automation,

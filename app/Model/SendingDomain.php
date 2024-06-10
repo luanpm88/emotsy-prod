@@ -29,6 +29,7 @@ use Validator;
 use DB;
 use Exception;
 use Mika56\SPFCheck\SPFCheck;
+use Acelle\Library\Domain;
 
 use function Acelle\Helpers\spfcheck;
 
@@ -40,7 +41,7 @@ class SendingDomain extends Model
     public const STATUS_INACTIVE = 'inactive';
 
     // The regex below also supports Cyrillic
-    public const VALIDATION_REGEXP = '/^([\p{Cyrillic}\p{Latin}\d\.-]{1,64})?\.(?:\x{0440}\x{0444}|ru|su|arpa|info|aero|name|[a-z]{3})$/iu';
+    public const VALIDATION_REGEXP = '/^(?!\-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/i';
 
     // The regex below does not supports Cyrillic
     // public const VALIDATION_REGEXP = '/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/';
@@ -128,39 +129,22 @@ class SendingDomain extends Model
         ];
     }
 
-    /**
-     * Get the clean public key, strip out the Header and Footer.
-     */
-    public function getCleanPublicKey()
+    public function getDomain()
     {
-        $publicKey = str_replace(array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'), '', $this->dkim_public);
-        $publicKey = trim(preg_replace('/\s+/', '', $publicKey));
+        if (!empty($this->dkim_selector)) {
+            $selector = $this->dkim_selector;
+        } else {
+            $selector = Setting::get('dkim_selector');
+        }
 
-        return $publicKey;
-    }
+        $domain = new Domain(
+            $this->name,
+            $selector,
+            $this->dkim_public,
+            $this->dkim_private,
+        );
 
-    /**
-     * Generate the Domain DNS configuration for DKIM.
-     */
-    public function getDnsDkimConfig()
-    {
-        return doublequote($this->getDnsDkimConfigWithoutQuote());
-    }
-
-    /**
-     * Generate the Domain DNS configuration for DKIM.
-     */
-    public function getEscapedDnsDkimConfig()
-    {
-        return str_replace(';', '\;', $this->getDnsDkimConfig());
-    }
-
-    /**
-     * Generate the Domain DNS configuration for DKIM.
-     */
-    public function getDnsDkimConfigWithoutQuote()
-    {
-        return sprintf('v=DKIM1; k=rsa; p=%s;', $this->getCleanPublicKey());
+        return $domain;
     }
 
     /**
@@ -295,8 +279,8 @@ class SendingDomain extends Model
             'dkim' => [
                 [
                     'type' => 'TXT',
-                    'name' => $this->getFullDkimHostName(),
-                    'value' => $this->getDnsDkimConfig(),
+                    'name' => $this->getDomain()->getFullDkimHostName(),
+                    'value' => doublequote($this->getDomain()->getDkimDnsRecord()),
                 ]
             ],
 
@@ -346,7 +330,7 @@ class SendingDomain extends Model
         } else {
             // Case: standalone
             $tokens['results']['identity'] = $this->verifyIdentity();
-            $tokens['results']['dkim'] = $this->verifyDkim();
+            $tokens['results']['dkim'] = $this->getDomain()->verifyDkim();
 
             if (array_key_exists('spf', $tokens)) {
                 $host = Setting::get('spf_host');
@@ -387,65 +371,10 @@ class SendingDomain extends Model
      *
      * @return mixed
      */
-    public function verifyDkim()
-    {
-        $possibles = collect([$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
-        $possibles = $possibles->map(function ($item, $key) {
-            return preg_replace('/\s+/', '', $item);
-        });
-
-        $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
-        $results = collect(dns_get_record($fqdn, DNS_TXT))->where('type', 'TXT')->map(function ($item, $key) {
-            return preg_replace('/\s+/', '', $item['txt']);
-        });
-        $results = $results->intersect($possibles);
-
-        return $results->isEmpty() ? false : true;
-    }
-
-    /**
-     * Verify DKIM record, update domain status accordingly.
-     *
-     * @return mixed
-     */
     public function verifySpf(string $ipOrHostname)
     {
         $result = spfcheck($ipOrHostname, $this->name);
         return $result == SPFCheck::RESULT_PASS;
-    }
-
-    /**
-     * Get DKIM selector.
-     *
-     * @return string
-     */
-    public function getDkimSelector()
-    {
-        if (!empty($this->dkim_selector)) {
-            return $this->dkim_selector.'._domainkey';
-        } else {
-            return Setting::get('dkim_selector').'._domainkey';
-        }
-    }
-
-    /**
-     * Get DKIM selector parts.
-     *
-     * @return string
-     */
-    public function getDkimSelectorParts()
-    {
-        return explode('.', $this->getDkimSelector());
-    }
-
-    /**
-     * Get the full DKIM host name (including domain name).
-     *
-     * @return string
-     */
-    public function getFullDkimHostName()
-    {
-        return "{$this->getDkimSelector()}.{$this->name}.";
     }
 
     /**

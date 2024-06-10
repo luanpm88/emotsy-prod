@@ -44,4 +44,7 @@ return [
 
     // Log level
     'log_level' => env('LOG_LEVEL', 'debug'),
+
+    // Use default authentication domain
+    'sign_with_default_domain' => env('SIGN_WITH_DEFAULT_DOMAIN', false),
 ];

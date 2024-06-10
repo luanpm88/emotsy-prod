@@ -26,6 +26,10 @@ use Acelle\Library\HtmlHandler\InjectMessageIdToBody;
 use Acelle\Library\Lockable;
 use Cache;
 use Soundasleep\Html2Text;
+use Acelle\Library\Domain;
+
+use function Acelle\Helpers\dkim_sign;
+use function Acelle\Helpers\dkim_sign_with_default_domain;
 
 trait HasTemplate
 {
@@ -149,15 +153,6 @@ trait HasTemplate
     {
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
 
-        if ($this->isStdClassSubscriber($subscriber)) {
-            $unsubscribeUrl = null;
-        } else {
-            $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
-            if ($this->trackingDomain) {
-                $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
-            }
-        }
-
         $headers = array(
             'X-Acelle-Campaign-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
@@ -167,11 +162,25 @@ trait HasTemplate
             'Precedence' => 'bulk',
         );
 
-        if ($unsubscribeUrl) {
-            $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
-        } else {
-            $sampleUnsubscribeUrl = route('campaign_message', ['message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
-            $headers['List-Unsubscribe'] = "<{$sampleUnsubscribeUrl}>";
+        if (Setting::isYes('email.enable_one_click_unsubscribe_headers')) {
+            if ($this->isStdClassSubscriber($subscriber)) {
+                $unsubscribeUrl = null;
+            } else {
+                $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
+                if ($this->trackingDomain) {
+                    $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+                }
+            }
+
+            // One-click unsubscribe header
+            // Reference: https://aws.amazon.com/fr/blogs/messaging-and-targeting/using-one-click-unsubscribe-with-amazon-ses
+            if ($unsubscribeUrl) {
+                $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+                $headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+            } else {
+                $sampleUnsubscribeUrl = route('campaign_message', ['message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
+                $headers['List-Unsubscribe'] = "<{$sampleUnsubscribeUrl}>";
+            }
         }
 
         return $headers;
@@ -253,7 +262,14 @@ trait HasTemplate
         }
 
         if ($this->sign_dkim) {
-            $message = $this->sign($message);
+            $sendingDomain = $this->findSendingDomain($this->from_email);
+            if (!is_null($sendingDomain)) {
+                $message = dkim_sign($message, $sendingDomain->getDomain());
+            }
+        }
+
+        if (config('custom.sign_with_default_domain')) {
+            $message = dkim_sign_with_default_domain($message);
         }
 
         if ($this->attachments) {
@@ -352,29 +368,6 @@ trait HasTemplate
         $domain = $this->customer->sendingDomains()->where('name', $domainName)->first();
 
         return $domain;
-    }
-
-    /**
-     * Sign the message with DKIM.
-     *
-     * @return mixed
-     */
-    public function sign($message)
-    {
-        $sendingDomain = $this->findSendingDomain($this->from_email);
-
-        if (is_null($sendingDomain)) {
-            return $message;
-        }
-
-        $privateKey = $sendingDomain->dkim_private;
-        $domainName = $sendingDomain->name;
-        $selector = $sendingDomain->getDkimSelectorParts()[0];
-        $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
-        $signer->ignoreHeader('Return-Path');
-        $message->attachSigner($signer);
-
-        return $message;
     }
 
     public function getCachedHtmlId()

@@ -675,7 +675,7 @@ class CampaignController extends Controller
 
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
-            $campaign->execute();
+            $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
 
             // Log
             $campaign->log('started', $customer);
@@ -1090,6 +1090,11 @@ class CampaignController extends Controller
      */
     public function click(Request $request)
     {
+        if (ClickLog::isUrlBlacklisted($request->url)) {
+            return response('SendMails has detected that this URL is malicious and has dropped it.', 403)
+                  ->header('Content-Type', 'text/plain');
+        }
+
         list($url, $log) = ClickLog::createFromRequest($request);
 
         if ($log && $log->trackingLog && $log->trackingLog->campaign) {
@@ -1487,6 +1492,7 @@ class CampaignController extends Controller
         foreach ($campaigns->get() as $campaign) {
             if (\Gate::allows('pause', $campaign)) {
                 $campaign->pause();
+                $campaign->logger()->warning('Campaign was manually paused'); // write to Apahe log, not cli log
 
                 // Log
                 $campaign->log('paused', $customer);
@@ -1507,14 +1513,14 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function restart(Request $request)
+    public function resume(Request $request)
     {
         $customer = $request->user()->customer;
         if (!is_array($request->uids)) {
             $request->uids = explode(',', $request->uids);
         }
 
-        $items = Campaign::whereIn('uid', $request->uids);
+        $campaigns = Campaign::whereIn('uid', $request->uids)->get();
 
         // Japan + not license
         if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
@@ -1524,12 +1530,17 @@ class CampaignController extends Controller
             ], 400);
         }
 
-        foreach ($items->get() as $item) {
-            if (\Gate::allows('restart', $item)) {
-                $item->resume();
+        foreach ($campaigns as $campaign) {
+            if (\Gate::allows('resume', $campaign)) {
+
+                if ($request->input('queue') == ACM_QUEUE_TYPE_HIGH) {
+                    $campaign->resume(ACM_QUEUE_TYPE_HIGH);
+                } else {
+                    $campaign->resume(ACM_QUEUE_TYPE_BATCH);
+                }
 
                 // Log
-                $item->log('restarted', $customer);
+                $campaign->log('Resumed!', $customer);
             }
         }
 

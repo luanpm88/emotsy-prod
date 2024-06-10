@@ -243,7 +243,7 @@ class Segment extends Model
 
             // If conditions with fields
             if (isset($condition->field_id)) {
-                $field = "`subscribers`.`{$condition->field->custom_field_name}`";
+                $field = "`".\DB::getTablePrefix()."subscribers`.`{$condition->field->custom_field_name}`";
                 $type = $condition->field->type;
                 switch ($condition->operator) {
                     case 'equal':
@@ -482,5 +482,24 @@ class Segment extends Model
 
             $condition->save();
         }
+    }
+
+    public function copy($name)
+    {
+        // copy segment
+        $copySegment = $this->replicate();
+        $copySegment->uid = uniqid();
+        $copySegment->name = $name;
+        $copySegment->save();
+
+        // copy all segment conditions
+        foreach ($this->segmentConditions as $condition) {
+            $condition = $condition->replicate();
+            $condition->uid = uniqid();
+            $condition->segment_id = $copySegment->id;
+            $condition->save();
+        }
+
+        return $copySegment;
     }
 }

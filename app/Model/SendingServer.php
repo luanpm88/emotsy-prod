@@ -32,6 +32,7 @@ use Acelle\Library\Facades\Hook;
 use Acelle\Library\RateLimit;
 use Acelle\Library\RateTracker;
 use Acelle\Library\InMemoryRateTracker;
+use Acelle\Library\DynamicRateTracker;
 use Exception;
 use Acelle\Library\Traits\HasUid;
 
@@ -793,6 +794,7 @@ class SendingServer extends Model
             ['value' => 'ap-south-1', 'text' => 'Asia Pacific (Mumbai)', 'host' => 'email-smtp.ap-south-1.amazonaws.com'],
             ['value' => 'ap-southeast-1', 'text' => 'Asia Pacific (Singapore)', 'host' => 'email-smtp.ap-southeast-1.amazonaws.com'],
             ['value' => 'ap-southeast-2', 'text' => 'Asia Pacific (Sydney)', 'host' => 'email-smtp.ap-southeast-2.amazonaws.com'],
+            ['value' => 'ap-northeast-3', 'text' => 'Asia Pacific (Osaka)', 'host' => 'email-smtp.ap-northeast-3.amazonaws.com'],
             ['value' => 'ap-northeast-1', 'text' => 'Asia Pacific (Tokyo)', 'host' => 'email-smtp.ap-northeast-1.amazonaws.com'],
             ['value' => 'ap-northeast-2', 'text' => 'Asia Pacific (Seoul)', 'host' => 'email-smtp.ap-northeast-2.amazonaws.com'],
             ['value' => 'ca-central-1', 'text' => 'Canada (Central)', 'host' => 'email-smtp.ca-central-1.amazonaws.com'],
@@ -800,6 +802,7 @@ class SendingServer extends Model
             ['value' => 'eu-west-1', 'text' => 'EU (Ireland)', 'host' => 'email-smtp.eu-west-1.amazonaws.com'],
             ['value' => 'eu-west-2', 'text' => 'Europe (London)', 'host' => 'email-smtp.eu-west-2.amazonaws.com'],
             ['value' => 'eu-west-3', 'text' => 'Europe (Paris)', 'host' => 'email-smtp.eu-west-3.amazonaws.com'],
+            ['value' => 'eu-south-1', 'text' => 'Europe (Milan)', 'host' => 'email-smtp.eu-south-1.amazonaws.com'],
             ['value' => 'eu-north-1', 'text' => 'Europe (Stockholm)', 'host' => 'email-smtp.eu-north-1.amazonaws.com'],
             ['value' => 'me-south-1', 'text' => 'Middle East (Bahrain)', 'host' => 'email-smtp.me-south-1.amazonaws.com'],
             ['value' => 'sa-east-1', 'text' => 'South America (São Paulo)', 'host' => 'email-smtp.sa-east-1.amazonaws.com'],
@@ -895,30 +898,11 @@ class SendingServer extends Model
     /**
      * Send a test email for the sending server.
      */
-    public function sendTestEmail($params)
+    public function sendTestEmail($message)
     {
-        /*
-         * Required keys include
-         *     + from_email
-         *     + to_email
-         *     + subject
-         *     + plain
-         */
-        $message = new ExtendedSwiftMessage();
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
-        $message->setId($msgId);
-        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId); // this header is required for SendGrid API sending server
-        $message->setContentType('text/plain; charset=utf-8');
-        $message->setSubject($params['subject']);
-        $message->setFrom($params['from_email']);
-        $message->setTo($params['to_email']);
-        $message->setReplyTo($params['from_email']);
-        // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->addPart($params['plain'], 'text/plain');
-
-        $this->setupBeforeSend($params['from_email']);
-        $this->send($message);
+        $fromEmail = array_keys($message->getFrom())[0];
+        $this->setupBeforeSend($fromEmail);
+        $result = $this->send($message);
 
         return true;
     }
@@ -1627,18 +1611,13 @@ class SendingServer extends Model
     {
         if (config('custom.distributed_worker')) {
             $key = "server-send-email-rate-tracking-log-{$this->uid}";
-            $tracker = new InMemoryRateTracker($key, $this->getRateLimits());
+            $tracker = new DynamicRateTracker($key, $this->getRateLimits());
         } else {
             $file = storage_path('app/quota/server-send-email-rate-tracking-log-'.$this->uid);
             $tracker = new RateTracker($file, $this->getRateLimits());
         }
 
         return $tracker;
-    }
-
-    public function getCreditsUsed()
-    {
-        return $this->getRateLimitTracker()->getCreditsUsed();
     }
 
     public function dryrun($message)

@@ -2186,7 +2186,7 @@
   'resources_statistics' => 'Resources statistics',
   'resources_statistics_intro' => 'An overview of system resource usage',
   'restart' => 'Resume',
-  'restart_campaigns_confirm' => 'You\'re about to restart :number campaign(s).',
+  'restart_campaigns_confirm' => 'You\'re about to resume :number campaign(s).',
   'retry' => 'Retry',
   'return_back' => 'Go back',
   'return_to_login' => 'Back to login',
