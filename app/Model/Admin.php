@@ -31,6 +31,8 @@ use Carbon\Carbon;
 
 class Admin extends Model
 {
+    protected $connection = 'mysql';
+
     use TrackJobs;
     use HasUid;
 

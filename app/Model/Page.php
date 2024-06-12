@@ -27,6 +27,8 @@ use Acelle\Library\Traits\HasUid;
 
 class Page extends Model
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     /**

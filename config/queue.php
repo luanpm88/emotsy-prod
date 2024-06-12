@@ -42,6 +42,15 @@ return [
             'after_commit' => false,
         ],
 
+        'database2' => [
+            'driver' => 'database',  // Ok, look up the config/database.php
+            'connection' => 'server-jp-1', // then look up the connection name
+            'table' => 'jobs',
+            'queue' => 'default',
+            'retry_after' => 9000, // 2.5 hours, resume jobs that were terminated without having a chance to reset the reserved_at field to null
+            'after_commit' => false,
+        ],
+
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => 'localhost',

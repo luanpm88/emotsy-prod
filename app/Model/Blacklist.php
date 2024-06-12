@@ -31,6 +31,8 @@ use function Acelle\Helpers\read_csv;
 
 class Blacklist extends Model
 {
+    protected $connection = 'mysql';
+
     public const IMPORT_TEMP_DIR = 'app/tmp';
 
     /**

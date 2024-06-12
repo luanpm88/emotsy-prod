@@ -8,6 +8,8 @@ use Acelle\Library\Traits\HasUid;
 
 class Order extends Model
 {
+    protected $connection = 'mysql';
+
     use HasFactory;
     use HasUid;
     public const STATUS_ACTIVE = 'active'; // chờ xử lý

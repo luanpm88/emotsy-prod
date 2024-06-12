@@ -8,6 +8,8 @@ use Acelle\Library\Traits\HasUid;
 
 class SubscriptionLog extends Model
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     public const TYPE_SELECT_PLAN = 'select_plan';

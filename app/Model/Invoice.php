@@ -18,6 +18,8 @@ use function Acelle\Helpers\getAppHost;
 
 class Invoice extends Model
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     // statuses

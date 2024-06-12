@@ -4,7 +4,6 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Model\AutoTrigger as AutoTriggerModel;
-use Acelle\Model\DeliveryAttempt;
 use Acelle\Model\Email;
 use Exception;
 
@@ -28,16 +27,6 @@ class AutoTrigger extends Controller
             $description = "+ [". (($a->getLastExecuted()) ? "Executed" : "Waiting") . "] " .  $a->getId() . ": " . $a->getTitle();
             if ($a->isCondition()) {
                 $description .= " (". $a->getEvaluationResult() .")";
-            }
-
-            if ($a->getType() == 'ElementAction' && $a->getLastExecuted()) {
-                // Attempt
-                $email = Email::findByUid($a->getOption('email_uid'));
-
-                $attempt = DeliveryAttempt::where('email_id', $email->id)->where('auto_trigger_id', $trigger->id)->first();
-
-                $id = $attempt->id;
-                $description .= " (Attempt: ".$id.", ";
             }
 
             $actions[] = $description;

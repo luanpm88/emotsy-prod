@@ -454,6 +454,14 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
     }
 }
 
+// Load the list of connection settings from config/sharding.php and set default Laravel database connection
+function set_userdb_connection($name)
+{
+    \Config::set('database.default', $name);
+    \DB::purge($name);
+    \DB::reconnect($name);
+}
+
 function maskEmail($email)
 {
     // Split the email address into parts
@@ -591,7 +599,7 @@ function dkim_sign_with_default_domain(\Swift_Message $message)
 function generate_supervisor_config($templateFile)
 {
     // Replace the templates with actual plugin names
-    $loader = new \Twig\Loader\FilesystemLoader(base_path('templates/'));
+    $loader = new \Twig\Loader\FilesystemLoader(resource_path('documents/'));
     // $file = 'supervisor_master_config.tmpl';
     $twig = new \Twig\Environment($loader);
 

@@ -29,6 +29,8 @@ use Closure;
 
 class Layout extends Model
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     /**

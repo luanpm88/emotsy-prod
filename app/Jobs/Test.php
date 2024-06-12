@@ -17,15 +17,16 @@ class Test implements ShouldQueue
     use SerializesModels;
 
     public $timeout = 5;
+    protected $object = null;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($object)
     {
-        //
+        $this->object = $object;
     }
 
     /**
@@ -35,7 +36,7 @@ class Test implements ShouldQueue
      */
     public function handle()
     {
-        echo "Hey, I'm a hello job\n";
+        echo "Hello {$this->object->refresh()->uid}\n";
 
         sleep(1);
 

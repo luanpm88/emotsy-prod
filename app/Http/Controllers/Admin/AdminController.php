@@ -96,7 +96,6 @@ class AdminController extends Controller
         // Get current user
         $current_user = $request->user();
         $admin = \Acelle\Model\Admin::newAdmin();
-        $contact = new \Acelle\Model\Contact();
 
         // authorize
         if (\Gate::denies('create', $admin)) {
