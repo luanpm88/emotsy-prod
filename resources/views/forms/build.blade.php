@@ -247,6 +247,7 @@
                                         ["value" => "first_visit", "text" => trans('messages.form.display.first_visit')],
                                         ["value" => "wait", "text" => trans('messages.form.display.wait')],
                                         ["value" => "click", "text" => trans('messages.form.display.click')],
+                                        ["value" => "on_exit_intent", "text" => trans('messages.form.display.on_exit_intent')],
                                     ],
                                 ])
                             </div>
@@ -260,6 +261,12 @@
                             <div class="display-select-first_visit mb-3">
                                 <div class="">
                                     <p class="small text-muted mb-1">{{ trans('messages.form.display.first_visit.desc') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="display-select-on_exit_intent mb-3">
+                                <div class="">
+                                    <p class="small text-muted mb-1">{{ trans('messages.form.display.on_exit_intent.desc') }}</p>
                                 </div>
                             </div>
                             
@@ -417,6 +424,14 @@
                     _this.displayManager.add({
                         box: $('.display-select-first_visit'),
                         value: 'first_visit',
+                        selectedValue: function() {
+                            return $('[name="display"]').val();
+                        }
+                    });
+
+                    _this.displayManager.add({
+                        box: $('.display-select-on_exit_intent'),
+                        value: 'on_exit_intent',
                         selectedValue: function() {
                             return $('[name="display"]').val();
                         }

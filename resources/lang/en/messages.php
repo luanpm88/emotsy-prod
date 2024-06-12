@@ -3428,4 +3428,6 @@
   'campaign.resume.high_priority' => 'Resume (high priority)',
   'segment.copy' => 'Copy <span class="fw-600">:name</span> segment',
   'segment.copied' => 'Segment was successfully copied',
+  'form.display.on_exit_intent' => 'On exit intent',
+  'form.display.on_exit_intent.desc' => 'When the user intends to leave the current web page, the form popup will appear on the screen.',
 ) ?>

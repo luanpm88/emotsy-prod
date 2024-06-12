@@ -28,6 +28,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     @elseif ($form->getMetadata('display') == 'first_visit')
         popup.loadOneTime();
+    @elseif ($form->getMetadata('display') == 'on_exit_intent')
+        document.addEventListener('mouseleave', function(event) {
+            if (event.clientY < 0) {
+                showPopup();
+            }
+        });
+
+        function showPopup() {
+            popup.show();
+        }
+
+        function closePopup() {
+            popup.hide();
+        }
+
+        window.addEventListener('beforeunload', function (event) {
+            event.preventDefault();
+            event.returnValue = '';
+        });
     @else
         setTimeout(function() {
             popup.show();
