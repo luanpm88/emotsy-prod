@@ -599,7 +599,7 @@ function dkim_sign_with_default_domain(\Swift_Message $message)
 function generate_supervisor_config($templateFile)
 {
     // Replace the templates with actual plugin names
-    $loader = new \Twig\Loader\FilesystemLoader(base_path('templates/'));
+    $loader = new \Twig\Loader\FilesystemLoader(resource_path('documents/'));
     // $file = 'supervisor_master_config.tmpl';
     $twig = new \Twig\Environment($loader);
 
