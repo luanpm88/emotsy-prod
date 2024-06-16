@@ -3430,4 +3430,7 @@
   'segment.copied' => 'Segment was successfully copied',
   'form.display.on_exit_intent' => 'On exit intent',
   'form.display.on_exit_intent.desc' => 'When the user intends to leave the current web page, the form popup will appear on the screen.',
+  'subscription.replenish.verification_credits' => 'Reset EMAIL VERIFICATION CREDITS for this user subscription. (Available email verification credits: :int)',
+  'subscription.replenish_verification_credits' => 'Replenish verification credits',
+  'subscription.replenish_verification_credits.success' => 'Subscription is successfully updated',
 ) ?>

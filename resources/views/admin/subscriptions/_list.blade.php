@@ -186,6 +186,16 @@
 										</a>
 									</li>
 								@endif
+								@if (\Auth::user()->admin->can('replenishVerificationCredits', $subscription))
+									<li>
+										<a
+											class="dropdown-item replenish-verification-credits"
+										  	href="{{ action('Admin\SubscriptionController@replenishVerificationCredits', $subscription->uid) }}"
+										>
+											{{ trans('messages.subscription.replenish_verification_credits') }}
+										</a>
+									</li>
+								@endif
 								@if (\Auth::user()->admin->can('invoices', $subscription))
 									<li>
 										<a class="dropdown-item view_invoices"
@@ -229,6 +239,12 @@
 				links: $('.replenish-sending-credits'),
 			});
 
+			// ReplenishVerificationCredit
+			replenishVerificationCredit = new ReplenishVerificationCredit({
+				links: $('.replenish-verification-credits'),
+			});
+
+			// 
             $('.rejectPending').click(function(e) {
                 e.preventDefault();
 
@@ -246,6 +262,59 @@
 		});
 
 		var ReplenishCredit = class {
+			constructor(options) {
+				this.links = options.links;
+				this.popup = new Popup();
+
+				// 
+				this.events();
+			}
+
+			showForm(url) {
+				this.popup.load(url);
+			}
+
+			submit() {
+				addMaskLoading();
+
+				// copy
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+						_token: CSRF_TOKEN,
+					},
+                    globalError: false
+                }).done(function(response) {
+                    notify({
+                        type: 'success',
+                        message: response.message,
+                    });
+                }).fail(function(jqXHR, textStatus, errorThrown){
+                    new Dialog('alert', {
+                        message: JSON.parse(jqXHR.responseText).message,
+                    });
+                }).always(function() {
+                    SubscriptionsIndex.getList().load();
+
+					removeMaskLoading();
+                });
+			}
+
+			events() {
+				var _this = this;
+
+				_this.links.on('click', function(e) {
+					e.preventDefault();
+					var url = $(this).attr('href');
+
+					// SubscriptionsList.replenishSendingCredits(url);
+					_this.showForm(url);
+				});
+			}
+		}
+
+		var ReplenishVerificationCredit = class {
 			constructor(options) {
 				this.links = options.links;
 				this.popup = new Popup();
