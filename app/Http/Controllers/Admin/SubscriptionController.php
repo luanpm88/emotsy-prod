@@ -328,7 +328,7 @@ class SubscriptionController extends Controller
 
         if ($request->isMethod('post')) {
             try {
-                // $subscription->getSendEmailCreditTracker()->setCredits((int)$request->credits);
+                $subscription->getVerifyEmailCreditTracker()->setCredits((int)$request->credits);
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.subscription.replenish_verification_credits.success'),

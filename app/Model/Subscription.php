@@ -1053,7 +1053,12 @@ class Subscription extends Model
 
     public function setDefaultVerificationCredits()
     {
-        $defaultCredits = (int)$this->planGeneral->getOption('verification_credits_limit');
+        if ($this->planGeneral->getOption('create_email_verification_servers') == 'yes') {
+            $defaultCredits = InMemoryCreditTracker::UNLIMITED;
+        } else {
+            $defaultCredits = (int)$this->planGeneral->getOption('verification_credits_limit');
+        }
+
         $this->getVerifyEmailCreditTracker()->setCredits($defaultCredits);
     }
 }
