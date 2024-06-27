@@ -45,6 +45,7 @@ class TrackingDomain extends Model
 
     public const VERIFICATION_METHOD_HOST = 'host';
     public const VERIFICATION_METHOD_CNAME = 'cname';
+    public const VERIFICATION_METHOD_AUTOSSL = 'autossl';
 
     /**
      * Associations.
@@ -199,6 +200,11 @@ class TrackingDomain extends Model
     public function scopeVerified($query)
     {
         return $query->where('status', '=', self::STATUS_VERIFIED);
+    }
+
+    public function scopeAutoSsl($query)
+    {
+        return $query->where('verification_method', '=', self::VERIFICATION_METHOD_AUTOSSL);
     }
 
     public function isVerified()

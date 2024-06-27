@@ -38,7 +38,7 @@ class CaddyRegister extends Command
      */
     public function handle()
     {
-        $domains = TrackingDomain::verified()->get();
+        $domains = TrackingDomain::autoSsl()->get();
         foreach($domains as $domain) {
             $this->createCaddyConfigFile($domain->name);
         }
