@@ -57,8 +57,8 @@ class CaddyRegister extends Command
        reverse_proxy {$proxy}
 }
 END;
-        echo $config;
-        file_put_contents($path, $config);
-        echo "Written {$path}\n";
+        if (!file_exists($path)) {
+            file_put_contents($path, $config);
+        }
     }
 }

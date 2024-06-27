@@ -120,6 +120,10 @@ class Kernel extends ConsoleKernel
             Campaign::checkAndForceRerunCampaigns();
         })->name('campaign:force-rerun-pending-campaigns')->everyTenMinutes();
 
+        if (config('caddy.is_server')) {
+            $schedule->command('caddy:register')->everyMinute();
+        }
+
         /*
         // Update list/user cache every 30 minutes
         // @important: potential performance issue here

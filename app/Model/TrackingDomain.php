@@ -288,6 +288,11 @@ class TrackingDomain extends Model
         }
     }
 
+    public function verifyCaddy()
+    {
+        return $this->verify();
+    }
+
     public function buildTrackingUrl(string $url)
     {
         if (!parse_url($url, PHP_URL_HOST)) {

@@ -1,6 +1,10 @@
 <?php
 
 return [
+    // Is this the server that hosts caddy?
+    // If yes, configuration files must be written on this server
+    'is_server' => false,
+
     // Enable autossl for tracking domain
     'autossl' => true,
 
