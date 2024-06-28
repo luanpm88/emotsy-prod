@@ -45,8 +45,8 @@
                         <div class="size1of3">
                             <strong>{{ $domain->getFQDN() }}</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.hostname') }}</span>
                         </div>
-                        <div class="unit size1of3">
-                            <strong>CNAME</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.record_type') }}</span>
+                        <div class="unit size1of3" style="margin-left:40px">
+                            <strong>A</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.record_type') }}</span>
                         </div>
                         <div class="size1of3">
                             <div class="d-flex align-items-center">
