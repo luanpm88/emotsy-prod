@@ -51,11 +51,11 @@
                         <span class="filter-group">
                             <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                             <select class="select" name="sort_order">
-                                <option value="tracking_domains.name">{{ trans('messages.name') }}</option>
                                 <option value="tracking_domains.created_at">{{ trans('messages.created_at') }}</option>
+                                <option value="tracking_domains.name">{{ trans('messages.name') }}</option>
                                 <option value="tracking_domains.updated_at">{{ trans('messages.updated_at') }}</option>
                             </select>
-                            <input type="hidden" name="sort_direction" value="asc" />
+                            <input type="hidden" name="sort_direction" value="desc" />
                                                 <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-symbols-rounded desc">sort</span>
                             </button>

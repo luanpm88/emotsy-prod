@@ -96,7 +96,7 @@ class TrackingDomainController extends Controller
         }
 
         $request->session()->flash('alert-success', trans('messages.tracking_domain.created'));
-        return redirect()->action('TrackingDomainController@index');
+        return redirect()->action('TrackingDomainController@show', $domain->uid);
     }
 
     /**
