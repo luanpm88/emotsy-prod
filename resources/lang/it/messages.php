@@ -3122,7 +3122,7 @@
   'tracking_domain.dns_verification.help' => 'Verificate il dominio tramite l\'aggiornamento del DNS. &Egrave; necessario avere accesso al pannello di controllo DNS.',
   'tracking_domain.host_redirect_verification.help' => 'Verificate questo dominio caricando lo script PHP sul relativo server di hosting, che &egrave; responsabile del reindirizzamento del traffico web alla posizione appropriata.',
   'tracking_domain.hostname' => 'Host name',
-  'tracking_domain.method_autossl' => 'AutoSSL powered by SendMails.IO',
+  'tracking_domain.method_autossl' => 'Automatically obtain an SSL certificate',
   'tracking_domain.method_autossl.intro' => 'Simply point your tracking domain or subdomain to our IP address, and we will set everything up for you. A free SSL certificate will also be provided, making your emails more legitimate.',
   'tracking_domain.record_a.description' => 'Add the following A record to your domain DNS, pointing it to the application IP address then click the refresh button to check',
   'tracking_domain.record_type' => 'Tipo di record',

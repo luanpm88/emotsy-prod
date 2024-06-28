@@ -3112,7 +3112,7 @@
   'tracking_domain.host_redirect_verification.help' => '関連するホスティング サーバーに PHP スクリプトをアップロードして、このドメインを確認します。
      これは、Web トラフィックを適切な場所にリダイレクトする役割を果たします',
   'tracking_domain.hostname' => 'ホスト名',
-  'tracking_domain.method_autossl' => 'AutoSSL powered by SendMails.IO',
+  'tracking_domain.method_autossl' => 'SSL証明書を自動的に取得する',
   'tracking_domain.method_autossl.intro' => 'Simply point your tracking domain or subdomain to our IP address, and we will set everything up for you. A free SSL certificate will also be provided, making your emails more legitimate.',
   'tracking_domain.record_a.description' => 'Add the following A record to your domain DNS, pointing it to the application IP address then click the refresh button to check',
   'tracking_domain.record_type' => 'レコードの種類',
