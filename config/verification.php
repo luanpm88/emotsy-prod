@@ -110,6 +110,8 @@ return [
                 'Valid' => 'deliverable',
                 'Unknown' => 'unknown',
                 'Invalid' => 'undeliverable',
+                'Catch-all' => 'unknown',
+                'Grey-listed' => 'unknown',
             ]
         ]
 
