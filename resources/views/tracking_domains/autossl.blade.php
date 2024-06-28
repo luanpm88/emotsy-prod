@@ -39,19 +39,19 @@
                 <h2>{{ trans('messages.tracking_domain.cname.dns_setup.title') }}</h2>
                 <p>{{ trans('messages.tracking_domain.cname.dns_setup.note1') }}</p>
 
-                <p>{{ trans('messages.tracking_domain.record_a.description') }}</p>
+                <p>{{ trans('messages.tracking_domain.record_cname.description') }}</p>
                 <ul class="dotted-list topborder section section-flex">
                     <li style="font-size:16px">
                         <div class="size1of3">
                             <strong>{{ $domain->getFQDN() }}</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.hostname') }}</span>
                         </div>
                         <div class="unit size1of3" style="margin-left:40px">
-                            <strong>A</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.record_type') }}</span>
+                            <strong>CNAME</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.record_type') }}</span>
                         </div>
                         <div class="size1of3">
                             <div class="d-flex align-items-center">
                                 <div>
-                                    <strong class="text-warning">{{ $caddyServerIp }}</strong>
+                                    <strong class="text-warning">{{ $caddyServerHostname }}</strong>
                                     <br><span style="font-size:14px;">{{ trans('messages.tracking_domain.value') }}</span>
                                 </div>
 

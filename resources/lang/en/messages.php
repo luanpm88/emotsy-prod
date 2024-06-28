@@ -3131,7 +3131,7 @@
   'tracking_domain.hostname' => 'Host name',
   'tracking_domain.method_autossl' => 'AutoSSL powered by SendMails.IO',
   'tracking_domain.method_autossl.intro' => 'Simply point your tracking domain or subdomain to our IP address, and we will set everything up for you. A free SSL certificate will also be provided, making your emails more legitimate.',
-  'tracking_domain.record_a.description' => 'Add the following A record to your domain DNS, pointing it to the application IP address then click the refresh button to check',
+  'tracking_domain.record_cname.description' => 'Add the following CNAME record to your domain DNS, wait for a few minutes then click the refresh button to check',
   'tracking_domain.record_type' => 'Record type',
   'tracking_domain.scheme' => 'Scheme',
   'tracking_domain.show.nginx.description' => 'Since Nginx does not support .htaccess, make sure you set up the following rewrite rules to your Nginx setting',

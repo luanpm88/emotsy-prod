@@ -271,11 +271,11 @@ class TrackingDomainController extends Controller
         }
 
         $caddyConfig = config('caddy');
-        $caddyServerIp = config('caddy.server_ip');
+        $caddyServerHostname = config('caddy.server_hostname');
 
         return view('tracking_domains.autossl', [
             'domain' => $domain,
-            'caddyServerIp' => $caddyServerIp
+            'caddyServerHostname' => $caddyServerHostname
         ]);
     }
 }

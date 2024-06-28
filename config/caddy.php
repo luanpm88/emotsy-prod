@@ -9,10 +9,10 @@ return [
     'autossl' => true,
 
     // Caddy server IP address (for pointing an A record to)
-    'server_ip' => '51.79.255.61',
+    'server_hostname' => 'cname.sendmails.io',
 
     // Directory containing configuration file
-    'config_dir' => '/home/sendmails/autossl/',
+    'config_dir' => '/etc/caddy/autossl/',
 
     // Admin email address used to obtain an SSL cert
     'admin_email_address' => 'admin@sendmails.io',
