@@ -264,15 +264,18 @@ class TrackingDomainController extends Controller
 
         $domain = TrackingDomain::findByUid($id);
 
-        if ($domain->verifyByDns()) {
-            return redirect()->action('TrackingDomainController@showCname', [ 'uid' => $domain->uid ]);
+        if ($request->isMethod('post')) {
+            if ($domain->verify()) {
+                return redirect()->action('TrackingDomainController@showCname', [ 'uid' => $domain->uid ]);
+            }
         }
 
-        $hostname = parse_url(url('/'), PHP_URL_HOST);
+        $caddyConfig = config('caddy');
+        $caddyServerIp = config('caddy.server_ip');
+
         return view('tracking_domains.autossl', [
             'domain' => $domain,
-            'download' => url('tracking-1.0.0.zip'),
-            'hostname' => $hostname,
+            'caddyServerIp' => $caddyServerIp
         ]);
     }
 }
