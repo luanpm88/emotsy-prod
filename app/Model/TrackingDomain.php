@@ -310,7 +310,7 @@ class TrackingDomain extends Model
             return $url;
         }
 
-        if ($this->verification_method == self::VERIFICATION_METHOD_HOST) {
+        if ($this->verification_method == self::VERIFICATION_METHOD_HOST || $this->verification_method == self::VERIFICATION_METHOD_AUTOSSL) {
             // Replace the default host with the tracking host
             // For example, transform "http://myapp.com/foo" to "http://tracking.com/aHR0cDovL215YXBwLmNvbS9mb28"
             $encodedUrl = StringHelper::base64UrlEncode($url);
