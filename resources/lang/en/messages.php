@@ -736,7 +736,7 @@
   'campaign' => 'Campaign',
   'campaign.24_hour' => '24 hour',
   'campaign.active_subscribers' => 'Active subscribers',
-  'campaign.all_done' => 'Done',
+  'campaign.all_done' => 'Send or Schedule!',
   'campaign.attached_files' => 'Attached files',
   'campaign.attachment' => 'Attachment',
   'campaign.attachment.file_size_is' => 'File size: :size',
