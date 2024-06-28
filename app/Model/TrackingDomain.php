@@ -202,6 +202,11 @@ class TrackingDomain extends Model
         return $query->where('status', '=', self::STATUS_VERIFIED);
     }
 
+    public function scopeAutoSsl($query)
+    {
+        return $query->where('verification_method', '=', self::VERIFICATION_METHOD_AUTOSSL);
+    }
+
     public function isVerified()
     {
         return $this->status == self::STATUS_VERIFIED;
@@ -287,6 +292,11 @@ class TrackingDomain extends Model
             // loggging here
             return false;
         }
+    }
+
+    public function verifyCaddy()
+    {
+        return $this->verify();
     }
 
     public function buildTrackingUrl(string $url)
