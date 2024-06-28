@@ -3095,6 +3095,7 @@
   'tracking_domain.cname.dns_setup' => 'DNS Setup',
   'tracking_domain.cname.dns_setup.note1' => 'Tracking domains are used by the application in tracking email opens and link clicks. Once set up, all links in your emails are transformed and wrapped by a tracking domain. It helps improve your email reputation and make it less likely to be treated as spam hence improve your sending performance.',
   'tracking_domain.cname.dns_setup.note2' => 'You need to add the following CNAME record to your domain DNS to verify your domain as well as to enable open/click tracking through the application.',
+  'tracking_domain.record_a.description' => 'Add the following A record to your domain DNS, pointing it to the application IP address then click the refresh button to check',
   'tracking_domain.cname.dns_setup.note3' => 'Notice that DNS update may take from 5 minutes to a few hours to propagate',
   'tracking_domain.cname.dns_setup.title' => 'DNS Setup',
   'tracking_domain.cname.pending_note' => 'Please update your domain DNS records accordingly to the guideline below. Once you believe you\'re all set up, click the refresh button to check',

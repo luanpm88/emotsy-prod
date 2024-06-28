@@ -24,7 +24,8 @@
     <div class="row sub_section">
         <div class="col-sm-12 col-md-8">
             @if (!$domain->isVerified())
-                <form action="{{ action('TrackingDomainController@verify', [ 'uid' => $domain->uid ]) }}" method="GET">
+                <form action="{{ action('TrackingDomainController@autossl', [ 'uid' => $domain->uid ]) }}" method="POST">
+                    @csrf
                     <div data-type="admin-notification" class="alert alert-warning" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                         <div style="display: flex; flex-direction: row; align-items: center;">
                             <div style="padding-right: 40px">
@@ -38,7 +39,7 @@
                 <h2>{{ trans('messages.tracking_domain.cname.dns_setup.title') }}</h2>
                 <p>{{ trans('messages.tracking_domain.cname.dns_setup.note1') }}</p>
 
-                <p>{{ trans('messages.tracking_domain.cname.dns_setup.note2') }}</p>
+                <p>{{ trans('messages.tracking_domain.record_a.description') }}</p>
                 <ul class="dotted-list topborder section section-flex">
                     <li style="font-size:16px">
                         <div class="size1of3">
@@ -50,7 +51,7 @@
                         <div class="size1of3">
                             <div class="d-flex align-items-center">
                                 <div>
-                                    <strong class="text-warning">magic-ssl.sendmails.io</strong>
+                                    <strong class="text-warning">{{ $caddyServerIp }}</strong>
                                     <br><span style="font-size:14px;">{{ trans('messages.tracking_domain.value') }}</span>
                                 </div>
 
