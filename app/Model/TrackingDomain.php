@@ -45,6 +45,7 @@ class TrackingDomain extends Model
 
     public const VERIFICATION_METHOD_HOST = 'host';
     public const VERIFICATION_METHOD_CNAME = 'cname';
+    public const VERIFICATION_METHOD_AUTOSSL = 'autossl';
 
     /**
      * Associations.

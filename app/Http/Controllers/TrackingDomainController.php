@@ -108,6 +108,10 @@ class TrackingDomainController extends Controller
      */
     public function show(Request $request, $id)
     {
+        if (config('caddy.autossl') == true) {
+            return redirect()->action('TrackingDomainController@autossl', $id);
+        }
+
         $debug = is_null($request->input('tracking_domain_debug')) ? false : true;
 
         if ($debug) {
@@ -246,5 +250,29 @@ class TrackingDomainController extends Controller
     {
         $domain = TrackingDomain::findByUid($request->uid);
         echo 123;
+    }
+
+    public function autossl(Request $request, $id)
+    {
+        $debug = is_null($request->input('tracking_domain_debug')) ? false : true;
+
+        if ($debug) {
+            session()->put('tracking_domain_debug', $debug);
+        } else {
+            session()->forget('tracking_domain_debug', $debug);
+        }
+
+        $domain = TrackingDomain::findByUid($id);
+
+        if ($domain->verifyByDns()) {
+            return redirect()->action('TrackingDomainController@showCname', [ 'uid' => $domain->uid ]);
+        }
+
+        $hostname = parse_url(url('/'), PHP_URL_HOST);
+        return view('tracking_domains.autossl', [
+            'domain' => $domain,
+            'download' => url('tracking-1.0.0.zip'),
+            'hostname' => $hostname,
+        ]);
     }
 }

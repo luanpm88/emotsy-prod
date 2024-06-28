@@ -670,6 +670,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('sending_domains', 'SendingDomainController');
 
     // Tracking domain
+    Route::get('tracking_domains/{uid}/autossl', 'TrackingDomainController@autossl');
     Route::get('tracking_domains/listing/{page?}', 'TrackingDomainController@listing');
     Route::get('tracking_domains/delete', 'TrackingDomainController@delete');
     Route::get('tracking_domains/{uid}/verify', 'TrackingDomainController@verify');

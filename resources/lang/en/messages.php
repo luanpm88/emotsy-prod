@@ -3433,4 +3433,7 @@
   'subscription.replenish.verification_credits' => 'Reset EMAIL VERIFICATION CREDITS for this user subscription. (Available email verification credits: :int)',
   'subscription.replenish_verification_credits' => 'Replenish verification credits',
   'subscription.replenish_verification_credits.success' => 'Subscription is successfully updated',
+  'tracking_domain.method_autossl' => 'AutoSSL powered by SendMails.IO',
+  'tracking_domain.method_autossl.intro' => 'Simply point your tracking domain or subdomain to our IP address and we will set everything up for you
+    A free SSL Certificate shall also be granted, making your emails more legit',
 ) ?>
