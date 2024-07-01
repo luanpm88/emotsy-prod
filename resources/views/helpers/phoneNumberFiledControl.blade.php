@@ -1,8 +1,8 @@
 @php
     $value = isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value;
 @endphp
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<link rel="stylesheet" href="{{ AppUrl::asset('core/phoneinput/intlTelInput.css') }}" />
+<script src="{{ AppUrl::asset('core/phoneinput/intlTelInput.js') }}"></script>
 
 <div class="form-group {{ $errors->has('credits') ? 'has-error' : '' }}">
     <label>
@@ -28,7 +28,7 @@
     const phoneInputField = document.querySelector("#phone_{{ $field->uid }}");
     const phoneInput = window.intlTelInput(phoneInputFieldHelper, {
         initialValue: '{{ $value }}',
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        utilsScript: "{{ AppUrl::asset('core/phoneinput/utils.js') }}",
     });
 
     $(function() {
