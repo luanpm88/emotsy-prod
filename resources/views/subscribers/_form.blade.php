@@ -20,7 +20,7 @@
 			@elseif ($field->type == "datetime")
 				@include('helpers.form_control', ['multiple' => true, 'type' => 'datetime', 'name' => $field->tag . "[]", 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'options' => $field->getSelectOptions(), 'rules' => $list->getFieldRules()])
 			@elseif ($field->type == "phone")
-				@include('helpers.phoneNumberFiledControl', [
+				@include('helpers.phoneNumberFieldControl', [
 					'list' => $list,
 					'field' => $field,
 				])

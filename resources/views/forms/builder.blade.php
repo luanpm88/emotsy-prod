@@ -32,6 +32,10 @@
 
         @include('helpers._builder_form')
 
+        <script src="{{ AppUrl::asset('core/js/Base64.js') }}"></script>
+        @include('builder.js.PhoneFieldWidget')
+        @include('builder.js.PhoneFieldElement')
+
         <script>
             var CSRF_TOKEN = "{{ csrf_token() }}";
             var editor;
