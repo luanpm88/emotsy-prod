@@ -8432,4 +8432,6 @@ body:not(.mode-dark) .placeholder {
     color: #585858;
     line-height: 40px;
 }
-  
+.iti.iti--allow-dropdown {
+    height: 35px;
+}
