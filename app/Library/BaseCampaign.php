@@ -542,6 +542,10 @@ class BaseCampaign extends Model
     // Create a table with duplicate emails, along with the subscriber_id to keep
     public function calculateDuplicateEmails()
     {
+        // Create a list of duplicated email and a selected ID
+        // Selected id is
+        // + From default mail list
+        // + Randonly selected (min ID) if contacts whose email address do not belong to default list
         $duplicateEmails = $this->subscribers()->select('subscribers.email', DB::raw('min(id) AS selected_id'))->groupBy('subscribers.email')->havingRaw('count(*) > 1')->get()->toArray();
 
         $duplicateTable = $this->getDuplicateTable();
