@@ -2222,9 +2222,11 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     //           + It guarantees that this method is not called the second time before all SendMessage jobs are already done.
     public function subscribersToSend()
     {
+
+        // Notice that if an email already exists in tracking_logs but with status 'duplicate' (skipped) => then a new message to the same email will be allowed
         // Retrieve subscribers to send!
         $query = $this->subscribers([])
-                ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
+                ->whereRaw(sprintf(table('subscribers').".email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s AND t.status != '%s')", table('tracking_logs'), table('subscribers'), $this->id, TrackingLog::STATUS_DUPLICATE))
                 ->subscribed()
                 ->deliverableOrNotVerified();
 

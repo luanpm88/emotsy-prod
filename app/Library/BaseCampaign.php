@@ -13,6 +13,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Jobs\LoadCampaign;
 use Acelle\Jobs\RunCampaign;
+use Acelle\Jobs\HandleDuplicateEmails;
 use Illuminate\Bus\Batch;
 use Acelle\Events\CampaignUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +22,7 @@ use Closure;
 use Exception;
 use DB;
 use Illuminate\Support\Facades\Cache;
+use Acelle\Model\Setting;
 
 class BaseCampaign extends Model
 {
