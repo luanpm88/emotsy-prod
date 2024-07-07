@@ -1312,6 +1312,7 @@
   'field.label.required' => 'The label of field #:number is required',
   'field.option.label.required' => 'Field option label is required',
   'field.option.value.required' => 'Field option value is required',
+  'field.phone_number' => 'Phone Number',
   'field.tag.alpha_dash' => 'The tag of field #:number may only contain letters, numbers, and dashes.',
   'field.tag.required' => 'The tag of field #:number is required',
   'field_export' => 'Fields',
@@ -3436,5 +3437,4 @@
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'your_subscription' => 'Your subscription',
   'zip_postal_code' => 'Zip / Postal code',
-  'field.phone_number' => 'Phone Number',
 ) ?>
