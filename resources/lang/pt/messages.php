@@ -3161,6 +3161,7 @@
   'tracking_log' => 'Registro de rastreamento',
   'tracking_log.download' => 'Download',
   'tracking_log_status_bounced' => 'Bounced',
+  'tracking_log_status_duplicate' => 'Duplicate',
   'tracking_log_status_failed' => 'Falha',
   'tracking_log_status_feedback' => 'Feedback',
   'tracking_log_status_feedback-abuse' => 'Feedback-abuse',

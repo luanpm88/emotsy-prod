@@ -28,6 +28,7 @@ class TrackingLog extends Model
 {
     public const STATUS_SENT = 'sent';
     public const STATUS_FAILED = 'failed';
+    public const STATUS_DUPLICATE = 'duplicate'; // record in tracking log as duplicate, not sent
 
     public const STATUS_BOUNCED = 'bounced';
     public const STATUS_FEEDBACK_ABUSE = 'feedback-abuse';

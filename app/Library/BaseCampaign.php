@@ -239,13 +239,28 @@ class BaseCampaign extends Model
         //     other campaigns from sending
         $perPage = 100;
         $maxPageToLoad = 2;
-        $subscribersQuery = $this->subscribersToSend();
-
         $campaignLoaders = [];
         $pageCount = 0;
+
+        if (Setting::isYes('campaign.duplicate')) {
+            $subscribersQuery = $this->subscribersToSend();
+        } else {
+            $this->calculateDuplicateEmails();
+
+            $subscribersQuery = $this->subscribersToSend()->leftJoin($this->getDuplicateTable(), function ($join) {
+                $join->on("{$this->getDuplicateTable()}.email", '=', 'subscribers.email');
+            })->where(function ($query) {
+                $query->whereNull("{$this->getDuplicateTable()}.email")->orWhere("{$this->getDuplicateTable()}.selected_id", '=', DB::raw('subscribers.id'));
+            });
+
+            // handle duplicate
+            $campaignLoaders[] = new HandleDuplicateEmails($this);
+        }
+
         paginate_query($subscribersQuery, $perPage, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$campaignLoaders, &$pageCount) {
             $pageCount += 1;
             $listOfIds = $subscribers->pluck('subscribers.id')->toArray();
+
             $campaignLoaders[] = new LoadCampaign($this, $pageNumber, $listOfIds);
         }, $maxPageToLoad);
 
@@ -515,5 +530,25 @@ class BaseCampaign extends Model
         with_cache_lock($key, function () use ($task) {
             $task();
         });
+    }
+
+    public function getDuplicateTable()
+    {
+        return '__campaign_duplicate_'.$this->uid;
+    }
+
+    // Create a table with duplicate emails, along with the subscriber_id to keep
+    public function calculateDuplicateEmails()
+    {
+        $duplicateEmails = $this->subscribers()->select('subscribers.email', DB::raw('min(id) AS selected_id'))->groupBy('subscribers.email')->havingRaw('count(*) > 1')->get()->toArray();
+
+        $duplicateTable = $this->getDuplicateTable();
+        $duplicateTableWithPrefix = table($duplicateTable);
+
+        DB::statement("DROP TABLE IF EXISTS `{$duplicateTableWithPrefix}`;");
+        DB::statement("CREATE TABLE `{$duplicateTableWithPrefix}` (`selected_id` int unsigned, `email` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci) ENGINE=InnoDB;");
+        DB::table($duplicateTable)->insert($duplicateEmails);
+        DB::statement("CREATE INDEX `_index_email_{$duplicateTableWithPrefix}` ON `{$duplicateTable}`(`email`);");
+        DB::statement("UPDATE `{$duplicateTableWithPrefix}` AS dup INNER JOIN `subscribers` s ON dup.email = s.email SET dup.selected_id = s.id WHERE s.mail_list_id = {$this->defaultMailList->id}");
     }
 }

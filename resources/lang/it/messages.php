@@ -3159,6 +3159,7 @@
   'tracking_log' => 'Registro delle Consegne',
   'tracking_log.download' => 'Download',
   'tracking_log_status_bounced' => 'Rimbalzato',
+  'tracking_log_status_duplicate' => 'Duplicate',
   'tracking_log_status_failed' => 'Fallito',
   'tracking_log_status_feedback' => 'Feedback',
   'tracking_log_status_feedback-abuse' => 'Feedback-abuse',

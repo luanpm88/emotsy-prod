@@ -3149,6 +3149,7 @@
   'tracking_log' => '追跡ログ',
   'tracking_log.download' => 'ダウンロード',
   'tracking_log_status_bounced' => '配信エラー',
+  'tracking_log_status_duplicate' => 'Duplicate',
   'tracking_log_status_failed' => '失敗',
   'tracking_log_status_feedback' => 'フィードバック',
   'tracking_log_status_feedback-abuse' => 'フィードバックの乱用',

@@ -802,7 +802,7 @@ input.error {
 .bg-expired {
     opacity: 0.5;
 }
-.bg-inactive, .bg-skipped, .bg-current_inactive, .bg-pending_inactive, .bg-current_disabled, .bg-pending_disabled {
+.bg-inactive, .bg-duplicate, .bg-skipped, .bg-current_inactive, .bg-pending_inactive, .bg-current_disabled, .bg-pending_disabled {
     background-color: #ddd;
     border-color: #ddd;
     color: #000;

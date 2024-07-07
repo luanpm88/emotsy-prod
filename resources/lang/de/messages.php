@@ -3161,6 +3161,7 @@
   'tracking_log' => 'Trackingprotokollierung',
   'tracking_log.download' => 'Download',
   'tracking_log_status_bounced' => 'Abgewiesen',
+  'tracking_log_status_duplicate' => 'Duplicate',
   'tracking_log_status_failed' => 'Fehlgeschlagen',
   'tracking_log_status_feedback' => 'Feedback',
   'tracking_log_status_feedback-abuse' => 'Feedback-Missbrauch',

@@ -648,6 +648,12 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
+            'campaign.duplicate' => [
+                'cat' => 'general',
+                'value' => 'yes',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
         ];
     }
 
