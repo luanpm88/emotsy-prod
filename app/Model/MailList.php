@@ -60,6 +60,7 @@ class MailList extends Model
     public const EXPORT_TEMP_DIR = 'app/tmp/export/';
 
     public const JOB_TYPE_VERIFY_LIST = 'verify-list';
+    public const JOB_TYPE_IMPORT = 'import';
 
 
     /**
@@ -235,7 +236,9 @@ class MailList extends Model
     {
         // Example: /home/acelle/storage/app/tmp/import-000000.csv
         $job = new ImportSubscribersJob($this, $filepath, $map);
-        $monitor = $this->dispatchWithMonitor($job);
+
+        // Make sure that import jobs are of a higher priority ("import" queue)
+        $monitor = $this->dispatchWithMonitor($job, static::JOB_TYPE_IMPORT, ACM_QUEUE_TYPE_IMPORT);
         return $monitor;
     }
 
@@ -1911,7 +1914,10 @@ class MailList extends Model
     public function importJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')
-                                   ->whereIn('job_type', [ ImportSubscribersJob::class ]);
+                                   ->whereIn('job_type', [
+                                        ImportSubscribersJob::class, // for backward compatibility
+                                        static::JOB_TYPE_IMPORT
+                                    ]);
     }
 
     public function exportJobs()
