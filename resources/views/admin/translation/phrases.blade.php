@@ -58,12 +58,7 @@
 
     <script>
         $(function() {
-            var translationManager = new TranslationManager($('[data-control="translation-form"]'));
-
-            // change
-            $('[data-control="phrase-input"]').on('change', function() {
-                translationManager.autoSave();
-            });
+            new TranslationManager($('[data-control="translation-form"]'));
         });
 
         var TranslationManager = class {
@@ -85,6 +80,10 @@
                 return this.form.find('[data-control="refresh"]');
             }
 
+            getInputs() {
+                return this.form.find('[data-control="phrase-input"]');
+            }
+
             events() {
                 // submit
                 this.form.on('submit', (e) => {
@@ -100,6 +99,39 @@
                 // click refresh
                 this.getRefreshButtonn().on('click', (e) => {
                     window.location.reload();
+                });
+
+                // input change
+                this.getInputs().on('change', (e) => {
+                    this.autoSave();
+                });
+
+                var inputFields = this.getInputs();
+                inputFields.on('keydown', function(event) {
+                    const currentInput = $(this);
+                    const currentIndex = inputFields.index(currentInput);
+                    
+                    switch(event.key) {
+                        case 'Enter':
+                        case 'ArrowDown':
+                        case 'Tab':
+                            event.preventDefault(); // Prevent default tab behavior
+                            if (currentIndex < inputFields.length - 1) {
+                                inputFields.eq(currentIndex + 1).focus();
+                            } else {
+                                // If at the last input, move focus to the first input
+                                inputFields.eq(0).focus();
+                            }
+                            break;
+                        case 'ArrowUp':
+                            if (currentIndex > 0) {
+                                inputFields.eq(currentIndex - 1).focus();
+                            } else {
+                                // If at the first input, move focus to the last input
+                                inputFields.eq(inputFields.length - 1).focus();
+                            }
+                            break;
+                    }
                 });
             }
 
@@ -118,7 +150,7 @@
                     });
 
                     removeMaskLoading();
-                }).failed((response) => {
+                }).fail((response) => {
                 });
             }
 
@@ -128,14 +160,12 @@
                     type: 'POST',
                     data: this.form.serialize(),
                 }).done((response) => {
-                    console.log(response);
-
                     // notify
                     notify({
                         type: 'success',
                         message: '{{ trans('messages.translation.auto_aved') }}'
                     });
-                }).failed((response) => {
+                }).fail((response) => {
                 });
             }
         }
