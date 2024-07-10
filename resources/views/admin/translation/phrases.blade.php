@@ -47,7 +47,7 @@
                             {{ trans($phrase->key) }}
                         </td>
                         <td>
-                            <input data-control="phrase-input" type="text" name="{{ $phrase->key }}" class="form-control" />
+                            <input data-control="phrase-input" type="text" name="phrases[{{ $phrase->key }}]" value="{{ $phrase->ja }}" class="form-control" />
                         </td>
                     </tr>
                 @endforeach
@@ -120,6 +120,7 @@
                 $.ajax({
                     url: this.getSaveUrl(),
                     type: 'POST',
+                    data: this.form.serialize(),
                 }).done((response) => {
                     console.log(response);
 

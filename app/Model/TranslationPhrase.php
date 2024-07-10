@@ -12,6 +12,11 @@ class TranslationPhrase extends Model
     use HasUid;
 
     protected $fillable = [
-        'key'
+        'key', 'ja'
     ];
+
+    public static function findByKey($key)
+    {
+        return self::where('key', $key)->first();
+    }
 }

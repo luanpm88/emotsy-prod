@@ -15,7 +15,12 @@ class TranslationController extends Controller
 
         // save
         if ($request->isMethod('post')) {
-
+            // save
+            foreach($request->phrases as $key => $ja) {
+                $phrase = TranslationPhrase::findByKey($key);
+                $phrase->ja = $ja;
+                $phrase->save();
+            }
 
             // success
             return response()->json([
