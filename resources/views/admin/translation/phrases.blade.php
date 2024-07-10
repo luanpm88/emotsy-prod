@@ -47,7 +47,7 @@
                             {{ trans($phrase->key) }}
                         </td>
                         <td>
-                            <input type="text" name="{{ $phrase->key }}" class="form-control" />
+                            <input data-control="phrase-input" type="text" name="{{ $phrase->key }}" class="form-control" />
                         </td>
                     </tr>
                 @endforeach
@@ -57,7 +57,12 @@
 
     <script>
         $(function() {
-            new TranslationManager($('[data-control="translation-form"]'));
+            var translationManager = new TranslationManager($('[data-control="translation-form"]'));
+
+            // change
+            $('[data-control="phrase-input"]').on('change', function() {
+                translationManager.autoSave();
+            });
         });
 
         var TranslationManager = class {
@@ -107,6 +112,22 @@
                     });
 
                     removeMaskLoading();
+                }).failed((response) => {
+                });
+            }
+
+            autoSave() {
+                $.ajax({
+                    url: this.getSaveUrl(),
+                    type: 'POST',
+                }).done((response) => {
+                    console.log(response);
+
+                    // notify
+                    notify({
+                        type: 'success',
+                        message: '{{ trans('messages.translation.auto_aved') }}'
+                    });
                 }).failed((response) => {
                 });
             }

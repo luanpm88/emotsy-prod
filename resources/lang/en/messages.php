@@ -3446,4 +3446,5 @@
   'translation.refresh_load_new_phrases' => 'Refresh & Load new phrases',
   'translation.finish_write' => 'Finish & Write',
   'translation.update.success' => 'Translation phrases were updated successfully',
+  'translation.auto_aved' => 'Auto saved!',
 ) ?>
