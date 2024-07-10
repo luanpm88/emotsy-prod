@@ -3438,4 +3438,12 @@
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'your_subscription' => 'Your subscription',
   'zip_postal_code' => 'Zip / Postal code',
+  'translation' => 'Translation',
+  'translation.phrases' => 'Phrases',
+  'translation.key' => 'Key',
+  'translation.original_english' => 'Original English',
+  'translation.japanese' => 'Japanese',
+  'translation.refresh_load_new_phrases' => 'Refresh & Load new phrases',
+  'translation.finish_write' => 'Finish & Write',
+  'translation.update.success' => 'Translation phrases were updated successfully',
 ) ?>

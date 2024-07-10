@@ -1376,4 +1376,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get', 'post'], 'admin/sms/sending-credit-plans/billing-cycle/custom', 'SendingCreditPlanController@billingCycleCustom');
     Route::get('admin/sms/sending-credit-plans/list', 'SendingCreditPlanController@list');
     Route::resource('admin/sms/sending-credit-plans', 'SendingCreditPlanController');
+
+    // Translation Phrases
+    Route::get('admin/translation', 'TranslationController@phrases');
+    Route::post('admin/translation', 'TranslationController@phrases');
 });
