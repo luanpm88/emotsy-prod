@@ -19,6 +19,7 @@
 
 @section('content')
     <form data-control="translation-form" method="POST" action="{{ action('Admin\TranslationController@phrases') }}">
+        @csrf
         <div class="my-4">
             <div class="d-flex justify-content-end">
                 <button data-control="refresh" type="button" class="btn btn-light">
@@ -76,7 +77,7 @@
                 return this.form.attr('action');
             }
 
-            getSaveButtonn() {
+            getSaveButton() {
                 return this.form.find('[data-control="save"]');
             }
 
@@ -85,8 +86,14 @@
             }
 
             events() {
+                // submit
+                this.form.on('submit', (e) => {
+                    e.preventDefault();
+                    this.save();
+                });
+
                 // click save
-                this.getSaveButtonn().on('click', (e) => {
+                this.getSaveButton().on('click', (e) => {
                     this.save();
                 });
 
@@ -102,9 +109,8 @@
                 $.ajax({
                     url: this.getSaveUrl(),
                     type: 'POST',
+                    data: this.form.serialize(),
                 }).done((response) => {
-                    console.log(response);
-
                     // notify
                     notify({
                         type: 'success',
