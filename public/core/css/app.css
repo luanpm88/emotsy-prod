@@ -8435,3 +8435,29 @@ body:not(.mode-dark) .placeholder {
 .iti.iti--allow-dropdown {
     height: 35px;
 }
+.inline-editable {
+    border: solid 1px #aaa;
+    border-radius: 3px;
+    width: auto;
+    padding: 5px 10px;
+}
+body.mode-dark .inline-editable {
+    border-color: rgba(255,255,255,0.2);
+    background-color: rgba(255,255,255,0.05);
+}
+.inline-editable.mode-view {
+    border-color: transparent!important;
+    background-color: transparent!important;
+}
+.inline-editable.mode-view ~ .inine-actions {
+    display: none;
+}
+.inline-editable.mode-view:hover {
+    color: #00314a!important;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    cursor: pointer;
+}
+body.mode-dark .inline-editable.mode-view:hover {
+    color: #fff!important;
+}
