@@ -887,3 +887,9 @@ body.mode-dark [chat-control="insert"] {
 body.mode-dark [chat-control="insert"]:hover {
     background-color: rgba(255,255,255,0.1);
 }
+body.mode-dark .text-dark {
+    color: rgba(255,255,255,0.9)!important;
+}
+body.mode-dark input {
+    color: rgba(255,255,255,0.9);
+}

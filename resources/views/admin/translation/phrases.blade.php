@@ -31,24 +31,27 @@
             </div>
         </div>
 
-        <table class="table table-striped">
+        <table class="table table-box table-box-head field-list">
             <thead>
-                <th width="20%">{{ trans('messages.translation.key') }}</th>
-                <th width="40%">{{ trans('messages.translation.original_english') }}</th>
-                <th width="40%">{{ trans('messages.translation.japanese') }}</th>
+                <th width="20%" class="py-3 fw-600">{{ trans('messages.translation.key') }}</th>
+                <th width="40%" class="py-3 fw-600">{{ trans('messages.translation.original_english') }}</th>
+                <th width="40%" class="py-3 fw-600">{{ trans('messages.translation.japanese') }}</th>
             </thead>
 
             <tbody>
                 @foreach ($phrases as $phrase)
                     <tr>
                         <td>
-                            <code style="font-size:12px;">{{ $phrase->key }}</code>
+                            <code style="font-size:12px;" class="text-dark">{{ $phrase->key }}</code>
                         </td>
                         <td>
                             {{ trans($phrase->key) }}
                         </td>
                         <td>
-                            <input data-control="phrase-input" type="text" name="phrases[{{ $phrase->key }}]" value="{{ $phrase->ja }}" class="form-control" />
+                            <input data-control="phrase-input" type="text" name="phrases[{{ $phrase->key }}]" value="{{ $phrase->ja }}"
+                                class="inline-editable mode-view"
+                                readonlyd
+                            />
                         </td>
                     </tr>
                 @endforeach
@@ -85,6 +88,8 @@
             }
 
             events() {
+                var _this = this;
+
                 // submit
                 this.form.on('submit', (e) => {
                     e.preventDefault();
@@ -103,7 +108,12 @@
 
                 // input change
                 this.getInputs().on('change', (e) => {
-                    this.autoSave();
+                    // this.autoSave();
+                });
+
+                // input select
+                this.getInputs().on('click', function(e) {
+                    _this.select($(this));
                 });
 
                 var inputFields = this.getInputs();
@@ -113,26 +123,36 @@
                     
                     switch(event.key) {
                         case 'Enter':
+                            _this.autoSave();
                         case 'ArrowDown':
                         case 'Tab':
                             event.preventDefault(); // Prevent default tab behavior
                             if (currentIndex < inputFields.length - 1) {
-                                inputFields.eq(currentIndex + 1).focus();
+                                _this.select(inputFields.eq(currentIndex + 1));
                             } else {
                                 // If at the last input, move focus to the first input
-                                inputFields.eq(0).focus();
+                                _this.select(inputFields.eq(0));
                             }
                             break;
                         case 'ArrowUp':
                             if (currentIndex > 0) {
-                                inputFields.eq(currentIndex - 1).focus();
+                                _this.select(inputFields.eq(currentIndex - 1));
                             } else {
                                 // If at the first input, move focus to the last input
-                                inputFields.eq(inputFields.length - 1).focus();
+                                _this.select(inputFields.eq(inputFields.length - 1));
                             }
                             break;
                     }
                 });
+            }
+
+            select(input) {
+                // unselect other
+                this.getInputs().addClass('mode-view');
+
+                // select item
+                input.removeClass('mode-view');
+                input.focus();
             }
 
             save() {
