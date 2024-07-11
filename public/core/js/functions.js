@@ -592,6 +592,10 @@ function makeList(options) {
                     }
                 });
             });
+
+            if (options.loaded) {
+                options.loaded();
+            }
         }
     });
 

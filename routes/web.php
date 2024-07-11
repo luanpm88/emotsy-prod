@@ -1379,5 +1379,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Translation Phrases
     Route::get('admin/translation', 'TranslationController@phrases');
-    Route::post('admin/translation', 'TranslationController@phrases');
+    Route::get('admin/translation/list', 'TranslationController@phrasesList');
+    Route::post('admin/translation/save', 'TranslationController@phrasesSave');
+    Route::post('admin/translation/finish-write', 'TranslationController@phrasesFinishWrite');
+    Route::post('admin/translation/{uid}/write', 'TranslationController@phrasesWrite');
 });
