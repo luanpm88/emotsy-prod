@@ -19,4 +19,13 @@ class TranslationPhrase extends Model
     {
         return self::where('key', $key)->first();
     }
+
+    public static function scopeSearch($query, $keyword)
+    {
+        if (!empty($keyword)) {
+            $query->where('translation_phrases.key', 'like', '%'.$keyword.'%');
+        }
+
+        return $query;
+    }
 }

@@ -3449,4 +3449,9 @@
   'translation.auto_aved' => 'Auto saved!',
   'translation.done' => 'Done',
   'translation.cancel' => 'Cancel',
+  'translation.enter_phrase' => 'Enter phrase',
+  'translation.intro' => 'Translate your system into your language by entering phrases according to the translation key and the default English phrase.
+    This method ensures clear and consistent localization throughout your application.',
+  'translation.finish_write.confirm' => 'You\'re about to finish and write :number phrase(s) from the list.',
+  'translation.finish_write.success' => 'Translation phrases were written successfully',
 ) ?>
