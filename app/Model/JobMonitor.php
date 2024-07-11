@@ -13,10 +13,9 @@ use Illuminate\Support\Facades\Log;
 
 class JobMonitor extends Model
 {
-    protected $connection = 'mysql';
-
     use HasFactory;
     use HasUid;
+    protected $connection = 'mysql';
 
     public const STATUS_QUEUED = 'queued';
     public const STATUS_RUNNING = 'running';

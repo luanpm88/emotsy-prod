@@ -26,9 +26,8 @@ use Acelle\Library\Traits\HasUid;
 
 class BounceHandler extends DeliveryHandler
 {
-    protected $connection = 'mysql';
-
     use HasUid;
+    protected $connection = 'mysql';
 
     protected $table = 'bounce_handlers';
 

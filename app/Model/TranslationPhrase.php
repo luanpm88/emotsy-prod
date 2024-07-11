@@ -12,7 +12,7 @@ class TranslationPhrase extends Model
     use HasUid;
 
     protected $fillable = [
-        'key', 'ja'
+        'file', 'key', 'ja'
     ];
 
     public static function findByKey($key)

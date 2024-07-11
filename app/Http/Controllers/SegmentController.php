@@ -435,7 +435,7 @@ class SegmentController extends Controller
 
             // update cached information
             event(new \Acelle\Events\MailListUpdated($segment->mailList));
-            
+
             return trans('messages.segment.copied');
         }
 

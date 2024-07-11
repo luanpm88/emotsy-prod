@@ -13,7 +13,8 @@ class RateLimitReservedByAnotherFileSystem extends Exception
     // Overwrite the constructor of Exception class
     // Reference: https://www.php.net/manual/en/language.exceptions.extending.php
     // @IMPORTANT: $reservedUntil cannot be applied to RateLimitExceeded, as there are many limits to check, there is NO "reserved until" value
-    public function __construct($message, $code = 0, Throwable $previous = null, Carbon $reservedUntil = null) {
+    public function __construct($message, $code = 0, Throwable $previous = null, Carbon $reservedUntil = null)
+    {
         // Custom attribute
         $this->reservedUntil = $reservedUntil;
 

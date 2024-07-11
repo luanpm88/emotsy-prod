@@ -18,9 +18,8 @@ use function Acelle\Helpers\getAppHost;
 
 class Invoice extends Model
 {
-    protected $connection = 'mysql';
-
     use HasUid;
+    protected $connection = 'mysql';
 
     // statuses
     public const STATUS_NEW = 'new';               // unpaid
