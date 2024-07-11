@@ -15,7 +15,7 @@ class TranslationController extends Controller
 
         // save
         if ($request->isMethod('post')) {
-            // save
+            // done | auto save | done & write tạm thời call chung cái này
             foreach($request->phrases as $key => $ja) {
                 $phrase = TranslationPhrase::findByKey($key);
                 $phrase->ja = $ja;
