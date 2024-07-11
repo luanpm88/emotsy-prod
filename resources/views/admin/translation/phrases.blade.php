@@ -171,9 +171,11 @@
 
             // done click
             this.getDoneButtons().on('click', (e) => {
-                this.autoSave(function() {
-                    _this.unselectAll();
-                });
+                e.preventDefault();
+
+                var url = $(e.target).attr('data-url');
+                
+                this.write(url);
             });
 
             // cancel click
@@ -248,6 +250,30 @@
                 });
 
                 removeMaskLoading();
+            }).fail((response) => {
+            });
+        }
+
+        write(url) {
+            addMaskLoading();
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+            }).done((response) => {
+                // notify
+                notify({
+                    type: 'success',
+                    message: response.message
+                });
+
+                removeMaskLoading();
+
+                // load list
+                TranslationIndex.getList().load();
             }).fail((response) => {
             });
         }

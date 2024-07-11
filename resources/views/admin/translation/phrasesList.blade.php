@@ -27,8 +27,9 @@
                                 class="inline-editable mode-view"
                             />
                             <div class="inine-actions ms-4 text-nowrap">
-                                <button data-control="done-button" class="btn btn-secondary">{{ trans('messages.translation.done') }}</button>
-                                {{-- <button data-control="cancel-button" class="btn btn-light">{{ trans('messages.translation.cancel') }}</button> --}}
+                                <button data-control="done-button" data-url="{{ action('Admin\TranslationController@phrasesWrite', [
+                                    'uid' => $phrase->uid,
+                                ]) }}" class="btn btn-secondary">{{ trans('messages.translation.done') }}</button>
                             </div>
                         </div>
                     </td>

@@ -78,4 +78,18 @@ class TranslationController extends Controller
             'message' => trans('messages.translation.finish_write.success'),
         ]);
     }
+
+    public function phrasesWrite(Request $request, $uid)
+    {
+        $phrase = TranslationPhrase::findByUid($uid);
+
+        // write
+        // $phrase->write();
+
+        // response
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.translation.write.success'),
+        ]);
+    }
 }

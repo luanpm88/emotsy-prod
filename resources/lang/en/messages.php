@@ -3454,4 +3454,5 @@
     This method ensures clear and consistent localization throughout your application.',
   'translation.finish_write.confirm' => 'You\'re about to finish and write :number phrase(s) from the list.',
   'translation.finish_write.success' => 'Translation phrases were written successfully',
+  'translation.write.success' => 'Translation phrase were written successfully',
 ) ?>
