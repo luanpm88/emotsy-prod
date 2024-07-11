@@ -3447,4 +3447,6 @@
   'translation.finish_write' => 'Finish & Write',
   'translation.update.success' => 'Translation phrases were updated successfully',
   'translation.auto_aved' => 'Auto saved!',
+  'translation.done' => 'Done',
+  'translation.cancel' => 'Cancel',
 ) ?>

@@ -34,7 +34,6 @@
         <table class="table table-box table-box-head field-list">
             <thead>
                 <th width="20%" class="py-3 fw-600">{{ trans('messages.translation.key') }}</th>
-                <th width="40%" class="py-3 fw-600">{{ trans('messages.translation.original_english') }}</th>
                 <th width="40%" class="py-3 fw-600">{{ trans('messages.translation.japanese') }}</th>
             </thead>
 
@@ -42,16 +41,20 @@
                 @foreach ($phrases as $phrase)
                     <tr>
                         <td>
-                            <code style="font-size:12px;" class="text-dark">{{ $phrase->key }}</code>
+                            <code style="font-size:12px;" class="mb-3 text-muted2 text-dark">{{ $phrase->key }}</code>
+                            <p class="mb-0">{{ trans($phrase->key) }}</p>
                         </td>
                         <td>
-                            {{ trans($phrase->key) }}
-                        </td>
-                        <td>
-                            <input data-control="phrase-input" type="text" name="phrases[{{ $phrase->key }}]" value="{{ $phrase->ja }}"
-                                class="inline-editable mode-view"
-                                readonlyd
-                            />
+                            <div class="d-flex align-items-center">
+                                <input data-control="phrase-input" type="text" name="phrases[{{ $phrase->key }}]" value="{{ $phrase->ja }}"
+                                    class="inline-editable mode-view"
+                                    readonlyd
+                                />
+                                <div class="inine-actions ms-4 text-nowrap">
+                                    <button data-control="done-button" class="btn btn-secondary">{{ trans('messages.translation.done') }}</button>
+                                    {{-- <button data-control="cancel-button" class="btn btn-light">{{ trans('messages.translation.cancel') }}</button> --}}
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 @endforeach
@@ -87,13 +90,21 @@
                 return this.form.find('[data-control="phrase-input"]');
             }
 
+            getDoneButtons() {
+                return this.form.find('[data-control="done-button"]');
+            }
+
+            getCancelButtons() {
+                return this.form.find('[data-control="cancel-button"]');
+            }
+
             events() {
                 var _this = this;
 
                 // submit
                 this.form.on('submit', (e) => {
                     e.preventDefault();
-                    this.save();
+                    // this.save();
                 });
 
                 // click save
@@ -111,6 +122,18 @@
                     // this.autoSave();
                 });
 
+                // done click
+                this.getDoneButtons().on('click', (e) => {
+                    this.autoSave(function() {
+                        _this.unselectAll();
+                    });
+                });
+
+                // cancel click
+                this.getCancelButtons().on('click', (e) => {
+                    this.unselectAll();
+                });
+
                 // input select
                 this.getInputs().on('click', function(e) {
                     _this.select($(this));
@@ -123,7 +146,10 @@
                     
                     switch(event.key) {
                         case 'Enter':
-                            _this.autoSave();
+                            _this.autoSave(function() {
+                                _this.unselectAll();
+                            });
+                            break;
                         case 'ArrowDown':
                         case 'Tab':
                             event.preventDefault(); // Prevent default tab behavior
@@ -146,9 +172,14 @@
                 });
             }
 
-            select(input) {
+            unselectAll() {
                 // unselect other
                 this.getInputs().addClass('mode-view');
+                this.getInputs().blur();
+            }
+
+            select(input) {
+                this.unselectAll();
 
                 // select item
                 input.removeClass('mode-view');
@@ -174,7 +205,7 @@
                 });
             }
 
-            autoSave() {
+            autoSave(callback) {
                 $.ajax({
                     url: this.getSaveUrl(),
                     type: 'POST',
@@ -185,6 +216,11 @@
                         type: 'success',
                         message: '{{ trans('messages.translation.auto_aved') }}'
                     });
+
+                    // 
+                    if (callback) {
+                        callback();
+                    }
                 }).fail((response) => {
                 });
             }
