@@ -28,9 +28,8 @@ use Acelle\Library\RateLimit;
 
 class Plan extends Model
 {
-    protected $connection = 'mysql';
-
     use HasUid;
+    protected $connection = 'mysql';
 
     // Plan status
     public const STATUS_INACTIVE = 'inactive';

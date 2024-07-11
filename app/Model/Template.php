@@ -49,9 +49,8 @@ use function Acelle\Helpers\url_get_contents_ssl_safe;
 
 class Template extends Model
 {
-    protected $connection = 'mysql';
-
     use HasUid;
+    protected $connection = 'mysql';
 
     public const BUILDER_ENABLED = true;
     public const BUILDER_DISABLED = false;

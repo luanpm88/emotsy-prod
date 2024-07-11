@@ -13,9 +13,12 @@ class CreateTranslationPhrasesTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('translation_phrases');
+
         Schema::create('translation_phrases', function (Blueprint $table) {
             $table->id();
             $table->uuid('uid');
+            $table->string('file');
             $table->string('key');
             $table->string('ja')->nullable();
             

@@ -64,7 +64,8 @@ class HandleDuplicateEmails implements ShouldQueue
         })->whereNotNull("{$duplicateTable}.email")->where("{$duplicateTable}.selected_id", '!=', \DB::raw('subscribers.id'))->get();
 
         foreach ($excluded as $subscriber) {
-            $this->campaign->trackMessage([
+            $this->campaign->trackMessage(
+                [
                     'runtime_message_id' => null,
                     'status' => TrackingLog::STATUS_DUPLICATE,
                 ],

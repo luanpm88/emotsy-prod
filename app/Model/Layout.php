@@ -29,9 +29,8 @@ use Closure;
 
 class Layout extends Model
 {
-    protected $connection = 'mysql';
-
     use HasUid;
+    protected $connection = 'mysql';
 
     /**
      * The attributes that are mass assignable.

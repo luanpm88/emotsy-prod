@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class FailedJob extends Model
 {
-    protected $connection = 'mysql';
-
     use HasFactory;
+    protected $connection = 'mysql';
 }

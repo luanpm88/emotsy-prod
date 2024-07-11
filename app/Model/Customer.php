@@ -38,11 +38,10 @@ use Acelle\Library\Facades\SubscriptionFacade;
 
 class Customer extends Model
 {
-    protected $connection = 'mysql';
-
     use TrackJobs;
     use HasUid;
     use HasCache;
+    protected $connection = 'mysql';
 
     protected $quotaTracker;
 

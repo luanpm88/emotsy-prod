@@ -38,9 +38,8 @@ use Acelle\Library\Traits\HasUid;
 
 class SendingServer extends Model
 {
-    protected $connection = 'mysql';
-
     use HasUid;
+    protected $connection = 'mysql';
 
     public const DELIVERY_STATUS_SENT = 'sent';
     public const DELIVERY_STATUS_FAILED = 'failed';

@@ -30,9 +30,8 @@ use DB;
 
 class Language extends Model
 {
-    protected $connection = 'mysql';
-
     use HasUid;
+    protected $connection = 'mysql';
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
@@ -378,6 +377,28 @@ class Language extends Model
         // Update or create translation files
         foreach (self::get() as $language) {
             $language->createOrUpdateTranslationFiles();
+        }
+    }
+
+    public function detectNewPhrases()
+    {
+        foreach (Hook::execute('add_translation_file') as $source) {
+            list($originFile, $transFile) = $this->createTranslationFile($source);
+
+            $origin = include $originFile;
+            $trans = include $transFile;
+
+            // Find keys in $target that are that not available in $source
+            $diff = array_diff_key($origin, $trans);
+
+            if (!empty($diff)) {
+                foreach ($diff as $key => $value) {
+                    $phrase = TranslationPhrase::firstOrCreate([
+                        'file' => $source['id'],
+                        'key' => $key
+                    ]);
+                }
+            }
         }
     }
 
