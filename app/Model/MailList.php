@@ -1405,6 +1405,10 @@ class MailList extends Model
             if (!is_null($progressCallback)) {
                 $progressCallback($processed, $total, $failed, $message = "Processed: {$processed}/{$total} records, skipped: {$failed} records.");
             }
+
+            // clean up uploaded file
+            \Illuminate\Support\Facades\File::delete($file);
+
         } catch (\Throwable $e) {
             if (!is_null($progressCallback)) {
                 $progressCallback($processed, $total, $failed, $message = $e->getMessage());
