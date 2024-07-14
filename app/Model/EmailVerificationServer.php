@@ -20,6 +20,7 @@ use Acelle\Library\RateLimit;
 use Acelle\Library\Everification\Emailable;
 use Acelle\Library\Everification\ZeroBounce;
 use Acelle\Library\Everification\EmailListValidation;
+use Acelle\Library\Everification\MyEmailVerifier;
 
 class EmailVerificationServer extends Model
 {
@@ -31,6 +32,7 @@ class EmailVerificationServer extends Model
 
     // Logger
     protected $logger;
+    protected $service;
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
@@ -55,23 +57,33 @@ class EmailVerificationServer extends Model
         return $this->belongsTo('Acelle\Model\Admin');
     }
 
-    public function initEverificationService()
+    public function getServiceClient()
     {
+        if (!is_null($this->service)) {
+            return $this->service;
+        }
+
         switch ($this->type) {
             case 'emailable.com':
-                $service = new Emailable($this->getOptions(), $this->logger());
-                return $service;
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new Emailable($apiKey);
+                return $this->service;
 
             case 'zerobounce.net':
-                $service = new ZeroBounce($this->getOptions(), $this->logger());
-                return $service;
+                $this->service = new ZeroBounce($this->getOptions(), $this->logger());
+                return $this->service;
 
             case 'emaillistvalidation.com':
-                $service = new EmailListValidation($this->getOptions(), $this->logger());
-                return $service;
+                $this->service = new EmailListValidation($this->getOptions(), $this->logger());
+                return $this->service;
+
+            case 'myemailverifier.com':
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new MyEmailVerifier($apiKey);
+                return $this->service;
 
             default:
-                return null;
+                $this->service = null;
         }
     }
 
@@ -83,7 +95,7 @@ class EmailVerificationServer extends Model
     public function verify($email)
     {
         // Retrieve the email verification service
-        $service = $this->initEverificationService();
+        $service = $this->getServiceClient();
 
         if ($service) {
             return $service->verify($email);

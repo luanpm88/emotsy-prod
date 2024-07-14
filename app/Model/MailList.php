@@ -25,6 +25,9 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Formatter\LineFormatter;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Library\ExtendedSwiftMessage;
@@ -44,6 +47,7 @@ use Acelle\Jobs\VerifyMailListJob;
 use League\Csv\Writer;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\MailListFieldMapping;
+use Acelle\Jobs\BulkVerify;
 
 class MailList extends Model
 {
@@ -63,10 +67,11 @@ class MailList extends Model
     public const JOB_TYPE_IMPORT = 'import';
 
 
+    protected $logger;
+
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
      */
     protected $fillable = [
         'name', 'from_email', 'from_name',
@@ -219,6 +224,26 @@ class MailList extends Model
         }
 
         $job = new VerifyMailListJob($this, $server, $subscription);
+        $jobTypeName = static::JOB_TYPE_VERIFY_LIST;
+        $monitor = $this->dispatchWithBatchMonitor(
+            $jobTypeName, // a helpful name for future filtering/querying
+            $queue = ACM_QUEUE_TYPE_BATCH,
+            [$job],
+            $then = null,
+            $catch = null,
+            $finally = null
+        );
+
+        return $monitor;
+    }
+
+    public function dispatchBulkVerificationJob($server, $subscription)
+    {
+        if (is_null($server)) {
+            throw new Exception('Cannot start job: empty verification server');
+        }
+
+        $job = new BulkVerify($this, $server, $subscription);
         $jobTypeName = static::JOB_TYPE_VERIFY_LIST;
         $monitor = $this->dispatchWithBatchMonitor(
             $jobTypeName, // a helpful name for future filtering/querying
@@ -508,6 +533,32 @@ class MailList extends Model
             'name' => $name,
             'data' => json_encode($data)
         ]);
+    }
+
+    public function logger()
+    {
+        if (!is_null($this->logger)) {
+            return $this->logger;
+        }
+
+        $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+
+        $logfile = $this->getLogFile();
+        $stream = new RotatingFileHandler($logfile, 0, config('custom.log_level'));
+        $stream->setFormatter($formatter);
+
+        $pid = getmypid();
+        $logger = new Logger($pid);
+        $logger->pushHandler($stream);
+        $this->logger = $logger;
+
+        return $this->logger;
+    }
+
+    public function getLogFile()
+    {
+        $path = storage_path(join_paths('logs', php_sapi_name(), '/list-'.$this->uid.'.log'));
+        return $path;
     }
 
     /**

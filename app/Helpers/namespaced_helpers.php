@@ -10,6 +10,7 @@ use SimpleXMLElement;
 use Mika56\SPFCheck\SPFCheck;
 use Mika56\SPFCheck\DNSRecordGetterDirect;
 use Mika56\SPFCheck\DNSRecordGetter;
+use DB;
 
 function generatePublicPath($absPath, $withHost = false)
 {
@@ -482,7 +483,7 @@ function maskEmail($email)
     return $maskedEmail;
 }
 
-function read_csv($file, $headerLine = false)
+function read_csv($file, $headerLine = false, $ignoreEmptyHeader = false)
 {
     if (!file_exists($file)) {
         throw new \Exception("File {$file} not found");
@@ -521,9 +522,11 @@ function read_csv($file, $headerLine = false)
 
             // Make sure the headers are present
             // In case of duplicate column headers, an exception shall be thrown by League
-            foreach ($headers as $index => $header) {
-                if (is_null($header) || empty(trim($header))) {
-                    throw new \Exception(trans('messages.list.import.error.header_empty', ['index' => $index]));
+            if (!$ignoreEmptyHeader) {
+                foreach ($headers as $index => $header) {
+                    if (is_null($header) || empty(trim($header))) {
+                        throw new \Exception(trans('messages.list.import.error.header_empty', ['index' => $index]));
+                    }
                 }
             }
 
@@ -612,4 +615,51 @@ function generate_supervisor_config($templateFile)
     ];
 
     echo $twig->render($templateFile, $params);
+}
+
+function curl_download($url, $filepath)
+{
+    set_time_limit(0);
+
+    // File to save the contents to
+    $fp = fopen($filepath, 'w+');
+
+    // Here is the file we are downloading, replace spaces with %20
+    $ch = curl_init(str_replace(" ","%20",$url));
+
+    // give curl the file pointer so that it can write to it
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+    $data = curl_exec($ch);// get curl response
+
+    if (curl_errno($ch)) {
+        // Something went wrong
+        throw new Exception(curl_error($ch));
+    }
+
+    //done
+    curl_close($ch);
+}
+
+function create_temp_db_table($fields, $data, Closure $callback)
+{
+    $name = "__tmp_from_array_".uniqid();
+    $nameWithPrefix = table($name);
+    $fieldsString = implode(', ', $fields);
+
+    try {
+        DB::statement("DROP TABLE IF EXISTS `{$nameWithPrefix}`;");
+        DB::statement("CREATE TABLE `{$nameWithPrefix}` ({$fieldsString}) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        DB::table($name)->insert($data);
+
+        // For example, execute an SQL with the newly created table
+        $callback($name);
+    } finally {
+        DB::statement("DROP TABLE IF EXISTS `{$nameWithPrefix}`;");
+    }
+
+
+    // DB::statement("CREATE INDEX `_index_email_{$nameWithPrefix}` ON `{$name}`(`email`);");
+    // DB::statement("UPDATE `{$nameWithPrefix}` AS dup INNER JOIN `subscribers` s ON dup.email = s.email SET dup.selected_id = s.id WHERE s.mail_list_id = {$this->defaultMailList->id}");
 }

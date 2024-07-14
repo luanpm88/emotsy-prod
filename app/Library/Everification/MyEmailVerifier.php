@@ -1,0 +1,159 @@
+<?php
+
+namespace Acelle\Library\Everification;
+
+use Exception;
+use Closure;
+use Acelle\Library\Contracts\VerifyInterface;
+use Acelle\Library\Contracts\BulkVerifyInterface;
+use Illuminate\Database\Eloquent\Builder;
+
+use function Acelle\Helpers\curl_download;
+use function Acelle\Helpers\read_csv;
+
+class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
+{
+    protected $apiKey;
+    protected $resultMap = [
+        'Valid' => 'deliverable',
+        'Unknown' => 'unknown',
+        'Invalid' => 'undeliverable',
+        'Catch-all' => 'unknown',
+        'Grey-listed' => 'unknown',
+    ];
+
+    public function __construct($apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
+
+    public function verify($email)
+    {
+        throw new Exception('Single email address verification not supported');
+    }
+
+    // INTERFACE
+    public function bulkSubmit(Builder $subscriberQuery) : string
+    {
+        $file = curl_file_create('/tmp/testbulk.txt');
+        $data = [
+          'filename' => $file,
+          'api_key' => $this->apiKey,
+        ];
+
+        $url = 'https://client.myemailverifier.com/verifier/upload_file';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        $rawResponse = curl_exec($ch); //return FILE ID to get file status and download url
+        if (curl_errno($ch)) {
+            throw new Exception('Something wrong connecting to MyEmailVerifier.com: '.curl_error($ch));
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (200 != $httpcode) {
+            throw new Exception('Something wrong from MyEmailVerifier.com: '.$rawResponse);
+        }
+
+        $response = json_decode($rawResponse, true);
+
+        if (empty($response) || !array_key_exists('file_id', $response) || empty($response['file_id'])) {
+            throw new Exception('Invalid response from MyEmailVerifier.com ("file_id" is required): '.$rawResponse);
+        }
+
+        return $response['file_id'];
+    }
+
+    public function bulkCheck(string $token, Closure $callback) : bool
+    {
+        // check if progress is done
+        $url = "https://client.myemailverifier.com/verifier/file_info/{$this->apiKey}/{$token}";
+        $ch = curl_init($url);
+
+        // Set options for data retrieval
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Capture the response
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects (optional)
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        // Execute the curl request
+
+        $rawResponse = curl_exec($ch);
+        if (curl_errno($ch)) {
+            throw new Exception("Something wrong while fetching result (file ID#{$token}) from MyEmailVerifier.com: ".curl_error($ch));
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (200 != $httpcode) {
+            throw new Exception("Something wrong while fetching result (file ID#{$token}) from MyEmailVerifier.com: ".$rawResponse);
+        }
+
+        $response = json_decode($rawResponse, true);
+        if (empty($response) || !array_key_exists('ready_for_download', $response)) {
+            throw new Exception("Something wrong while fetching result (file ID#{$token}) from MyEmailVerifier.com. Invalid response ('ready_for_download' is required): {$rawResponse}");
+        }
+
+        if ($response['ready_for_download'] == "1") {
+            if (!array_key_exists('file_path', $response)) {
+                throw new Exception("Something wrong while fetching result (file ID#{$token}) from MyEmailVerifier.com. No 'file_path' returned: {$rawResponse}");
+            }
+
+            $this->downloadResult($response, $callback);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function downloadResult($response, Closure $callback)
+    {
+        // File name looks like: c98645cbae77b49513efde4aa04fb942-669394a1d9b4e
+
+        $basePath = storage_path('app/verification/MyEmailVerifier/');
+        if (!file_exists($basePath)) {
+            mkdir($basePath, 0777, $recursive = true);
+        }
+
+        $tmpResultFile = join_paths($basePath, md5($this->apiKey)."-".uniqid());
+
+        try {
+            curl_download($response['file_path'], $tmpResultFile);
+        } catch(Exception $ex) {
+            throw new Exception('Cannot download result from MyEmailVerifier: '.$ex->getMessage());
+        }
+
+        list($headers, $count, $results) = read_csv($tmpResultFile, $hasHeaders = true, $ignoreEmptyHeader = true);
+
+        /* Sample result
+
+            [
+                "" => "nghi@b-teka.com",
+                "Result" => "Valid",
+                "RoleBased" => "false",
+                "FreeDomain" => "false",
+                "Diagnosis" => "Valid mailbox",
+            ]
+        */
+
+        foreach ($results as $raw) {
+            $email = $raw[''];
+            $verificationResult = $this->resultMap[$raw['Result']];
+            $callback($email, $verificationResult, json_encode($raw));
+        }
+
+        \Illuminate\Support\Facades\File::delete($tmpResultFile);
+    }
+
+    public function isBulkVerifySupported() : bool
+    {
+        return true;
+    }
+}

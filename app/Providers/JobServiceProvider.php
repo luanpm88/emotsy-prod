@@ -28,7 +28,11 @@ class JobServiceProvider extends ServiceProvider
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
                 $monitor = $job->monitor;
-                if (is_null($monitor->batch_id)) {
+                // Notice that only original jobs are associated with a job monitor
+                // Jobs that are later on added with ->batch()->add() are not!
+                // This is a design flaw
+                // However, jobmonitor is going to be replaced soon
+                if ($monitor && is_null($monitor->batch_id)) {
                     // With batch, status is already set in the campaign.run() method (executed by RunCampaign job)
                     $monitor->setRunning();
                 }
@@ -40,7 +44,11 @@ class JobServiceProvider extends ServiceProvider
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
                 $monitor = $job->monitor;
-                if (is_null($monitor->batch_id)) {
+                // Notice that only original jobs are associated with a job monitor
+                // Jobs that are later on added with ->batch()->add() are not!
+                // This is a design flaw
+                // However, jobmonitor is going to be replaced soon
+                if ($monitor && is_null($monitor->batch_id)) {
                     $monitor->setDone();
                 }
             }
@@ -51,7 +59,11 @@ class JobServiceProvider extends ServiceProvider
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
                 $monitor = $job->monitor;
-                if (is_null($monitor->batch_id)) {
+                // Notice that only original jobs are associated with a job monitor
+                // Jobs that are later on added with ->batch()->add() are not!
+                // This is a design flaw
+                // However, jobmonitor is going to be replaced soon
+                if ($monitor && is_null($monitor->batch_id)) {
                     $monitor->setFailed($event->exception);
                 }
             }
