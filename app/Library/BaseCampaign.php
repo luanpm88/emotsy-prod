@@ -330,6 +330,9 @@ class BaseCampaign extends Model
                 $campaign = $className::findByUid($campaignId);
                 $campaign->logger()->info('Finally callback of batch! Updating cache');
                 $campaign->updateCache();
+                if (Setting::isYes('campaign.duplicate')) {
+                    $campaign->cleanupDuplicateTable();
+                }
             }
         );
 
@@ -537,6 +540,14 @@ class BaseCampaign extends Model
     public function getDuplicateTable()
     {
         return '__campaign_duplicate_'.$this->uid;
+    }
+
+    public function cleanupDuplicateTable()
+    {
+        $duplicateTable = $this->getDuplicateTable();
+        $duplicateTableWithPrefix = table($duplicateTable);
+
+        DB::statement("DROP TABLE IF EXISTS `{$duplicateTableWithPrefix}`;");
     }
 
     // Create a table with duplicate emails, along with the subscriber_id to keep
