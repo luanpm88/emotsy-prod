@@ -64,6 +64,10 @@ class BulkVerify implements ShouldQueue
             return;
         }
 
+        $this->monitor->updateJsonData([
+            'percentage' => $this->mailList->getVerifiedSubscribersPercentage() * 100,
+        ]);
+
         $logger = $this->mailList->logger();
         $logger->info('+ Start bulk verifying');
         $perSubmit = static::LIMIT_PER_SUBMIT;
