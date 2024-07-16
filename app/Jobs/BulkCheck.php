@@ -93,7 +93,7 @@ class BulkCheck implements ShouldQueue
         if ($check) {
             $this->updateVerificationResults($results);
 
-            $percentageDone = $this->mailList->getVerifiedSubscribersPercentage() * 100;
+            $percentageDone = round($this->mailList->getVerifiedSubscribersPercentage() * 100, 2);
             $this->monitor->updateJsonData([
                 'message' => 'Verification is in progress...',
                 'percentage' => $percentageDone,

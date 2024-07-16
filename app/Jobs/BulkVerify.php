@@ -65,7 +65,7 @@ class BulkVerify implements ShouldQueue
         }
 
         $this->monitor->updateJsonData([
-            'percentage' => $this->mailList->getVerifiedSubscribersPercentage() * 100,
+            'percentage' => round($this->mailList->getVerifiedSubscribersPercentage() * 100, 2),
         ]);
 
         $logger = $this->mailList->logger();
