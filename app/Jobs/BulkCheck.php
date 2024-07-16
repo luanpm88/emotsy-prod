@@ -111,7 +111,7 @@ class BulkCheck implements ShouldQueue
                 'message' => 'Verification is in progress.....',
             ]);
 
-            $this->mailList->logger()->info('- Wait for verification result.....');
+            $this->mailList->logger()->info('- Check again in 10 seconds');
 
             // wait until result is available, check again
             $this->release(10);
