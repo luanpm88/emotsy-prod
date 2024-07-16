@@ -37,7 +37,7 @@ class BulkVerify implements ShouldQueue
     protected $mailList;
     protected $subscription;
 
-    function __construct(MailList $mailList, EmailVerificationServer $server, Subscription $subscription)
+    public function __construct(MailList $mailList, EmailVerificationServer $server, Subscription $subscription)
     {
         $this->mailList = $mailList;
         $this->server = $server;

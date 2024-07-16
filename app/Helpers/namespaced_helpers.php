@@ -625,7 +625,7 @@ function curl_download($url, $filepath)
     $fp = fopen($filepath, 'w+');
 
     // Here is the file we are downloading, replace spaces with %20
-    $ch = curl_init(str_replace(" ","%20",$url));
+    $ch = curl_init(str_replace(" ", "%20", $url));
 
     // give curl the file pointer so that it can write to it
     curl_setopt($ch, CURLOPT_FILE, $fp);

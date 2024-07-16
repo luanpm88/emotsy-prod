@@ -14,7 +14,7 @@ class EmailListValidation implements VerifyInterface
         $this->apiKey = $apiKey;
     }
 
-    public function isBulkVerifySupported() : bool
+    public function isBulkVerifySupported(): bool
     {
         return false;
     }

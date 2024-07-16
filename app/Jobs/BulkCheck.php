@@ -12,9 +12,10 @@ use Acelle\Library\Traits\Trackable;
 use Acelle\Model\Subscription;
 use Acelle\Model\MailList;
 use Acelle\Model\EmailVerificationServer;
-use function Acelle\Helpers\create_temp_db_table;
 use DB;
 use Exception;
+
+use function Acelle\Helpers\create_temp_db_table;
 
 class BulkCheck implements ShouldQueue
 {
@@ -34,7 +35,7 @@ class BulkCheck implements ShouldQueue
     protected $subscription;
     protected $token;
 
-    function __construct(MailList $mailList, EmailVerificationServer $server, Subscription $subscription, $token)
+    public function __construct(MailList $mailList, EmailVerificationServer $server, Subscription $subscription, $token)
     {
         $this->mailList = $mailList;
         $this->server = $server;
@@ -69,13 +70,13 @@ class BulkCheck implements ShouldQueue
         $serviceClient = $this->server->getServiceClient();
 
         try {
-            $check = $serviceClient->bulkCheck($this->token, function($email, $verificationStatus, $raw) use (&$results) {
+            $check = $serviceClient->bulkCheck($this->token, function ($email, $verificationStatus, $raw) use (&$results) {
                 $results[] = [
                     'email' => $email,
                     'status' => $verificationStatus,
                     'raw' => $raw,
                 ];
-            }, function($response) {
+            }, function ($response) {
                 $this->mailList->logger()->info('- Wait: '.$response);
             });
         } catch (\ZeroBounce\SDK\ZBException $ex) {
@@ -129,14 +130,16 @@ class BulkCheck implements ShouldQueue
         if (empty($results)) {
             $this->mailList->logger()->warning("- Empty verification results");
         } else {
-            $sample = implode(', ', array_map(function($r) {
+            $sample = implode(', ', array_map(
+                function ($r) {
                     return $r['email'];
-                }, array_slice($results, 0,4)
+                },
+                array_slice($results, 0, 4)
             ));
             $this->mailList->logger()->info("- ==> Updating verification results (".sizeof($results)." records): {$sample}...");
         }
 
-        create_temp_db_table($tmpFields, $results, function($tmpTable) {
+        create_temp_db_table($tmpFields, $results, function ($tmpTable) {
             $nameWithPrefix = table($tmpTable);
 
             // IMPORTANT: do not use printf(), use sprintf() instead. printf produces and additional trailing enter char that causes invalid SQL syntax
@@ -148,7 +151,7 @@ class BulkCheck implements ShouldQueue
                   s.last_verification_by = %s,
                   s.last_verification_result = t.raw
                 WHERE mail_list_id = %s
-            ", table('subscribers'), $nameWithPrefix, db_quote($this->server->name), $this->mailList->id );
+            ", table('subscribers'), $nameWithPrefix, db_quote($this->server->name), $this->mailList->id);
 
             DB::statement($sql);
         });

@@ -82,7 +82,7 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
         return [$verificationStatus, $rawResponse];
     }
 
-    public function isBulkVerifySupported() : bool
+    public function isBulkVerifySupported(): bool
     {
         return true;
     }
@@ -106,7 +106,7 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
             $response = ZeroBounceApi::Instance()->sendFile(
                 $filepath,                  // The csv or txt file
                 $emailAddressColumn = 1,    // The column index of the email address in the file. Index starts at 1
-                                            // The URL will be used as a callback after the file is sent (not needed)
+                // The URL will be used as a callback after the file is sent (not needed)
                 $hasHeadersRow = false   // If the first row from the submitted file is a header row. True or False
             );
 
@@ -123,17 +123,17 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
         return $fileId;
     }
 
-    public function bulkSubmit(Builder $subscriberQuery) : string
+    public function bulkSubmit(Builder $subscriberQuery): string
     {
         // Likely to throw RateLimitExceeded
-        $fileId = execute_with_limits([$this->initRateLimitTracker()], $creditTrackers = [], function() use ($subscriberQuery) {
+        $fileId = execute_with_limits([$this->initRateLimitTracker()], $creditTrackers = [], function () use ($subscriberQuery) {
             return $this->submit($subscriberQuery);
         });
 
         return $fileId;
     }
 
-    public function bulkCheck(string $token, Closure $doneCallback, Closure $waitCallback = null) : bool
+    public function bulkCheck(string $token, Closure $doneCallback, Closure $waitCallback = null): bool
     {
         ZeroBounceApi::Instance()->initialize($this->apiKey);
 

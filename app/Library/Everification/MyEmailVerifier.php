@@ -33,7 +33,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
     }
 
     // INTERFACE
-    public function bulkSubmit(Builder $subscriberQuery) : string
+    public function bulkSubmit(Builder $subscriberQuery): string
     {
         $basePath = storage_path('app/verification/MyEmailVerifier/upload/');
         if (!file_exists($basePath)) {
@@ -83,7 +83,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         }
     }
 
-    public function bulkCheck(string $token, Closure $doneCallback, Closure $waitCallback = null) : bool
+    public function bulkCheck(string $token, Closure $doneCallback, Closure $waitCallback = null): bool
     {
         // check if progress is done
         $url = "https://client.myemailverifier.com/verifier/file_info/{$this->apiKey}/{$token}";
@@ -169,7 +169,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         \Illuminate\Support\Facades\File::delete($tmpResultFile);
     }
 
-    public function isBulkVerifySupported() : bool
+    public function isBulkVerifySupported(): bool
     {
         return true;
     }

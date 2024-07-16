@@ -44,7 +44,7 @@ class TranslationController extends Controller
         if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
-        
+
         $phrases = $query->paginate($request->per_page);
 
         return view('admin.translation.phrasesList', [

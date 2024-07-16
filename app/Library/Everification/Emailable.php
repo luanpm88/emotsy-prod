@@ -71,7 +71,7 @@ class Emailable implements VerifyInterface
         return $map[$json['state']];
     }
 
-    public function isBulkVerifySupported() : bool
+    public function isBulkVerifySupported(): bool
     {
         return false;
     }
