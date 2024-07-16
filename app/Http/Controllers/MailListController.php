@@ -795,7 +795,13 @@ class MailListController extends Controller
             $subscription = null;
         }
 
-        $job = $list->dispatchVerificationJob($server, $subscription);
+        $verificationService = $server->getServiceClient();
+
+        if (is_null($verificationService) || !$verificationService->isBulkVerifySupported()) {
+            $job = $list->dispatchVerificationJob($server, $subscription);
+        } else {
+            $job = $list->dispatchBulkVerificationJob($server, $subscription);
+        }
 
         // Return
         return response()->json([
@@ -846,7 +852,7 @@ class MailListController extends Controller
             throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
         }
 
-        $progress = $list->getProgress($job);
+        $progress = $list->getVerificationProgress($job);
 
         // Get progress updated by the import process and status of the final job monitor
         return response()->json($progress);

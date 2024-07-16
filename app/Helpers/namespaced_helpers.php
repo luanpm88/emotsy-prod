@@ -441,7 +441,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         }
 
         // Execute task
-        $task();
+        return $task();
     } catch (\Throwable $exception) {
         // Rollback 2: when task error
         // @important: rate is counted even for a failed operation attempt

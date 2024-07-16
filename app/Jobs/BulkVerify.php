@@ -9,9 +9,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Library\Traits\Trackable;
+use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Model\Subscription;
 use Acelle\Model\MailList;
 use Acelle\Model\EmailVerificationServer;
+use Exception;
 
 class BulkVerify implements ShouldQueue
 {
@@ -25,7 +27,11 @@ class BulkVerify implements ShouldQueue
     public $timeout = 900;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
-    public $tries = 1;
+
+    public const LIMIT_PER_SUBMIT = 100;
+
+    // Allow it to try MANY times (in case of rate limit exceed)
+    // public $tries = 1;
 
     protected $server;
     protected $mailList;
@@ -33,33 +39,101 @@ class BulkVerify implements ShouldQueue
 
     function __construct(MailList $mailList, EmailVerificationServer $server, Subscription $subscription)
     {
-        $this->server = $server;
         $this->mailList = $mailList;
+        $this->server = $server;
         $this->subscription = $subscription;
+    }
+
+    /**
+     * Determine the time at which the job should timeout.
+     *
+     * @return \DateTime
+     */
+    public function retryUntil()
+    {
+        // @important: remember that messages might be released over and over
+        // if there is any limit setting in place
+        // As a result, it is just save to have it retry virtually forever
+        return now()->addDays(7);
     }
 
     public function handle()
     {
         if ($this->batch()->cancelled()) {
+            $this->mailList->logger()->warning('Job cancelled');
             return;
         }
 
-        $maxPerBatch = 100;
-        $subscribersQuery = $this->mailList->subscribers()->unverified()->limit($maxPerBatch)->getQuery();
-        $logger = $this->mailList->logger('Starting...');
+        $logger = $this->mailList->logger();
+        $logger->info('+ Start bulk verifying');
+        $perSubmit = static::LIMIT_PER_SUBMIT;
+        $creditTracker = $this->subscription->getVerifyEmailCreditTracker();
+        if ($creditTracker->isZero()) {
+            $logger->warning('+ Verification credits exceeded!');
+            throw new Exception('Verification credits exceeded!');
+        }
 
-        if (!$subscribersQuery->exists()) {
+        $subscribersQuery = $this->mailList->subscribers()->unverified()->getQuery();
+        $unverifiedCount = $subscribersQuery->count();
+        if ($unverifiedCount == 0) {
+            $this->monitor->updateJsonData([
+                'message' => "Verification done, all contacts email addresses are verified",
+                'percentage' => 100,
+            ]);
+
             $logger->info('No contact left, verification done');
             return;
         }
 
-        // Submit a partition of list to the remote verification service
-        // Get the session token or id, use it to check status
-        $token = $this->server->getServiceClient()->bulkSubmit($subscribersQuery);
+        if ($unverifiedCount < $perSubmit) {
+            $perSubmit = $unverifiedCount;
+        }
 
-        // Dispatch checker job
-        $bulkCheck = new BulkCheck($this->mailList, $this->server, $this->subscription, $token);
-        $bulkCheck->setMonitor($this->monitor);
-        $this->batch()->add($bulkCheck);
+        if (!$creditTracker->isUnlimited()) {
+            $remainingCredits = $creditTracker->getRemainingCredits();
+            if ($remainingCredits >= $perSubmit) {
+                $logger->info("+ Remaining credits is {$remainingCredits}, ok to take {$perSubmit}");
+            } else {
+                $logger->info("+ Remaining credits is only {$remainingCredits}!");
+                $perSubmit = $remainingCredits;
+            }
+        } else {
+            $this->mailList->logger()->info("+ Good news, we have unlimited verification credits. Taking {$perSubmit} per batch");
+        }
+
+        $subscribersQuery = $subscribersQuery->limit($perSubmit);
+
+        try {
+            // Submit a partition of list to the remote verification service
+            // Get the session token or id, use it to check status
+            $token = $this->server->getServiceClient()->bulkSubmit($subscribersQuery);
+
+            //$token = 'dd93d096-c379-4352-9ff8-eba47d889833';
+
+            // Tricky / ugly code, count credits, no concurrency safe
+            if (!$creditTracker->isUnlimited()) {
+                for ($i = 0; $i < $perSubmit; $i += 1) {
+                    $creditTracker->count();
+                }
+            }
+
+            $this->mailList->logger()->info("+ {$perSubmit} credits conted, {$creditTracker->getRemainingCredits()} remains.");
+            $this->mailList->logger()->info("+ Submitted! Waiting for BulkCheck job...");
+
+            sleep(1);
+
+            // Dispatch checker job
+            $bulkCheck = new BulkCheck($this->mailList, $this->server, $this->subscription, $token);
+            $bulkCheck->setMonitor($this->monitor);
+            $this->batch()->add($bulkCheck);
+        } catch (RateLimitExceeded $ex) {
+            $this->mailList->logger()->warning('+ Rate limit exceeded, try again in 10 seconds. '.$ex->getMessage());
+            $this->release(10);
+            return;
+        } catch (\Throwable $ex) {
+            // Laravel batch cannot catch Throwable errors (it is handled by higher level of Laravel)
+            // Just catch Throwable here and throw Exception instead so that errors can be logged to job monitor
+            throw new Exception('Verification failed. '.$ex->getMessage());
+        }
     }
 }

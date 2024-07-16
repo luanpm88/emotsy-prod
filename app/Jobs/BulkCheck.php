@@ -58,8 +58,11 @@ class BulkCheck implements ShouldQueue
     public function handle()
     {
         if ($this->batch()->cancelled()) {
+            $this->mailList->logger()->info('- Cancelled, token: '.$this->token);
             return;
         }
+
+        $this->mailList->logger()->info('- Checking with token: '.$this->token);
 
         $results = [];
         $serviceClient = $this->server->getServiceClient();
@@ -69,18 +72,35 @@ class BulkCheck implements ShouldQueue
                 'status' => $verificationStatus,
                 'raw' => $raw,
             ];
+        }, function($response) {
+            $this->mailList->logger()->info('- Wait: '.$response);
         });
 
         if ($check) {
             $this->updateVerificationResults($results);
 
+            $percentageDone = $this->mailList->getVerifiedSubscribersPercentage() * 100;
+            $this->monitor->updateJsonData([
+                'message' => 'Verification is in progress...',
+                'percentage' => $percentageDone,
+            ]);
+
+            $this->mailList->logger()->info('- List % verified: '.$percentageDone);
+
             // Check done, launch a new round
             $job = new BulkVerify($this->mailList, $this->server, $this->subscription);
             $job->setMonitor($this->monitor);
             $this->batch()->add($job);
+            return;
         } else {
+            $this->monitor->updateJsonData([
+                'message' => 'Verification is in progress.....',
+            ]);
+
+            $this->mailList->logger()->info('- Wait for verification result.....');
+
             // wait until result is available, check again
-            $this->release(120);
+            $this->release(10);
             return;
         }
     }
@@ -93,19 +113,31 @@ class BulkCheck implements ShouldQueue
             "`raw` TEXT",
         ];
 
+        if (empty($results)) {
+            $this->mailList->logger()->warning("- Empty verification results");
+        } else {
+            $sample = implode(', ', array_map(function($r) {
+                    return $r['email'];
+                }, array_slice($results, 0,4)
+            ));
+            $this->mailList->logger()->info("- Updating verification results (".sizeof($results)." records): {$sample}...");
+        }
+
         create_temp_db_table($tmpFields, $results, function($tmpTable) {
             $nameWithPrefix = table($tmpTable);
 
             // IMPORTANT: do not use printf(), use sprintf() instead. printf produces and additional trailing enter char that causes invalid SQL syntax
-            DB::statement(sprintf("
+            $sql = sprintf("
                 UPDATE %s as s INNER JOIN %s t ON s.email = t.email
                 SET
-                  s.status = t.status,
+                  s.verification_status = t.status,
                   s.last_verification_at = NOW(),
                   s.last_verification_by = %s,
                   s.last_verification_result = t.raw
                 WHERE mail_list_id = %s
-            ", table('subscribers'), $nameWithPrefix, db_quote($this->server->name), $this->mailList->id ));
+            ", table('subscribers'), $nameWithPrefix, db_quote($this->server->name), $this->mailList->id );
+
+            DB::statement($sql);
         });
     }
 }

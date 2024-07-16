@@ -8,5 +8,5 @@ use Closure;
 interface BulkVerifyInterface
 {
     public function bulkSubmit(Builder $subscriberQuery): string;
-    public function bulkCheck(string $token, Closure $callback) : bool;
+    public function bulkCheck(string $token, Closure $doneCallback, Closure $waitCallback) : bool;
 }

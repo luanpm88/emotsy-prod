@@ -243,6 +243,8 @@ class MailList extends Model
             throw new Exception('Cannot start job: empty verification server');
         }
 
+        $this->logger()->info("Start BULK verification...");
+
         $job = new BulkVerify($this, $server, $subscription);
         $jobTypeName = static::JOB_TYPE_VERIFY_LIST;
         $monitor = $this->dispatchWithBatchMonitor(
@@ -2001,6 +2003,16 @@ class MailList extends Model
             // $progress['processed']
             // $progress['failed']
         }
+
+        return $progress;
+    }
+
+    public function getVerificationProgress($job)
+    {
+        $progress = $job->getJsonData();
+        $progress['status'] = $job->status;
+        $progress['error'] = $job->error;
+        // $progress['percentage'] is already available
 
         return $progress;
     }

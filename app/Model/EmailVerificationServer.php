@@ -70,7 +70,8 @@ class EmailVerificationServer extends Model
                 return $this->service;
 
             case 'zerobounce.net':
-                $this->service = new ZeroBounce($this->getOptions(), $this->logger());
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new ZeroBounce($apiKey);
                 return $this->service;
 
             case 'emaillistvalidation.com':

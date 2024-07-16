@@ -18,7 +18,7 @@ class JobServiceProvider extends ServiceProvider
     {
         // IMPORTANT:
         // ONLY TRIGGER QUEUE EVENTS FOR JOB_MONITORS THAT DO NOT HAVE BATCH
-        // IT IS BECAUSE ONES WIH A BATCH WILL BE UPDATED BY BATCH EVENTS, EXCEPT FOR "BEFORE"
+        // IT IS BECAUSE ONES WIH A BATCH WILL BE UPDATED BY BATCH EVENTS, EXCEPT FOR EVEN "BEFORE"
         // Initialize the MailLog which writes logs to mail.log
         $this->initMailLog();
 
