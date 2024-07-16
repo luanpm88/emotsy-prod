@@ -102,17 +102,7 @@ return [
         ], [
             'id' => 'myemailverifier.com',
             'name' => 'myEmailVerifier',
-            'uri' => 'https://client.myemailverifier.com/verifier/validate_single/{EMAIL}/{API_KEY}',
-            'request_type' => 'GET',
             'fields' => [ 'api_key' ],
-            'result_xpath' => '$.Status',
-            'result_map' => [
-                'Valid' => 'deliverable',
-                'Unknown' => 'unknown',
-                'Invalid' => 'undeliverable',
-                'Catch-all' => 'unknown',
-                'Grey-listed' => 'unknown',
-            ]
         ]
 
     ]
