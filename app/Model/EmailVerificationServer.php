@@ -75,7 +75,8 @@ class EmailVerificationServer extends Model
                 return $this->service;
 
             case 'emaillistvalidation.com':
-                $this->service = new EmailListValidation($this->getOptions(), $this->logger());
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new EmailListValidation($apiKey);
                 return $this->service;
 
             case 'myemailverifier.com':

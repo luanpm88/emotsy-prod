@@ -131,7 +131,7 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
         });
 
         return $fileId;
-}
+    }
 
     public function bulkCheck(string $token, Closure $doneCallback, Closure $waitCallback = null) : bool
     {

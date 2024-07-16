@@ -3,23 +3,25 @@
 namespace Acelle\Library\Everification;
 
 use Exception;
+use Acelle\Library\Contracts\VerifyInterface;
 
-class EmailListValidation
+class EmailListValidation implements VerifyInterface
 {
-    protected $options;
-    protected $logger;
+    protected $apiKey;
 
-    public function __construct($options, $logger = null)
+    public function __construct($apiKey)
     {
-        $this->options = $options;
-        $this->logger = $logger;
+        $this->apiKey = $apiKey;
+    }
+
+    public function isBulkVerifySupported() : bool
+    {
+        return false;
     }
 
     public function verify($email)
     {
-        $key = $this->options['api_key'];
-
-        $url = "https://app.emaillistvalidation.com/api/verifEmailv2?secret=".$key."&email=".$email;
+        $url = "https://app.emaillistvalidation.com/api/verifEmailv2?secret={$this->apiKey}&email={$email}";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

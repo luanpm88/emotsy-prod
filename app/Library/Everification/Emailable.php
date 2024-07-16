@@ -5,8 +5,9 @@ namespace Acelle\Library\Everification;
 use Exception;
 use GuzzleHttp\Client;
 use Acelle\Library\Exception\VerificationTakesLongerThanNormal;
+use Acelle\Library\Contracts\VerifyInterface;
 
-class Emailable
+class Emailable implements VerifyInterface
 {
     protected $apiKey;
 
@@ -68,5 +69,10 @@ class Emailable
         }
 
         return $map[$json['state']];
+    }
+
+    public function isBulkVerifySupported() : bool
+    {
+        return false;
     }
 }

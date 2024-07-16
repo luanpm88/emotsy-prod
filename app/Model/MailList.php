@@ -2014,6 +2014,14 @@ class MailList extends Model
         $progress['error'] = $job->error;
         // $progress['percentage'] is already available
 
+        // For compatibility with single verification
+        if (empty($progress['percentage']) || $progress['percentage'] == 0) {
+            $progress['percentage'] = $job->getBatch()->progress();
+        }
+        $progress['total'] = $job->getBatch()->totalJobs;
+        $progress['processed'] = $job->getBatch()->processedJobs();
+        $progress['failed'] = $job->getBatch()->failedJobs;
+
         return $progress;
     }
 
