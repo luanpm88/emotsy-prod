@@ -7,6 +7,8 @@ use Closure;
 use Acelle\Library\Contracts\VerifyInterface;
 use Acelle\Library\Contracts\BulkVerifyInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Acelle\Library\InMemoryRateTracker;
+use Acelle\Library\RateLimit;
 
 use function Acelle\Helpers\curl_download;
 use function Acelle\Helpers\read_csv;
@@ -32,8 +34,19 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         throw new Exception('Single email address verification not supported');
     }
 
-    // INTERFACE
     public function bulkSubmit(Builder $subscriberQuery): string
+    {
+
+        return '193688';
+        // Likely to throw RateLimitExceeded
+        $fileId = execute_with_limits([$this->initRateLimitTracker()], $creditTrackers = [], function () use ($subscriberQuery) {
+            return $this->submit($subscriberQuery);
+        });
+
+        return $fileId;
+    }
+
+    private function submit(Builder $subscriberQuery): string
     {
         $basePath = storage_path('app/verification/MyEmailVerifier/upload/');
         if (!file_exists($basePath)) {
@@ -83,6 +96,20 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         }
     }
 
+    public function initRateLimitTracker()
+    {
+        $limits = [
+            new RateLimit(15, 1, 'minute', '15 per minute limit'),
+        ];
+
+        // Uniq per API KEY
+        $key = 'rate-tracker-log-myemailverifier-account-'.md5($this->apiKey);
+        $tracker = new InMemoryRateTracker($key, $limits);
+        $tracker->cleanup('24 hours');
+
+        return $tracker;
+    }
+
     public function bulkCheck(string $token, Closure $doneCallback, Closure $waitCallback = null): bool
     {
         // check if progress is done
@@ -117,14 +144,14 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
         if ($response['ready_for_download'] == "1") {
             if (!array_key_exists('file_path', $response)) {
-                throw new Exception("Something wrong while fetching result (file ID#{$token}) from MyEmailVerifier.com. No 'file_path' returned: {$rawResponse}");
+                throw new Exception("Something wrong while fetching result (file ID#{$token}) from MyEmailVerifier.com. No 'file_path' found: {$rawResponse}");
             }
 
             $this->downloadResult($response, $doneCallback);
             return true;
         } else {
             if ($waitCallback) {
-                $waitCallback($response);
+                $waitCallback($rawResponse);
             }
             return false;
         }
