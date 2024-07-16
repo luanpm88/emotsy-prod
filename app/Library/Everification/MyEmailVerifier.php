@@ -187,6 +187,10 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         */
 
         foreach ($results as $raw) {
+            if (!array_key_exists($raw['Result'], $this->resultMap)) {
+                throw new Exception('Unknown status code returned from MyEmailVerifier.com: '.$raw['Result']);
+            }
+
             $email = $raw[''];
             $verificationResult = $this->resultMap[$raw['Result']];
             $callback($email, $verificationResult, json_encode($raw));
