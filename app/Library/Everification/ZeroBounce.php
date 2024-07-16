@@ -61,22 +61,11 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
             throw new Exception('Invalid ZeroBounce API KEY');
         }
 
-        // See list of 7 status codes here: https://www.zerobounce.net/docs/email-validation-api-quickstart/#status_codes__v2__
-        $statusMap = [
-            'valid' => 'deliverable',
-            'invalid' => 'undeliverable',
-            'catch-all' => 'deliverable',
-            'unknown'    => 'unknown',
-            'spamtrap' => 'risky',
-            'abuse' => 'risky', // really?
-            'do_not_mail' => 'risky', // really?
-        ];
-
-        if (!array_key_exists(strtolower($response->status), $statusMap)) {
+        if (!array_key_exists(strtolower($response->status), $this->resultMap)) {
             throw new Exception('Unknown status code returned from ZeroBounce: '.$response->status);
         }
 
-        $verificationStatus = $statusMap[strtolower($response->status)];
+        $verificationStatus = $this->resultMap[strtolower($response->status)];
         $rawResponse = $response->__toString();
 
         return [$verificationStatus, $rawResponse];
@@ -181,6 +170,11 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
 
         foreach ($results as $raw) {
             $email = $raw['Email Address'];
+
+            if (!array_key_exists($raw['ZB Status'], $this->resultMap)) {
+                throw new Exception('Unknown status code returned from ZeroBounce: '.$raw['ZB Status']);
+            }
+
             $verificationResult = $this->resultMap[$raw['ZB Status']];
             $callback($email, $verificationResult, json_encode($raw));
         }
