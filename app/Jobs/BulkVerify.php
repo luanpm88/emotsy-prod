@@ -107,8 +107,7 @@ class BulkVerify implements ShouldQueue
             // Submit a partition of list to the remote verification service
             // Get the session token or id, use it to check status
             $token = $this->server->getServiceClient()->bulkSubmit($subscribersQuery);
-
-            //$token = 'dd93d096-c379-4352-9ff8-eba47d889833';
+            $this->mailList->logger()->info("+ ==> Submitted! Waiting for BulkCheck job...");
 
             // Tricky / ugly code, count credits, no concurrency safe
             if (!$creditTracker->isUnlimited()) {
@@ -118,7 +117,7 @@ class BulkVerify implements ShouldQueue
             }
 
             $this->mailList->logger()->info("+ {$perSubmit} credits conted, {$creditTracker->getRemainingCredits()} remains.");
-            $this->mailList->logger()->info("+ Submitted! Waiting for BulkCheck job...");
+
 
             sleep(1);
 

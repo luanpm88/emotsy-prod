@@ -36,7 +36,7 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
     public function initRateLimitTracker()
     {
         $limits = [
-            new RateLimit(15, 1, 'minute', 'ZeroBounce limits, see https://www.zerobounce.net/docs/api-dashboard/api-rate-limits/'),
+            new RateLimit(15, 1, 'minute', '15 per minute limit. See more ZeroBounce limits at: https://www.zerobounce.net/docs/api-dashboard/api-rate-limits/'),
         ];
 
         // Uniq per API KEY
