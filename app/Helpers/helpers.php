@@ -25,8 +25,8 @@ use function Acelle\Helpers\xml_to_array;
 // List of constants
 // Job types
 define('ACM_QUEUE_TYPE_DEFAULT', 'default');
-define('ACM_QUEUE_TYPE_IMPORT', 'import'); // must be executed on the same server as Nginx/Apache
-define('ACM_QUEUE_TYPE_HIGH', 'high');
+define('ACM_QUEUE_TYPE_IMPORT', 'import');    // must be executed on the same server as Nginx/Apache
+define('ACM_QUEUE_TYPE_HIGH', 'high');        // For campaigns that are manually rerun by users (Run at high priority), also for bulk verification
 define('ACM_QUEUE_TYPE_BATCH', 'batch');
 define('ACM_QUEUE_TYPE_SINGLE', 'single');
 

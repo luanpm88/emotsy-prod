@@ -249,7 +249,7 @@ class MailList extends Model
         $jobTypeName = static::JOB_TYPE_VERIFY_LIST;
         $monitor = $this->dispatchWithBatchMonitor(
             $jobTypeName, // a helpful name for future filtering/querying
-            $queue = ACM_QUEUE_TYPE_BATCH,
+            $queue = ACM_QUEUE_TYPE_HIGH, // High priority
             [$job],
             $then = null,
             $catch = null,

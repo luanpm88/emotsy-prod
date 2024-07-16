@@ -14,6 +14,7 @@ use Acelle\Model\MailList;
 use Acelle\Model\EmailVerificationServer;
 use function Acelle\Helpers\create_temp_db_table;
 use DB;
+use Exception;
 
 class BulkCheck implements ShouldQueue
 {
@@ -66,15 +67,27 @@ class BulkCheck implements ShouldQueue
 
         $results = [];
         $serviceClient = $this->server->getServiceClient();
-        $check = $serviceClient->bulkCheck($this->token, function($email, $verificationStatus, $raw) use (&$results) {
-            $results[] = [
-                'email' => $email,
-                'status' => $verificationStatus,
-                'raw' => $raw,
-            ];
-        }, function($response) {
-            $this->mailList->logger()->info('- Wait: '.$response);
-        });
+
+        try {
+            $check = $serviceClient->bulkCheck($this->token, function($email, $verificationStatus, $raw) use (&$results) {
+                $results[] = [
+                    'email' => $email,
+                    'status' => $verificationStatus,
+                    'raw' => $raw,
+                ];
+            }, function($response) {
+                $this->mailList->logger()->info('- Wait: '.$response);
+            });
+        } catch (\ZeroBounce\SDK\ZBException $ex) {
+            // In case of stupid error by ZB
+            $this->mailList->logger()->info('- \ZeroBounce\\SDK\\ZBException from ZB, release(10) and wait. Error: '.$ex->getMessage());
+            $this->release(10);
+            return;
+        } catch (\Throwable $ex) {
+            $this->mailList->logger()->warning('Failed (catched by Throwable), throw exception. Error: '.$ex->getMessage());
+            throw new Exception('Verification CHECK failed. '.$ex->getMessage());
+        }
+
 
         if ($check) {
             $this->updateVerificationResults($results);
@@ -120,7 +133,7 @@ class BulkCheck implements ShouldQueue
                     return $r['email'];
                 }, array_slice($results, 0,4)
             ));
-            $this->mailList->logger()->info("- Updating verification results (".sizeof($results)." records): {$sample}...");
+            $this->mailList->logger()->info("- ==> Updating verification results (".sizeof($results)." records): {$sample}...");
         }
 
         create_temp_db_table($tmpFields, $results, function($tmpTable) {
