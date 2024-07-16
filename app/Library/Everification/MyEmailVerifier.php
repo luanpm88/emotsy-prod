@@ -12,6 +12,7 @@ use Acelle\Library\RateLimit;
 
 use function Acelle\Helpers\curl_download;
 use function Acelle\Helpers\read_csv;
+use function Acelle\Helpers\execute_with_limits;
 
 class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 {
@@ -36,8 +37,6 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
     public function bulkSubmit(Builder $subscriberQuery): string
     {
-
-        return '193688';
         // Likely to throw RateLimitExceeded
         $fileId = execute_with_limits([$this->initRateLimitTracker()], $creditTrackers = [], function () use ($subscriberQuery) {
             return $this->submit($subscriberQuery);
