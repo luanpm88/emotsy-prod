@@ -8,13 +8,11 @@ use Acelle\Library\Exception\VerificationTakesLongerThanNormal;
 
 class Emailable
 {
-    protected $options;
-    protected $logger;
+    protected $apiKey;
 
-    public function __construct($options, $logger)
+    public function __construct($apiKey)
     {
-        $this->options = $options;
-        $this->logger = $logger;
+        $this->apiKey = $apiKey;
     }
 
     public function verify($email)
@@ -23,7 +21,7 @@ class Emailable
         $client = new Client();
 
         // build the request URI
-        $uri = "https://api.emailable.com/v1/verify?email={$email}&api_key={$this->options['api_key']}";
+        $uri = "https://api.emailable.com/v1/verify?email={$email}&api_key={$this->apiKey}";
 
         // Request
         $response = $client->request('POST', $uri, [
@@ -51,7 +49,6 @@ class Emailable
 
         if (!array_key_exists('state', $json)) {
             if (array_key_exists('message', $json)) {
-                $this->logger->warning('Skipped. Server responds: '.$raw);
                 throw new VerificationTakesLongerThanNormal($raw);
             } else {
                 throw new Exception('Unexpected result from emailable.com: '.$raw);
