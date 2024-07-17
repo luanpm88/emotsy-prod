@@ -43,7 +43,7 @@ class TriggerAutomation
                 // If there is no segment condition, trigger the contact
                 if ($segments->isEmpty()) {
                     $auto->initTrigger($event->subscriber);
-                    return;
+                    continue;
                 }
 
                 $matched = false;
