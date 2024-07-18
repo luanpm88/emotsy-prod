@@ -1238,4 +1238,20 @@ class Subscriber extends Model
 
         return $validator;
     }
+
+    // $updates is a PHP array equiv. to:
+    // [{"field_uid":"668a855841b1d","value":"Field Value"},{"field_uid":"668a855843d3b","value":"Field Value"}]
+    public function bulkUpdate($updates)
+    {
+        foreach ($updates as $attr) {
+            $fieldUid = $attr['field_uid'];
+            $field = Field::findByUid($fieldUid);
+            $fieldValue = $attr['value'];
+
+            // for example: $this->custom_101 = 'New First Name';
+            $this[$field->custom_field_name] = $fieldValue;
+        }
+
+        $this->save();
+    }
 }

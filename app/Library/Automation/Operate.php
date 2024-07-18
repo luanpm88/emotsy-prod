@@ -10,6 +10,7 @@ class Operate extends Action
     public const OPERATION_TAG = 'tag';
     public const OPERATION_COPY = 'copy';
     public const OPERATION_MOVE = 'move';
+    public const OPERATION_UPDATE = 'update';
 
     /*****
 
@@ -57,6 +58,11 @@ class Operate extends Action
             $subscriber->copy($toList, $duplicateCallback);
 
             $this->logger->info(sprintf('DONE: %s contact "%s" to list "%s"', $operationType, $subscriber->email, $toList->name));
+        } elseif ($operationType == self::OPERATION_UPDATE) {
+            $updates = $this->getOption('update');
+            // $updates is a PHP array equiv. to:
+            // [{"field_uid":"668a855841b1d","value":"Field Value"},{"field_uid":"668a855843d3b","value":"Field Value"}]
+            $subscriber->bulkUpdate($updates);
         } else {
             throw new Exception("Unknown operation type: {$operationType}");
         }
@@ -96,6 +102,8 @@ class Operate extends Action
             }
 
             return sprintf('* Action: %s contact "%s" to list "%s"', $operationType, $subscriber->email, $toList->name);
+        } elseif ($operationType == self::OPERATION_UPDATE) {
+            return sprintf('* Action: Update contact value "%s"', $subscriber->email);
         } else {
             throw new Exception("Unknown operation type: {$operationType}");
         }
