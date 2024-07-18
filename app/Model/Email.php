@@ -210,9 +210,9 @@ class Email extends Model implements HasTemplateInterface
             // By default, this value is null, meaning that automation should use the default queue connection
             // specified in the .env file (QUEUE_CONNECTION)
             $job->onConnection($connection)->onQueue(ACM_QUEUE_TYPE_SINGLE);
+        } else {
+            $job->onQueue(ACM_QUEUE_TYPE_SINGLE);
         }
-
-        $job->onQueue(ACM_QUEUE_TYPE_SINGLE);
 
         safe_dispatch($job);
     }
