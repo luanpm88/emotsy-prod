@@ -551,12 +551,6 @@ function read_csv($file, $headerLine = false, $ignoreEmptyHeader = false)
     }
 }
 
-function isSendingCreditPluginActive()
-{
-    return \Acelle\Model\Plugin::isInstalled('acelle/sending-credit') &&
-        \Acelle\Model\Plugin::getByName('acelle/sending-credit')->isActive();
-}
-
 function plogger($name = null)
 {
     $formatter = new \Monolog\Formatter\LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");

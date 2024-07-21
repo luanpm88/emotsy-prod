@@ -1364,18 +1364,18 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/email-verification-plans/{uid}/visibility/on', 'EmailVerificationPlanController@visibilityOn');
     Route::post('admin/email-verification-plans/{uid}/visibility/off', 'EmailVerificationPlanController@visibilityOff');
     Route::post('admin/email-verification-plans/{uid}/delete', 'EmailVerificationPlanController@delete');
-    Route::match(['get', 'post'], 'admin/sms/email-verification-plans/billing-cycle/custom', 'EmailVerificationPlanController@billingCycleCustom');
-    Route::get('admin/sms/email-verification-plans/list', 'EmailVerificationPlanController@list');
-    Route::resource('admin/sms/email-verification-plans', 'EmailVerificationPlanController');
+    Route::match(['get', 'post'], 'admin/email-verification-plans/billing-cycle/custom', 'EmailVerificationPlanController@billingCycleCustom');
+    Route::get('admin/email-verification-plans/list', 'EmailVerificationPlanController@list');
+    Route::resource('admin/email-verification-plans', 'EmailVerificationPlanController');
 
     // Plan for Sending Credit Plan
     Route::get('admin/sending-credit-plans/delete/confirm', 'SendingCreditPlanController@deleteConfirm');
     Route::post('admin/sending-credit-plans/{uid}/visibility/on', 'SendingCreditPlanController@visibilityOn');
     Route::post('admin/sending-credit-plans/{uid}/visibility/off', 'SendingCreditPlanController@visibilityOff');
     Route::post('admin/sending-credit-plans/{uid}/delete', 'SendingCreditPlanController@delete');
-    Route::match(['get', 'post'], 'admin/sms/sending-credit-plans/billing-cycle/custom', 'SendingCreditPlanController@billingCycleCustom');
-    Route::get('admin/sms/sending-credit-plans/list', 'SendingCreditPlanController@list');
-    Route::resource('admin/sms/sending-credit-plans', 'SendingCreditPlanController');
+    Route::match(['get', 'post'], 'admin/sending-credit-plans/billing-cycle/custom', 'SendingCreditPlanController@billingCycleCustom');
+    Route::get('admin/sending-credit-plans/list', 'SendingCreditPlanController@list');
+    Route::resource('admin/sending-credit-plans', 'SendingCreditPlanController');
 
     // Translation Phrases
     Route::get('admin/translation', 'TranslationController@phrases');

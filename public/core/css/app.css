@@ -5374,10 +5374,10 @@ stat .stat-head {
   background: #777;
   border-color: #777;
 }
-.bg-paytr, .bg-paddle, .bg-flutterwave, .bg-paystack, .bg-coinpayments, .bg-stripe, .bg-braintree, .bg-offline, .bg-paypal, .bg-paypal_subscription, .bg-rezorpay {
+.bg-square, .bg-paytr, .bg-paddle, .bg-flutterwave, .bg-paystack, .bg-coinpayments, .bg-stripe, .bg-braintree, .bg-offline, .bg-paypal, .bg-paypal_subscription, .bg-rezorpay {
   position: relative;
 }
-.bg-paytr::after, .bg-paddle::after, .bg-flutterwave::after, .bg-paystack::after, .bg-razorpay::after, .bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-offline::after, .bg-paypal::after, .bg-paypal_subscription::after {
+.bg-square::after, .bg-paytr::after, .bg-paddle::after, .bg-flutterwave::after, .bg-paystack::after, .bg-razorpay::after, .bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-offline::after, .bg-paypal::after, .bg-paypal_subscription::after {
   content: "";
   background-image: url("../../images/coinpayments-logo.png");
   background-size: 140px auto;
@@ -5442,6 +5442,12 @@ margin-left: -13px;
     background-size: 65px;
     margin-top: -80px;
     margin-left: 9px;
+}
+.bg-square::after {
+    background-image: url(../../images/square.svg);
+    background-size: 45px;
+    margin-top: -10px;
+    margin-left: 10px;
 }
 .bg-razorpay {
   position: relative;

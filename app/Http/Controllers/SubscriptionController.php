@@ -233,6 +233,9 @@ class SubscriptionController extends Controller
             return redirect()->action('SubscriptionController@index');
         }
 
+        // set return url
+        Billing::setReturnUrl(action('SubscriptionController@index'));
+
         // redirect to service checkout
         return redirect()->away($customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice));
     }
