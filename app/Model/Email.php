@@ -206,12 +206,14 @@ class Email extends Model implements HasTemplateInterface
         );
 
         $connection = config('custom.automation_queue_connection');
+        $queue = $this->customer->custom_queue_name ?? ACM_QUEUE_TYPE_SINGLE;
+
         if ($connection) {
             // By default, this value is null, meaning that automation should use the default queue connection
             // specified in the .env file (QUEUE_CONNECTION)
-            $job->onConnection($connection)->onQueue(ACM_QUEUE_TYPE_SINGLE);
+            $job->onConnection($connection)->onQueue($queue);
         } else {
-            $job->onQueue(ACM_QUEUE_TYPE_SINGLE);
+            $job->onQueue($queue);
         }
 
         safe_dispatch($job);
