@@ -40,7 +40,7 @@
                     </a>
                 </li>
 
-                @if (\Acelle\Helpers\isSendingCreditPluginActive() && Auth::user()->customer->getCurrentActiveSubscription())
+                @if (Auth::user()->customer->getCurrentActiveSubscription())
                     @php
                         $sub = Auth::user()->customer->getCurrentActiveSubscription();
                         $sendCredits = $sub->getSendEmailCreditTracker()->getRemainingCredits();
