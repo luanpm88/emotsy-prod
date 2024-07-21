@@ -272,6 +272,7 @@ class SendMessage implements ShouldQueue
             if ($this->batch()) {
                 $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
                 with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $plogger, $email, $ex) {
+                    // Use DELAY FLAG to make sure that only ONE DelayJob is created
                     $delayFlag = $this->campaign->checkDelayFlag();
 
                     if ($delayFlag == true) {
@@ -304,9 +305,10 @@ class SendMessage implements ShouldQueue
 
             } else {
                 // Single queue, no batch
-                $logger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
-                $plogger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
-                $this->release(600); // should be only 60 seconds
+                $secondsToDelay = 600;
+                $logger->warning(sprintf("Delay [%s] for %s seconds (no batch): %s", $email, $secondsToDelay, $ex->getMessage()));
+                $plogger->warning(sprintf("Delay [%s] for %s seconds (no batch): %s", $email, $secondsToDelay, $ex->getMessage()));
+                $this->release($secondsToDelay); // should be only 60 seconds
             }
         } catch (Throwable $ex) {
             if (!is_null($exceptionCallback)) {
