@@ -22,7 +22,7 @@ class SendSingleMessage extends SendMessage
 
     public function afterSuccess()
     {
-        $this->campaign->logger()->info('OKIE done?');
+        $this->campaign->logger()->info('Updating trigger status (sent_at)');
 
         $autoTrigger = AutoTrigger::find($this->autoTriggerId);
         $autoTrigger->withUpdateLock(function($trigger) {
@@ -30,11 +30,7 @@ class SendSingleMessage extends SendMessage
             $action = $trigger->getActionById($this->actionId);
             $action->setOption('sent_at', now()->toString());
             $trigger->updateAction($action);
-
-
-            var_dump($action->getOptions());
-
-            $this->campaign->logger()->info('OKIE done!');
+            $this->campaign->logger()->info('Updated trigger status (sent_at)');
         });
     }
 }
