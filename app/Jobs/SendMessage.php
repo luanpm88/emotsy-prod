@@ -191,6 +191,9 @@ class SendMessage implements ShouldQueue
                 // Log successful shot
                 $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
 
+                // Callback after a job is done
+                $this->afterSuccess();
+
                 // Done, written to tracking_logs table
                 $logger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
                 $plogger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
@@ -349,5 +352,10 @@ class SendMessage implements ShouldQueue
         }
 
         $plogger->info('SendMessage: ALL done');
+    }
+
+    public function afterSuccess()
+    {
+        return;
     }
 }

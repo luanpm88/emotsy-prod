@@ -11,6 +11,7 @@ class Send extends Action
 
         Send action may result in the following cases:
           + Send OK (email queued, do not care about delivery status)
+          + Job dispatched (return false, wait until the related job updates this action sent_at value)
           + Exception (email UID not found for example, other exception...)
         In case of Exception, it is better to stop the whole automation process and write error log to the automation
         so that the responsible person can check it
@@ -45,12 +46,27 @@ class Send extends Action
             sleep(1);
         }
 
-        // queue, do not send immediately
-        $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id);
+        if (is_null($this->getOption('queued_at'))) {
+            $this->setOption('queued_at', now()->toString()); // Store UTC value
 
-        $this->logger->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));
+            echo "After set qeueue at: ";
+            var_dump($this->getOptions());
 
-        return true;
+            // IMPORTANT: update action BEFORE dispatching job. In case job executes so fast! it even write to sent_at field before writing to queue_at
+            $this->autoTrigger->updateAction($this);
+            echo "After that";
+            var_dump($this->getOptions());
+            $jobId = $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id, $this->getId());
+
+            $this->logger->info(sprintf('Queue email entitled "%s" to "%s", job id %s', $email->subject, $this->autoTrigger->subscriber->email, $jobId));
+        } elseif (is_null($this->getOption('sent_at'))) {
+            // Job dispatched, but not finish
+            $this->logger->info(sprintf('Wait for email entitled "%s" to "%s", dispatched at %s', $email->subject, $this->autoTrigger->subscriber->email, $this->getOption('queued_at')));
+            return false;
+        } else {
+            $this->logger->info(sprintf('Sent noticed! great! "%s" to "%s"', $email->subject, $this->autoTrigger->subscriber->email));
+            return true;
+        }
     }
 
     public function getEmail()
@@ -84,10 +100,16 @@ class Send extends Action
         $email = $this->getEmail();
         $subscriber = $this->autoTrigger->subscriber;
 
-        if (is_null($this->getLastExecuted())) {
-            return sprintf('* Send email "%s" to "%s"', $email->subject, $subscriber->email);
+        if (!is_null($this->getLastExecuted())) {
+            return sprintf('Sent email "%s" to "%s"', $email->subject, $subscriber->email);
+        } elseif ($this->getOption('queued_at')) {
+            $queuedAt = $this->autoTrigger->automation2->customer->parseDateTime($this->getOption('queued_at'));
+            return sprintf('Sending email "%s" to "%s". Job queued %s at %s', $email->subject, $subscriber->email, $queuedAt->diffForHumans(), $queuedAt->toString());
         }
+    }
 
-        return sprintf('Sent email "%s" to "%s"', $email->subject, $subscriber->email);
+    public function isDelayAction()
+    {
+        return true;
     }
 }

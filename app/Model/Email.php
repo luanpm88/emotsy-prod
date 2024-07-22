@@ -11,7 +11,7 @@ use Acelle\Library\StringHelper;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use Acelle\Jobs\SendMessage;
+use Acelle\Jobs\SendSingleMessage;
 use Acelle\Library\Traits\HasTemplate;
 use Acelle\Library\Traits\HasUid;
 use Exception;
@@ -187,7 +187,7 @@ class Email extends Model implements HasTemplateInterface
         }
     }
 
-    public function queueDeliverTo($subscriber, $triggerId = null)
+    public function queueDeliverTo($subscriber, $autoTriggerId, $actionId)
     {
         $server = $subscriber->mailList->pickSendingServer();
 
@@ -197,12 +197,13 @@ class Email extends Model implements HasTemplateInterface
             $subscription = null;
         }
 
-        $job = new SendMessage(
+        $job = new SendSingleMessage(
             $this,
             $subscriber,
             $server,
             $subscription,
-            $triggerId
+            $autoTriggerId,
+            $actionId,
         );
 
         $connection = config('custom.automation_queue_connection');
@@ -216,7 +217,9 @@ class Email extends Model implements HasTemplateInterface
             $job->onQueue($queue);
         }
 
-        safe_dispatch($job);
+        $jobId = safe_dispatch($job);
+
+        return $jobId;
     }
 
     public function sendTestEmail($emailAddress)

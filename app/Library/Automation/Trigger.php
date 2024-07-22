@@ -24,4 +24,9 @@ class Trigger extends Action
             return "Automation triggered";
         }
     }
+
+    public function isDelayAction()
+    {
+        return true;
+    }
 }

@@ -29,6 +29,7 @@ use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
 use Exception;
 use Acelle\Library\Traits\HasUid;
+use Closure;
 
 class AutoTrigger extends Model
 {
@@ -105,51 +106,49 @@ class AutoTrigger extends Model
     // As a result, try catch is needed
     public function check()
     {
-        $this->logger()->info(sprintf('Trigger [#%s - %s]: Automation [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
+        $this->withUpdateLock(function() {
+            $this->logger()->info(sprintf('Trigger [#%s - %s]: Automation [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
 
-        // STEP #1: Get latest action
-        $latest = $this->findLastActionToExecute();
-
-        if ($latest == null) {
-            $this->logger()->info(sprintf('Trigger [#%s - %s]: already reached last asction', $this->id, $this->subscriber->email, $this->automation2->name));
-            return;
-        }
-
-        $this->logger()->info(sprintf('Trigger [#%s - %s]: start from lastest action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
-
-        // Save to DB and Record to timeline every time we pass an action
-        // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! sending duplicate emails for example
-        $passedCallback = function ($action) {
-            $this->updateAction($action);
-            $this->recordToTimeline($action);
-        };
-
-        // * Trigger => always true
-        // * Send => always true
-        // * Operation => always true
-        // * Evaluation => always true
-        // * Wait => true or false
-
-        // true means: done with this step, should proceed next while false means stop, wait for next check
-        while ($latest->execute($passedCallback) == 'true') {
-            $latest = $this->getNextAction($latest);
+            // STEP #1: Get latest action
+            $latest = $this->findLastActionToExecute();
 
             if ($latest == null) {
-                $this->logger()->info(sprintf('Trigger [#%s - %s]: Reach last action, END!', $this->id, $this->subscriber->email));
-                break;
+                $this->logger()->info(sprintf('Trigger [#%s - %s]: already reached last asction', $this->id, $this->subscriber->email, $this->automation2->name));
+                return;
             }
 
-            $this->logger()->info(sprintf('Trigger [#%s - %s]: continue with action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
-        }
+            $this->logger()->info(sprintf('Trigger [#%s - %s]: start from lastest action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
 
-        if (!is_null($latest)) {
-            $this->logger()->info(sprintf('Trigger [#%s - %s]: pending at [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
-        }
+            // Save to DB and Record to timeline every time we pass an action
+            // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! sending duplicate emails for example
+
+            // * Trigger => always true
+            // * Send => false (dispatched a job, waiting for result) or true (job done and writes success status)
+            // * Operation => always true
+            // * Evaluation => always true
+            // * Wait => true or false
+
+            // true means: done with this step, should proceed next while false means stop, wait for next check
+            while ($latest->execute() == 'true') {
+                $latest = $this->getNextAction($latest);
+                if ($latest == null) {
+                    $this->logger()->info(sprintf('Trigger [#%s - %s]: Reach last action, END!', $this->id, $this->subscriber->email));
+                    break;
+                }
+
+                $this->logger()->info(sprintf('Trigger [#%s - %s]: continue with action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
+            }
+
+            if (!is_null($latest)) {
+                $this->logger()->info(sprintf('Trigger [#%s - %s]: pending at [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
+            }
+        });
     }
 
     public function updateAction($action)
     {
         $json = $this->getJson();
+
         if (array_key_exists($action->getId(), $json)) {
             $current = $json[$action->getId()];
             $updated = array_merge($current, $action->toJson());
@@ -334,5 +333,13 @@ class AutoTrigger extends Model
         }
 
         return $action->getParent();
+    }
+
+    public function withUpdateLock(Closure $task)
+    {
+        $key = 'auto_trigger_lock_'.$this->uid;
+        with_cache_lock($key, function() use ($task) {
+            $task($this);
+        });
     }
 }
