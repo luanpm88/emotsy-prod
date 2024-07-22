@@ -46,28 +46,25 @@
                         $sendCredits = $sub->getSendEmailCreditTracker()->getRemainingCredits();
                         $verifyCredits = $sub->getVerifyEmailCreditTracker()->getRemainingCredits();
                     @endphp
-
-                    @if (!config('app.em'))
-                        <li class="nav-item {{ $menu == 'sending_credit_plan' ? 'active' : '' }}">
-                            <a href="{{ action("SendingCreditPlanController@index") }}" class="nav-link px-0 boxrder me-5 mb-4 py-1
-                                {{ $menu == 'sending_credit_plan' ? '' : 'bg-lightx text-mutedx' }}"
-                                style="border-radius:0;"
-                            >
-                                <span class="d-flex align-items-center py-1" style="height:70px;">
-                                    <span>
-                                        <span class="d-block">
-                                            <span class=" fw-bold">
-                                                {{ ($sendCredits == -1 ) ? '∞' : number_with_delimiter($sendCredits) }}
-                                            </span>
-                                        </span>
-                                        <span class="d-block fw-normal small text-muted">
-                                            <span>{{ trans('messages.sending_credit_plan.credits.menu') }}</span>
+                    <li class="nav-item {{ $menu == 'sending_credit_plan' ? 'active' : '' }}">
+                        <a href="{{ action("SendingCreditPlanController@index") }}" class="nav-link px-0 boxrder me-5 mb-4 py-1
+                            {{ $menu == 'sending_credit_plan' ? '' : 'bg-lightx text-mutedx' }}"
+                            style="border-radius:0;"
+                        >
+                            <span class="d-flex align-items-center py-1" style="height:70px;">
+                                <span>
+                                    <span class="d-block">
+                                        <span class=" fw-bold">
+                                            {{ ($sendCredits == -1 ) ? '∞' : number_with_delimiter($sendCredits) }}
                                         </span>
                                     </span>
+                                    <span class="d-block fw-normal small text-muted">
+                                        <span>{{ trans('messages.sending_credit_plan.credits.menu') }}</span>
+                                    </span>
                                 </span>
-                            </a>
-                        </li>
-                    @endif
+                            </span>
+                        </a>
+                    </li>
                     <li class="nav-item {{ $menu == 'email_verification_plan' ? 'active' : '' }}">
                         <a href="{{ action("EmailVerificationPlanController@index") }}" class="nav-link px-0 boxrder me-5 mb-4 py-1
                             {{ $menu == 'email_verification_plan' ? '' : 'bg-lightx text-mutedx' }}"
