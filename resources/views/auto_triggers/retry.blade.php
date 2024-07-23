@@ -4,10 +4,10 @@
         
                 
 <p class="mb-2">{!! trans('messages.automation.action.error_intro', [
-    'email' => 'sample@example.com',
+    'email' => $trigger->subscriber->email,
 ]) !!}</p>
 
-<pre class="bg-light p-2"><code>Error!</code></pre>
+<pre class="bg-light p-2"><code>{{ $action->getProgressDescription($trigger->automation2->customer->timezone, $trigger->automation2->customer->getLanguageCode()) }}</code></pre>
 
 <div>
     <p class="mb-2">{{ trans('messages.automation.action.retry.confirm') }}</p>
@@ -15,7 +15,8 @@
 
 <div class="mt-4 text-center">
     <button data-action="do-retry" data-url="{{ action('AutoTrigger@retry', [
-        'id' => request()->id,
+        'action_id' => request()->action_id,
+        'auto_trigger_id' => request()->auto_trigger_id,
     ]) }}" type="button" class="btn btn-secondary px-3 me-2">{{ trans('messages.automation.action.retry') }}</button>
     <button type="button" class="btn btn-link fw-600" data-bs-dismiss="modal">{{ trans('messages.cancel') }}</button>
 </div>

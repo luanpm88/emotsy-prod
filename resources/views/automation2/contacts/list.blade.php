@@ -67,7 +67,7 @@
                                 }
                             @endphp
                             <span
-                                @if($action->getOption('error'))
+                                @if(true || $action->getOption('error'))
                                     data-action="retry"
                                     data-url="{{ action('AutoTrigger@retry', [
                                         'action_id' => $action->getId(),
