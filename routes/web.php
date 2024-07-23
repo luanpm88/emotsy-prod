@@ -807,6 +807,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation/{uid}/debug', 'Automation2Controller@debug');
     Route::get('trigger/{id}', 'AutoTrigger@show');
     Route::get('trigger/{id}/check', 'AutoTrigger@check');
+    Route::get('trigger/{id}/retry', 'AutoTrigger@retry');
     Route::get('automation/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
     Route::get('automation/{automation}/run', 'Automation2Controller@run');
 

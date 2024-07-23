@@ -1,4 +1,10 @@
 @if ($contacts->count() > 0)
+    <style type="text/css">
+        .action-error {
+            background: #e77070;
+        }
+    </style>
+
     <p class="insight-intro mb-2 small">
         {{ trans('messages.automation.contact.all_count', ['count' => number_with_delimiter($contacts->total(), $precision = 0)]) }}
     </p>
@@ -53,8 +59,14 @@
                                 } else {
                                     $notes = '';
                                 }
+
+                                if ($action->getOption('error')) {
+                                    $style = 'action-error';
+                                } else {
+                                    $style = "action-{$action->getType()}";
+                                }
                             @endphp
-                            <span class="xtooltip round-action-point action-{{ $action->getType() }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
+                            <span class="xtooltip round-action-point {{ $style }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
                             </span>
                         @endforeach
                     @endif

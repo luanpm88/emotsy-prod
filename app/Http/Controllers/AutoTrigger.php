@@ -46,4 +46,9 @@ class AutoTrigger extends Controller
         $trigger->check();
         echo "Done";
     }
+
+    public function retry(Request $request)
+    {
+        echo "Done";
+    }
 }
