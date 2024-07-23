@@ -6,6 +6,7 @@ use Acelle\Model\AutoTrigger;
 use Acelle\Model\Subscriber;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscription;
+use Acelle\Library\Exception\RateLimitExceeded;
 use Throwable;
 
 class SendSingleMessage extends SendMessage
@@ -68,5 +69,18 @@ class SendSingleMessage extends SendMessage
                 $this->campaign->logger()->info('Error sending trigger email: '.$ex->getMessage());
             });
         }
+    }
+
+    public function handleRateLimitExceeded($email, RateLimitExceeded $ex)
+    {
+        $secondsToDelay = parent::handleRateLimitExceeded($email, $ex);
+
+        $this->getAutoTrigger()->withUpdateLock(function($trigger) use ($email, $ex, $secondsToDelay) {
+            $delayNote = sprintf("Delayed for %s seconds: %s", $secondsToDelay, $ex->getMessage());
+
+            $action = $this->getAction();
+            $action->setOption('delay_note', $delayNote);
+            $action->save();
+        });
     }
 }

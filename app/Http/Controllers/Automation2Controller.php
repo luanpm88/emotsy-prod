@@ -837,8 +837,6 @@ class Automation2Controller extends Controller
             ], 201);
         }
 
-
-
         return view('automation2.email.setup', [
             'automation' => $automation,
             'email' => $email,

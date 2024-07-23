@@ -308,11 +308,11 @@ class SendMessage implements ShouldQueue
 
             } else {
                 // Single queue, no batch
-                $secondsToDelay = 600;
-                $logger->warning(sprintf("Delay [%s] for %s seconds (no batch): %s", $email, $secondsToDelay, $ex->getMessage()));
-                $plogger->warning(sprintf("Delay [%s] for %s seconds (no batch): %s", $email, $secondsToDelay, $ex->getMessage()));
-                $this->release($secondsToDelay); // should be only 60 seconds
+                $this->handleRateLimitExceeded($email, $ex);
             }
+
+
+
         } catch (Throwable $ex) {
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
@@ -357,5 +357,14 @@ class SendMessage implements ShouldQueue
     public function afterSuccess()
     {
         return;
+    }
+
+    public function handleRateLimitExceeded($email, RateLimitExceeded $ex)
+    {
+        $secondsToDelay = 600;
+        $this->campaign->logger()->warning(sprintf("Delay [%s] for %s seconds (no batch): %s", $email, $secondsToDelay, $ex->getMessage()));
+        $this->release($secondsToDelay); // should be only 60 seconds
+
+        return $secondsToDelay;
     }
 }

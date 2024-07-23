@@ -106,7 +106,7 @@ class Send extends Action
             $queuedAt = $this->autoTrigger->automation2->customer->parseDateTime($this->getOption('queued_at'));
 
             if ($this->getOption('error')) {
-                return sprintf('Error sending email "%s" to "%s". Job #%s queued %s at %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString());
+                return sprintf('Error sending email "%s" to "%s". Job #%s queued %s at %s. ERROR: %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString(), $this->getOption('error'));
             } else {
                 return sprintf('Sending email "%s" to "%s". Job #%s queued %s at %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString());
             }
@@ -116,5 +116,18 @@ class Send extends Action
     public function isDelayAction()
     {
         return true;
+    }
+
+    public function retry()
+    {
+        // Clean up error
+        $this->setOption('queued_at', null);
+        $this->setOption('error', null);
+        $this->setOption('delivery_job_id', null);
+        $this->setOption('delay_note', null);
+        $this->save();
+
+        // Execute it too
+        $this->execute();
     }
 }

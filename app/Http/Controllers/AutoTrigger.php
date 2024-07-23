@@ -49,29 +49,11 @@ class AutoTrigger extends Controller
 
     public function retry(Request $request)
     {
-        // init
-        $action = AutoTriggerModel::find($request->id);
+        $trigger = AutoTriggerModel::find($request->auto_trigger_id);
+        $action = $trigger->getActionById($request->action_id);
 
-        if ($request->isMethod('post')) {
-            // do something
+        $action->retry();
 
-            try {
-                // $automation->retryAllFailedActions();
-    
-                return response()->json([
-                    'status' => 'success',
-                    'message' => trans('messages.automation.action.retry.success'),
-                ]);
-            } catch (\Throwable $e) {
-                return response()->json([
-                    'error' => $e->getMessage(),
-                ], 500);
-            }
-        }
-
-        return view('auto_triggers.retry', [
-            'action' => $action,
-        ]);
-        
+        return $action->toJson();
     }
 }
