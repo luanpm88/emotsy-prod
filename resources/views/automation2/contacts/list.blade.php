@@ -56,25 +56,21 @@
                                         $customer->formatDatetime($executedAt, 'datetime_full'),
                                         $customer->timezone,
                                     );
-                                } elseif ($action->getOption('delay_note')) {
-                                    $notes = '. '.$action->getOption('delay_note');
                                 } else {
                                     $notes = '';
                                 }
 
                                 if ($action->getOption('error')) {
                                     $style = 'action-error';
-                                    $notes = '';
                                 } else {
                                     $style = "action-{$action->getType()}";
                                 }
                             @endphp
                             <span
-                                @if($action->getOption('error'))
+                                @if(true || $action->getOption('error'))
                                     data-action="retry"
                                     data-url="{{ action('AutoTrigger@retry', [
-                                        'action_id' => $action->getId(),
-                                        'auto_trigger_id' => $trigger->id
+                                        'id' => $action->getId(),
                                     ]) }}"
                                 @endif
                                 class="xtooltip round-action-point {{ $style }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
@@ -142,7 +138,7 @@
                 button: $(this),
             });
         });
-
+        
     });
 
     var ActionRetry = class {
@@ -150,28 +146,19 @@
             var _this = this;
             this.button = options.button;
             this.url = this.button.attr('data-url');
+            this.popup = new Popup({
+                url: this.url,
+            });
 
             // event
             this.button.on('click', function() {
-                new Dialog('confirm', {
-                    message: '{{ trans('messages.automation.action.retry.confirm') }}',
-                    ok: function() {
-                        _this.retry();
-                    }
-                });
+                _this.load();
             });
         }
 
-        retry() {
-            addMaskLoading();
-            $.ajax({
-                url: this.url,
-                type: 'POST',
-            }).done(function(data) {
-                listContact.load();
-            }).always(function() {
-                removeMaskLoading();
-            });
+        load() {
+            window.currentRetry = this;
+            this.popup.load();
         }
     }
 </script>

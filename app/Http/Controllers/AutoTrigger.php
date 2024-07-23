@@ -55,6 +55,5 @@ class AutoTrigger extends Controller
         $action->retry();
 
         return $action->toJson();
-
     }
 }

@@ -2865,7 +2865,7 @@ class Automation2Controller extends Controller
             // $automation->retryAllFailedActions();
 
             return response()->json([
-                'message' => trans('messages.automation.retry_all_failed_actions.success'),
+                'message' => trans('messages.automation.action.retry.success'),
             ]);
         } catch (\Throwable $e) {
             return response()->json([

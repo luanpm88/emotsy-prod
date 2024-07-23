@@ -3457,7 +3457,9 @@
   'translation.write.success' => 'Translation phrase were written successfully',
   'automation.action.retry' => 'Retry',
   'automation.action.retry.confirm' => 'Do you want to retry this action?',
+  'automation.action.retry.success' => 'The failed action was retried',
   'automation.retry_all_failed_actions' => 'Retry all failed actions',
   'automation.retry_all_failed_actions.confirm' => 'Do you want to retry all failed actions?',
   'automation.retry_all_failed_actions.success' => 'All failed actions were retried',
+  'automation.action.error_intro' => 'This automation action for <strong>:email</strong> failed to execute, see the error message below',
 ) ?>
