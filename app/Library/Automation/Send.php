@@ -50,11 +50,12 @@ class Send extends Action
             $jobId = $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id, $this->getId());
 
             $this->setOption('queued_at', now()->toString()); // Store UTC value
+            $this->setOption('error', null); // Store UTC value
             $this->setOption('delivery_job_id', $jobId); // Store UTC value
 
             // IMPORTANT: update action BEFORE dispatching job. In case job executes so fast! it even write to sent_at field before writing to queue_at
             // Or, if the update function is wrapped in an atomic action then it is oke
-            $this->autoTrigger->updateAction($this);
+            $this->save();
 
 
             $this->logger->info(sprintf('Queue email entitled "%s" to "%s", job id %s', $email->subject, $this->autoTrigger->subscriber->email, $jobId));
@@ -103,7 +104,12 @@ class Send extends Action
             return sprintf('Sent email "%s" to "%s"', $email->subject, $subscriber->email);
         } elseif ($this->getOption('queued_at')) {
             $queuedAt = $this->autoTrigger->automation2->customer->parseDateTime($this->getOption('queued_at'));
-            return sprintf('Sending email "%s" to "%s". Job #%s queued %s at %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString());
+
+            if ($this->getOption('error')) {
+                return sprintf('Error sending email "%s" to "%s". Job #%s queued %s at %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString());
+            } else {
+                return sprintf('Sending email "%s" to "%s". Job #%s queued %s at %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString());
+            }
         }
     }
 
