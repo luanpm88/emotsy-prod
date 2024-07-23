@@ -47,18 +47,7 @@ class Send extends Action
         }
 
         if (is_null($this->getOption('queued_at'))) {
-            $jobId = $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id, $this->getId());
-
-            $this->setOption('queued_at', now()->toString()); // Store UTC value
-            $this->setOption('error', null); // Store UTC value
-            $this->setOption('delivery_job_id', $jobId); // Store UTC value
-
-            // IMPORTANT: update action BEFORE dispatching job. In case job executes so fast! it even write to sent_at field before writing to queue_at
-            // Or, if the update function is wrapped in an atomic action then it is oke
-            $this->save();
-
-
-            $this->logger->info(sprintf('Queue email entitled "%s" to "%s", job id %s', $email->subject, $this->autoTrigger->subscriber->email, $jobId));
+            $jobId = $this->queue();
         } elseif (is_null($this->getOption('sent_at'))) {
             // Job dispatched, but not finish
             $this->logger->info(sprintf('Wait for email entitled "%s" to "%s", dispatched at %s', $email->subject, $this->autoTrigger->subscriber->email, $this->getOption('queued_at')));
@@ -123,11 +112,37 @@ class Send extends Action
         // Clean up error
         $this->setOption('queued_at', null);
         $this->setOption('error', null);
+        $this->autoTrigger->setError(false, $save = false); // wait for the save() method below to save
         $this->setOption('delivery_job_id', null);
         $this->setOption('delay_note', null);
         $this->save();
 
         // Execute it too
         $this->execute();
+    }
+
+    public function setError($errorMsg)
+    {
+        $this->setOption('error', $errorMsg);
+        $this->autoTrigger->setError(true, $save = false);
+        $this->save();
+    }
+
+    public function queue()
+    {
+        $campaign = $this->getEmail();
+
+        $jobId = $campaign->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id, $this->getId());
+        $this->setOption('queued_at', now()->toString()); // Store UTC value
+        $this->setOption('error', null); // Store UTC value
+        $this->setOption('delivery_job_id', $jobId); // Store UTC value
+
+        // IMPORTANT: update action BEFORE dispatching job. In case job executes so fast! it even write to sent_at field before writing to queue_at
+        // Or, if the update function is wrapped in an atomic action then it is oke
+        $this->save();
+
+        $this->logger->info(sprintf('Queue email entitled "%s" to "%s", job id %s', $campaign->subject, $this->autoTrigger->subscriber->email, $jobId));
+
+        return $jobId;
     }
 }

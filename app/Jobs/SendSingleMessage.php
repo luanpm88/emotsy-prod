@@ -12,7 +12,7 @@ use Throwable;
 class SendSingleMessage extends SendMessage
 {
     protected $autoTriggerId;
-    protected $auutoTrigger;
+    protected $autoTrigger;
     protected $actionId;
     protected $action;
 
@@ -40,7 +40,7 @@ class SendSingleMessage extends SendMessage
 
     public function getAutoTrigger()
     {
-        if (is_null($this->auutoTrigger)) {
+        if (is_null($this->autoTrigger)) {
             $this->autoTrigger = AutoTrigger::find($this->autoTriggerId);
         }
 
@@ -61,11 +61,11 @@ class SendSingleMessage extends SendMessage
         try {
             $this->send();
         } catch (Throwable $ex) {
+            $this->campaign->logger()->info("failing..........");
             $this->getAutoTrigger()->withUpdateLock(function($trigger) use ($ex) {
                 // Mark the related trigger action as done
                 $action = $this->getAction();
-                $action->setOption('error', $ex->getMessage());
-                $action->save();
+                $action->setError($ex->getMessage());
                 $this->campaign->logger()->info('Error sending trigger email: '.$ex->getMessage());
             });
         }
