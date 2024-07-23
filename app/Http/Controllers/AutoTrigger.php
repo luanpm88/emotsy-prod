@@ -49,6 +49,12 @@ class AutoTrigger extends Controller
 
     public function retry(Request $request)
     {
-        echo "Done";
+        $trigger = AutoTriggerModel::find($request->auto_trigger_id);
+        $action = $trigger->getActionById($request->action_id);
+
+        $action->retry();
+
+        return $action->toJson();
+
     }
 }

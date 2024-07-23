@@ -117,4 +117,17 @@ class Send extends Action
     {
         return true;
     }
+
+    public function retry()
+    {
+        // Clean up error
+        $this->setOption('queued_at', null);
+        $this->setOption('error', null);
+        $this->setOption('delivery_job_id', null);
+        $this->setOption('delay_note', null);
+        $this->save();
+
+        // Execute it too
+        $this->execute();
+    }
 }

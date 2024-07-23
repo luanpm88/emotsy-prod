@@ -64,6 +64,7 @@
 
                                 if ($action->getOption('error')) {
                                     $style = 'action-error';
+                                    $notes = '';
                                 } else {
                                     $style = "action-{$action->getType()}";
                                 }
@@ -72,7 +73,8 @@
                                 @if($action->getOption('error'))
                                     data-action="retry"
                                     data-url="{{ action('AutoTrigger@retry', [
-                                        'id' => $action->getId(),
+                                        'action_id' => $action->getId(),
+                                        'auto_trigger_id' => $trigger->id
                                     ]) }}"
                                 @endif
                                 class="xtooltip round-action-point {{ $style }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
@@ -164,7 +166,7 @@
             addMaskLoading();
             $.ajax({
                 url: this.url,
-                type: 'GET',
+                type: 'POST',
             }).done(function(data) {
                 listContact.load();
             }).always(function() {

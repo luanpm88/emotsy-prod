@@ -230,4 +230,9 @@ abstract class Action
     {
         $this->autoTrigger->updateAction($this);
     }
+
+    public function retry()
+    {
+        throw new Exception("Action type {$this->getType()} does not support retry.");
+    }
 }
