@@ -67,7 +67,7 @@
                                 }
                             @endphp
                             <span
-                                @if($action->getOption('error'))
+                                @if(true || $action->getOption('error'))
                                     data-action="retry"
                                     data-url="{{ action('AutoTrigger@retry', [
                                         'id' => $action->getId(),
@@ -146,28 +146,19 @@
             var _this = this;
             this.button = options.button;
             this.url = this.button.attr('data-url');
+            this.popup = new Popup({
+                url: this.url,
+            });
 
             // event
             this.button.on('click', function() {
-                new Dialog('confirm', {
-                    message: '{{ trans('messages.automation.action.retry.confirm') }}',
-                    ok: function() {
-                        _this.retry();
-                    }
-                });
+                _this.load();
             });
         }
 
-        retry() {
-            addMaskLoading();
-            $.ajax({
-                url: this.url,
-                type: 'GET',
-            }).done(function(data) {
-                listContact.load();
-            }).always(function() {
-                removeMaskLoading();
-            });
+        load() {
+            window.currentRetry = this;
+            this.popup.load();
         }
     }
 </script>
