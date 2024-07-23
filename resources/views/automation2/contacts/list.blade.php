@@ -70,7 +70,8 @@
                                 @if(true || $action->getOption('error'))
                                     data-action="retry"
                                     data-url="{{ action('AutoTrigger@retry', [
-                                        'id' => $action->getId(),
+                                        'action_id' => $action->getId(),
+                                        'auto_trigger_id' => $trigger->id,
                                     ]) }}"
                                 @endif
                                 class="xtooltip round-action-point {{ $style }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
@@ -138,7 +139,7 @@
                 button: $(this),
             });
         });
-        
+
     });
 
     var ActionRetry = class {
@@ -176,7 +177,7 @@
 
                 $.ajax({
                     url: url,
-                    method: 'GET',
+                    method: 'POST',
                     success: function (response) {
                         // notify
                         // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
