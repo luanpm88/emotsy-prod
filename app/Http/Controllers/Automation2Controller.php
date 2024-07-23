@@ -2852,4 +2852,27 @@ class Automation2Controller extends Controller
             'email' => $email,
         ]);
     }
+
+    public function retryAllFailedActions($uid)
+    {
+        // Instantiate automation and dispatch the job
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        try {
+            // $automation->retryAllFailedActions();
+
+            return response()->json([
+                'message' => trans('messages.automation.retry_all_failed_actions.success'),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

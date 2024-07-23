@@ -810,6 +810,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('trigger/{id}/retry', 'AutoTrigger@retry');
     Route::get('automation/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
     Route::get('automation/{automation}/run', 'Automation2Controller@run');
+    Route::post('automation/{uid}/retry-all-failed-actions', 'Automation2Controller@retryAllFailedActions');
 
     Route::match(['get', 'post'], 'automation/emails/webhooks/{webhook_uid}/test', 'Automation2Controller@webhooksTest');
     Route::get('automation/emails/webhooks/{webhook_uid}/sample/request', 'Automation2Controller@webhooksSampleRequest');

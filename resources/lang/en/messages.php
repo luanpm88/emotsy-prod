@@ -3455,4 +3455,9 @@
   'translation.finish_write.confirm' => 'You\'re about to finish and write :number phrase(s) from the list.',
   'translation.finish_write.success' => 'Translation phrases were written successfully',
   'translation.write.success' => 'Translation phrase were written successfully',
+  'automation.action.retry' => 'Retry',
+  'automation.action.retry.confirm' => 'Do you want to retry this action?',
+  'automation.retry_all_failed_actions' => 'Retry all failed actions',
+  'automation.retry_all_failed_actions.confirm' => 'Do you want to retry all failed actions?',
+  'automation.retry_all_failed_actions.success' => 'All failed actions were retried',
 ) ?>

@@ -66,7 +66,14 @@
                                     $style = "action-{$action->getType()}";
                                 }
                             @endphp
-                            <span class="xtooltip round-action-point {{ $style }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
+                            <span
+                                @if($action->getOption('error'))
+                                    data-action="retry"
+                                    data-url="{{ action('AutoTrigger@retry', [
+                                        'id' => $action->getId(),
+                                    ]) }}"
+                                @endif
+                                class="xtooltip round-action-point {{ $style }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
                             </span>
                         @endforeach
                     @endif
@@ -123,6 +130,47 @@
         </span>
     </div>
 @endif
+
+<script>
+    $(function() {
+        $('[data-action="retry"]').each(function() {
+            new ActionRetry({
+                button: $(this),
+            });
+        });
+        
+    });
+
+    var ActionRetry = class {
+        constructor(options) {
+            var _this = this;
+            this.button = options.button;
+            this.url = this.button.attr('data-url');
+
+            // event
+            this.button.on('click', function() {
+                new Dialog('confirm', {
+                    message: '{{ trans('messages.automation.action.retry.confirm') }}',
+                    ok: function() {
+                        _this.retry();
+                    }
+                });
+            });
+        }
+
+        retry() {
+            addMaskLoading();
+            $.ajax({
+                url: this.url,
+                type: 'GET',
+            }).done(function(data) {
+                listContact.load();
+            }).always(function() {
+                removeMaskLoading();
+            });
+        }
+    }
+</script>
 
 <script>
     $('.timeline-trigger-now').on('click', function(e) {
