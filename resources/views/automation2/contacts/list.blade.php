@@ -56,6 +56,8 @@
                                         $customer->formatDatetime($executedAt, 'datetime_full'),
                                         $customer->timezone,
                                     );
+                                } elseif ($action->getOption('delay_note')) {
+                                    $notes = '. '.$action->getOption('delay_note');
                                 } else {
                                     $notes = '';
                                 }
@@ -138,7 +140,7 @@
                 button: $(this),
             });
         });
-        
+
     });
 
     var ActionRetry = class {
