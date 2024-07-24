@@ -3,6 +3,7 @@
 namespace Acelle\Library\Automation;
 
 use Acelle\Model\Email;
+use Acelle\Model\Automation2;
 use Exception;
 
 class Send extends Action
@@ -130,9 +131,26 @@ class Send extends Action
 
     public function queue()
     {
-        $campaign = $this->getEmail();
+        $triggerName = $this->autoTrigger->getTrigger()->getOption('key');
 
-        $jobId = $campaign->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id, $this->getId());
+        // Higher priority for certain types of trigger
+        $queueMap = [
+            Automation2::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER => ACM_QUEUE_TYPE_HIGH,
+            Automation2::TRIGGER_PARTICULAR_DATE => null,
+            Automation2::TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER => ACM_QUEUE_TYPE_HIGH,
+            Automation2::TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY => ACM_QUEUE_TYPE_HIGH,
+            Automation2::TRIGGER_API => ACM_QUEUE_TYPE_HIGH,
+            Automation2::TRIGGER_WEEKLY_RECURRING => null,
+            Automation2::TRIGGER_MONTHLY_RECURRING => null,
+            Automation2::TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE => ACM_QUEUE_TYPE_HIGH,
+            Automation2::TRIGGER_WOO_ABANDONED_CART => ACM_QUEUE_TYPE_HIGH,
+            Automation2::TRIGGER_TAG_BASED => ACM_QUEUE_TYPE_HIGH,
+        ];
+
+        $queue = $queueMap[$triggerName] ?? null;
+
+        $campaign = $this->getEmail();
+        $jobId = $campaign->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id, $this->getId(), $queue);
         $this->setOption('queued_at', now()->toString()); // Store UTC value
         $this->setOption('error', null); // Store UTC value
         $this->setOption('delivery_job_id', $jobId); // Store UTC value
@@ -141,7 +159,7 @@ class Send extends Action
         // Or, if the update function is wrapped in an atomic action then it is oke
         $this->save();
 
-        $this->logger->info(sprintf('Queue email entitled "%s" to "%s", job id %s', $campaign->subject, $this->autoTrigger->subscriber->email, $jobId));
+        $this->logger->info(sprintf('Queue email entitled "%s" to "%s" on queue "%s", job id %s', $campaign->subject, $this->autoTrigger->subscriber->email, $queue ?? '-', $jobId));
 
         return $jobId;
     }

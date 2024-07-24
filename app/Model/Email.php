@@ -187,7 +187,7 @@ class Email extends Model implements HasTemplateInterface
         }
     }
 
-    public function queueDeliverTo($subscriber, $autoTriggerId, $actionId)
+    public function queueDeliverTo($subscriber, $autoTriggerId, $actionId, $queue)
     {
         $server = $subscriber->mailList->pickSendingServer();
 
@@ -207,7 +207,13 @@ class Email extends Model implements HasTemplateInterface
         );
 
         $connection = config('custom.automation_queue_connection');
-        $queue = $this->customer->custom_queue_name ?? ACM_QUEUE_TYPE_SINGLE;
+
+        if (is_null($queue)) {
+            $queue = $this->customer->custom_queue_name ?? ACM_QUEUE_TYPE_SINGLE;
+        } else {
+            // $queue is currently determined by Automation/Send action
+            // in which priority is determined by trigger type
+        }
 
         if ($connection) {
             // By default, this value is null, meaning that automation should use the default queue connection
