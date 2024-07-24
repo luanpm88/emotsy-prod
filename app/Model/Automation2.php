@@ -64,6 +64,7 @@ class Automation2 extends Model
     public const TRIGGER_WEEKLY_RECURRING = 'weekly-recurring';
     public const TRIGGER_MONTHLY_RECURRING = 'monthly-recurring';
     public const TRIGGER_TAG_BASED = 'tag-based';
+    public const TRIGGER_WOO_ABANDONED_CART = 'woo-abandoned-cart';
 
     /**
      * Items per page.
@@ -543,7 +544,7 @@ class Automation2 extends Model
             case self::TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE:
                 // In progress
                 break;
-            case 'woo-abandoned-cart':
+            case self::TRIGGER_WOO_ABANDONED_CART:
                 $this->checkForAbandonedCart();
                 // no break
             case self::TRIGGER_TAG_BASED:
