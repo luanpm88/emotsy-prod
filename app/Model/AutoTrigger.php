@@ -85,6 +85,13 @@ class AutoTrigger extends Model
         return $this->hasMany('Acelle\Model\Timeline')->orderBy('created_at', 'DESC');
     }
 
+    public function scopeError($query)
+    {
+        $query->where('is_error', true);
+
+        return $query;
+    }
+
     // Mark the next action as "latest" and return it
     public function getNextAction($action)
     {
@@ -341,5 +348,16 @@ class AutoTrigger extends Model
         with_cache_lock($key, function() use ($task) {
             $task($this);
         });
+    }
+
+    public function setError(bool $isError, $save = true)
+    {
+        $this->is_error = $isError;
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
     }
 }

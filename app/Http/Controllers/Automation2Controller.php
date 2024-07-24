@@ -2862,7 +2862,7 @@ class Automation2Controller extends Controller
         }
 
         try {
-            // $automation->retryAllFailedActions();
+            $automation->retryAllFailedActions();
 
             return response()->json([
                 'message' => trans('messages.automation.action.retry.success'),

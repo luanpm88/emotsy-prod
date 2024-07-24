@@ -258,6 +258,26 @@ class Automation2 extends Model
         $this->saveData(json_encode($newJson));
     }
 
+    public function retryAllFailedActions()
+    {
+        $connection = config('custom.automation_queue_connection');
+        $queue = ACM_QUEUE_TYPE_HIGH;
+
+        $job = new \Acelle\Jobs\RetryAllFailedActions($this);
+
+        if ($connection) {
+            // By default, this value is null, meaning that automation should use the default queue connection
+            // specified in the .env file (QUEUE_CONNECTION)
+            $job->onConnection($connection)->onQueue($queue);
+        } else {
+            $job->onQueue($queue);
+        }
+
+        $jobId = safe_dispatch($job);
+
+        return $jobId;
+    }
+
     public function validateData($data)
     {
         // Check Element Action => if email UID is no longer valid => remove Action
