@@ -131,7 +131,7 @@ class Send extends Action
 
     public function queue()
     {
-        $triggerName = $this->autoTrigger->getTriggerAction()->getOption('key');
+        $triggerName = $this->autoTrigger->getTrigger()->getOption('key');
 
         // Higher priority for certain types of trigger
         $queueMap = [
@@ -159,7 +159,7 @@ class Send extends Action
         // Or, if the update function is wrapped in an atomic action then it is oke
         $this->save();
 
-        $this->logger->info(sprintf('Queue email entitled "%s" to "%s" on queue "%s", job id %s', $campaign->subject, $this->autoTrigger->subscriber->email, $queue ?? 'default', $jobId));
+        $this->logger->info(sprintf('Queue email entitled "%s" to "%s" on queue "%s", job id %s', $campaign->subject, $this->autoTrigger->subscriber->email, $queue ?? '-', $jobId));
 
         return $jobId;
     }
