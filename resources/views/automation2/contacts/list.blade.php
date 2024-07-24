@@ -210,7 +210,6 @@
                 removeMaskLoading();
             }
         }).always(function() {
-            listContact.load();
             removeMaskLoading();
         });
     });
