@@ -43,8 +43,8 @@ class AutoTrigger extends Controller
 
         // Execute AutoTrigger#check
         // Notice that calling check() directly against AutoTrigger will not update automation's lastError
-        $trigger->check();
-        echo "Done";
+        $trigger->check($manually = true);
+        return response()->json($trigger->toJson());
     }
 
     public function retry(Request $request)
@@ -59,7 +59,7 @@ class AutoTrigger extends Controller
                 'action' => $action,
             ]);
         } else {
-            $action->retry();
+            $action->retry($manually = true);
             return $action->toJson();
         }
     }

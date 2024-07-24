@@ -4,7 +4,7 @@ namespace Acelle\Library\Automation;
 
 class Trigger extends Action
 {
-    protected function doExecute()
+    protected function doExecute($manually)
     {
         return true;
     }

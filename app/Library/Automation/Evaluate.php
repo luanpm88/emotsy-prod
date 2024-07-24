@@ -44,7 +44,7 @@ class Evaluate extends Action
         return $json;
     }
 
-    protected function doExecute()
+    protected function doExecute($manually)
     {
         // IMPORTANT
         // If this is the latest also the last action of the workflow

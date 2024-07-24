@@ -42,7 +42,9 @@ class TriggerAutomation
 
                 // If there is no segment condition, trigger the contact
                 if ($segments->isEmpty()) {
-                    $auto->initTrigger($event->subscriber);
+                    $trigger = $auto->initTrigger($event->subscriber);
+                    $trigger->check($manually = true); // manually here means "by individual users"
+
                     continue;
                 }
 
@@ -55,7 +57,8 @@ class TriggerAutomation
                 }
 
                 if ($matched) {
-                    $auto->initTrigger($event->subscriber);
+                    $trigger = $auto->initTrigger($event->subscriber);
+                    $trigger->check($manually = true);
                 }
             }
         }
@@ -79,7 +82,8 @@ class TriggerAutomation
         foreach ($automations as $auto) {
             if (is_null($auto->getAutoTriggerFor($event->subscriber))) {
                 $forceTriggerUnsubscribedContact = true;
-                $auto->initTrigger($event->subscriber, $forceTriggerUnsubscribedContact);
+                $trigger = $auto->initTrigger($event->subscriber, $forceTriggerUnsubscribedContact);
+                $trigger->check($manually = true);
             }
         }
     }

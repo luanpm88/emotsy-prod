@@ -20,7 +20,7 @@ class Wait extends Action
 
     ****/
 
-    protected function doExecute()
+    protected function doExecute($manually)
     {
         if (config('app.demo') == true) {
             $check = (bool) random_int(0, 1);

@@ -22,7 +22,7 @@ class Send extends Action
 
     ****/
 
-    protected function doExecute()
+    protected function doExecute($manually)
     {
         /*** do not care if subscriber is active() or not ***/
         /*
@@ -48,7 +48,14 @@ class Send extends Action
         }
 
         if (is_null($this->getOption('queued_at'))) {
-            $jobId = $this->queue();
+            if ($manually) {
+                $queue = ACM_QUEUE_TYPE_HIGH;
+                $this->logger->info('Manually executed (or via ListSubscription), choose priority queue');
+            } else {
+                $queue = null;
+            }
+
+            $jobId = $this->queue($queue);
         } elseif (is_null($this->getOption('sent_at'))) {
             // Job dispatched, but not finish
             $this->logger->info(sprintf('Wait for email entitled "%s" to "%s", dispatched at %s', $email->subject, $this->autoTrigger->subscriber->email, $this->getOption('queued_at')));
@@ -108,7 +115,7 @@ class Send extends Action
         return true;
     }
 
-    public function retry()
+    public function retry($manually = false)
     {
         // Clean up error
         $this->setOption('queued_at', null);
@@ -119,7 +126,7 @@ class Send extends Action
         $this->save();
 
         // Execute it too
-        $this->execute();
+        $this->execute($manually);
     }
 
     public function setError($errorMsg)
@@ -129,25 +136,27 @@ class Send extends Action
         $this->save();
     }
 
-    public function queue()
+    public function queue($queue)
     {
         $triggerName = $this->autoTrigger->getTrigger()->getOption('key');
 
-        // Higher priority for certain types of trigger
-        $queueMap = [
-            Automation2::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER => ACM_QUEUE_TYPE_HIGH,
-            Automation2::TRIGGER_PARTICULAR_DATE => null,
-            Automation2::TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER => ACM_QUEUE_TYPE_HIGH,
-            Automation2::TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY => ACM_QUEUE_TYPE_HIGH,
-            Automation2::TRIGGER_API => ACM_QUEUE_TYPE_HIGH,
-            Automation2::TRIGGER_WEEKLY_RECURRING => null,
-            Automation2::TRIGGER_MONTHLY_RECURRING => null,
-            Automation2::TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE => ACM_QUEUE_TYPE_HIGH,
-            Automation2::TRIGGER_WOO_ABANDONED_CART => ACM_QUEUE_TYPE_HIGH,
-            Automation2::TRIGGER_TAG_BASED => ACM_QUEUE_TYPE_HIGH,
-        ];
+        if (is_null($queue)) {
+            // Higher priority for certain types of trigger
+            $queueMap = [
+                Automation2::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER => ACM_QUEUE_TYPE_HIGH,
+                Automation2::TRIGGER_PARTICULAR_DATE => null,
+                Automation2::TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER => ACM_QUEUE_TYPE_HIGH,
+                Automation2::TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY => ACM_QUEUE_TYPE_HIGH,
+                Automation2::TRIGGER_API => ACM_QUEUE_TYPE_HIGH,
+                Automation2::TRIGGER_WEEKLY_RECURRING => null,
+                Automation2::TRIGGER_MONTHLY_RECURRING => null,
+                Automation2::TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE => ACM_QUEUE_TYPE_HIGH,
+                Automation2::TRIGGER_WOO_ABANDONED_CART => ACM_QUEUE_TYPE_HIGH,
+                Automation2::TRIGGER_TAG_BASED => ACM_QUEUE_TYPE_HIGH,
+            ];
 
-        $queue = $queueMap[$triggerName] ?? null;
+            $queue = $queueMap[$triggerName] ?? null;
+        }
 
         $campaign = $this->getEmail();
         $jobId = $campaign->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id, $this->getId(), $queue);

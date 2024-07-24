@@ -24,7 +24,7 @@ class Operate extends Action
         Execution always returns TRUE
 
     ****/
-    protected function doExecute()
+    protected function doExecute($manually)
     {
         if (config('app.demo') == 'true') {
             return true;

@@ -111,20 +111,20 @@ class AutoTrigger extends Model
 
     // Notice that this method my be called from an automation or individually
     // As a result, try catch is needed
-    public function check()
+    public function check($manually = false)
     {
-        $this->withUpdateLock(function() {
-            $this->logger()->info(sprintf('Trigger [#%s - %s]: Automation [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
+        $this->withUpdateLock(function() use ($manually) {
+            $this->logger()->info(sprintf('Trigger #%s (%s) of automation [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
 
             // STEP #1: Get latest action
             $latest = $this->findLastActionToExecute();
 
             if ($latest == null) {
-                $this->logger()->info(sprintf('Trigger [#%s - %s]: already reached last asction', $this->id, $this->subscriber->email, $this->automation2->name));
+                $this->logger()->info(sprintf('Trigger #%s (%s) already reached last asction', $this->id, $this->subscriber->email, $this->automation2->name));
                 return;
             }
 
-            $this->logger()->info(sprintf('Trigger [#%s - %s]: start from lastest action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
+            $this->logger()->info(sprintf('Trigger #%s (%s) start from lastest action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
 
             // Save to DB and Record to timeline every time we pass an action
             // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! sending duplicate emails for example
@@ -136,7 +136,7 @@ class AutoTrigger extends Model
             // * Wait => true or false
 
             // true means: done with this step, should proceed next while false means stop, wait for next check
-            while ($latest->execute() == 'true') {
+            while ($latest->execute($manually) == 'true') {
                 $latest = $this->getNextAction($latest);
                 if ($latest == null) {
                     $this->logger()->info(sprintf('Trigger [#%s - %s]: Reach last action, END!', $this->id, $this->subscriber->email));

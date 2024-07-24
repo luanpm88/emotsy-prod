@@ -2152,6 +2152,7 @@ class Automation2Controller extends Controller
         // Force trigger a contact
         // Even inactive contacts - in case of Say-Goodbye-Trigger for example
         $trigger = $automation->initTrigger($subscriber, $force = true);
+        $trigger->check($manually = true);
 
         return redirect()->action('AutoTrigger@show', [ 'id' => $trigger->id ]);
     }

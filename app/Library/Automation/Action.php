@@ -172,7 +172,7 @@ abstract class Action
 
     // Template Pattern, execute will in turn call doExecute of inherited classes
     // Just to record the current action information in case of any error
-    public function execute()
+    public function execute($manually = false)
     {
         // IMPORTANT: this should be placed outside of the try/catch
         // Otherwise, error again in catch block (no trigger information to log)
@@ -187,7 +187,7 @@ abstract class Action
             }
 
             // Actually execute, implemented by child classes
-            $result = $this->doExecute();
+            $result = $this->doExecute($manually);
 
             if ($result) {
                 // Only record last_executed and execute callback if success

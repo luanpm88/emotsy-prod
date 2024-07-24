@@ -61,7 +61,6 @@ class SendSingleMessage extends SendMessage
         try {
             $this->send();
         } catch (Throwable $ex) {
-            $this->campaign->logger()->info("failing..........");
             $this->getAutoTrigger()->withUpdateLock(function($trigger) use ($ex) {
                 // Mark the related trigger action as done
                 $action = $this->getAction();
