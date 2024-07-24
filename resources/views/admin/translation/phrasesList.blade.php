@@ -1,4 +1,4 @@
-    <table class="table table-box table-box-head field-list">
+    <table class="table table-box table-box-head field-list phrase-list">
         <thead>
             <th width="1%" class="ps-0"></th>
             <th width="20%" class="py-3 fw-600">{{ trans('messages.translation.key') }}</th>
