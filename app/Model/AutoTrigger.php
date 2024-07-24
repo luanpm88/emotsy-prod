@@ -53,6 +53,13 @@ class AutoTrigger extends Model
             // IMPORTANT: in case of any change made to the parent automation2
             $model->updateWorkflow();
         });
+
+        // Why ::creating is required here although it was already in HasUid!!!!!!!!
+        static::creating(function ($item) {
+            if (is_null($item->uid)) {
+                $item->generateUid();
+            }
+        });
     }
 
     /**
