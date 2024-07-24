@@ -116,6 +116,19 @@
         </div>
     </div>
 
+    @if (!$automation->isActive())
+        <div class="alert alert-danger mt-3 small" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+            <div style="display: flex; flex-direction: row; align-items: center;">
+                <div style="margin-right:5px">
+                    <i class="lnr lnr-circle-minus"></i>
+                </div>
+                <div style="">
+                    <p>{{ trans('messages.automation.not_running_monitor_trigger') }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="input-with-icon mb-4">
         <i class="material-symbols-rounded">search</i>
         <input class="form-control mt-3" name="contact_keyword"

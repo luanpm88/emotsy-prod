@@ -206,8 +206,6 @@
                 // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
 
                 listContact.load();
-
-                removeMaskLoading();
             }
         }).always(function() {
             removeMaskLoading();

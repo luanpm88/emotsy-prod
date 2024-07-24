@@ -3462,4 +3462,5 @@
   'automation.retry_all_failed_actions.confirm' => 'Do you want to retry all failed actions?',
   'automation.retry_all_failed_actions.success' => 'All failed actions were retried',
   'automation.action.error_intro' => 'This automation action for <strong>:email</strong> failed to execute, see the error message below',
+  'automation.not_running_monitor_trigger' => 'Automation is not running, turn it on in order to enable list monitoring and triggering',
 ) ?>
