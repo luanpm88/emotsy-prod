@@ -568,6 +568,8 @@
   'automation.trigger.select_confirm' => 'Confirm',
   'automation.trigger.send.progress.sent' => 'Sent email ":e" to :c :dif at :dt. Queue time: :sec seconds',
   'automation.trigger.send.progress.queued' => 'Sending email ":e" to :c. Queued :dif at :dt. Job ID #:id',
+  'automation.trigger.trigger.progress.created' => 'Automation was triggered :dif at :dt. Waiting for execution...',
+  'automation.trigger.trigger.progress.done' => 'Automation was triggered :dif at :dt',
   'automation.trigger.setup' => 'Set Up Trigger',
   'automation.trigger.specific-date' => 'Specific date',
   'automation.trigger.specific-date.desc' => 'Send a one-time message based on an individual date field, like an appointment.',
