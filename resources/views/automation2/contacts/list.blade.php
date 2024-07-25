@@ -49,17 +49,6 @@
 
                         @foreach ($points as $action)
                             @php
-                                if ($action->getLastExecuted()) {
-                                    $executedAt = $action->getLastExecutedCarbon($customer->timezone);
-                                    $notes = sprintf(', %s (%s)',
-                                        $executedAt->diffForHumans(),
-                                        $customer->formatDatetime($executedAt, 'datetime_full'),
-                                        $customer->timezone,
-                                    );
-                                } else {
-                                    $notes = '';
-                                }
-
                                 if ($action->getOption('error')) {
                                     $style = 'action-error';
                                 } else {
@@ -74,7 +63,7 @@
                                         'auto_trigger_id' => $trigger->id,
                                     ]) }}"
                                 @endif
-                                class="xtooltip round-action-point {{ $style }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
+                                class="xtooltip round-action-point {{ $style }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }}">
                             </span>
                         @endforeach
                     @endif

@@ -156,7 +156,7 @@ abstract class Action
         }
     }
 
-    public function getProgressDescription()
+    public function getProgressDescription($timezone = null, $locale = null)
     {
         return null;
     }

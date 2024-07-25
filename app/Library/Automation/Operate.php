@@ -79,7 +79,7 @@ class Operate extends Action
         return sprintf('Perform an operation');
     }
 
-    public function getProgressDescription()
+    public function getProgressDescription($timezone = null, $locale = null)
     {
         $subscriber = $this->autoTrigger->subscriber;
         $operationType = $this->getOption('operation_type');

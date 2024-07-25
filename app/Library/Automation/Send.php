@@ -5,6 +5,7 @@ namespace Acelle\Library\Automation;
 use Acelle\Model\Email;
 use Acelle\Model\Automation2;
 use Exception;
+use Carbon\Carbon;
 
 class Send extends Action
 {
@@ -92,20 +93,39 @@ class Send extends Action
         return sprintf('User %s receives email entitled "%s"', $nameOrEmail, $this->getEmail()->subject);
     }
 
-    public function getProgressDescription()
+    public function getProgressDescription($timezone = null, $locale = null)
     {
         $email = $this->getEmail();
         $subscriber = $this->autoTrigger->subscriber;
 
         if (!is_null($this->getLastExecuted())) {
-            return sprintf('Sent email "%s" to "%s"', $email->subject, $subscriber->email);
+            $queuedAt = Carbon::parse($this->getOption('queued_at'));
+            $sentAt = Carbon::parse($this->getOption('sent_at'));
+            $diffInSeconds = $sentAt->diffInSeconds($queuedAt);
+
+            $sentAt->timezone($timezone);
+
+            return trans('messages.automation.trigger.send.progress.sent', [
+                'e' => $email->subject,
+                'c' => $subscriber->email,
+                'dif' => $sentAt->diffForHumans(),
+                'dt' => format_datetime($sentAt, 'datetime_full_with_timezone', $locale),
+                'sec' => $diffInSeconds
+            ]);
+
         } elseif ($this->getOption('queued_at')) {
-            $queuedAt = $this->autoTrigger->automation2->customer->parseDateTime($this->getOption('queued_at'));
+            $queuedAt = Carbon::parse($this->getOption('queued_at'))->timezone($timezone);
 
             if ($this->getOption('error')) {
-                return sprintf('Error sending email "%s" to "%s". Job #%s queued %s at %s. ERROR: %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString(), $this->getOption('error'));
+                return sprintf('Error sending email "%s" to %s. Job #%s queued %s at %s. ERROR: %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString(), $this->getOption('error'));
             } else {
-                return sprintf('Sending email "%s" to "%s". Job #%s queued %s at %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString());
+                return trans('messages.automation.trigger.send.progress.queued', [
+                    'e' => $email->subject,
+                    'c' => $subscriber->email,
+                    'dif' => $queuedAt->diffForHumans(),
+                    'dt' => format_datetime($queuedAt, 'datetime_full_with_timezone', $locale),
+                    'id' => $this->getOption('delivery_job_id')
+                ]);
             }
         }
     }

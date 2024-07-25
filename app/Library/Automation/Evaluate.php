@@ -139,7 +139,7 @@ class Evaluate extends Action
         return $email->isClicked($this->autoTrigger->subscriber);
     }
 
-    public function getActionDescription()
+    public function getActionDescription($timezone = null, $locale = null)
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
         $options = $this->getOptions();
