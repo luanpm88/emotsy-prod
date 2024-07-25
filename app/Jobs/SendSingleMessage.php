@@ -32,8 +32,7 @@ class SendSingleMessage extends SendMessage
             // Mark the related trigger action as done
 
             $action = $this->getAction();
-            $action->setOption('sent_at', now()->toString());
-            $action->save();
+            $action->setSent();
             $trigger->check(); // no need to pass $manually = true here, as this action is only to confirm the completion of Send (execute returns true, then last_executed_time is recorded, done)
             $this->campaign->logger()->info('Updated trigger status (sent_at)');
         });

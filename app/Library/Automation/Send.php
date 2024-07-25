@@ -119,13 +119,20 @@ class Send extends Action
             if ($this->getOption('error')) {
                 return sprintf('Error sending email "%s" to %s. Job #%s queued %s at %s. ERROR: %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString(), $this->getOption('error'));
             } else {
-                return trans('messages.automation.trigger.send.progress.queued', [
+                $queueMsg = trans('messages.automation.trigger.send.progress.queued', [
                     'e' => $email->subject,
                     'c' => $subscriber->email,
                     'dif' => $queuedAt->diffForHumans(),
                     'dt' => format_datetime($queuedAt, 'datetime_full_with_timezone', $locale),
                     'id' => $this->getOption('delivery_job_id')
                 ]);
+
+
+                if (!empty($this->getOption('delay_note'))) {
+                    $queueMsg .= '. '.$this->getOption('delay_note');
+                }
+
+                return $queueMsg;
             }
         }
     }
@@ -153,6 +160,15 @@ class Send extends Action
     {
         $this->setOption('error', $errorMsg);
         $this->autoTrigger->setError(true, $save = false);
+        $this->save();
+    }
+
+    public function setSent()
+    {
+        $this->setOption('sent_at', now()->toString());
+        $this->setOption('error', null);
+        $this->setOption('delay_note', null);
+        $this->autoTrigger->setError(false, $save = false);
         $this->save();
     }
 
