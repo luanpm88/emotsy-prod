@@ -177,7 +177,7 @@ class SendMessage implements ShouldQueue
                         'error' => trans('messages.delivery.error.subscriber_not_active', [ 'status' => $this->subscriber->status ]),
                         'status' => 'failed',
                     ];
-                } elseif (config('custom.dryrun') || $this->campaign->name = '_DRYRUN') {
+                } elseif (config('custom.dryrun') || $this->campaign->name == '_DRYRUN') {
                     $logger->info('DRURUN...');
                     $sent = $this->server->dryrun($message);
                 } else {
