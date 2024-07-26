@@ -81,10 +81,12 @@ class BounceLog extends Model
         }
 
         $bounceLog = new static();
+        $bounceLog->tracking_log_id = $trackingLog->id;
+        $bounceLog->customer_id = $trackingLog->customer_id;
         $bounceLog->message_id = $params['message_id'];
         $bounceLog->runtime_message_id = $trackingLog->runtime_message_id;
         $bounceLog->bounce_type = array_key_exists('bounce_type', $params) ? $params['bounce_type'] : static::HARD; // @TODO fill in the NULL value here
-        $bounceLog->raw = array_key_exists('description', $params) ? $params['description'] : null;
+        $bounceLog->raw = $params['description'] ?? 'N/A';
         $bounceLog->save();
 
         return [$bounceLog, $validator];
