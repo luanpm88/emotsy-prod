@@ -293,9 +293,9 @@
             e.preventDefault();
 
             var confirm = '{{ trans('messages.subscriber.delete.confirm') }}';
-            var url = '{{ action('SubscriberController@delete', [
+            var url = '{{ action('SubscriberController@deleteByIds', [
                 'list_uid' => $subscriber->mailList->uid,
-                'uids' => $subscriber->uid,                
+                'ids' => $subscriber->id,
             ]) }}';
 
             var dialog = new Dialog('confirm', {

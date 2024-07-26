@@ -293,6 +293,56 @@ class SubscriberController extends Controller
     }
 
     /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteByIds(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
+
+        // Select all items
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        }
+
+        // get related mail lists to update the cached information
+        $lists = $subscribers->get()->map(function ($e) {
+            return MailList::find($e->mail_list_id);
+        })->unique();
+
+        // actually delete the subscriber
+        foreach ($subscribers->get() as $subscriber) {
+            // authorize
+            if (\Gate::allows('delete', $subscriber)) {
+                $subscriber->delete();
+
+                // Log
+                $subscriber->log('deleted', $customer);
+            }
+        }
+
+        foreach ($lists as $list) {
+            event(new \Acelle\Events\MailListUpdated($list));
+        }
+
+        // Redirect to my lists page
+        return response()->json([
+            "status" => 'success',
+            "message" => trans('messages.subscribers.deleted'),
+        ]);
+    }
+
+    /**
      * Subscribe subscriber.
      *
      * @param int $id
