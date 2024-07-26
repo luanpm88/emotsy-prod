@@ -312,15 +312,13 @@ class SendMessage implements ShouldQueue
                 $this->handleRateLimitExceeded($email, $ex);
             }
 
-
-
         } catch (Throwable $ex) {
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
             }
 
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
-            LaravelLog::error('ERROR SENDING EMAIL (debug): '.$ex->getTraceAsString());
+            LaravelLog::error('ERROR SENDING EMAIL (debug): '.$ex->getMessage()."\n".$ex->getTraceAsString());
             $logger->error($message);
             $plogger->error($message);
 
