@@ -157,7 +157,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     public function bounceLogs()
     {
-        return BounceLog::select('bounce_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')
+        return BounceLog::select('bounce_logs.*')->leftJoin('tracking_logs', 'tracking_logs.id', '=', 'bounce_logs.tracking_log_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
 
@@ -190,7 +190,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     public function feedbackLogs()
     {
-        return FeedbackLog::select('feedback_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')
+        return FeedbackLog::select('feedback_logs.*')->leftJoin('tracking_logs', 'tracking_logs.id', '=', 'feedback_logs.tracking_log_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
 
@@ -783,7 +783,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     }
 
     /**
-     * Count feedback rate.
+     * feedbackRate.
      *
      * @return number
      */
@@ -798,11 +798,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         return $this->feedbackCount() / $deliveredCount;
     }
 
-    /**
-     * Count bounce back.
-     *
-     * @return number
-     */
     public function bounceCount()
     {
         return $this->bounceLogs()->distinct('subscriber_id')->count('subscriber_id');
@@ -2061,8 +2056,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             function ($join) {
                 $join->on('tracking_logs.subscriber_id', 'subscribers.id');
             }
-        )->leftJoin('bounce_logs', 'tracking_logs.message_id', 'bounce_logs.message_id')
-         ->leftJoin('feedback_logs', 'tracking_logs.message_id', 'feedback_logs.message_id')
+        )->leftJoin('bounce_logs', 'tracking_logs.id', 'bounce_logs.tracking_log_id')
+         ->leftJoin('feedback_logs', 'tracking_logs.id', 'feedback_logs.tracking_log_id')
          ->leftJoin('unsubscribe_logs', 'tracking_logs.message_id', 'unsubscribe_logs.message_id');
 
         $query->select(DB::raw(strtr("
