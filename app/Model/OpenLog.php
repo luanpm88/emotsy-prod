@@ -125,12 +125,14 @@ class OpenLog extends Model
          */
 
         $messageId = StringHelper::base64UrlDecode($request->message_id);
-
-        if (!TrackingLog::where('message_id', $messageId)->exists()) {
+        $trackingLog = TrackingLog::where('message_id', $messageId)->first();
+        if (is_null($trackingLog)) {
             throw new Exception(sprintf('Message ID %s not found', $messageId));
         }
 
         $log = new self();
+        $log->tracking_log_id = $trackingLog->id;
+        $log->customer_id = $trackingLog->customer_id;
         $log->message_id = $messageId;
         $log->user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
 

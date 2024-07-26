@@ -1621,9 +1621,10 @@ class SendingServer extends Model
 
     public function dryrun($message)
     {
-        // $output = '/tmp/dryrun';
-        // $lineSeparator = PHP_EOL.'*********************************************'.PHP_EOL;
-        // file_put_contents($output, $message->toString().$lineSeparator, FILE_APPEND | LOCK_EX);
+        // $toEmail = array_keys($message->getTo())[0];
+        // $filename = "dryrun-{$toEmail}";
+        // $output = "/tmp/dryrun/{$filename}";
+        // file_put_contents($output, $message->toString(), FILE_APPEND | LOCK_EX);
         return [ 'status' => self::DELIVERY_STATUS_SENT ];
     }
 }
