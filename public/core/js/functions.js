@@ -503,7 +503,7 @@ function makeList(options) {
 
     if (typeof(options.data) == 'undefined') {
         options.data = function() {
-            return options.container.find('.filter-box :input, [name=per_page], [name="uids[]"]').serializeArray();
+            return options.container.find('.filter-box :input, [name=per_page], [name="uids[]"], [name="ids[]"]').serializeArray();
         };
     }
 
@@ -532,7 +532,7 @@ function makeList(options) {
             });
 
             // each row input clicked
-            this.content.find('[name="uids[]"]').on('change', function() {
+            this.content.find('[name="uids[]"], [name="ids[]"]').on('change', function() {
                 checkPageChange();
             });
 
@@ -600,7 +600,7 @@ function makeList(options) {
     });
 
     var getCheckCount = function() {
-        return options.container.find('[name="uids[]"]:checked').length;
+        return options.container.find('[name="uids[]"]:checked, [name="ids[]"]:checked').length;
     };
 
     var totalItems = function() {
@@ -622,7 +622,7 @@ function makeList(options) {
     // check if page checked half or all
     var checkPageChange = function() {
         var checkCount = getCheckCount();
-        var notCheckCount = options.container.find('[name="uids[]"]').length;
+        var notCheckCount = options.container.find('[name="uids[]"], [name="ids[]"]').length;
 
         if (checkCount == notCheckCount && checkCount > 0) {
             options.container.find('input[name=page_checked]').prop('checked', true);
@@ -669,9 +669,9 @@ function makeList(options) {
     // check all|none items in page
     var checkPage = function(checked) {
         if (checked) {
-            options.container.find('[name="uids[]"]').prop('checked', true);
+            options.container.find('[name="uids[]"],[name="ids[]"]').prop('checked', true);
         } else {
-            options.container.find('[name="uids[]"]').prop('checked', false);
+            options.container.find('[name="uids[]"],[name="ids[]"]').prop('checked', false);
         }
     };
 

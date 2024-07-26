@@ -252,56 +252,6 @@ class SubscriberController extends Controller
     public function delete(Request $request)
     {
         $customer = $request->user()->customer;
-        $uids = $request->uids;
-
-        if (!is_array($request->uids)) {
-            $uids = explode(',', $request->uids);
-        }
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $uids);
-        $list = MailList::findByUid($request->list_uid);
-
-        // Select all items
-        if ($request->select_tool == 'all_items') {
-            $subscribers = $this->search($list, $request);
-        }
-
-        // get related mail lists to update the cached information
-        $lists = $subscribers->get()->map(function ($e) {
-            return MailList::find($e->mail_list_id);
-        })->unique();
-
-        // actually delete the subscriber
-        foreach ($subscribers->get() as $subscriber) {
-            // authorize
-            if (\Gate::allows('delete', $subscriber)) {
-                $subscriber->delete();
-
-                // Log
-                $subscriber->log('deleted', $customer);
-            }
-        }
-
-        foreach ($lists as $list) {
-            event(new \Acelle\Events\MailListUpdated($list));
-        }
-
-        // Redirect to my lists page
-        return response()->json([
-            "status" => 'success',
-            "message" => trans('messages.subscribers.deleted'),
-        ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function deleteByIds(Request $request)
-    {
-        $customer = $request->user()->customer;
         $ids = $request->ids;
 
         if (!is_array($request->ids)) {
@@ -353,14 +303,17 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
+        $ids = $request->ids;
 
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
         }
 
         foreach ($subscribers->get() as $subscriber) {
@@ -394,14 +347,17 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
+        $ids = $request->ids;
 
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
         }
 
         foreach ($subscribers->get() as $subscriber) {
@@ -650,13 +606,16 @@ class SubscriberController extends Controller
         $from_list = MailList::findByUid($request->from_uid);
         $to_list = MailList::findByUid($request->to_uid);
 
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
-            $subscribers = $this->search($from_list, $request)->select('subscribers.*');
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
+            $subscribers = $this->search($from_list, $request);
         }
 
         foreach ($subscribers->get() as $subscriber) {
@@ -694,13 +653,16 @@ class SubscriberController extends Controller
         $from_list = MailList::findByUid($request->from_uid);
         $to_list = MailList::findByUid($request->to_uid);
 
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
-            $subscribers = $this->search($from_list, $request)->select('subscribers.*');
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
+            $subscribers = $this->search($from_list, $request);
         }
 
         foreach ($subscribers->get() as $subscriber) {
@@ -738,13 +700,16 @@ class SubscriberController extends Controller
     {
         $from_list = MailList::findByUid($request->from_uid);
 
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($from_list, $request);
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
         }
 
         return view('subscribers.copy_move_form', [
@@ -838,16 +803,20 @@ class SubscriberController extends Controller
      */
     public function resendConfirmationEmail(Request $request)
     {
-        $subscribers = \Acelle\Model\Subscriber::whereIn(
-            'uid',
-            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-        );
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
         $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
         }
+
+        $list = MailList::findByUid($request->list_uid);
 
         // Launch re-sending job
         dispatch_now(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
@@ -1190,7 +1159,14 @@ class SubscriberController extends Controller
     {
         // init
         $list = MailList::findByUid($request->list_uid);
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $request->uids);
+
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
@@ -1231,7 +1207,13 @@ class SubscriberController extends Controller
     {
         // init
         $list = MailList::findByUid($request->list_uid);
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $request->uids);
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {

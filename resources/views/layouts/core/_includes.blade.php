@@ -42,7 +42,7 @@
 <!-- Custom css -->
 <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('custom.css') }}">
 
-<script type="text/javascript" src="{{ AppUrl::asset('core/js/functions.js') }}"></script>
+<script type="text/javascript" src="{{ AppUrl::asset('core/js/functions.js') }}?v=1"></script>
 
 <script type="text/javascript" src="{{ AppUrl::asset('core/js/link.js') }}"></script>
 <script type="text/javascript" src="{{ AppUrl::asset('core/js/box.js') }}"></script>

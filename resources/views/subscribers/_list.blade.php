@@ -9,8 +9,8 @@
 						<div class="checkbox inline me-1">
 							<label>
 								<input type="checkbox" class="node styled"
-									name="uids[]"
-									value="{{ $item->uid }}"
+									name="ids[]"
+									value="{{ $item->id }}"
 								/>
 							</label>
 						</div>
@@ -71,10 +71,10 @@
 						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							@if (\Gate::allows('subscribe', $item))
-								<li><a class="dropdown-item list-action-single"  link-method="POST" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribe') }}</a></li>
+								<li><a class="dropdown-item list-action-single"  link-method="POST" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "ids" => $item->id]) }}"><span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribe') }}</a></li>
 							@endif
 							@if (\Gate::allows('unsubscribe', $item))
-								<li><a class="dropdown-item list-action-single"  link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-symbols-rounded">logout</span> {{ trans('messages.unsubscribe') }}</a></li>
+								<li><a class="dropdown-item list-action-single"  link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "ids" => $item->id]) }}"><span class="material-symbols-rounded">logout</span> {{ trans('messages.unsubscribe') }}</a></li>
 							@endif
 
 							<li>
@@ -99,7 +99,7 @@
 							</li>
 							@if (\Gate::allows('update', $item))
 								<li>
-									<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $item->uid]) }}">
+									<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "ids" => $item->id]) }}">
 										<span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribers.resend_confirmation_email') }}
 									</a>
 								</li>
