@@ -151,7 +151,7 @@ trait HasTemplate
      */
     public function getCustomHeaders($subscriber, $server)
     {
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($subscriber->email));
 
         $headers = array(
             'X-Acelle-Campaign-Id' => $this->uid,
