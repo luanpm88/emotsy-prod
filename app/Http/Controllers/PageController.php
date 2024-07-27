@@ -192,7 +192,7 @@ class PageController extends Controller
                 return redirect()->away($request->redirect_url);
             } elseif ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
                 // tell subscriber to check email for confirmation
-                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
+                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_id' => $subscriber->id]);
             } else {
                 // All done, confirmed
                 return redirect()->action(
@@ -225,7 +225,7 @@ class PageController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->subscriber_id);
 
         // Language
         if ($list->customer && $list->customer->language) {

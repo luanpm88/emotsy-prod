@@ -737,7 +737,7 @@ class MailListController extends Controller
             return redirect()->away($request->redirect_url);
         } elseif ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
             // tell subscriber to check email for confirmation
-            return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
+            return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_id' => $subscriber->id]);
         } else {
             // All done, confirmed
             return redirect()->action(
