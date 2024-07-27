@@ -155,7 +155,7 @@ trait HasTemplate
 
         $headers = array(
             'X-Acelle-Campaign-Id' => $this->uid,
-            'X-Acelle-Subscriber-Id' => $subscriber->uid,
+            'X-Acelle-Subscriber-Id' => $subscriber->id,
             'X-Acelle-Customer-Id' => $this->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid,

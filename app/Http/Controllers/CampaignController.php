@@ -1897,7 +1897,7 @@ class CampaignController extends Controller
      */
     public function webViewPreview(Request $request)
     {
-        $subscriber = Subscriber::findByUid($request->subscriber_uid);
+        $subscriber = Subscriber::find($request->subscriber_id);
         $campaign = Campaign::findByUid($request->campaign_uid);
 
         if (is_null($subscriber) || is_null($campaign)) {

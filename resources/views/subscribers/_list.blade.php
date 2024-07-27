@@ -80,7 +80,7 @@
 							<li>
 								<a href="#copy" class="dropdown-item copy_move_subscriber"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
-										'uids' => $item->uid,
+										'ids' => $item->id,
 										'from_uid' => $list->uid,
 										'action' => 'copy',
 									]) }}">
@@ -90,7 +90,7 @@
 							<li>
 								<a href="#move" class="dropdown-item copy_move_subscriber"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
-										'uids' => $item->uid,
+										'ids' => $item->id,
 										'from_uid' => $list->uid,
 										'action' => 'move',
 									]) }}">

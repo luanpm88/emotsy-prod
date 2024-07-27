@@ -377,7 +377,7 @@ class CampaignController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        $subscriber = Subscriber::findByUid($request->subscriber);
+        $subscriber = Subscriber::find($request->subscriber);
         $message_id = StringHelper::base64UrlDecode($request->message_id);
 
         if (is_null($subscriber)) {
@@ -795,7 +795,7 @@ class CampaignController extends Controller
      */
     public function webViewPreview(Request $request)
     {
-        $subscriber = Subscriber::findByUid($request->subscriber_uid);
+        $subscriber = Subscriber::find($request->subscriber_id);
         $campaign = Campaign::findByUid($request->campaign_uid);
 
         if (is_null($subscriber) || is_null($campaign)) {

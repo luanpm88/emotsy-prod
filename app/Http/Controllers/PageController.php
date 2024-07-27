@@ -199,7 +199,7 @@ class PageController extends Controller
                     'PageController@signUpConfirmationThankyou',
                     [
                         'list_uid' => $list->uid,
-                        'uid' => $subscriber->uid,
+                        'id' => $subscriber->id,
                         'code' => 'empty',
                     ]
                 );
@@ -259,7 +259,7 @@ class PageController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // Language
         if ($list->customer && $list->customer->language) {
@@ -303,7 +303,7 @@ class PageController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // Language
         if ($list->customer && $list->customer->language) {
@@ -330,7 +330,7 @@ class PageController extends Controller
                 $subscriber->unsubscribe($trackingInfo);
             }
 
-            return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);
+            return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id]);
         }
 
         return view('pages.form', [
@@ -352,7 +352,7 @@ class PageController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // Language
         if ($list->customer && $list->customer->language) {
@@ -387,7 +387,7 @@ class PageController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         if (is_null($subscriber) || is_null($list)) {
             abort(404);
@@ -434,7 +434,7 @@ class PageController extends Controller
                 // Update field
                 $subscriber->updateFields($request->all());
 
-                return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);
+                return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id]);
             }
         }
 
@@ -458,7 +458,7 @@ class PageController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_success_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // Language
         if ($list->customer && $list->customer->language) {
@@ -493,7 +493,7 @@ class PageController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email_sent')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // Language
         if ($list->customer && $list->customer->language) {

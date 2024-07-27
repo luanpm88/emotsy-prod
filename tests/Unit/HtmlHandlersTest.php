@@ -93,7 +93,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         // Pipe
         $pipeline = new PipelineBuilder();
@@ -154,7 +154,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -193,7 +193,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -238,7 +238,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -306,7 +306,7 @@ class HtmlHandlersTest extends TestCase
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
         $subscriber->mailList = $list;
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -360,7 +360,7 @@ class HtmlHandlersTest extends TestCase
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
         $subscriber->mailList = $list;
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());

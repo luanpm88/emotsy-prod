@@ -332,7 +332,7 @@ class InstallController extends Controller
         \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
         \Acelle\Model\Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
         \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));
-        \Acelle\Model\Setting::set('url_update_profile', action('PageController@profileUpdateForm', ['list_uid' => 'LIST_UID', 'uid' => 'SUBSCRIBER_UID', 'code' => 'SECURE_CODE']));
+        \Acelle\Model\Setting::set('url_update_profile', action('PageController@profileUpdateForm', ['list_uid' => 'LIST_UID', 'id' => 'SUBSCRIBER_ID', 'code' => 'SECURE_CODE']));
 
         // Site info settings
         \Acelle\Model\Setting::set('site_name', $site_info['site_name']);

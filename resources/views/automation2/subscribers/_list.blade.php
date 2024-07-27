@@ -9,8 +9,8 @@
 						<div class="checkbox inline me-1">
 							<label>
 								<input type="checkbox" class="node styled"
-									name="uids[]"
-									value="{{ $subscriber->uid }}"
+									name="ids[]"
+									value="{{ $subscriber->id }}"
 								/>
 							</label>
 						</div>
@@ -81,7 +81,7 @@
 							<li>
 								<a href="#copy" class="dropdown-item copy_move_subscriber"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
-										'uids' => $subscriber->uid,
+										'ids' => $subscriber->id,
 										'from_uid' => $list->uid,
 										'action' => 'copy',
 									]) }}">
@@ -91,7 +91,7 @@
 							<li>
 								<a href="#move" class="dropdown-item copy_move_subscriber"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
-										'uids' => $subscriber->uid,
+										'ids' => $subscriber->id,
 										'from_uid' => $list->uid,
 										'action' => 'move',
 									]) }}">
@@ -100,7 +100,7 @@
 							</li>
 							@if (\Gate::allows('update', $subscriber))
 								<li>
-									<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}">
+									<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "ids" => $subscriber->id]) }}">
 										<span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribers.resend_confirmation_email') }}
 									</a>
 								</li>

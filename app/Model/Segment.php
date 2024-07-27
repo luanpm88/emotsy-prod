@@ -395,7 +395,7 @@ class Segment extends Model
     public function isSubscriberIncluded($subscriber)
     {
         return $this->subscribers()
-                    ->where('uid', $subscriber->uid)
+                    ->where('id', $subscriber->id)
                     ->exists();
     }
 

@@ -2113,7 +2113,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         return route('webViewerPreviewUrl', [
             'campaign_uid' => $this->uid,
-            'subscriber_uid' => $subscriber->uid,
+            'subscriber_id' => $subscriber->id,
         ]);
     }
 

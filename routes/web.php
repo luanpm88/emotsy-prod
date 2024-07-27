@@ -202,21 +202,21 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('p/{url}/click/{message_id?}', 'CampaignController@click')->name('clickTrackingUrl');
     Route::get('c/{subscriber}/unsubscribe/{message_id?}', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
     Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView')->name('webViewerUrl');
-    Route::get('campaigns/{campaign_uid}/webview/{subscriber_uid}/preview', 'CampaignController@webViewPreview')->name('webViewerPreviewUrl');
+    Route::get('campaigns/{campaign_uid}/webview/{subscriber_id}/preview', 'CampaignController@webViewPreview')->name('webViewerPreviewUrl');
     Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
     Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormSubscribe');
     Route::get('lists/{uid}/check-email', 'MailListController@checkEmail');
     Route::get('lists/{list_uid}/sign-up', 'PageController@signUpForm');
     Route::post('lists/{list_uid}/sign-up', 'PageController@signUpForm');
     Route::get('lists/{list_uid}/sign-up/{subscriber_id}/thank-you', 'PageController@signUpThankyouPage');
-    Route::get('lists/{list_uid}/subscribe-confirm/{uid}/{code}', 'PageController@signUpConfirmationThankyou');
-    Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm')->name('unsubscribeForm');
-    Route::post('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
-    Route::get('lists/{list_uid}/unsubscribe-success/{uid}', 'PageController@unsubscribeSuccessPage');
-    Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
-    Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
-    Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profileUpdateSuccessPage');
-    Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
+    Route::get('lists/{list_uid}/subscribe-confirm/{id}/{code}', 'PageController@signUpConfirmationThankyou');
+    Route::get('lists/{list_uid}/unsubscribe/{id}/{code}', 'PageController@unsubscribeForm')->name('unsubscribeForm');
+    Route::post('lists/{list_uid}/unsubscribe/{id}/{code}', 'PageController@unsubscribeForm');
+    Route::get('lists/{list_uid}/unsubscribe-success/{id}', 'PageController@unsubscribeSuccessPage');
+    Route::get('lists/{list_uid}/update-profile/{id}/{code}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
+    Route::post('lists/{list_uid}/update-profile/{id}/{code}', 'PageController@profileUpdateForm');
+    Route::get('lists/{list_uid}/update-profile-success/{id}', 'PageController@profileUpdateSuccessPage');
+    Route::get('lists/{list_uid}/profile-update-email-sent/{id}', 'PageController@profileUpdateEmailSent');
 
     // Notification handler
     Route::post('delivery/notify/{stype?}', 'DeliveryController@notify');

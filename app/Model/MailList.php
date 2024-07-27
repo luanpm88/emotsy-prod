@@ -822,7 +822,7 @@ class MailList extends Model
                 }
 
                 $attributes['status'] = $subscriber->status;
-                $attributes['uid'] = $subscriber->uid;
+                $attributes['id'] = $subscriber->id;
                 $attributes['created_at'] = $subscriber->created_at->toString();
                 $attributes['updated_at'] = $subscriber->updated_at->toString();
 

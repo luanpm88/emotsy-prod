@@ -1061,7 +1061,7 @@ class Subscriber extends Model
     {
         $url = route('unsubscribeUrl', [
             'message_id' => StringHelper::base64UrlEncode($messageId),
-            'subscriber' => $this->uid
+            'subscriber' => $this->id
         ], $absoluteUrl);
 
         return $url;
@@ -1069,7 +1069,7 @@ class Subscriber extends Model
 
     public function generateUpdateProfileUrl()
     {
-        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'uid' => $this->uid, 'code' => $this->getSecurityToken('update-profile')]);
+        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'id' => $this->id, 'code' => $this->getSecurityToken('update-profile')]);
     }
 
     // Change status to SUBSCRIBED

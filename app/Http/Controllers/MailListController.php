@@ -744,7 +744,7 @@ class MailListController extends Controller
                 'PageController@signUpConfirmationThankyou',
                 [
                     'list_uid' => $list->uid,
-                    'uid' => $subscriber->uid,
+                    'id' => $subscriber->id,
                     'code' => 'empty',
                 ]
             );
