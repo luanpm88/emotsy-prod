@@ -162,7 +162,7 @@ class SubscriberController extends Controller
     public function edit(Request $request)
     {
         $list = MailList::findByUid($request->list_uid);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -203,7 +203,7 @@ class SubscriberController extends Controller
     {
         $customer = $request->user()->customer;
         $list = MailList::findByUid($request->list_uid);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -724,7 +724,7 @@ class SubscriberController extends Controller
      */
     public function startVerification(Request $request)
     {
-        $subscriber = Subscriber::findByUid($request->uid);
+        $subscriber = Subscriber::find($request->id);
         $server = EmailVerificationServer::findByUid($request->email_verification_server_id);
         try {
             $subscriber->verify($server);
@@ -735,7 +735,7 @@ class SubscriberController extends Controller
             // update MailList cache
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
-            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
+            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'id' => $subscriber->id]);
         } catch (\Exception $e) {
             return view('somethingWentWrong', ['message' => sprintf("Something went wrong while verifying %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
         }
@@ -747,14 +747,14 @@ class SubscriberController extends Controller
      */
     public function resetVerification(Request $request)
     {
-        $subscriber = Subscriber::findByUid($request->uid);
+        $subscriber = Subscriber::find($request->id);
 
         try {
             $subscriber->resetVerification();
             // success message
             $request->session()->flash('alert-success', trans('messages.verification.reset'));
 
-            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
+            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'id' => $subscriber->id]);
         } catch (\Exception $e) {
             return view('somethingWentWrong', ['message' => sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
         }
@@ -765,7 +765,7 @@ class SubscriberController extends Controller
      */
     public function avatar(Request $request)
     {
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         if ($subscriber && is_file($subscriber->getImagePath())) {
             $img = \Image::make($subscriber->getImagePath());
@@ -779,7 +779,7 @@ class SubscriberController extends Controller
     public function avatarOrigin(Request $request)
     {
         // Get current customer
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         if (is_file($subscriber->getImageOriginPath())) {
             $img = \Image::make($subscriber->getImageOriginPath());
@@ -832,10 +832,10 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function updateTags(Request $request, $list_uid, $uid)
+    public function updateTags(Request $request, $list_uid, $id)
     {
         $list = MailList::findByUid($list_uid);
-        $subscriber = Subscriber::findByUid($uid);
+        $subscriber = Subscriber::find($id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -867,10 +867,10 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function removeTag(Request $request, $list_uid, $uid)
+    public function removeTag(Request $request, $list_uid, $id)
     {
         $list = MailList::findByUid($list_uid);
-        $subscriber = Subscriber::findByUid($uid);
+        $subscriber = Subscriber::find($id);
 
         // authorize
         if (\Gate::denies('delete', $subscriber)) {

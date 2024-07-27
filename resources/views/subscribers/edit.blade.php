@@ -25,7 +25,7 @@
     <div class="row mt-4">
         <div class="col-sm-12 col-md-6 col-lg-6">
             <div class="sub-section">
-                <form enctype="multipart/form-data"  action="{{ action('SubscriberController@update', ['list_uid' => $list->uid, "uid" => $subscriber->uid]) }}" method="POST" class="form-validate-jqueryz">
+                <form enctype="multipart/form-data"  action="{{ action('SubscriberController@update', ['list_uid' => $list->uid, "id" => $subscriber->id]) }}" method="POST" class="form-validate-jqueryz">
                     {{ csrf_field() }}
                     <input type="hidden" name="_method" value="PATCH">
                     <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
@@ -36,7 +36,7 @@
                             @foreach ($subscriber->getTags() as $tag)
                                 <a href="{{ action('SubscriberController@removeTag', [
                                     'list_uid' => $subscriber->mailList->uid,
-                                    'uid' => $subscriber->uid,
+                                    'id' => $subscriber->id,
                                     'tag' => $tag,
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
                                     <button role="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
@@ -57,8 +57,8 @@
                     <div class="d-flex align-items-top">
                         <div>
                             @include('helpers._upload',[
-                                'src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->uid)),
-                                'srcOrigin' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatarOrigin',  $subscriber->uid)),
+                                'src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->id)),
+                                'srcOrigin' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatarOrigin',  $subscriber->id)),
                                 'dragId' => 'upload-avatar',
                                 'preview' => 'image'
                             ])
@@ -91,7 +91,7 @@
 
                 @if (is_null($subscriber->verification_status))
                     <p>{!! trans('messages.verification.wording.verify', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email) ]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@startVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@startVerification', ['id' => $subscriber->id]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
 
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
@@ -111,7 +111,7 @@
                     </form>
                 @elseif ($subscriber->isDeliverable())
                     <p>{!! trans('messages.verification.wording.deliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->last_verification_at) ]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['id' => $subscriber->id]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
@@ -121,7 +121,7 @@
                     </form>
                 @elseif ($subscriber->isUndeliverable())
                     <p>{!! trans('messages.verification.wording.undeliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email)]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['id' => $subscriber->id]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
@@ -131,7 +131,7 @@
                     </form>
                 @else
                     <p>{!! trans('messages.verification.wording.risky_or_unknown', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->last_verification_at), 'result' => sprintf("<strong>%s</strong>", $subscriber->verification_status)]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['id' => $subscriber->id]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
@@ -251,7 +251,7 @@
 
             var url = '{{ action('SubscriberController@updateTags', [
                 'list_uid' => $subscriber->mailList->uid,
-                'uid' => $subscriber->uid,
+                'id' => $subscriber->id,
             ]) }}';
 
             tagContact.load(url, function() {
@@ -293,7 +293,7 @@
             e.preventDefault();
 
             var confirm = '{{ trans('messages.subscriber.delete.confirm') }}';
-            var url = '{{ action('SubscriberController@deleteByIds', [
+            var url = '{{ action('SubscriberController@delete', [
                 'list_uid' => $subscriber->mailList->uid,
                 'ids' => $subscriber->id,
             ]) }}';

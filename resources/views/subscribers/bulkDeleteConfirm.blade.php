@@ -15,8 +15,8 @@
                         <input type='hidden' name="uids[]" value="{{ $subscriber->uid }}" />
                         <a
                             image-popup="link"
-                            href="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatarOrigin',  $subscriber->uid)) }}">
-                                <img class="avatar" src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->uid)) }}" />
+                            href="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatarOrigin',  $subscriber->id)) }}">
+                                <img class="avatar" src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->id)) }}" />
                         </a>
                         <div>
                             <label>{{ $subscriber->email }}</label>

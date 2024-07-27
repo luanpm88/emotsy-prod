@@ -38,12 +38,12 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
 
     // Subscriber
     Route::patch('lists/{list_uid}/subscribers/email/{email}/unsubscribe', 'SubscriberController@unsubscribeEmail');
-    Route::post('subscribers/{uid}/add-tag', 'SubscriberController@addTag');
-    Route::post('subscribers/{uid}/remove-tag', 'SubscriberController@removeTag');
+    Route::post('subscribers/{id}/add-tag', 'SubscriberController@addTag');
+    Route::post('subscribers/{id}/remove-tag', 'SubscriberController@removeTag');
     Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
-    Route::delete('subscribers/{uid}', 'SubscriberController@delete');
+    Route::patch('lists/{list_uid}/subscribers/{id}/subscribe', 'SubscriberController@subscribe');
+    Route::patch('lists/{list_uid}/subscribers/{id}/unsubscribe', 'SubscriberController@unsubscribe');
+    Route::delete('subscribers/{id}', 'SubscriberController@delete');
 
     Route::resource('subscribers', 'SubscriberController');
 

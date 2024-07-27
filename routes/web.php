@@ -130,8 +130,8 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('/autologin/{api_token}/{email}', 'Controller@autoLoginEmail');
     //Subscriber avatar
-    Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
-    Route::get('assets/images/avatar/subscribe-origin-{uid?}.jpg', 'SubscriberController@avatarOrigin');
+    Route::get('assets/images/avatar/subscriber-{id?}.jpg', 'SubscriberController@avatar');
+    Route::get('assets/images/avatar/subscribe-origin-{id?}.jpg', 'SubscriberController@avatarOrigin');
 
     // User resend activation email
     Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');
@@ -176,7 +176,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('pub/campaigns/{uid}/overview', 'Pub\CampaignController@overview');
     Route::get('pub/campaigns/{uid}/links', 'Pub\CampaignController@links');
 
-    Route::get('pub/campaigns/{uid}/preview/content/{subscriber_uid?}', 'Pub\CampaignController@previewContent');
+    Route::get('pub/campaigns/{uid}/preview/content/{subscriber_id?}', 'Pub\CampaignController@previewContent');
     Route::get('pub/campaigns/{uid}/preview', 'Pub\CampaignController@preview');
 
 
@@ -432,12 +432,12 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'lists/{list_uid}/subscribers/assign-values', 'SubscriberController@assignValues');
     Route::match(['get', 'post'], 'lists/{list_uid}/subscribers/bulk-delete', 'SubscriberController@bulkDelete');
 
-    Route::post('lists/{list_uid}/subscriber/{uid}/remove-tag', 'SubscriberController@removeTag');
-    Route::match(['get', 'post'], 'lists/{list_uid}/subscriber/{uid}/update-tags', 'SubscriberController@updateTags');
+    Route::post('lists/{list_uid}/subscriber/{id}/remove-tag', 'SubscriberController@removeTag');
+    Route::match(['get', 'post'], 'lists/{list_uid}/subscriber/{id}/update-tags', 'SubscriberController@updateTags');
 
     Route::post('lists/{list_uid}/subscribers/resend/confirmation-email/{uids?}', 'SubscriberController@resendConfirmationEmail');
-    Route::post('subscriber/{uid}/verification/start', 'SubscriberController@startVerification');
-    Route::post('subscriber/{uid}/verification/reset', 'SubscriberController@resetVerification');
+    Route::post('subscriber/{id}/verification/start', 'SubscriberController@startVerification');
+    Route::post('subscriber/{id}/verification/reset', 'SubscriberController@resetVerification');
     Route::get('lists/{from_uid}/copy-move-from/{action}', 'SubscriberController@copyMoveForm');
     Route::post('subscribers/move', 'SubscriberController@move');
     Route::post('subscribers/copy', 'SubscriberController@copy');
@@ -445,10 +445,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/subscribers/create', 'SubscriberController@create');
     Route::get('lists/{list_uid}/subscribers/listing', 'SubscriberController@listing');
     Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
-    Route::get('lists/{list_uid}/subscribers/{uid}/edit', 'SubscriberController@edit');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
+    Route::get('lists/{list_uid}/subscribers/{id}/edit', 'SubscriberController@edit');
+    Route::patch('lists/{list_uid}/subscribers/{id}/update', 'SubscriberController@update');
     Route::post('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
-    Route::post('lists/{list_uid}/subscribers/delete-by-ids', 'SubscriberController@deleteByIds');
     Route::get('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
     Route::post('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subscribe');
     Route::post('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
@@ -574,7 +573,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
     Route::get('campaigns/select-type', 'CampaignController@selectType');
     Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
-    Route::get('campaigns/{uid}/preview/content/{subscriber_uid?}', 'CampaignController@previewContent');
+    Route::get('campaigns/{uid}/preview/content/{subscriber_id?}', 'CampaignController@previewContent');
     Route::get('campaigns/{uid}/preview', 'CampaignController@preview');
     Route::match(['get', 'post'], 'campaigns/send-test-email', 'CampaignController@sendTestEmail');
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');

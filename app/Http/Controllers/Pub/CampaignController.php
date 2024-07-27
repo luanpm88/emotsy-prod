@@ -755,7 +755,7 @@ class CampaignController extends Controller
     public function previewContent(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
-        $subscriber = Subscriber::findByUid($request->subscriber_uid);
+        $subscriber = Subscriber::find($request->subscriber_id);
 
         echo $campaign->getHtmlContent($subscriber);
     }

@@ -36,7 +36,7 @@
                         'contact_uid' => $timeline->subscriber->uid,
                     ]) }}')" class="font-weight-semibold d-block">
                         @if ($timeline->subscriber->avatar)
-                            <img src="{{ action('SubscriberController@avatar',  $timeline->subscriber->uid) }}" />
+                            <img src="{{ action('SubscriberController@avatar',  $timeline->subscriber->id) }}" />
                         @elseif(isSiteDemo())
                             <img src="https://i.pravatar.cc/30{{ $key }}" />
                         @else

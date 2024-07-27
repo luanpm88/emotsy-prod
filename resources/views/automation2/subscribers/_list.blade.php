@@ -19,12 +19,12 @@
 				<td>
 					<div class="d-flex align-items-center">
 						<div class="subscriber-avatar mt-1">
-							<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $subscriber->uid]) }}">
-								<img src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->uid)) }}" />
+							<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'id' => $subscriber->id]) }}">
+								<img src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->id)) }}" />
 							</a>
 						</div>
 						<div class="no-margin text-bold">
-							<a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $subscriber->uid]) }}">
+							<a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'id' => $subscriber->id]) }}">
 								{{ $subscriber->email }}
 							</a>
 							<br />
@@ -72,10 +72,10 @@
 						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							@if (\Gate::allows('subscribe', $subscriber))
-								<li><a class="dropdown-item list-action-single" link-method="POST" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribe') }}</a></li>
+								<li><a class="dropdown-item list-action-single" link-method="POST" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "ids" => $subscriber->id]) }}"><span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribe') }}</a></li>
 							@endif
 							@if (\Gate::allows('unsubscribe', $subscriber))
-								<li><a class="dropdown-item list-action-single" link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-symbols-rounded">logout</span> {{ trans('messages.unsubscribe') }}</a></li>
+								<li><a class="dropdown-item list-action-single" link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "ids" => $subscriber->id]) }}"><span class="material-symbols-rounded">logout</span> {{ trans('messages.unsubscribe') }}</a></li>
 							@endif
 
 							<li>
@@ -106,7 +106,7 @@
 								</li>
 							@endif
 							@if (\Gate::allows('delete', $subscriber))
-								<li><a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-symbols-rounded">delete_outline</span> {{ trans("messages.delete") }}</a></li>
+								<li><a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "ids" => $subscriber->id]) }}"><span class="material-symbols-rounded">delete_outline</span> {{ trans("messages.delete") }}</a></li>
 							@endif	
 						</ul>
 					</div>

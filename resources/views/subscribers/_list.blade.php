@@ -21,12 +21,12 @@
 						<div class="subscriber-avatar mt-1">
 							<a
                                 image-popup="link"
-                                href="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatarOrigin',  $item->uid)) }}">
-								<img src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $item->uid)) }}" />
+                                href="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatarOrigin',  $item->id)) }}">
+								<img src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $item->id)) }}" />
 							</a>
 						</div>
 						<div class="no-margin text-bold">
-							<a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $item->uid]) }}">
+							<a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'id' => $item->id]) }}">
 								{{ $item->email }}
 							</a>
 							<br />
@@ -63,7 +63,7 @@
 
 				<td class="text-end text-nowrap pe-0">
 					@if (\Gate::allows('update', $item))
-						<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}" role="button" class="btn btn-secondary btn-icon">
+						<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "id" => $item->id]) }}" role="button" class="btn btn-secondary btn-icon">
 							<span class="material-symbols-rounded">edit</span>
 						</a>
 					@endif
@@ -105,7 +105,7 @@
 								</li>
 							@endif
 							@if (\Gate::allows('delete', $item))
-								<li><a link-method="POST" class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@deleteByIds', ['list_uid' => $list->uid, "ids" => $item->id]) }}"><span class="material-symbols-rounded">delete_outline</span> {{ trans("messages.delete") }}</a></li>
+								<li><a link-method="POST" class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "ids" => $item->id]) }}"><span class="material-symbols-rounded">delete_outline</span> {{ trans("messages.delete") }}</a></li>
 							@endif
 						</ul>
 					</div>

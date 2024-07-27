@@ -84,7 +84,7 @@ class Log extends Model
             $data['list_link'] = $list_link;
 
             $item = Subscriber::find($data['id']);
-            $link = $item && $list ? action('SubscriberController@edit', ['uid' => $item->uid, 'list_uid' => $list->uid]) : '#deleted';
+            $link = $item && $list ? action('SubscriberController@edit', ['id' => $item->id, 'list_uid' => $list->uid]) : '#deleted';
             $data['link'] = $link;
         }
         // Segment

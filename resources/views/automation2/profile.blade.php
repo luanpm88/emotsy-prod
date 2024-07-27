@@ -29,7 +29,7 @@
                                 >{{ trans('messages.automation.profile.manage_tag') }}</a>
                                 <a class="dropdown-item" href="{{ action('SubscriberController@edit', [
                                     'list_uid' => $contact->mailList->uid,
-                                    'uid' => $contact->uid,
+                                    'id' => $contact->id,
                                 ]) }}">{{ trans('messages.automation.profile.go_to_pofile') }}</a>
                             </div>
                         </div>
@@ -49,9 +49,9 @@
                     @else
                         <a
                             image-popup="link"
-                            href="{{ action('SubscriberController@avatarOrigin',  $contact->uid) }}"
+                            href="{{ action('SubscriberController@avatarOrigin',  $contact->id) }}"
                         >
-                            <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
+                            <img src="{{ action('SubscriberController@avatar',  $contact->id) }}" />
                         </a>
                     @endif
                 </div>

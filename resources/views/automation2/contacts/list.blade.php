@@ -23,7 +23,7 @@
                         @if(isSiteDemo())
                             <img src="https://i.pravatar.cc/300" />
                         @else
-                            <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
+                            <img src="{{ action('SubscriberController@avatar',  $contact->id) }}" />
                         @endif
                     </a>
                 </div>
