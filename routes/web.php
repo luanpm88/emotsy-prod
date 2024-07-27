@@ -736,9 +736,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('automation/{uid}/wait-time', 'Automation2Controller@waitTime');
     Route::get('automation/{uid}/wait-time', 'Automation2Controller@waitTime');
     Route::get('automation/{uid}/last-saved', 'Automation2Controller@lastSaved');
-    Route::post('automation/{uid}/subscribers/{subscriber_uid}/restart', 'Automation2Controller@subscribersRestart');
-    Route::post('automation/{uid}/subscribers/{subscriber_uid}/remove', 'Automation2Controller@subscribersRemove');
-    Route::get('automation/{uid}/subscribers/{subscriber_uid}/show', 'Automation2Controller@subscribersShow');
+    Route::post('automation/{uid}/subscribers/{subscriber_id}/restart', 'Automation2Controller@subscribersRestart');
+    Route::post('automation/{uid}/subscribers/{subscriber_id}/remove', 'Automation2Controller@subscribersRemove');
+    Route::get('automation/{uid}/subscribers/{subscriber_id}/show', 'Automation2Controller@subscribersShow');
     Route::get('automation/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
     Route::get('automation/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
     Route::get('automation/{uid}/subscribers', 'Automation2Controller@subscribers');
@@ -752,12 +752,12 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'automation/{uid}/contacts/copy-to-new-list', 'Automation2Controller@copyToNewList');
     Route::post('automation/{uid}/contacts/export', 'Automation2Controller@exportContacts');
 
-    Route::get('automation/{uid}/contacts/{contact_uid}/retry', 'Automation2Controller@contactRetry');
-    Route::post('automation/{uid}/contacts/{contact_uid}/tag/remove', 'Automation2Controller@removeTag');
+    Route::get('automation/{uid}/contacts/{contact_id}/retry', 'Automation2Controller@contactRetry');
+    Route::post('automation/{uid}/contacts/{contact_id}/tag/remove', 'Automation2Controller@removeTag');
     Route::match(['get', 'post'], 'automation/{uid}/contacts/tag', 'Automation2Controller@tagContacts');
-    Route::match(['get', 'post'], 'automation/{uid}/contact/{contact_uid}/tag', 'Automation2Controller@tagContact');
-    Route::post('automation/{uid}/contact/{contact_uid}/remove', 'Automation2Controller@removeContact');
-    Route::get('automation/{uid}/contact/{contact_uid}/profile', 'Automation2Controller@profile');
+    Route::match(['get', 'post'], 'automation/{uid}/contact/{contact_id}/tag', 'Automation2Controller@tagContact');
+    Route::post('automation/{uid}/contact/{contact_id}/remove', 'Automation2Controller@removeContact');
+    Route::get('automation/{uid}/contact/{contact_id}/profile', 'Automation2Controller@profile');
     Route::get('automation/{uid}/timeline/list', 'Automation2Controller@timelineList');
     Route::get('automation/{uid}/timeline', 'Automation2Controller@timeline');
     Route::post('automation/{uid}/contacts/list', 'Automation2Controller@contactsList');

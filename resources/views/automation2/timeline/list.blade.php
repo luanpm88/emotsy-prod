@@ -33,7 +33,7 @@
                 <div class="media trigger">
                     <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
-                        'contact_uid' => $timeline->subscriber->uid,
+                        'contact_id' => $timeline->subscriber->id,
                     ]) }}')" class="font-weight-semibold d-block">
                         @if ($timeline->subscriber->avatar)
                             <img src="{{ action('SubscriberController@avatar',  $timeline->subscriber->id) }}" />
@@ -47,7 +47,7 @@
                 <div class="flex-fill flex-grow-1" style="width: 50%">
                     <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
-                        'contact_uid' => $timeline->subscriber->uid,
+                        'contact_id' => $timeline->subscriber->id,
                     ]) }}')" class="font-weight-semibold d-block">
                         {{ $timeline->subscriber->getFullName() }}
                     </a>

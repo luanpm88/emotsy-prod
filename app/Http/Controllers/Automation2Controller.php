@@ -1543,10 +1543,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function profile(Request $request, $uid, $contact_uid)
+    public function profile(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
 
         // authorize
         if (\Gate::denies('view', $automation)) {
@@ -1566,10 +1566,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function removeContact(Request $request, $uid, $contact_uid)
+    public function removeContact(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
 
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -1589,10 +1589,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function tagContact(Request $request, $uid, $contact_uid)
+    public function tagContact(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
 
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -1676,10 +1676,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function removeTag(Request $request, $uid, $contact_uid)
+    public function removeTag(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
 
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -1980,11 +1980,11 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribersRemove(Request $request, $uid, $subscriber_uid)
+    public function subscribersRemove(Request $request, $uid, $subscriber_id)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $subscriber = Subscriber::findByUid($subscriber_uid);
+        $subscriber = Subscriber::find($subscriber_id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -2002,11 +2002,11 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribersRestart(Request $request, $uid, $subscriber_uid)
+    public function subscribersRestart(Request $request, $uid, $subscriber_id)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $subscriber = Subscriber::findByUid($subscriber_uid);
+        $subscriber = Subscriber::find($subscriber_id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -2024,11 +2024,11 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribersShow(Request $request, $uid, $subscriber_uid)
+    public function subscribersShow(Request $request, $uid, $subscriber_id)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $subscriber = Subscriber::findByUid($subscriber_uid);
+        $subscriber = Subscriber::find($subscriber_id);
 
         // authorize
         if (\Gate::denies('read', $subscriber)) {
@@ -2137,7 +2137,7 @@ class Automation2Controller extends Controller
     public function triggerNow(Request $request)
     {
         $automation = Automation2::findByUid($request->automation);
-        $subscriber = Subscriber::findByUid($request->subscriber);
+        $subscriber = Subscriber::find($request->subscriber);
 
         $existingTrigger = $automation->getAutoTriggerFor($subscriber);
 
@@ -2162,10 +2162,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function contactRetry(Request $request, $uid, $contact_uid)
+    public function contactRetry(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
         // authorize
         if (\Gate::denies('view', $automation)) {
             return $this->notAuthorized();

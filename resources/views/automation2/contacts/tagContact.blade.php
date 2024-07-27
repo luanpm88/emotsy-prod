@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <form class="tag-contact" action="{{ action("Automation2Controller@tagContact", [
                     'uid' => $automation->uid,
-                    'contact_uid' => $contact->uid,
+                    'contact_id' => $contact->id,
                 ]) }}"
                 method="POST" class="form-validate-jqueryz"
             >

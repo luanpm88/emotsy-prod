@@ -63,7 +63,7 @@
 					@if (\Gate::allows('update', $subscriber))
 						<a href="{{ action('Automation2Controller@subscribersShow', [
 							'uid' => $automation->uid,
-							'subscriber_uid' => $subscriber->uid
+							'subscriber_id' => $subscriber->id
 						]) }}" role="button" class="btn btn-secondary btn-icon">
 							{{ trans('messages.automation.subscriber.view') }}
 						</a>

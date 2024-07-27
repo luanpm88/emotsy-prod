@@ -15,7 +15,7 @@
                                 <a class="dropdown-item profile-remove-contact"
                                     href="{{ action('Automation2Controller@removeContact', [
                                         'uid' => $automation->uid,
-                                        'contact_uid' => $contact->uid,
+                                        'contact_id' => $contact->id,
                                     ]) }}"
                                     data-confirm="{{ trans('messages.automation.profile.remove_contact.confirm', ['name' => $contact->getFullName()]) }}"
                                 >
@@ -24,7 +24,7 @@
                                 <a class="dropdown-item profile-tag-contact"
                                     href="{{ action('Automation2Controller@tagContact', [
                                         'uid' => $automation->uid,
-                                        'contact_uid' => $contact->uid,
+                                        'contact_id' => $contact->id,
                                     ]) }}"
                                 >{{ trans('messages.automation.profile.manage_tag') }}</a>
                                 <a class="dropdown-item" href="{{ action('SubscriberController@edit', [
@@ -63,7 +63,7 @@
                             @foreach ($contact->getTags() as $tag)
                                 <a href="{{ action('Automation2Controller@removeTag', [
                                     'uid' => $automation->uid,
-                                    'contact_uid' => $contact->uid,
+                                    'contact_id' => $contact->id,
                                     'tag' => $tag,
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
                                     <button role="button" class="btn btn-light btn-tag">{{ $tag }}</button>
@@ -75,7 +75,7 @@
                         @else
                             <a href="{{ action('Automation2Controller@tagContact', [
                                         'uid' => $automation->uid,
-                                        'contact_uid' => $contact->uid,
+                                        'contact_id' => $contact->id,
                                     ]) }}" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
                                 <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
                                     <i class="material-symbols-rounded">add</i>

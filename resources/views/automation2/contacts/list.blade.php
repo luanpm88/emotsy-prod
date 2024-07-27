@@ -18,7 +18,7 @@
                 <div class="media trigger">
                     <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
-                        'contact_uid' => $contact->uid,
+                        'contact_id' => $contact->id,
                     ]) }}')" class="font-weight-semibold d-block">
                         @if(isSiteDemo())
                             <img src="https://i.pravatar.cc/300" />
@@ -30,7 +30,7 @@
                 <div class="flex-fill" style="width: 20%">
                     <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
-                        'contact_uid' => $contact->uid,
+                        'contact_id' => $contact->id,
                     ]) }}')" class="font-weight-semibold d-block">
                         {{ $contact->getFullName() }}
                     </a>
@@ -77,7 +77,7 @@
                         </label>
                         <desc>
                             <a target="_blank" style="color:blue;text-decoration: underline;"
-                                href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $contact->uid ]) }}"
+                                href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $contact->id ]) }}"
                                 class="timeline-trigger-now">
                                 {{ trans('messages.automation.trigger_now') }}
                             </a>
