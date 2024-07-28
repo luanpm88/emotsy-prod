@@ -1156,6 +1156,7 @@ class Automation2 extends Model
         // + open logs
         // + click logs
         // + timelines
+        $this->triggerSessions()->delete();
         $this->autoTriggers()->delete();
         $this->updateCache();
         $this->setLastError(null);
