@@ -51,7 +51,9 @@ class AutoTrigger extends Model
 
         self::retrieved(function ($model) {
             // IMPORTANT: in case of any change made to the parent automation2
-            $model->updateWorkflow();
+            if (!is_null($model->id)) {
+                $model->updateWorkflow();
+            }
         });
 
         // Why ::creating is required here although it was already in HasUid!!!!!!!!
