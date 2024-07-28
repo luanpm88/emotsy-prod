@@ -1261,9 +1261,11 @@ class Subscriber extends Model
         $this->save();
     }
 
+    /*
     // @OVERWRITE the parent method
     public function newEloquentBuilder($query)
     {
         return new ExtendedEloquentBuilder($query);
     }
+    */
 }
