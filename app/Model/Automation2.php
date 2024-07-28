@@ -232,7 +232,6 @@ class Automation2 extends Model
     {
         DB::transaction(function () use ($data) {
             $this->resetListRelatedData();
-            $this->autoTriggers()->delete();
             $this->saveData($data);
         });
     }
@@ -451,7 +450,7 @@ class Automation2 extends Model
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
             $trigger->updateWorkflow();
             $trigger->save();
-            $this->logger()->info(sprintf('[%s] NEW TRIGGER for %s', $this->getTriggerType(), $subscriber->email));
+            $this->logger()->info(sprintf('NEW TRIGGER (%s) for %s', $this->getTriggerType(), $subscriber->email));
         });
 
         return $trigger;
@@ -592,24 +591,18 @@ class Automation2 extends Model
         $session = $this->triggerSessions()->where('created_at', '>=', $startOfDayUtc)->where('created_at', '<=', $endOfDayUtc)->first();
 
         if ($session) {
-            $this->logger()->info(sprintf('A session already exists: TriggerSession#%s, triggered at %s', $session->id, $session->created_at->timezone($this->customer->timezone)->toString()));
+            $this->logger()->info(sprintf('A session already exists: TriggerSession#%s, triggered same day %s at %s', $session->id, $session->created_at->diffForHumans(), $this->customer->formatDateTime($session->created_at, 'datetime_short')));
             return;
         }
 
         // Delete old sessions' triggers
-        $session = $this->triggerSessions()->delete();
+        $this->triggerSessions()->delete();
+        $this->autoTriggers()->delete(); // Delete legacy triggers that were not bound to a session
 
         // Create new sessions
         $session = $this->triggerSessions()->create();
 
-        // Triggers active contacts
-        $subscribers = $this->subscribersToSend()->get();
-        $this->logger()->info(sprintf('Triggering %s contacts', sizeof($subscribers)));
-        foreach ($subscribers as $subscriber) {
-            $this->initTrigger($subscriber, $force = false, $session);
-            $this->logger()->info(sprintf('New trigger created %s, session #%s', $subscriber->email, $session->id));
-        }
-        $this->logger()->info(sprintf('Finish Triggering %s contacts', sizeof($subscribers)));
+        $this->forceTriggerAll($session);
     }
 
     public function checkForMonthlyRecurring()
@@ -768,43 +761,44 @@ class Automation2 extends Model
     {
         $this->logger()->info(sprintf('NEW > Check for Specific Date/Time'));
 
-        // this is a one-time triggered automation event
-        // just abort if it is already triggered
-        //if ($this->autoTriggers()->exists()) {
-        //    $this->logger()->info(sprintf('NEW > Already triggered'));
-        //    return;
-        //}
-
         $trigger = $this->getTriggerAction();
         $now = $this->customer->getCurrentTime();
         $eventDate = Carbon::parse(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')))->timezone($this->customer->timezone);
 
-        // Condition same date but after the specified time
-        $format = 'Y-m-d';
-        $checked = $now->gte($eventDate) && $now->format($format) == $eventDate->format($format);
+        echo $now->toString()."\n";
+        echo $eventDate->toString();
 
+
+        // Condition same date but after the specified time
+        // So, two conditions are required:
+        // + After the specified time
+        // + But trigger on same day only
+        $format = 'Y-m-d';
+
+        if ($now->format($format) != $eventDate->format($format)) {
+            $this->logger()->info(sprintf("Not triggering today, the scheduled date/time is %s, i.e. %s.", $eventDate->format('Y-m-d G:i:s P'), $eventDate->diffForHumans()));
+            return;
+        }
+
+        $checked = $now->gte($eventDate);
         if (!$checked) {
             $this->logger()->info(sprintf("It is now %s, the scheduled time is: %s, i.e. %s.", $now->format('Y-m-d G:i:s P'), $eventDate->format('Y-m-d G:i:s P'), $eventDate->diffForHumans()));
             return;
         }
 
-        $this->logger()->info(sprintf('NEW > It is %s hours due! triggering!', $now->diffInHours($eventDate)));
-
-        $this->forceTrigger();
-    }
-
-    // Trigger all contacts that are not yet triggered
-    public function forceTrigger()
-    {
-        $notTriggered = $this->notTriggeredSubscribers()->get();
-        $total = $notTriggered->count();
-        $i = 0;
-
-        foreach ($notTriggered as $subscriber) {
-            $i += 1;
-            $this->initTrigger($subscriber);
-            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
+        $session = $this->triggerSessions()->latest()->first();
+        if ($session && $now->gte($session->created_at) && $now->format($format) == $session->created_at->format($format)) {
+            $this->logger()->info(sprintf('A session already exists: TriggerSession#%s, triggered same day %s at %s', $session->id, $session->created_at->diffForHumans(), $this->customer->formatDateTime($session->created_at, 'datetime_short')));
+            return;
         }
+
+        // Delete old sessions' triggers
+        $this->triggerSessions()->delete();
+        $this->autoTriggers()->delete(); // Delete legacy triggers that were not bound to a session
+
+        // Create new sessions
+        $session = $this->triggerSessions()->create();
+        $this->forceTriggerAll($session);
     }
 
     public function logger()
@@ -1244,15 +1238,29 @@ class Automation2 extends Model
         }
     }
 
-    /**
-     * Get segments uids.
-     */
-    public function execute()
+    // Trigger all contacts that are not yet triggered
+    public function forceTrigger()
     {
-        $subscribers = $this->notTriggeredSubscribers()->get();
-        foreach ($subscribers as $subscriber) {
+        $notTriggered = $this->notTriggeredSubscribers()->get();
+        $total = $notTriggered->count();
+        $i = 0;
+
+        foreach ($notTriggered as $subscriber) {
+            $i += 1;
             $this->initTrigger($subscriber);
+            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
         }
+    }
+
+    public function forceTriggerAll($session)
+    {
+        // Triggers active contacts
+        $subscribers = $this->subscribersToSend()->get();
+        $this->logger()->info(sprintf('Triggering %s contacts', sizeof($subscribers)));
+        foreach ($subscribers as $subscriber) {
+            $this->initTrigger($subscriber, $force = false, $session);
+        }
+        $this->logger()->info(sprintf('Finish Triggering %s contacts', sizeof($subscribers)));
     }
 
     public function notTriggeredSubscribers()

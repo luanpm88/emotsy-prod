@@ -30,6 +30,6 @@ class RunAutomation extends Base
             throw new Exception("Automation is not set up to be triggered via API (job handle)");
         }
         $this->automation->logger()->info(sprintf('Actually run automation "%s" in response to API call', $this->automation->name));
-        $this->automation->execute();
+        $this->automation->forceTrigger();
     }
 }
