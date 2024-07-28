@@ -12,7 +12,7 @@
     <div class="mc-table small border-top">
         @foreach ($contacts as $key => $contact)
             @php
-                $trigger = $automation->getAutoTriggerFor($contact);
+                $trigger = $contact->autoTriggers[0] ?? null;
             @endphp
             <div class="mc-row d-flex align-items-center">
                 <div class="media trigger">

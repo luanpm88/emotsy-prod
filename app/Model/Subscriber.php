@@ -90,6 +90,11 @@ class Subscriber extends Model
         return $this->hasMany('Acelle\Model\TrackingLog');
     }
 
+    public function autoTriggers()
+    {
+        return $this->hasMany('Acelle\Model\AutoTrigger');
+    }
+
     public function unsubscribeLogs()
     {
         return $this->hasMany('Acelle\Model\UnsubscribeLog');
