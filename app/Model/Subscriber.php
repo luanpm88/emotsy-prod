@@ -35,6 +35,7 @@ use Closure;
 use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Schema;
+use Acelle\Library\LaravelExtension\EloquentBuilder as ExtendedEloquentBuilder;
 
 class Subscriber extends Model
 {
@@ -1253,5 +1254,11 @@ class Subscriber extends Model
         }
 
         $this->save();
+    }
+
+    // @OVERWRITE the parent method
+    public function newEloquentBuilder($query)
+    {
+        return new ExtendedEloquentBuilder($query);
     }
 }
