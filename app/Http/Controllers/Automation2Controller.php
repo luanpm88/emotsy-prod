@@ -1483,10 +1483,10 @@ class Automation2Controller extends Controller
                                   ->orderBy($sortBy, $sortOrder);
 
         // Make sure $count returns the same list of $subscribers
-        // $count = $automation->subscribers()->simpleSearch($request->keyword)->count();
+        $count = $automation->subscribers()->simpleSearch($request->keyword)->count();
 
         // setPath() is required, otherwise, it may produce http link even in https
-        $contacts = $subscribers->paginate($request->per_page);
+        $contacts = $subscribers->fastPaginate($request->per_page, $count);
         $contacts->setPath(action('Automation2Controller@contactsList', [ 'uid' => $automation->uid ]));
 
         return view('automation2.contacts.list', [

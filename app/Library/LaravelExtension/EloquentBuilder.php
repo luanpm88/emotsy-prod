@@ -15,13 +15,17 @@ class EloquentBuilder extends Base
     {
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
 
+        $perPage = $perPage ?: $this->model->getPerPage();
+
         if (is_null($total)) {
-            $total = $this->getCountForPagination();
+            $total = $this->toBase()->getCountForPagination();
         } else {
-            // nothing todo here
+            //
         }
 
-        $results = $total ? $this->forPage($page, $perPage)->get($columns) : collect();
+        $results = ($total)
+                                    ? $this->forPage($page, $perPage)->get($columns)
+                                    : $this->model->newCollection();
 
         return $this->paginator($results, $total, $perPage, $page, [
             'path' => Paginator::resolveCurrentPath(),
