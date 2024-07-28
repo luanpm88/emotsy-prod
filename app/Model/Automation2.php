@@ -596,10 +596,15 @@ class Automation2 extends Model
             return;
         }
 
+        // Delete old sessions' triggers
+        $session = $this->triggerSessions()->delete();
+
+        // Create new sessions
         $session = $this->triggerSessions()->create();
+
+        // Triggers active contacts
         $subscribers = $this->subscribersToSend()->get();
         $this->logger()->info(sprintf('Triggering %s contacts', sizeof($subscribers)));
-        // init trigger
         foreach ($subscribers as $subscriber) {
             $this->initTrigger($subscriber, $force = false, $session);
             $this->logger()->info(sprintf('New trigger created %s, session #%s', $subscriber->email, $session->id));
