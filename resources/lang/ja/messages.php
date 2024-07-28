@@ -1899,7 +1899,7 @@
   'open_log.download' => 'ダウンロード',
   'open_map' => '開く-マップ',
   'open_rate' => '開封率',
-  'open_uniq_per_total' => ':count ユニーク / :total 開封 / :delivered メッセージ',
+  'open_uniq_per_total' => ':count ユニーク / :delivered メッセージ',
   'open_website' => '新しいタブでウェブサイトを開く',
   'opened' => '開封',
   'opened_at' => 'で開封',

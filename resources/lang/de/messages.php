@@ -1907,7 +1907,7 @@
   'open_log.download' => 'Download',
   'open_map' => 'Geöffnet - Karte',
   'open_rate' => 'Öffnungsrate',
-  'open_uniq_per_total' => 'eindeutig: :count / gesamt: :total',
+  'open_uniq_per_total' => 'eindeutig: :count / gesamt: :delivered',
   'open_website' => 'Webseite in neuem Tab öffnen',
   'opened' => 'geöffnet',
   'opened_at' => 'Geöffnet am',

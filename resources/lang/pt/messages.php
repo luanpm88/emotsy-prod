@@ -1908,7 +1908,7 @@
   'open_log.download' => 'Download',
   'open_map' => 'Aberto - Mapa',
   'open_rate' => 'Taxa de Abertura',
-  'open_uniq_per_total' => ':count Único / aberto :total vezes',
+  'open_uniq_per_total' => ':count Único / aberto :delivered vezes',
   'open_website' => 'Open website in new tab',
   'opened' => 'Aberto',
   'opened_at' => 'Aberto às',

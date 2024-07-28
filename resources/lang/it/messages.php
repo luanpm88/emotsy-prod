@@ -1908,7 +1908,7 @@
   'open_log.download' => 'Download',
   'open_map' => 'Aperture - Mappa',
   'open_rate' => 'Frequenza di apertura',
-  'open_uniq_per_total' => ':count unico / :total aperture / :delivered messaggi',
+  'open_uniq_per_total' => ':count unico / :delivered messaggi',
   'open_website' => 'Aprire il sito web in una nuova scheda',
   'opened' => 'Aperto',
   'opened_at' => 'Aperto il',

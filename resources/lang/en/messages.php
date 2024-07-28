@@ -1912,7 +1912,7 @@
   'open_log.download' => 'Download',
   'open_map' => 'Opens - Map',
   'open_rate' => 'Open rate',
-  'open_uniq_per_total' => ':count unique / :total opens / :delivered message(s)',
+  'open_uniq_per_total' => ':count unique / :delivered message(s)',
   'open_website' => 'Open website in new tab',
   'opened' => 'Opened',
   'opened_at' => 'Opened at',
