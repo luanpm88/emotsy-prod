@@ -98,6 +98,11 @@ class Automation2 extends Model
         return $this->hasManyThrough('Acelle\Model\EmailLink', 'Acelle\Model\Email');
     }
 
+    public function triggerSessions()
+    {
+        return $this->hasMany('Acelle\Model\TriggerSession');
+    }
+
     /**
      * Get all of the emails for the automation.
      */
@@ -431,7 +436,7 @@ class Automation2 extends Model
     /**
      * Initiate a trigger with a given subscriber.
      */
-    public function initTrigger($subscriber, $force = false)
+    public function initTrigger($subscriber, $force = false, $session = null)
     {
         if (!$subscriber->isSubscribed() && $force == false) {
             $this->logger()->warning(sprintf('Cannot trigger contact %s, current status is: %s', $subscriber->email, $subscriber->status));
@@ -439,8 +444,10 @@ class Automation2 extends Model
         }
 
         $trigger = null;
-        DB::transaction(function () use (&$trigger, $subscriber) {
+        $sessionId = is_null($session) ? null : $session->id;
+        DB::transaction(function () use (&$trigger, $subscriber, $sessionId) {
             $trigger = $this->autoTriggers()->create();
+            $trigger->trigger_session_id = $sessionId;
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
             $trigger->updateWorkflow();
             $trigger->save();
@@ -561,42 +568,43 @@ class Automation2 extends Model
 
     public function checkForWeeklyRecurring()
     {
-        $thisId = $this->id;
+        $selectedWeekDays = $this->getTriggerAction()->getOptions()['days_of_week'];
+        $today = Carbon::now($this->customer->timezone);
+        if (!in_array($today->dayOfWeek, $selectedWeekDays)) {
+            $this->logger()->info(sprintf('Not the right week day: CURRENT %s (%s) != %s', $today->dayOfWeek, $today->toString(), implode(' ', $selectedWeekDays)));
+            return;
+        }
+
         // TODAY + CURRENT TIME
         $currentTime = new DateTime('now', new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
         if ($currentTime < $triggerTime) {
-            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s', $currentTime->format('Y-m-d H:i:s'), $triggerTime->format('Y-m-d H:i:s')));
-            return;
-        }
-
-        $selectedWeekDays = $this->getTriggerAction()->getOptions()['days_of_week'];
-
-        $today = Carbon::now($this->customer->timezone);
-
-        if (!in_array($today->dayOfWeek, $selectedWeekDays)) {
-            $this->logger()->info(sprintf('Not the right week day: CURRENT %s (%s) != %s', $today->dayOfWeek, $today->toString(), implode(' ', $selectedWeekDays)));
+            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s, wait for %s minutes', $currentTime->format('H:i:s'), $triggerTime->format('H:i:s'), (new Carbon($triggerTime))->diffInMinutes($currentTime)));
             return;
         }
 
         // Only trigger once a day
-        // Counting by user timezone
-        $startOfDayUtc = $today->startOfDay()->timezone(config('app.timezone'));
+        $startOfDayUtc = $today->copy()->startOfDay()->timezone(config('app.timezone'));
+        $endOfDayUtc = $today->copy()->endOfDay()->timezone(config('app.timezone'));
 
-        $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
-            $join->on('auto_triggers.subscriber_id', 'subscribers.id');
-            $join->where('auto_triggers.automation2_id', $thisId);
-            $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
-        })
-        ->whereNull('auto_triggers.subscriber_id')->get();
+        $session = $this->triggerSessions()->where('created_at', '>=', $startOfDayUtc)->where('created_at', '<=', $endOfDayUtc)->first();
 
+        if ($session) {
+            $this->logger()->info(sprintf('A session already exists: TriggerSession#%s, triggered at %s', $session->id, $session->created_at->timezone($this->customer->timezone)->toString()));
+            return;
+        }
+
+        $session = $this->triggerSessions()->create();
+        $subscribers = $this->subscribersToSend()->get();
+        $this->logger()->info(sprintf('Triggering %s contacts', sizeof($subscribers)));
         // init trigger
         foreach ($subscribers as $subscriber) {
-            $this->initTrigger($subscriber);
-            $this->logger()->info(sprintf('NEW > ??? > Weekly recurring for %s, at %s', $subscriber->email, $startOfDayUtc->toString()));
+            $this->initTrigger($subscriber, $force = false, $session);
+            $this->logger()->info(sprintf('New trigger created %s, session #%s', $subscriber->email, $session->id));
         }
+        $this->logger()->info(sprintf('Finish Triggering %s contacts', sizeof($subscribers)));
     }
 
     public function checkForMonthlyRecurring()
