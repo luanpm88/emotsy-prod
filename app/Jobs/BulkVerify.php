@@ -64,9 +64,16 @@ class BulkVerify implements ShouldQueue
             return;
         }
 
-        $this->monitor->updateJsonData([
-            'percentage' => round($this->mailList->getVerifiedSubscribersPercentage() * 100, 2),
-        ]);
+        $msg = $this->monitor->getJsonData()['message'] ?? null;
+        if (is_null($msg)) {
+            // First run of BulkVerify
+            $this->monitor->updateJsonData([
+                'percentage' => round($this->mailList->getVerifiedSubscribersPercentage() * 100, 2),
+                'message' => trans('messages.list.verification.progress.started'),
+            ]);
+        }
+
+
 
         $logger = $this->mailList->logger();
         $logger->info('+ Start bulk verifying');
@@ -81,7 +88,7 @@ class BulkVerify implements ShouldQueue
         $unverifiedCount = $subscribersQuery->count();
         if ($unverifiedCount == 0) {
             $this->monitor->updateJsonData([
-                'message' => "Verification done, all contacts email addresses are verified",
+                'message' => trans('messages.list.verification.progress.done'),
                 'percentage' => 100,
             ]);
 

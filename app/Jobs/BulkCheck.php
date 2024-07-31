@@ -93,10 +93,17 @@ class BulkCheck implements ShouldQueue
         if ($check) {
             $this->updateVerificationResults($results);
 
+            $count = $this->monitor->getJsonData()['count'] ?? 0;
+            $count += sizeof($results);
             $percentageDone = round($this->mailList->getVerifiedSubscribersPercentage() * 100, 2);
             $this->monitor->updateJsonData([
-                'message' => 'Verification is in progress...',
+                'message' => trans('messages.list.verification.progress.running', [
+                    'c' => $count,
+                    'v' => $this->mailList->subscribers()->verified()->count(),
+                    't' => $this->mailList->subscribers()->count(),
+                ]),
                 'percentage' => $percentageDone,
+                'count' => $count,
             ]);
 
             $this->mailList->logger()->info('- List % verified: '.$percentageDone);
@@ -107,10 +114,6 @@ class BulkCheck implements ShouldQueue
             $this->batch()->add($job);
             return;
         } else {
-            $this->monitor->updateJsonData([
-                'message' => 'Verification is in progress.....',
-            ]);
-
             $this->mailList->logger()->info('- Check again in 10 seconds');
 
             // wait until result is available, check again
