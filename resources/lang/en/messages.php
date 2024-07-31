@@ -1694,7 +1694,7 @@
   'list.validation.required' => 'The :field is required',
   'list.verification.progress.started' => 'Verification is in progress...',
   'list.verification.progress.done' => 'Verification done, all contacts email addresses are verified',
-  'list.verification.progress.running' => 'Verification is in progresss. :c done since started, a total of :v/:t email addresses are verified',
+  'list.verification.progress.running' => 'Verification is in progresss. :c done since started, a total of :v/:t email addresses have been verified',
   'list.verify.cancel_confirm' => 'Are you sure you want to stop the verification process?',
   'list.verify.complete' => 'Verification complete! Do not worry if you find any email address that is still not verified, it is very likely a problem of the verification service at the time. You can verify your list again at a later time',
   'list.verify.intro' => 'Typically, email lists degrade at a rate of 22.5% each year. This means that a huge amount of your mailing list subscribers’ emails won’t be valid after a year, resulting in increased bounce rate, ruined domain reputation... Perform email validation before running a campaign helps protect your business reputation.',
