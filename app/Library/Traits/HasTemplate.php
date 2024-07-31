@@ -523,7 +523,7 @@ trait HasTemplate
     {
         // default attributes that are required
         $jsonObj = [
-            'uid' => uniqid(),
+            'id' => uniqid(),
         ];
 
         // append the customer specified attributes and build a stdClass object
