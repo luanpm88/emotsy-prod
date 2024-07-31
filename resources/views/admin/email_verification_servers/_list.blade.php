@@ -27,7 +27,7 @@
                             {{ $server->getTypeName() }}
                         </span>
                         <div class="">
-                            <span class="text-muted2">{{ trans('messages.sending_server.speed', ['limit' => $server->getSpeedLimitString()]) }}</span>
+                            <span class="text-muted2">{{ trans('messages.rate_limit.speed', ['limit' => $server->getSpeedLimitString()]) }}</span>
                         </div>
                         <span class="text-muted2 small mt-2 d-block">
                             {{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($server->created_at, 'datetime_full') }}

@@ -3474,4 +3474,5 @@
   ',
   'athena.get_started' => 'Get Started',
   'athena.proceed_with_payment' => 'Proceed with Payment',
+  'rate_limit.speed' => 'Rate limit :limit',
 ) ?>
