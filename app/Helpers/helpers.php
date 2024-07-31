@@ -1298,8 +1298,11 @@ function redis_enabled()
 
 function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, $lockTime = null, Closure $waitTimeoutCallback = null)
 {
+    // @important: in case of cache driver = "file"
+    // It will write a uniq string to the lock key when locking, overwriting the key content
+    $lockKey = $resourceKey."-locked";
     $defaultLockTime = 10;
-    $lock = \Illuminate\Support\Facades\Cache::lock($resourceKey, $lockTime ?: $defaultLockTime);
+    $lock = \Illuminate\Support\Facades\Cache::lock($lockKey, $lockTime ?: $defaultLockTime);
     $start = time();
     // $startmili = floor(microtime(true)*1000)/1000;
 
@@ -1317,19 +1320,20 @@ function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, 
             }
         }
 
+        // @important: do not use Cache::block($timeout) here
+        // As Laravel might have a delay (1 second for example) before trying again
         if ($lock->get()) {
             // $waitTime = floor(microtime(true)*1000)/1000 - $startmili;
             // echo "Got lock after {$waitTime}\n";
 
             try {
-                $task();
+                return $task();
             } finally {
                 // In case of Exception, lock is automatically release with cache driver "array"
                 // However, with "redis" driver, need explicitly release it
                 $lock->release();
+                return;
             }
-
-            break;
         }
     }
 }

@@ -14,7 +14,11 @@ class EmailVerificationController extends Controller
     {
         $user = \Acelle\Model\User::where('api_token', $api_token)->first();
 
+        // login
         \Auth::login($user);
+
+        // 2FA
+        $user->set2FAAuthenticated();
 
         // Billing return url
         $returnUrl = $this->addUrlParams($request->return_url, [
@@ -24,8 +28,7 @@ class EmailVerificationController extends Controller
         \Acelle\Library\Facades\Billing::setReturnUrl($returnUrl);
 
         // checkout url
-        // return redirect()->away($request->checkout_url);
-        var_dump($request->checkout_url);
+        return redirect()->away($request->checkout_url);
     }
 
     public function addUrlParams($url, $params)
