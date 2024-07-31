@@ -127,7 +127,6 @@ class SendMessage implements ShouldQueue
             $startAt = Carbon::now()->getTimestampMs();
 
             $logger = $this->campaign->logger();
-            $plogger = \Acelle\Helpers\plogger($this->campaign->uid);
             $email = $this->subscriber->getEmail();
 
             // Prepare the email message to send
@@ -136,7 +135,6 @@ class SendMessage implements ShouldQueue
 
             // Start sending
             $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
-            $plogger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
 
             // Rate limit trackers
             // Here we have 2 rate trackers
@@ -160,14 +158,13 @@ class SendMessage implements ShouldQueue
             // END DEBUG
 
             $startGettingLock = Carbon::now()->getTimestampMs();
-            execute_with_limits($rateTrackers, $creditTrackers, function () use ($startAt, $message, $logger, $plogger, $msgId, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock) {
+            execute_with_limits($rateTrackers, $creditTrackers, function () use ($startAt, $message, $logger, $msgId, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock) {
 
                 $getLockAt = Carbon::now()->getTimestampMs();
                 $getLockDiff = ($getLockAt - $startAt) / 1000;
                 $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
 
                 $logger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
-                $plogger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
 
                 if (!$this->subscriber->isSubscribed()) {
                     // @important: do not throw an exception here
@@ -187,7 +184,6 @@ class SendMessage implements ShouldQueue
                 $finishDeliveryAt = Carbon::now()->getTimestampMs();
 
                 $logger->info(sprintf('Sent to %s', $email));
-                $plogger->info(sprintf('Sent to %s', $email));
 
                 // Log successful shot
                 $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
@@ -197,7 +193,6 @@ class SendMessage implements ShouldQueue
 
                 // Done, written to tracking_logs table
                 $logger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
-                $plogger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
             });
 
             // Debug
@@ -261,7 +256,6 @@ class SendMessage implements ShouldQueue
         } catch (RateLimitReservedByAnotherFileSystem $ex) {
             // This is for Dynamic Rate Limit tracking only
             $logger->info(sprintf("Delay [%s] due to rate limit RESERVATION: %s. Release, waiting for a process from the filesystem that owns the reservation", $email, $ex->getMessage()));
-            $plogger->info(sprintf("Delay [%s] due to rate limit RESERVATION: %s. Release, waiting for a process from the filesystem that owns the reservation", $email, $ex->getMessage()));
 
             // Simply release the job back to queue, hopefully it will picked up again by a process of the filesystem that owns the reservation.
             // So "attempts" will be >0
@@ -275,14 +269,13 @@ class SendMessage implements ShouldQueue
 
             if ($this->batch()) {
                 $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
-                with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $plogger, $email, $ex) {
+                with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $email, $ex) {
                     // Use DELAY FLAG to make sure that only ONE DelayJob is created
                     $delayFlag = $this->campaign->checkDelayFlag();
 
                     if ($delayFlag == true) {
                         // just finish the task
                         $logger->info(sprintf("Delayed [%s] due to rate limit: %s", $email, $ex->getMessage()));
-                        $plogger->warning(sprintf("Delayed [%s] due to rate limit: %s", $email, $ex->getMessage()));
                         return;
                     } else {
                         // Releease the job, have it tried again later on, after 1 minutes
@@ -290,7 +283,6 @@ class SendMessage implements ShouldQueue
                         $delayInSeconds = 60; // reservation stategy, so 60 seconds is good enough
 
                         $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
-                        $plogger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
 
                         // set delay flag to true
                         $this->campaign->setDelayFlag(true);
@@ -320,7 +312,6 @@ class SendMessage implements ShouldQueue
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
             LaravelLog::error('ERROR SENDING EMAIL (debug): '.$ex->getMessage()."\n".$ex->getTraceAsString());
             $logger->error($message);
-            $plogger->error($message);
 
             // In case of these exceptions, stop campaign immediately even if stopOnError is currently false
             // This is helpful in certain cases: for example, when credits runs out, then it does not make sense to keep sending (and failing)
@@ -349,8 +340,6 @@ class SendMessage implements ShouldQueue
         } finally {
             //
         }
-
-        $plogger->info('SendMessage: ALL done');
     }
 
     public function afterSuccess()
