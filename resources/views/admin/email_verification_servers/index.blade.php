@@ -39,14 +39,20 @@
 				window.athenaGetStarted = new AthenaGetStarted({
 					button: $('#GetStartedButton'),
 					url: '{{ action('\Acelle\Athena\Controllers\CheckoutController@popup') }}',
+					successUrl: '{{ action('\Acelle\Athena\Controllers\CheckoutController@popupSuccess') }}',
 				});
 			});
 
 			var AthenaGetStarted = class {
 				constructor(options) {
 					this.button = options.button;
+					this.url = options.url;
+					this.successUrl = options.successUrl;
 					this.popup = new Popup({
-						url: options.url,
+						url: this.url,
+					});
+					this.popupSuccess = new Popup({
+						url: this.successUrl,
 					});
 
 					// events
@@ -55,6 +61,15 @@
 						
 						this.popup.load();
 					});
+
+					// load success
+					@if (request()->athena_verification_server)
+						this.loadSuccess();
+					@endif
+				}
+
+				loadSuccess() {
+					this.popupSuccess.load();
 				}
 			}
 		</script>
