@@ -28,7 +28,9 @@ class BulkVerify implements ShouldQueue
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
 
-    public const LIMIT_PER_SUBMIT = 100;
+    public const MIN_PER_BATCH = 200;
+    public const MAX_PER_BATCH = 10000;
+    public const NUMBER_OF_BATCHES = 10;
 
     // Allow it to try MANY times (in case of rate limit exceed)
     // public $tries = 1;
@@ -77,7 +79,7 @@ class BulkVerify implements ShouldQueue
 
         $logger = $this->mailList->logger();
         $logger->info('+ Start bulk verifying');
-        $perSubmit = static::LIMIT_PER_SUBMIT;
+
         $creditTracker = $this->subscription->getVerifyEmailCreditTracker();
         if ($creditTracker->isZero()) {
             $logger->warning('+ Verification credits exceeded!');
@@ -94,6 +96,14 @@ class BulkVerify implements ShouldQueue
 
             $logger->info('No contact left, verification done');
             return;
+        }
+
+        $perSubmit = (int) floor($unverifiedCount / static::NUMBER_OF_BATCHES);
+
+        if ($perSubmit < static::MIN_PER_BATCH) {
+            $perSubmit = static::MIN_PER_BATCH;
+        } elseif ($perSubmit > static::MAX_PER_BATCH) {
+            $perSubmit = static::MAX_PER_BATCH;
         }
 
         if ($unverifiedCount < $perSubmit) {
