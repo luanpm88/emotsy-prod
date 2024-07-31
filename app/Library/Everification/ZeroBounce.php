@@ -33,6 +33,19 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
         $this->apiKey = $apiKey;
     }
 
+    public function getCredits(): ?int
+    {
+        ZeroBounceApi::Instance()->initialize($this->apiKey);
+        $response = ZeroBounceApi::Instance()->getCredits();
+        $credits = (int)$response->credits;
+
+        if ($credits < 0) { // sometimes emailable.com returns a negative number
+            return 0;
+        } else {
+            return $credits;
+        }
+    }
+
     public function initRateLimitTracker()
     {
         $limits = [

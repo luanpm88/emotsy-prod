@@ -29,7 +29,7 @@ class BulkVerify implements ShouldQueue
     public $failOnTimeout = true;
 
     public const MIN_PER_BATCH = 200;
-    public const MAX_PER_BATCH = 10000;
+    public const MAX_PER_BATCH = 5000;
     public const NUMBER_OF_BATCHES = 10;
 
     // Allow it to try MANY times (in case of rate limit exceed)
@@ -75,8 +75,6 @@ class BulkVerify implements ShouldQueue
             ]);
         }
 
-
-
         $logger = $this->mailList->logger();
         $logger->info('+ Start bulk verifying');
 
@@ -84,6 +82,12 @@ class BulkVerify implements ShouldQueue
         if ($creditTracker->isZero()) {
             $logger->warning('+ Verification credits exceeded!');
             throw new Exception('Verification credits exceeded!');
+        }
+
+        $serviceCredits = $this->server->getServiceClient()->getCredits();
+        if ($serviceCredits == 0) {
+            $logger->warning('User has run out of service credit');
+            throw new Exception('User  run out of service credit');
         }
 
         $subscribersQuery = $this->mailList->subscribers()->unverified()->getQuery();
@@ -120,6 +124,13 @@ class BulkVerify implements ShouldQueue
             }
         } else {
             $this->mailList->logger()->info("+ Good news, we have unlimited verification credits. Taking {$perSubmit} per batch");
+        }
+
+        if ($serviceCredits  < $perSubmit) {
+            $perSubmit = $serviceCredits;
+            $logger->info("Available service credit is only {$serviceCredits}! So, only take {$serviceCredits}!");
+        } else {
+            $logger->info("Available service credit is {$serviceCredits}! ok to take {$perSubmit}");
         }
 
         $subscribersQuery = $subscribersQuery->limit($perSubmit);

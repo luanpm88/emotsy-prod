@@ -32,6 +32,27 @@ class Emailable implements VerifyInterface, BulkVerifyInterface
         $this->apiKey = $apiKey;
     }
 
+    public function getCredits(): ?int
+    {
+        $getCreditsUri = "account";
+        $response = $this->getClient()->request('GET', $getCreditsUri);
+
+        if ($response->getStatusCode() != 200) {
+            throw new Exception('Error getting available credits from emailable.com: '.$response->getStatusCode().' - '.$response->getReasonPhrase());
+        }
+
+        $raw = (string)$response->getBody();
+        $json = json_decode($raw, true);
+
+        $credits = (int)$json['available_credits'];
+
+        if ($credits < 0) { // sometimes emailable.com returns a negative number
+            return 0;
+        } else {
+            return $credits;
+        }
+    }
+
     public function getClient()
     {
         if ($this->client) {

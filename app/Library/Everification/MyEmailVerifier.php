@@ -35,6 +35,41 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         throw new Exception('Single email address verification not supported');
     }
 
+    public function getCredits(): ?int
+    {
+        // check if progress is done
+        $url = "https://client.myemailverifier.com/verifier/getcredits/{$this->apiKey}";
+
+        $ch = curl_init($url);
+
+        // Set options for data retrieval
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Capture the response
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects (optional)
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        // Execute the curl request
+
+        $rawResponse = curl_exec($ch);
+        if (curl_errno($ch)) {
+            throw new Exception("Something wrong while getting available credtis from MyEmailVerifier.com: ".curl_error($ch));
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (200 != $httpcode) {
+            throw new Exception("Something wrong while getting available credtis from MyEmailVerifier.com: ".$rawResponse);
+        }
+
+        $response = json_decode($rawResponse, true);
+        if (empty($response) || !array_key_exists('credits', $response)) {
+            throw new Exception("Something wrong while getting available credtis from MyEmailVerifier.com 'credits' field is required: {$rawResponse}");
+        }
+
+        return (int)$response['credits'];
+    }
+
     public function bulkSubmit(Builder $subscriberQuery): string
     {
         // Likely to throw RateLimitExceeded
