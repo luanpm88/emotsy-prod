@@ -29,7 +29,7 @@ class BulkVerify implements ShouldQueue
     public $failOnTimeout = true;
 
     public const MIN_PER_BATCH = 200;
-    public const MAX_PER_BATCH = 5000;
+    public const MAX_PER_BATCH = 1000;
     public const NUMBER_OF_BATCHES = 10;
 
     // Allow it to try MANY times (in case of rate limit exceed)
@@ -148,8 +148,7 @@ class BulkVerify implements ShouldQueue
                 }
             }
 
-            $this->mailList->logger()->info("+ {$perSubmit} credits conted, {$creditTracker->getRemainingCredits()} remains.");
-
+            $this->mailList->logger()->info("+ {$perSubmit} credits counted, {$creditTracker->getRemainingCredits()} remains.");
 
             sleep(1);
 
