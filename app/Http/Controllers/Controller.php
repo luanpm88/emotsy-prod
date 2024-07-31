@@ -103,7 +103,7 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function autoLogin($api_token)
+    public function autoLogin(Request $request, $api_token)
     {
         $user = \Acelle\Model\User::where('api_token', $api_token)->first();
 

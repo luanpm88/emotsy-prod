@@ -181,6 +181,9 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
 
     Route::get('pub/campaign/speedtest', 'Pub\CampaignController@speedtest');
+
+    // Email Verification
+    Route::get('email-verification/checkout/{api_token}/redirect', 'EmailVerificationController@redirect');
 });
 
 // Without authentication

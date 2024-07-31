@@ -3467,4 +3467,11 @@
   'automation.retry_all_failed_actions.success' => 'All failed actions were retried',
   'automation.action.error_intro' => 'This automation action for <strong>:email</strong> failed to execute, see the error message below',
   'automation.not_running_monitor_trigger' => 'Automation is not running, turn it on in order to enable list monitoring and triggering',
+
+  'athena.get_started.world_1_verification_service' => 'AthenaEVS - World #1 Verification Service',
+  'athena.get_started.free_intro' => 'Get 1,000 free verification credits instantly from AthenaEVS.
+    No registration required, no integration burden required.
+  ',
+  'athena.get_started' => 'Get Started',
+  'athena.proceed_with_payment' => 'Proceed with Payment',
 ) ?>

@@ -6077,10 +6077,10 @@ a {
 }
 body {
     padding-top: 53px;
-    font-size: 0.92rem;
+    font-size: 0.9rem;
 }
 .form-control {
-    font-size: 0.92rem;
+    font-size: 0.9rem;
 }
 h1, h1 {
     font-size: 2rem;
@@ -8466,4 +8466,7 @@ body.mode-dark .phrase-list .inline-editable {
 }
 body.mode-dark .phrase-list .inline-editable.mode-view:hover {
     color: #fff!important;
+}
+.list-status {
+    display: inline-block;
 }

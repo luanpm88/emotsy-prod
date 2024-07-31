@@ -79,4 +79,11 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
 
 Route::group(['namespace' => 'Api\Public', 'prefix' => 'v1'], function () {
     Route::post('public/subscribers', 'SubscriberController@store');
+
+    // Payment
+    Route::get('payment/list', 'PaymentController@list');
+
+    // Email Verification
+    Route::post('email-verification/checkout', 'EmailVerificationController@checkout');
+    Route::post('email-verification/redirect/{api_token}', 'EmailVerificationController@checkout');
 });

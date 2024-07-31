@@ -436,7 +436,7 @@ class EmailVerificationServer extends Model
     {
         $options = $this->getOptions();
 
-        return "{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}";
+        return number_format($options['limit_value']) . " / {$options['limit_base']} {$options['limit_unit']}";
     }
 
     public function getTypeName()
@@ -508,5 +508,18 @@ class EmailVerificationServer extends Model
         }
 
         return $this->logger;
+    }
+
+    public static function newDefault()
+    {
+        $server =  new self();
+        $server->status = self::STATUS_ACTIVE;
+
+        return $server;
+    }
+
+    public function setOptions($options)
+    {
+        $this->options = json_encode($options);
     }
 }

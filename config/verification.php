@@ -103,6 +103,10 @@ return [
             'id' => 'myemailverifier.com',
             'name' => 'myEmailVerifier',
             'fields' => [ 'api_key' ],
+        ], [
+            'id' => 'athenaevs.com',
+            'name' => 'AthenaEVS',
+            'fields' => [ 'api_key' ],
         ]
 
     ]

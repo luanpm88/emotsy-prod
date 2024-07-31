@@ -1640,6 +1640,7 @@ class Customer extends Model
     {
         $customer = new self();
         $customer->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+        $customer->status = self::STATUS_ACTIVE;
 
         return $customer;
     }
