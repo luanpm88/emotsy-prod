@@ -24,9 +24,9 @@
 		<div class="border shadow-sm rounded py-4 px-4 my-4">
 			<div class="d-flex px-3">
 				<div class="pe-5">
-					<h3>{{ trans('messages.athena.get_started.world_1_verification_service') }}</h3>
-					<p class="">{!! trans('messages.athena.get_started.free_intro') !!}</p>
-					<a id="GetStartedButton" href="" class="btn btn-secondary py-2 px-3 rounded" style="background-color:#582F7D;">{{ trans('messages.athena.get_started') }}</a>
+					<h3>{{ trans('athena::messages.get_started.world_1_verification_service') }}</h3>
+					<p class="">{!! trans('athena::messages.get_started.free_intro') !!}</p>
+					<a id="GetStartedButton" href="" class="btn btn-secondary py-2 px-3 rounded" style="background-color:#582F7D;">{{ trans('athena::messages.get_started') }}</a>
 				</div>
 				<div class="ms-auto px-5">
 					<img width="140px" height="140px" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/plugins/acelle/athena/icon.svg')) }}" alt="">
