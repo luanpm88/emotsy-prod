@@ -12,18 +12,17 @@ class EmailVerificationController extends Controller
 {
     public function redirect(Request $request, $api_token)
     {
-        $user = \Acelle\Model\User::where('api_token', $api_token)->first();
+        $subscription = \Acelle\Model\Subscription::findByUid($request->subscription_uid);
 
         // login
-        \Auth::login($user);
+        \Auth::login($subscription->customer->user);
 
         // 2FA
-        $user->set2FAAuthenticated();
+        $subscription->customer->user->set2FAAuthenticated();
 
         // Billing return url
         $returnUrl = $this->addUrlParams($request->return_url, [
-            'api_token' => $request->api_token,
-
+            'subscription_uid' => $subscription->uid,
         ]);
         \Acelle\Library\Facades\Billing::setReturnUrl($returnUrl);
 
