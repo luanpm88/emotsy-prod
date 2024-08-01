@@ -22,6 +22,17 @@ class EmailVerificationController extends Controller
         ]);
     }
 
+    public function findOrCreateCustomer(Request $request)
+    {
+        // find or create a customer
+        list($customer, $user) = \Acelle\Model\Customer::findOrCreateCustomerByEmail($request->email);
+
+        return response()->json([
+            'customer_uid' => $customer->uid,
+            'api_token'  => $user->api_token,
+        ]);
+    }
+
     /**
      * Get all payment.
      *
@@ -29,41 +40,18 @@ class EmailVerificationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function checkout(Request $request)
+    public function subscribe(Request $request)
     {
         // random email
-        $email = $request->email;
-        // $email = uniqId() . "@gmail.com";
+        $customer = \Acelle\Model\Customer::findByUid($request->customer_uid);
+        $plan = \Acelle\Model\PlanGeneral::findByUid($request->plan_uid);
 
-        $user = \Acelle\Model\User::where('email', $email)->first();
-
-        // Create new customer
-        if (!$user) {
-            // Create new customer
-            $customer = \Acelle\Model\Customer::newCustomer();
-            $customer->timezone = config('app.timezone');
-            $customer->language_id = \Acelle\Model\Language::getDefaultLanguage()->id;
-            $customer->save();
-
-            $user = new \Acelle\Model\User();
-            $user->email = $email;
-            $user->activated = true;
-            $user->customer_id = $customer->id;
-            $user->password = bcrypt('12345678');
-
-            $user->save();
-        } else {
-            $customer = $user->customer;
-        }
-
-        // Find current subscription
+        // Find current subscription if exists
         $subscription = $customer->getNewOrActiveGeneralSubscription();
 
         // Customer does not have any subscription
         if (!$subscription) {
             // Assign Free Plan
-            $plan = \Acelle\Model\PlanGeneral::findByUid($request->plan_uid);
-
             try {
                 $subscription = $customer->assignGeneralPlan($plan);
             } catch (\Throwable $e) {
@@ -74,41 +62,49 @@ class EmailVerificationController extends Controller
             }
         }
 
-        // Customer has active suscription
-        if ($subscription->isActive()) {
-            // Return
-            return response()->json([
-                'status' => 'exists',
-                'api_token' => $user->api_token,
-            ]);
-        }
-
-        // Customer has new subscription
-        else if ($subscription->isNew()) {
-            // payment method
-            $customer->updatePaymentMethod([
-                'method' => $request->payment_method,
-            ]);
-
-            // init invoice
-            $initInvoice = $subscription->getItsOnlyUnpaidInitInvoice();
-
-            // checkout url
-            $checkoutUrl = $customer->getPreferredPaymentGateway()->getCheckoutUrl($initInvoice);
-
-            //
-            \Auth::login($user);
-
-            // Return checkout url
-            return response()->json([
-                'status' => 'checkout',
-                'checkout_url' => action('\Acelle\Http\Controllers\EmailVerificationController@redirect', [
-                    'api_token' => $user->api_token,
-                    'checkout_url' => $checkoutUrl,
-                    'return_url' => $request->return_url,
-                ]),
-            ]);
-        }
-
+        // Return
+        return response()->json([
+            'subscription_uid' => $subscription->uid,
+        ]);
     }
+
+    public function getSubscription(Request $request)
+    {
+        $subscription = \Acelle\Model\Subscription::findByUid($request->subscription_uid);
+
+        return response()->json([
+            'status' => $subscription->status,
+            'subscription_uid' => $subscription->uid,
+            'customer_uid' => $subscription->customer->uid,
+            'api_token' => $subscription->customer->user->api_token,
+            'credits' => $subscription->getVerifyEmailCreditTracker()->getRemainingCredits(),
+        ]);
+    }
+
+    public function getCheckoutUrl(Request $request)
+    {
+        $subscription = \Acelle\Model\Subscription::findByUid($request->subscription_uid);
+
+        // init invoice
+        $initInvoice = $subscription->getItsOnlyUnpaidInitInvoice();
+
+        // payment method
+        $subscription->customer->updatePaymentMethod([
+            'method' => $request->payment_method,
+        ]);
+
+        // checkout url
+        $checkoutUrl = $subscription->customer->getPreferredPaymentGateway()->getCheckoutUrl($initInvoice);
+
+        // Return checkout url
+        return response()->json([
+            'checkout_url' => action('\Acelle\Http\Controllers\EmailVerificationController@redirect', [
+                'api_token' => $subscription->customer->user->api_token,
+                'subscription_uid' => $subscription->uid,
+                'checkout_url' => $checkoutUrl,
+                'return_url' => $request->return_url,
+            ]),
+        ]);
+    }
+    
 }

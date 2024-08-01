@@ -84,7 +84,9 @@ Route::group(['namespace' => 'Api\Public', 'prefix' => 'v1'], function () {
     Route::get('payment/list', 'PaymentController@list');
 
     // Email Verification
+    Route::get('email-verification/get-checkout-url', 'EmailVerificationController@getCheckoutUrl');
+    Route::get('email-verification/get-subscription', 'EmailVerificationController@getSubscription');
+    Route::post('email-verification/customer/find-create', 'EmailVerificationController@findOrCreateCustomer');
     Route::get('email-verification/feature-plan', 'EmailVerificationController@getFeaturePlan');
-    Route::post('email-verification/checkout', 'EmailVerificationController@checkout');
-    Route::post('email-verification/redirect/{api_token}', 'EmailVerificationController@checkout');
+    Route::post('email-verification/subscribe', 'EmailVerificationController@subscribe');
 });

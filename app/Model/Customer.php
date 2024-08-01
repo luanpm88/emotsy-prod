@@ -1959,4 +1959,30 @@ class Customer extends Model
             ->orderBy('created_at', 'DESC')
             ->first();
     }
+
+    public static function findOrCreateCustomerByEmail($email)
+    {
+        $user = User::where('email', $email)->first();
+
+        // Create new customer
+        if (!$user) {
+            // Create new customer
+            $customer = self::newCustomer();
+            $customer->timezone = config('app.timezone');
+            $customer->language_id = Language::getDefaultLanguage()->id;
+            $customer->save();
+
+            $user = new User();
+            $user->email = $email;
+            $user->activated = true;
+            $user->customer_id = $customer->id;
+            $user->password = bcrypt('12345678');
+
+            $user->save();
+        } else {
+            $customer = $user->customer;
+        }
+
+        return [$customer, $user];
+    }
 }
