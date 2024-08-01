@@ -10,6 +10,18 @@ use Acelle\Http\Controllers\Controller;
  */
 class EmailVerificationController extends Controller
 {
+    public function getFeaturePlan()
+    {
+        $plan = \Acelle\Model\Plan::first();
+
+        return response()->json([
+            'plan_uid' => $plan->uid,
+            'name'  => $plan->name,
+            'description' => $plan->description,
+            'display_price' => format_price($plan->price, $plan->currency->format, true),
+        ]);
+    }
+
     /**
      * Get all payment.
      *
@@ -45,7 +57,7 @@ class EmailVerificationController extends Controller
         }
 
         // Assign Free Plan
-        $plan = \Acelle\Model\PlanGeneral::first();
+        $plan = \Acelle\Model\PlanGeneral::findByUid($request->plan_uid);
 
         try {
             $subscription = $customer->assignGeneralPlan($plan);
