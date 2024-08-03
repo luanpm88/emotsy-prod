@@ -8451,7 +8451,7 @@ body.mode-dark .phrase-list .inline-editable {
     border-color: rgba(255,255,255,0.2);
     background-color: rgba(255,255,255,0.05);
 }
-.phrase-list .inline-editable.mode-view {
+.phrase-list .inline-editable.mode-view:not(.mode-focus) {
     border-color: transparent!important;
     background-color: transparent!important;
 }
@@ -8469,4 +8469,7 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
 }
 .list-status {
     display: inline-block;
+}
+.phrase-list .inline-editable.mode-view.mode-focus {
+    border-style: dashed;
 }

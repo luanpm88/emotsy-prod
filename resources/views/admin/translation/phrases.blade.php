@@ -106,6 +106,9 @@
                 content: $('#TranslationContent'),
                 loaded: function() {
                     window.translationManager.listEvents();
+
+                    // focus first one
+                    // window.translationManager.focus(window.translationManager.getInputs().first());
                 }
             });
         }
@@ -114,6 +117,8 @@
     var TranslationManager = class {
         constructor(form) {
             this.form = form;
+            this.currentFocus = null;
+            this.currentSelect = null;
 
             this.events();
         }
@@ -159,6 +164,93 @@
             this.getRefreshButton().on('click', (e) => {
                 TranslationIndex.getList().load();
             });
+
+            $(document).on('keydown', (event) => {
+                if (!this.currentFocus) {
+                    return;
+                }
+
+                switch(event.key) {
+                    case 'Enter':
+                        if ($('[data-control="expand-save"]').is(':visible')) {
+                            return;
+                        }
+                        this.select(this.currentFocus);
+                        break;
+                    case 'ArrowDown':
+                    case 'Tab':
+                        event.preventDefault(); // Prevent default behavior
+                        
+                        this.focusNext();
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault(); // Prevent default behavior
+
+                        this.focusPrevious();
+                        
+                        break;
+                }
+            });
+        }
+
+        focusNext() {
+            if (this.currentSelect) {
+                return;
+            }
+
+            var inputFields = this.getInputs();
+            const currentInput = this.currentFocus;
+            const currentIndex = inputFields.index(currentInput);
+
+            if (currentIndex < inputFields.length - 1) {
+                this.focus(inputFields.eq(currentIndex + 1));
+            } else {
+                // If at the last input, move focus to the first input
+                this.focus(inputFields.eq(0));
+            }
+        }
+
+        focusPrevious() {
+            if (this.currentSelect) {
+                return;
+            }
+
+            var inputFields = this.getInputs();
+            const currentInput = this.currentFocus;
+            const currentIndex = inputFields.index(currentInput);
+
+            if (currentIndex > 0) {
+                this.focus(inputFields.eq(currentIndex - 1));
+            } else {
+                // If at the first input, move focus to the last input
+                this.focus(inputFields.eq(inputFields.length - 1));
+            }
+        }
+
+        selectNext() {
+            var inputFields = this.getInputs();
+            const currentInput = this.currentSelect;
+            const currentIndex = inputFields.index(currentInput);
+
+            if (currentIndex < inputFields.length - 1) {
+                this.select(inputFields.eq(currentIndex + 1));
+            } else {
+                // If at the last input, move focus to the first input
+                this.select(inputFields.eq(0));
+            }
+        }
+
+        selectPrevious() {
+            var inputFields = this.getInputs();
+            const currentInput = this.currentSelect;
+            const currentIndex = inputFields.index(currentInput);
+
+            if (currentIndex > 0) {
+                this.select(inputFields.eq(currentIndex - 1));
+            } else {
+                // If at the first input, move focus to the last input
+                this.select(inputFields.eq(inputFields.length - 1));
+            }
         }
 
         listEvents() {
@@ -175,7 +267,9 @@
 
                 var url = $(e.target).attr('data-url');
                 
-                this.write(url);
+                this.autoSave(() => {
+                    this.unselectAll();
+                });
             });
 
             // cancel click
@@ -185,37 +279,33 @@
 
             // input select
             this.getInputs().on('click', function(e) {
+                _this.focus($(this));
                 _this.select($(this));
             });
 
             var inputFields = this.getInputs();
             inputFields.on('keydown', function(event) {
-                const currentInput = $(this);
-                const currentIndex = inputFields.index(currentInput);
+                // const currentInput = $(this);
+                // const currentIndex = inputFields.index(currentInput);
                 
                 switch(event.key) {
                     case 'Enter':
+                        event.preventDefault(); // Prevent default behavior
                         _this.autoSave(function() {
                             _this.unselectAll();
                         });
                         break;
                     case 'ArrowDown':
                     case 'Tab':
-                        event.preventDefault(); // Prevent default tab behavior
-                        if (currentIndex < inputFields.length - 1) {
-                            _this.select(inputFields.eq(currentIndex + 1));
-                        } else {
-                            // If at the last input, move focus to the first input
-                            _this.select(inputFields.eq(0));
-                        }
+                        event.preventDefault(); // Prevent default behavior
+                        
+                        _this.selectNext();
+
                         break;
                     case 'ArrowUp':
-                        if (currentIndex > 0) {
-                            _this.select(inputFields.eq(currentIndex - 1));
-                        } else {
-                            // If at the first input, move focus to the last input
-                            _this.select(inputFields.eq(inputFields.length - 1));
-                        }
+                        event.preventDefault(); // Prevent default behavior
+                        
+                        _this.selectPrevious();
                         break;
                 }
             });
@@ -225,6 +315,9 @@
             // unselect other
             this.getInputs().addClass('mode-view');
             this.getInputs().blur();
+
+            //
+            this.currentSelect = null;
         }
 
         select(input) {
@@ -233,6 +326,30 @@
             // select item
             input.removeClass('mode-view');
             input.focus();
+
+            //
+            this.currentSelect = input;
+
+            //
+            this.focus(input);
+        }
+
+        unfocusAll() {
+            // unselect other
+            this.getInputs().removeClass('mode-focus');
+
+            // 
+            this.currentFocus = null;
+        }
+
+        focus(input) {
+            this.unfocusAll();
+
+            // select item
+            input.addClass('mode-focus');
+
+            // 
+            this.currentFocus = input;
         }
 
         save() {
