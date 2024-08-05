@@ -53,6 +53,9 @@
 					});
 					this.popupSuccess = new Popup({
 						url: this.successUrl,
+						onclose: function() {
+							window.location = '{{ action('Admin\EmailVerificationServerController@index') }}';
+						}
 					});
 
 					// events
