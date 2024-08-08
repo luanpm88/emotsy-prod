@@ -23,7 +23,7 @@
         ])
 
         
-        @if ($form->getMetadata('website_uid'))
+        @if ($form->getMetadata('website_uid') && $form->getWebsite())
             <button type="button" class="btn btn-secondary connect-site">{{ trans('messages.form.connect') }}</button>
             <button type="button" class="btn btn-default remove-site">{{ trans('messages.form.remove_site') }}</button>
         @else
