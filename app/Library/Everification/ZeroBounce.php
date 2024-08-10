@@ -200,4 +200,14 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
         }
         */
     }
+
+    public function getServiceName(): string
+    {
+        return 'ZeroBounce';
+    }
+
+    public function getServiceUrl(): string
+    {
+        return 'https://zerobounce.net';
+    }
 }

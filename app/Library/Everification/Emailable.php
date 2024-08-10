@@ -212,4 +212,14 @@ class Emailable implements VerifyInterface, BulkVerifyInterface
 
         return $tracker;
     }
+
+    public function getServiceName(): string
+    {
+        return 'Emailable';
+    }
+
+    public function getServiceUrl(): string
+    {
+        return 'https://emailable.com';
+    }
 }

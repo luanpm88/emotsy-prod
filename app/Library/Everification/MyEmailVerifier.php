@@ -238,4 +238,14 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
     {
         return true;
     }
+
+    public function getServiceName(): string
+    {
+        return 'myEmailVerifier';
+    }
+
+    public function getServiceUrl(): string
+    {
+        return 'https://myemailverifier.com';
+    }
 }
