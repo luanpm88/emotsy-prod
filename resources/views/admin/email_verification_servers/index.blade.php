@@ -21,61 +21,7 @@
 	<p>{{ trans('messages.email_verification_server.wording') }}</p>
 
 	@if (Acelle\Model\Plugin::isInstalled('acelle/athena') && Acelle\Model\Plugin::getByName('acelle/athena')->isActive())
-		<div class="border shadow-sm rounded py-4 px-4 my-4">
-			<div class="d-flex px-3">
-				<div class="pe-5">
-					<h3>{{ trans('athena::messages.get_started.world_1_verification_service') }}</h3>
-					<p class="">{!! trans('athena::messages.get_started.free_intro') !!}</p>
-					<a id="GetStartedButton" href="" class="btn btn-secondary py-2 px-3 rounded" style="background-color:#582F7D;">{{ trans('athena::messages.get_started') }}</a>
-				</div>
-				<div class="ms-auto px-5">
-					<img width="140px" height="140px" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/plugins/acelle/athena/icon.svg')) }}" alt="">
-				</div>
-			</div>
-		</div>
-
-		<script>
-			$(() => {
-				window.athenaGetStarted = new AthenaGetStarted({
-					button: $('#GetStartedButton'),
-					url: '{{ action('\Acelle\Athena\Controllers\CheckoutController@popup') }}',
-					successUrl: '{{ action('\Acelle\Athena\Controllers\CheckoutController@popupSuccess') }}',
-				});
-			});
-
-			var AthenaGetStarted = class {
-				constructor(options) {
-					this.button = options.button;
-					this.url = options.url;
-					this.successUrl = options.successUrl;
-					this.popup = new Popup({
-						url: this.url,
-					});
-					this.popupSuccess = new Popup({
-						url: this.successUrl,
-						onclose: function() {
-							window.location = '{{ action('Admin\EmailVerificationServerController@index') }}';
-						}
-					});
-
-					// events
-					this.button.on('click', (e) => {
-						e.preventDefault();
-						
-						this.popup.load();
-					});
-
-					// load success
-					@if (request()->athena_verification_server)
-						this.loadSuccess();
-					@endif
-				}
-
-				loadSuccess() {
-					this.popupSuccess.load();
-				}
-			}
-		</script>
+		@include('athena::infoBox')
 	@endif
 
 	<div class="listing-form"
