@@ -805,7 +805,7 @@
   'campaign.resend.intro' => 'Send this campaign again, but only to subscribers who:',
   'campaign.resend.option.not_click' => 'Did not click on any link in the email',
   'campaign.resend.option.not_open' => 'Did not open the email',
-  'campaign.resend.option.not_receive' => 'Did not reveive the email (new subscribers for example)',
+  'campaign.resend.option.not_receive' => 'Did not receive the email (new subscribers for example)',
   'campaign.resend.title' => 'Resend campaign',
   'campaign.resent' => 'La campaña fue reenviada exitosamente',
   'campaign.resume.high_priority' => 'Resume (high priority)',
