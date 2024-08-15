@@ -467,9 +467,9 @@ class CustomerController extends Controller
             $contact = $customer->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
-                'first_name' => $request->user()->first_name,
-                'last_name' => $request->user()->last_name,
-                'email' => $request->user()->email,
+                'first_name' => $customer->user->first_name,
+                'last_name' => $customer->user->last_name,
+                'email' => $customer->user->email,
             ]);
         }
 
