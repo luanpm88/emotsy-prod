@@ -28,7 +28,7 @@ class SendSingleMessage extends SendMessage
     {
         $this->campaign->logger()->info('Updating trigger status (sent_at)');
 
-        $this->getAutoTrigger()->withUpdateLock(function($trigger) {
+        $this->getAutoTrigger()->withUpdateLock(function ($trigger) {
             // Mark the related trigger action as done
 
             $action = $this->getAction();
@@ -61,7 +61,7 @@ class SendSingleMessage extends SendMessage
         try {
             $this->send();
         } catch (Throwable $ex) {
-            $this->getAutoTrigger()->withUpdateLock(function($trigger) use ($ex) {
+            $this->getAutoTrigger()->withUpdateLock(function ($trigger) use ($ex) {
                 // Mark the related trigger action as done
                 $action = $this->getAction();
                 $action->setError($ex->getMessage());
@@ -74,7 +74,7 @@ class SendSingleMessage extends SendMessage
     {
         $secondsToDelay = parent::handleRateLimitExceeded($email, $ex);
 
-        $this->getAutoTrigger()->withUpdateLock(function($trigger) use ($email, $ex, $secondsToDelay) {
+        $this->getAutoTrigger()->withUpdateLock(function ($trigger) use ($email, $ex, $secondsToDelay) {
             $delayNote = sprintf("Delayed for %s seconds: %s", $secondsToDelay, $ex->getMessage());
 
             $action = $this->getAction();

@@ -1373,7 +1373,7 @@ class Automation2 extends Model
                 ->leftJoin('auto_triggers', function ($join) use ($thisId) {
                     $join->on('auto_triggers.subscriber_id', 'subscribers.id');
                     $join->where('auto_triggers.automation2_id', $thisId);
-                })->with(['autoTriggers' => function($query) {
+                })->with(['autoTriggers' => function ($query) {
                     $query->where('automation2_id', '=', $this->id); // easy load
                 }])
                 ->addSelect('auto_triggers.id as auto_trigger_id')

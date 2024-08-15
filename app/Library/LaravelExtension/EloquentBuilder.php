@@ -38,4 +38,3 @@ class EloquentBuilder extends Base
         return $this->paginate($perPage, $columns = ['*'], $pageName = 'page', $page = null, $total);
     }
 }
-

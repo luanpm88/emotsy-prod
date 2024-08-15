@@ -39,7 +39,7 @@ class QueueReport extends Command
      */
     public function handle()
     {
-        $print = function($queue) {
+        $print = function ($queue) {
             $waiting = Redis::llen("queues:{$queue}");
             $delayed = Redis::zcount("queues:{$queue}:delayed", '-inf', '+inf');
             $reserved = Redis::zcount("queues:{$queue}:reserved", '-inf', '+inf');

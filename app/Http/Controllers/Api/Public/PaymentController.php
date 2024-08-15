@@ -19,7 +19,7 @@ class PaymentController extends Controller
      */
     public function list(Request $request)
     {
-        $payments = collect(\Acelle\Library\Facades\Billing::getEnabledPaymentGateways())->map(function($gateway) {
+        $payments = collect(\Acelle\Library\Facades\Billing::getEnabledPaymentGateways())->map(function ($gateway) {
             return [
                 'type' => $gateway->getType(),
                 'name' => $gateway->getName(),

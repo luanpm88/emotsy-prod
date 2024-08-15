@@ -122,7 +122,7 @@ class AutoTrigger extends Model
     // As a result, try catch is needed
     public function check($manually = false)
     {
-        $this->withUpdateLock(function() use ($manually) {
+        $this->withUpdateLock(function () use ($manually) {
             $this->logger()->info(sprintf('Trigger #%s (%s) of automation [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
 
             // STEP #1: Get latest action
@@ -354,7 +354,7 @@ class AutoTrigger extends Model
     public function withUpdateLock(Closure $task)
     {
         $key = 'auto_trigger_lock_'.$this->uid;
-        with_cache_lock($key, function() use ($task) {
+        with_cache_lock($key, function () use ($task) {
             $task($this);
         });
     }
