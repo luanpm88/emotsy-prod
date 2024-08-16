@@ -1226,9 +1226,7 @@
   'email_verification_plan.plan_name' => 'Plan name',
   'email_verification_plan.plans' => 'Email verification plans',
   'email_verification_plan.select_plan' => 'Select email verification credits plan',
-  'email_verification_plan.select_plan.wording' => 'By subscribing to the Email Verification Credits Plan, you can extend the current
-    credit verification limit inherent to each plan. Purchasing additional email verification credits
-    separately can help reduce costs tailored to your specific needs.',
+  'email_verification_plan.select_plan.wording' => 'By purchasing a one-time Email Verification Credits Plan, you can extend the current credit verification limit inherent to each plan. These additional email verification credits never expire, allowing you to tailor your purchase to your specific needs while reducing costs.',
   'email_verification_plan.update.success' => 'Plan was successfully updated',
   'email_verification_plan.wording' => 'You can subscribe to an additional email verification
     credits plan to increase the capacity of verifying your emails. Depending on the size of your lists,
