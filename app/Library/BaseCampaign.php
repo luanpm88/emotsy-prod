@@ -158,7 +158,7 @@ class BaseCampaign extends Model
 
             if (!is_null($this->run_at) && $this->run_at->gte($now)) {
                 $scheduledAt = $this->run_at->timezone($this->customer->timezone);
-                $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $scheduledAt->format('Y-m-d H:m'), $scheduledAt->diffForHumans()));
+                $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $this->customer->formatDateTime($scheduledAt, 'datetime_short'), $scheduledAt->diffForHumans()));
                 return;
             }
 
