@@ -1325,14 +1325,15 @@ function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, 
         if ($lock->get()) {
             // $waitTime = floor(microtime(true)*1000)/1000 - $startmili;
             // echo "Got lock after {$waitTime}\n";
-
             try {
-                return $task();
-            } finally {
-                // In case of Exception, lock is automatically release with cache driver "array"
-                // However, with "redis" driver, need explicitly release it
+
+                $out = $task();
                 $lock->release();
-                return;
+                return $out;
+            } catch(\Exception $ex) {
+                $lock->release();
+                throw $ex;
+
             }
         }
     }
