@@ -78,12 +78,13 @@ class RateTracker
             $creditsUsed = $this->getCreditsUsed($fromDatetime, $now, $fopen);
 
             if ($creditsUsed >= $limit->getAmount()) {
+                $msg = sprintf("%s exceeded! %s/%s used", $limit->getDescription(), $creditsUsed, $limit->getAmount());
 
                 if ($failedCallback) {
-                    $failedCallback();
+                    $failedCallback($msg);
                 }
 
-                throw new RateLimitExceeded(sprintf("%s exceeded! %s/%s used", $limit->getDescription(), $creditsUsed, $limit->getAmount()));
+                throw new RateLimitExceeded($msg);
             }
         }
     }

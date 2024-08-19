@@ -65,7 +65,7 @@ class DynamicRateTrackerTest extends TestCase
 
         $exceeded = false;
 
-        $rateExceedingCallback = function() use (&$exceeded) {
+        $rateExceedingCallback = function($msg) use (&$exceeded) {
             $exceeded = true;
         };
 
