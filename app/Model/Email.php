@@ -379,6 +379,8 @@ class Email extends Model implements HasTemplateInterface
             'track_click' => true,
         ]);
 
+        $email->skip_failed_message = Setting::isYes('email.default.skip_failed_message');
+
         return $email;
     }
 

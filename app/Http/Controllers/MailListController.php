@@ -67,7 +67,7 @@ class MailListController extends Controller
         }
 
         // default values
-        $list->subscribe_confirmation = false;
+        $list->subscribe_confirmation = \Acelle\Model\Setting::isYes('list.default.double_optin');
         $list->send_welcome_email = false;
         $list->unsubscribe_notification = false;
 

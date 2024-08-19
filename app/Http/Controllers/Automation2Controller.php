@@ -774,12 +774,8 @@ class Automation2Controller extends Controller
         if ($request->email_uid) {
             $email = Email::findByUid($request->email_uid);
         } else {
-            $email = new Email([
-                'sign_dkim' => true,
-                'track_open' => true,
-                'track_click' => true,
-                'action_id' => $request->action_id,
-            ]);
+            $email = Email::newDefault();
+            $email->action_id = $request->action_id;
             $email->automation2_id = $automation->id;
             $email->customer_id = $automation->customer_id;
             // $email->save();

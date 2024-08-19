@@ -2405,6 +2405,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $campaign->type = self::TYPE_REGULAR;
         $campaign->name = trans('messages.untitled');
         $campaign->status = Campaign::STATUS_NEW;
+        $campaign->skip_failed_message = Setting::isYes('email.default.skip_failed_message');
 
         return $campaign;
     }

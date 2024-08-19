@@ -654,6 +654,18 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
+            'list.default.double_optin' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'email.default.skip_failed_message' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
         ];
     }
 
