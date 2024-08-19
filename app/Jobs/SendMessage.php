@@ -174,11 +174,20 @@ class SendMessage implements ShouldQueue
                         'error' => trans('messages.delivery.error.subscriber_not_active', [ 'status' => $this->subscriber->status ]),
                         'status' => 'failed',
                     ];
-                } elseif (config('custom.dryrun') || $this->campaign->name == '_DRYRUN') {
-                    $logger->info('DRURUN...');
-                    $sent = $this->server->dryrun($message);
                 } else {
-                    $sent = $this->server->send($message);
+                    $delayFlag = $this->campaign->checkDelayFlag();
+
+                    if ($delayFlag == true) {
+                        // just finish the task
+                        $logger->info(sprintf("Delayed [%s] due to rate limit (RIGHT BEFORE SENDING): %s", $email));
+                        return;
+                    }
+
+                    if (config('custom.dryrun') || $this->campaign->name == '_DRYRUN') {
+                        $sent = $this->server->dryrun($message);
+                    } else {
+                        $sent = $this->server->send($message);
+                    }
                 }
 
                 $finishDeliveryAt = Carbon::now()->getTimestampMs();
@@ -269,7 +278,7 @@ class SendMessage implements ShouldQueue
 
             if ($this->batch()) {
                 $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
-                with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $email, $ex) {
+                with_cache_lock($lockKey, function () use ($ex, $rateTrackers, $logger, $email) {
                     // Use DELAY FLAG to make sure that only ONE DelayJob is created
                     $delayFlag = $this->campaign->checkDelayFlag();
 

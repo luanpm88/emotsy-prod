@@ -19,7 +19,7 @@ class InMemoryRateTrackerTest extends TestCase
         $tracker = new InMemoryRateTracker($key);
         $tracker->cleanup();
 
-        $now = Carbon::now();
+        $now = now();
         $oneMinuteAgo = $now->clone()->add('1 minute ago');
 
         // 4 times
@@ -66,7 +66,7 @@ class InMemoryRateTrackerTest extends TestCase
         $used = $tracker->getCreditsUsed($oneMinuteAgo, $now);
         $this->assertEquals($used, 2);
 
-        sleep(1);
+        sleep(2);
 
         $used = $tracker->getCreditsUsed(now()->add('1 minute ago'), $now);
         $this->assertEquals($used, 2);
