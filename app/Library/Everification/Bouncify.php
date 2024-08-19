@@ -275,7 +275,9 @@ class Bouncify implements VerifyInterface, BulkVerifyInterface
             return false;
         } else {
             if ($waitCallback) {
-                $waitCallback($rawResponse);
+                $total = $response['total'];
+                $processed = $response['verified'] ?? 0;
+                $waitCallback($rawResponse, $jobId, $total, $processed);
             }
             return false;
         }

@@ -1698,6 +1698,7 @@
   'list.updated' => 'List was successfully updated',
   'list.validation.not_email' => 'The :field must be a valid email address.',
   'list.validation.required' => 'The :field is required',
+  'list.verification.progress.batch_info' => 'Current batch #:j, processed :p/:t',
   'list.verification.progress.done' => 'Verification done, all contacts email addresses are verified',
   'list.verification.progress.running' => 'Verification is in progresss. :c done since started, a total of :v/:t email addresses have been verified',
   'list.verification.progress.started' => 'Verification is in progress...',

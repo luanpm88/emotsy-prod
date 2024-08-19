@@ -224,7 +224,9 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
             return true;
         } else {
             if ($waitCallback) {
-                $waitCallback($rawResponse);
+                $total = $response['total'];
+                $processed = $response['credit_used'] ?? 0;
+                $waitCallback($rawResponse, $token, $total, $processed);
             }
             return false;
         }

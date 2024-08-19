@@ -76,7 +76,18 @@ class BulkCheck implements ShouldQueue
                     'status' => $verificationStatus,
                     'raw' => $raw,
                 ];
-            }, function ($response) {
+            }, function ($response, $batchId = null, $batchSize = null, $processed = null) {
+
+                if ($batchId && $batchSize) {
+                    $this->monitor->updateJsonData([
+                        'batch_info' => trans('messages.list.verification.progress.batch_info', [
+                            'j' => $batchId,
+                            'p' => $processed,
+                            't' => $batchSize,
+                        ])
+                    ]);
+                }
+
                 $this->mailList->logger()->info('- Wait: '.$response);
             });
         } catch (\ZeroBounce\SDK\ZBException $ex) {
@@ -96,12 +107,15 @@ class BulkCheck implements ShouldQueue
             $count = $this->monitor->getJsonData()['count'] ?? 0;
             $count += sizeof($results);
             $percentageDone = round($this->mailList->getVerifiedSubscribersPercentage() * 100, 2);
+
+            $msg = trans('messages.list.verification.progress.running', [
+                'c' => $count,
+                'v' => $this->mailList->subscribers()->verified()->count(),
+                't' => $this->mailList->subscribers()->count(),
+            ]);
+
             $this->monitor->updateJsonData([
-                'message' => trans('messages.list.verification.progress.running', [
-                    'c' => $count,
-                    'v' => $this->mailList->subscribers()->verified()->count(),
-                    't' => $this->mailList->subscribers()->count(),
-                ]),
+                'message' => $msg,
                 'percentage' => $percentageDone,
                 'count' => $count,
             ]);

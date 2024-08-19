@@ -2010,6 +2010,11 @@ class MailList extends Model
     public function getVerificationProgress($job)
     {
         $progress = $job->getJsonData();
+
+        if ($progress['batch_info'] ?? null && $progress['message'] ?? null) {
+            $progress['message'] = $progress['message']. ". ".$progress['batch_info'];
+        }
+
         $progress['status'] = $job->status;
         $progress['error'] = $job->error;
         // $progress['percentage'] is already available

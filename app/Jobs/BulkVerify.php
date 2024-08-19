@@ -95,6 +95,7 @@ class BulkVerify implements ShouldQueue
         if ($unverifiedCount == 0) {
             $this->monitor->updateJsonData([
                 'message' => trans('messages.list.verification.progress.done'),
+                'batch_info' => null, // clean up batch information
                 'percentage' => 100,
             ]);
 
