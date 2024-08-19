@@ -167,47 +167,50 @@ class Bouncify implements VerifyInterface, BulkVerifyInterface
             // JOB
             $jobId = $response['job_id'];
 
-            // Start
-            $ch = curl_init();
-            curl_setopt_array($ch, array(
-                // Replace jobId with your list's jobId and replace API_KEY with your API Key, you need to start verification
-                CURLOPT_URL => "https://api.bouncify.io/v1/bulk/{$jobId}?apikey={$this->apiKey}",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'PATCH',
-                CURLOPT_POSTFIELDS => json_encode(["action" => "start"]),
-                CURLOPT_HTTPHEADER => [ 'Accept: application/json', 'Content-Type: application/json' ]
-            ));
-
-            $rawResponse = curl_exec($ch);
-
-            if (curl_errno($ch)) {
-                throw new Exception('Something wrong running job at Bouncify.io: '.curl_error($ch));
-            }
-
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if (200 != $httpcode && 201 != $httpcode) {
-                throw new Exception('Something wrong from when start running a job Bouncify.io: '.$rawResponse);
-            }
-
-            $response = json_decode($rawResponse, true);
-
-            if (empty($response) || !array_key_exists('success', $response) || $response['success'] == false) {
-                throw new Exception('Failed to start verifying '.$rawResponse);
-            }
-
-            curl_close($ch);
-
             return $jobId;
         } finally {
             \Illuminate\Support\Facades\File::delete($filepath);
         }
+    }
+
+    private function startVerifyingList($jobId)
+    {
+        // Start
+        $ch = curl_init();
+        curl_setopt_array($ch, array(
+            // Replace jobId with your list's jobId and replace API_KEY with your API Key, you need to start verification
+            CURLOPT_URL => "https://api.bouncify.io/v1/bulk/{$jobId}?apikey={$this->apiKey}",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'PATCH',
+            CURLOPT_POSTFIELDS => json_encode(["action" => "start"]),
+            CURLOPT_HTTPHEADER => [ 'Accept: application/json', 'Content-Type: application/json' ]
+        ));
+
+        $rawResponse = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            throw new Exception('Something wrong running job at Bouncify.io: '.curl_error($ch));
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (200 != $httpcode && 201 != $httpcode) {
+            throw new Exception('Something wrong from when start running a job Bouncify.io: '.$rawResponse);
+        }
+
+        $response = json_decode($rawResponse, true);
+
+        if (empty($response) || !array_key_exists('success', $response) || $response['success'] == false) {
+            throw new Exception('Failed to start verifying '.$rawResponse);
+        }
+
+        curl_close($ch);
     }
 
     public function initRateLimitTracker()
@@ -261,6 +264,15 @@ class Bouncify implements VerifyInterface, BulkVerifyInterface
         if ($response['status'] == "completed") {
             $this->downloadResult($jobId, $doneCallback);
             return true;
+        } elseif ($response['status'] == 'ready') {
+
+            // @important: when list is "ready", start verifying (it does not start automatically like other services)
+
+            $this->startVerifyingList($jobId);
+            if ($waitCallback) {
+                $waitCallback($rawResponse);
+            }
+            return false;
         } else {
             if ($waitCallback) {
                 $waitCallback($rawResponse);
