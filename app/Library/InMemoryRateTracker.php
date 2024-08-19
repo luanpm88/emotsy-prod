@@ -43,18 +43,48 @@ class InMemoryRateTracker
         $this->limits = $limits;
     }
 
-    public function count(Carbon $now = null)
+    public function test(Carbon $now = null, $failedCallback = null)
     {
-        with_cache_lock($this->resourceKey, function () use ($now) {
+        with_cache_lock($this->resourceKey, function () use ($now, $failedCallback) {
             $now = $now ?: Carbon::now();
 
             // Throw an exception if test fails (quota exceeded)
-            $this->test($now);
+            $this->doTest($now, $failedCallback);
+
+        }, $timeout = 15);
+    }
+
+    public function count(Carbon $now = null, $failedCallback = null)
+    {
+        with_cache_lock($this->resourceKey, function () use ($now, $failedCallback) {
+            $now = $now ?: Carbon::now();
+
+            // Throw an exception if test fails (quota exceeded)
+            $this->doTest($now, $failedCallback);
 
             // Record credits use
             $this->record($now);
 
         }, $timeout = 15);
+    }
+
+    private function doTest($now, $failedCallback)
+    {
+        foreach ($this->limits as $limit) {
+            $period = sprintf("%s %s", $limit->getPeriodValue(), $limit->getPeriodUnit());
+            $fromDatetime = $now->copy()->subtract($period);
+
+            $creditsUsed = $this->getCreditsUsed($fromDatetime, $now);
+
+            if ($creditsUsed >= $limit->getAmount()) {
+
+                if ($failedCallback) {
+                    $failedCallback();
+                }
+
+                throw new RateLimitExceeded(sprintf("%s exceeded! %s/%s used", $limit->getDescription(), $creditsUsed, $limit->getAmount()));
+            }
+        }
     }
 
     // Reverse of count()
@@ -74,24 +104,6 @@ class InMemoryRateTracker
                 $this->updateRecord($lastBlock, $count - 1);
             }
         }, $timeout = 15);
-    }
-
-    public function test(Carbon $now = null)
-    {
-        if (is_null($now)) {
-            $now = Carbon::now();
-        }
-
-        foreach ($this->limits as $limit) {
-            $period = sprintf("%s %s", $limit->getPeriodValue(), $limit->getPeriodUnit());
-            $fromDatetime = $now->copy()->subtract($period);
-
-            $creditsUsed = $this->getCreditsUsed($fromDatetime, $now);
-
-            if ($creditsUsed >= $limit->getAmount()) {
-                throw new RateLimitExceeded(sprintf("%s exceeded! %s/%s used", $limit->getDescription(), $creditsUsed, $limit->getAmount()));
-            }
-        }
     }
 
     private function record(Carbon $now)

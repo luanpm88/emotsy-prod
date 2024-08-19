@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Acelle\Library\InMemoryRateTracker;
 use Acelle\Library\RateLimit;
 use Acelle\Library\Exception\RateLimitExceeded;
+use Exception;
 
 class InMemoryRateTrackerTest extends TestCase
 {
@@ -126,12 +127,31 @@ class InMemoryRateTrackerTest extends TestCase
         $tracker = new InMemoryRateTracker($key, $limits);
         $tracker->cleanup();
 
+        $exceeded = false;
+
+        $rateExceedingCallback = function() use (&$exceeded) {
+            $exceeded = true;
+        };
+
         // 2 time
         $tracker->count();
-        $tracker->count();
+        $tracker->count(now(), $rateExceedingCallback);
+
+        $this->assertFalse($exceeded);
 
         $this->assertEquals($tracker->getLimitsDescription(), "#, #");
         $this->assertEquals($tracker->getCreditsUsed(), 2);
+
+
+        try {
+            $tracker->count(now(), $rateExceedingCallback);
+
+            throw new Exception('Not expected here');
+        } catch (RateLimitExceeded $ex) {
+            $this->assertTrue($exceeded);
+        }
+
+
         $this->expectException(RateLimitExceeded::class);
         $tracker->count();
     }

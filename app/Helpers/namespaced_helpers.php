@@ -381,7 +381,7 @@ function load_env_from_file($path)
  * Parameter 1: \Acelle\Library\RateTracker[]
  * Parameter 2: \Acelle\Library\CreditTracker[]
  */
-function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure $task = null)
+function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure $task = null, $rateExceedingCallback = null)
 {
     // Remove null tracker from array
     $rateTrackers = array_values(array_filter($rateTrackers));
@@ -412,7 +412,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
     try {
         // Might throw \Acelle\Library\Exception\RateLimitExceeded
         foreach ($rateTrackers as $rateTracker) {
-            $rateTracker->count();
+            $rateTracker->count(now(), $rateExceedingCallback);
             $rateCounted[] = $rateTracker;
         }
     } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {

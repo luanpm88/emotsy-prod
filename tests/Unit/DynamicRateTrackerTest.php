@@ -9,6 +9,7 @@ use Acelle\Library\RateLimit;
 use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
 use function \Acelle\Helpers\execute_with_limits;
+use Exception;
 
 class DynamicRateTrackerTest extends TestCase
 {
@@ -45,7 +46,7 @@ class DynamicRateTrackerTest extends TestCase
         $this->assertEquals($credits, 0);
     }
 
-    function test_with_exception()
+    function test_with_exception_with_and_without_rate_exceeding_callback()
     {
         $key = 'test-dynamic-rate-tracker';
         $limits = [
@@ -62,15 +63,32 @@ class DynamicRateTrackerTest extends TestCase
         $this->assertEquals($tracker->getShortestLimitPeriod(), '1 minute');
         $this->assertEquals($tracker->getMinCredits(), 3);
 
-        $tracker->count();
-        $tracker->count();
-        $tracker->count();
+        $exceeded = false;
+
+        $rateExceedingCallback = function() use (&$exceeded) {
+            $exceeded = true;
+        };
+
+        $tracker->count(now(), $rateExceedingCallback);
+        $tracker->count(now(), $rateExceedingCallback);
+        $tracker->count(now(), $rateExceedingCallback);
+
+        $this->assertFalse($exceeded);
 
         list($until, $credits) = $tracker->parseReservedCredits();
         $this->assertEquals($credits, 0);
 
+        try {
+            $tracker->count(now(), $rateExceedingCallback);
+            throw new Exception('Not expected here');
+        } catch (RateLimitExceeded $ex) {
+
+            // the callback is executed beautifully!
+            $this->assertTrue($exceeded);
+        }
+
         $this->expectException(RateLimitExceeded::class);
-        $tracker->count();
+        $tracker->count(now(), $rateExceedingCallback);
     }
 
     function test_with_no_limits_at_all()
@@ -141,8 +159,8 @@ class DynamicRateTrackerTest extends TestCase
     {
         $key = 'test-dynamic-rate-tracker';
         $limits = [
-            new RateLimit(2, 5, 'seconds', '2 per 30 secs'),
-            new RateLimit(200, 12, 'hour', '5 per 24 hours (per day)'),
+            new RateLimit(2, 5, 'seconds', '2 per 5  secs'),
+            new RateLimit(200, 12, 'hour', '200 per 12 hours'),
         ];
 
         $tracker = new DynamicRateTracker($key, $limits);
@@ -158,7 +176,7 @@ class DynamicRateTrackerTest extends TestCase
         //
         //     ./vendor/bin/pest --filter=test_with_multi_process
         //
-        // And monitor the outcome:
+        // And monitor the outcome: only 2 lines added per 5 seconds
         //
         //    tail -f /tmp/test-multi-process
         //

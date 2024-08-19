@@ -91,7 +91,7 @@ class DynamicRateTracker
         file_put_contents($this->reservedPath, "{$until->timestamp}{$this->seperator}{$credits}");
     }
 
-    private function countReservedCredits(Carbon $now, $fopen)
+    private function countReservedCredits(Carbon $now, $fopen, $failedCallback)
     {
         list($until, $credits) = $this->parseReservedCredits($fopen);
 
@@ -104,6 +104,9 @@ class DynamicRateTracker
 
                 return true;
             } else {
+                if ($failedCallback) {
+                    $failedCallback();
+                }
                 // if locally reserved but no credits left
                 throw new RateLimitExceeded("Calculated rate limit exceeded. Currently reserved by this host {$this->hostname}, but no credits left: {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Reserved until {$until->format('H:i T')}, {$until->diffForHumans()}");
 
@@ -116,12 +119,15 @@ class DynamicRateTracker
 
     // Test and throw exception, do not count()
     // Used by DelayedJob
-    public function test(Carbon $now = null)
-    {
-        $this->count($now, $count = false);
+    public function test(Carbon $now = null, $failedCallback = null) {
+        $this->doCount($now, $count = false, $failedCallback);
     }
 
-    public function count(Carbon $now = null, $count = true)
+    public function count(Carbon $now = null, $failedCallback = null) {
+        $this->doCount($now, $count = true, $failedCallback);
+    }
+
+    private function doCount(Carbon $now = null, $count = true, $failedCallback)
     {
         if (empty($this->limits)) {
             return;
@@ -132,8 +138,8 @@ class DynamicRateTracker
 
         // Step 1: check if there is a local reservation
         $lock = new Lockable($this->reservedPath);
-        $lock->getExclusiveLock(function ($fopen) use ($now, &$available) {
-            if ($this->countReservedCredits($now, $fopen)) {
+        $lock->getExclusiveLock(function ($fopen) use ($now, &$available, $failedCallback) {
+            if ($this->countReservedCredits($now, $fopen, $failedCallback)) {
                 $available = true;
             }
         });
@@ -145,13 +151,17 @@ class DynamicRateTracker
         }
 
         // If not available locally, check the remote
-        with_cache_lock($this->resourceKey, function () use ($now, $count) {
+        with_cache_lock($this->resourceKey, function () use ($now, $count, $failedCallback) {
             if ($this->isReservedByOthers($now)) {
                 // no local reserved
                 // and there is a reserved-until key (by other)
 
                 $reservedUntil = (int)Cache::get($this->resourceKey);
                 $until = new Carbon($reservedUntil);
+
+                if ($failedCallback) {
+                    $failedCallback();
+                }
 
                 throw new RateLimitReservedByAnotherFileSystem(
                     "Currently reserved by another process/filesystem (current host: {$this->hostname}): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Will be available for booking in {$until->diffForHumans()}, at {$until->format('H:i T')}",
