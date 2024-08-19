@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+window.onload = function() {
     var popup = new AFormPopup({
         url: '{{ action('FormController@frontendContent', [
             'uid' => $form->uid,
@@ -52,4 +52,4 @@ document.addEventListener("DOMContentLoaded", function(event) {
             popup.show();
         }, 500);
     @endif
-});
+};
