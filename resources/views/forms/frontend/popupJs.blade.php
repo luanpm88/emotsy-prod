@@ -100,8 +100,8 @@ class AFormPopup {
 
     remove() {
         var oldEs = document.getElementById('Popup_' + this.id);
-        if(oldEs){
-            oldEs.parentNode.removeChild(oldEs[0]);
+        if(oldEs && oldEs.parentNode){
+            oldEs.parentNode.removeChild(oldEs);
         }
     }
 
