@@ -14,15 +14,15 @@ use function Acelle\Helpers\curl_download;
 use function Acelle\Helpers\read_csv;
 use function Acelle\Helpers\execute_with_limits;
 
-class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
+class Bouncify implements VerifyInterface, BulkVerifyInterface
 {
     protected $apiKey;
     protected $resultMap = [
-        'Valid' => 'deliverable',
-        'Unknown' => 'unknown',
-        'Invalid' => 'undeliverable',
-        'Catch-all' => 'unknown',
-        'Grey-listed' => 'unknown',
+        'deliverable' => 'deliverable',
+        'unknown' => 'unknown',
+        'accept-all' => 'unknown', // Acelle-All means the domain's email addresses cannot be verified.
+        'accept all' => 'unknown', // Acelle-All means the domain's email addresses cannot be verified.
+        'undeliverable' => 'undeliverable',
     ];
 
     public function __construct($apiKey)
@@ -32,42 +32,81 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
     public function verify($email)
     {
-        throw new Exception('Single email address verification not supported');
-    }
-
-    public function getCredits(): ?int
-    {
-        // check if progress is done
-        $url = "https://client.myemailverifier.com/verifier/getcredits/{$this->apiKey}";
-
-        $ch = curl_init($url);
-
-        // Set options for data retrieval
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Capture the response
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects (optional)
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        // Execute the curl request
+        $ch = curl_init();
+        curl_setopt_array($ch, array(
+          // Replace API_KEY with your API Key
+          CURLOPT_URL => "https://api.bouncify.io/v1/verify?apikey={$this->apiKey}&email={$email}",
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
 
         $rawResponse = curl_exec($ch);
+
         if (curl_errno($ch)) {
-            throw new Exception("Something wrong while getting available credtis from MyEmailVerifier.com: ".curl_error($ch));
+            throw new Exception("Something wrong while verifying with Bouncify: ".curl_error($ch));
         }
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
         if (200 != $httpcode) {
-            throw new Exception("Something wrong while getting available credtis from MyEmailVerifier.com: ".$rawResponse);
+            throw new Exception("Something wrong while verifying with Bouncify, response code is != 200: ".$rawResponse);
         }
 
         $response = json_decode($rawResponse, true);
-        if (empty($response) || !array_key_exists('credits', $response)) {
-            throw new Exception("Something wrong while getting available credtis from MyEmailVerifier.com 'credits' field is required: {$rawResponse}");
+        if (empty($response) || !array_key_exists('result', $response)) {
+            throw new Exception("Something wrong while getting available credtis from Bouncify 'result' field is required: {$rawResponse}");
         }
 
-        return (int)$response['credits'];
+        $mappedStatus = $this->resultMap[$response['result']] ?? null;
+
+        if (is_null($mappedStatus)) {
+            throw new Exception("Unknown status returned by Bouncify: {$response['result']}");
+        }
+
+        return [$mappedStatus, $rawResponse];
+    }
+
+    public function getCredits(): ?int
+    {
+        // check if progress is done
+
+        $url = "https://api.bouncify.io/v1/info?apikey={$this->apiKey}";
+        $ch = curl_init($url);
+
+        // Set options for data retrieval
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Capture the response
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects (optional)
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [ 'Accept: application/json' ]);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+        // Execute the curl request
+
+        $rawResponse = curl_exec($ch);
+        if (curl_errno($ch)) {
+            throw new Exception("Something wrong while getting available credtis from Bouncify: ".curl_error($ch));
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (200 != $httpcode) {
+            throw new Exception("Something wrong while getting available credtis from Bouncify: ".$rawResponse);
+        }
+
+        $response = json_decode($rawResponse, true);
+        if (empty($response) || !array_key_exists('credits_info', $response)) {
+            throw new Exception("Something wrong while getting available credtis from Bouncify 'credits_info' field is required: {$rawResponse}");
+        }
+
+        return (int)$response['credits_info']['credits_remaining'];
     }
 
     public function bulkSubmit(Builder $subscriberQuery): string
@@ -103,7 +142,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => array('local_file' => new CURLFILE($filepath)),
+                CURLOPT_POSTFIELDS => array('local_file' => curl_file_create($filepath)),
             ));
 
             $rawResponse = curl_exec($ch); //return FILE ID to get file status and download url
@@ -115,7 +154,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
             $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
-            if (200 != $httpcode) {
+            if (200 != $httpcode && 201 != $httpcode) {
                 throw new Exception('Something wrong from Bouncify.io: '.$rawResponse);
             }
 
@@ -140,6 +179,8 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'PATCH',
+                CURLOPT_POSTFIELDS => json_encode(["action" => "start"]),
+                CURLOPT_HTTPHEADER => [ 'Accept: application/json', 'Content-Type: application/json' ]
             ));
 
             $rawResponse = curl_exec($ch);
@@ -151,8 +192,8 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
             $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
-            if (200 != $httpcode) {
-                throw new Exception('Something wrong from Bouncify.io: '.$rawResponse);
+            if (200 != $httpcode && 201 != $httpcode) {
+                throw new Exception('Something wrong from when start running a job Bouncify.io: '.$rawResponse);
             }
 
             $response = json_decode($rawResponse, true);
@@ -162,6 +203,8 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
             }
 
             curl_close($ch);
+
+            return $jobId;
         } finally {
             \Illuminate\Support\Facades\File::delete($filepath);
         }
@@ -174,7 +217,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         ];
 
         // Uniq per API KEY
-        $key = 'rate-tracker-log-myemailverifier-account-'.md5($this->apiKey);
+        $key = 'rate-tracker-log-bouncify-account-'.md5($this->apiKey);
         $tracker = new InMemoryRateTracker($key, $limits);
         $tracker->cleanup('24 hours');
 
@@ -187,7 +230,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
         curl_setopt_array($ch, array(
             // Replace jobId with your list's jobId and API_KEY with your API Key
-            CURLOPT_URL => 'https://api.bouncify.io/v1/bulk/{$jobId}?apikey={$this->apiKey}',
+            CURLOPT_URL => "https://api.bouncify.io/v1/bulk/{$jobId}?apikey={$this->apiKey}",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -200,7 +243,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         $rawResponse = curl_exec($ch);
 
         if (curl_errno($ch)) {
-            throw new Exception("Something wrong while checking job progress (job ID#{$jobId}) from Bouncify: ".curl_error($ch));
+            throw new Exception("Something wrong while checking job progress CURL ERROR (job ID#{$jobId}) from Bouncify: ".curl_error($ch));
         }
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -216,7 +259,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         }
 
         if ($response['status'] == "completed") {
-            $this->downloadResult($jobId);
+            $this->downloadResult($jobId, $doneCallback);
             return true;
         } else {
             if ($waitCallback) {
@@ -228,70 +271,58 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
     private function downloadResult($jobId, Closure $callback)
     {
-        // File name looks like: c98645cbae77b49513efde4aa04fb942-669394a1d9b4e
+        $ch = curl_init();
+        curl_setopt_array($ch, array(
+            // Replace API_KEY with your API Key and jobId with your list's jobId, you need to download
+            CURLOPT_URL => "https://api.bouncify.io/v1/download?jobId={$jobId}&apikey={$this->apiKey}",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+        ));
+
+        $rawResponse = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            throw new Exception("Something wrong while fetching result (job ID#{$jobId}) from Bouncify: ".curl_error($ch));
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (200 != $httpcode) {
+            throw new Exception("Something wrong while fetching result (job ID#{$jobId}) from Bouncify: ".$rawResponse);
+        }
+
         $basePath = storage_path('app/verification/Bouncify/');
         if (!file_exists($basePath)) {
             mkdir($basePath, 0777, $recursive = true);
         }
 
         $tmpResultFile = join_paths($basePath, md5($this->apiKey)."-".uniqid());
-
-        try {
-            $ch = curl_init();
-
-            curl_setopt_array($ch, array(
-                // Replace API_KEY with your API Key and jobId with your list's jobId, you need to download
-                CURLOPT_URL => "https://api.bouncify.io/v1/download?jobId={$jobId}?apikey={$this->apiKey}",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-            ));
-
-            $rawResponse = curl_exec($ch);
-
-            if (curl_errno($ch)) {
-                throw new Exception("Something wrong while fetching result (job ID#{$jobId}) from Bouncify: ".curl_error($ch));
-            }
-
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if (200 != $httpcode) {
-                throw new Exception("Something wrong while fetching result (job ID#{$jobId}) from Bouncify: ".$rawResponse);
-            }
-
-            $response = json_decode($rawResponse, true);
-            if (empty($response) || !array_key_exists('status', $response)) {
-                throw new Exception("Something wrong while fetching result (job ID#{$jobId}) from Bouncify. Invalid response ('status' is required): {$rawResponse}");
-            }
-        } catch(Exception $ex) {
-            throw new Exception('Cannot download result from MyEmailVerifier: '.$ex->getMessage());
-        }
+        file_put_contents($tmpResultFile, $rawResponse);
 
         list($headers, $count, $results) = read_csv($tmpResultFile, $hasHeaders = true, $ignoreEmptyHeader = true);
 
         /* Sample result
 
             [
-                "" => "nghi@b-teka.com",
-                "Result" => "Valid",
-                "RoleBased" => "false",
-                "FreeDomain" => "false",
-                "Diagnosis" => "Valid mailbox",
+                "col0" => "00002f34ab8c2b4d04a7@gmail.com",
+                "Verification Result" => "undeliverable",
+                ...
             ]
         */
 
         foreach ($results as $raw) {
-            if (!array_key_exists($raw['Result'], $this->resultMap)) {
-                throw new Exception('Unknown status code returned from MyEmailVerifier.com: '.$raw['Result']);
+            if (!array_key_exists($raw['Verification Result'], $this->resultMap)) {
+                throw new Exception('Unknown status code returned from Bouncify: '.$raw['Verification Result']);
             }
 
-            $email = $raw[''];
-            $verificationResult = $this->resultMap[$raw['Result']];
+            $email = $raw['col0'];
+            $verificationResult = $this->resultMap[$raw['Verification Result']];
             $callback($email, $verificationResult, json_encode($raw));
         }
 
@@ -305,11 +336,11 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
     public function getServiceName(): string
     {
-        return 'myEmailVerifier';
+        return 'Bouncify.io';
     }
 
     public function getServiceUrl(): string
     {
-        return 'https://myemailverifier.com';
+        return 'https://bouncify.io/';
     }
 }

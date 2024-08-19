@@ -21,6 +21,7 @@ use Acelle\Library\Everification\Emailable;
 use Acelle\Library\Everification\ZeroBounce;
 use Acelle\Library\Everification\EmailListValidation;
 use Acelle\Library\Everification\MyEmailVerifier;
+use Acelle\Library\Everification\Bouncify;
 
 class EmailVerificationServer extends Model
 {
@@ -82,6 +83,11 @@ class EmailVerificationServer extends Model
             case 'myemailverifier.com':
                 $apiKey = $this->getOptions()['api_key'];
                 $this->service = new MyEmailVerifier($apiKey);
+                return $this->service;
+
+            case 'bouncify.io':
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new Bouncify($apiKey);
                 return $this->service;
 
             default:

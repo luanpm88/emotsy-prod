@@ -91,14 +91,6 @@ return [
             'uri' => 'https://api.bouncify.io/v1/verify?apikey={API_KEY}&email={EMAIL}',
             'request_type' => 'GET',
             'fields' => [ 'api_key' ],
-            'result_xpath' => '$.result',
-            'result_map' => [
-                'deliverable' => 'deliverable',
-                'unknown' => 'unknown',
-                'accept-all' => 'unknown', // Acelle-All means the domain's email addresses cannot be verified.
-                'accept all' => 'unknown', // Acelle-All means the domain's email addresses cannot be verified.
-                'undeliverable' => 'undeliverable',
-            ]
         ], [
             'id' => 'myemailverifier.com',
             'name' => 'myEmailVerifier',
