@@ -32,8 +32,47 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
     public function verify($email)
     {
-        throw new Exception('Single email address verification not supported');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://client.myemailverifier.com/verifier/validate_single/{$email}/{$this->apiKey}");
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Capture the response
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Follow redirects (optional)
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        $rawResponse = curl_exec($ch);
+        if (curl_errno($ch)) {
+            throw new Exception("Something wrong connecting to MyEmailVerifier.com: ".curl_error($ch));
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (200 != $httpcode) {
+            throw new Exception("Something wrong while verifying with MyEmailVerifier.com (response code != 200): ".$rawResponse);
+        }
+
+        $response = json_decode($rawResponse, true);
+        if (empty($response) || !array_key_exists('Status', $response)) {
+            throw new Exception("Something wrong while verifying with MyEmailVerifier.com: 'Status' field is required: {$rawResponse}");
+        }
+
+        $mappedStatus = $this->mapResult($response['Status']);
+
+        return [$mappedStatus, $rawResponse];
     }
+
+    private function mapResult($status)
+    {
+        $mappedStatus = $this->resultMap[$status] ?? null;
+
+        if (is_null($mappedStatus)) {
+            throw new Exception("Unknown status returned by MyEmailVerifier: {$status}");
+        }
+
+        return $mappedStatus;
+    }
+
 
     public function getCredits(): ?int
     {
