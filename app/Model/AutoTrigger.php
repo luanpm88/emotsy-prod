@@ -156,7 +156,7 @@ class AutoTrigger extends Model
             }
 
             if (!is_null($latest)) {
-                $this->logger()->info(sprintf('Trigger [#%s - %s]: pending at [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
+                $this->logger()->info(sprintf('Trigger [#%s - %s]: is currently PENDING at [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
             }
         });
     }
@@ -193,19 +193,23 @@ class AutoTrigger extends Model
     // Use this method instead of #getActions which is for loading the first Trigger only
     public function traverseExecutedPathWithLastPendingAction($callback)
     {
+        $lastActionToExecute = $this->findLastActionToExecute();
+
+
         // Starting point
         $action = $this->getTrigger();
 
         do {
-            if (is_null($action->getLastExecuted()) && !$action->isDelayAction()) {
-                break;
-            }
+            /* DEPRECATED: traverse through ALL actions, do not BREAK
+             *             as there might be NEW ACTIONS inserted to automations (they do not have last_executed value)
+             *
+             */
+            // if (is_null($action->getLastExecuted()) && !$action->isDelayAction()) {
+            //     break;
+            // }
 
-            $callback($action);
-
-            if (is_null($action->getLastExecuted()) && $action->isDelayAction()) {
-                // stop if hitting a "delay" action that is not executed
-                break;
+            if ($action->getId() == $lastActionToExecute->getId() || !is_null($action->getLastExecuted())) {
+                $callback($action);
             }
 
             $action = $this->getNextAction($action);
@@ -311,23 +315,26 @@ class AutoTrigger extends Model
 
     public function findLastActionToExecute()
     {
-        $action = $this->getTrigger();
+        // IMPORTANT: there might be new Element added to the flow by Automation with last_executed = null, skip them all
+        // Just come to the end and get the last element with last_executed=null
+        $lastExecutedAction = null;
+        $this->getActions(function ($action) use (&$lastExecutedAction) {
+            if (!is_null($action->getLastExecuted())) {
+                $lastExecutedAction = $action;
+            }
+        });
 
-        if (is_null($action->getLastExecuted())) {
-            return $action;
-        }
-
-        while (!is_null($action->getLastExecuted())) {
-            $nextId = $action->getNextActionId();
+        if (is_null($lastExecutedAction)) {
+            return $this->getTrigger();
+        } else {
+            $nextId = $lastExecutedAction->getNextActionId();
 
             if (is_null($nextId)) {
                 return null;
+            } else {
+                return $this->getActionById($nextId);
             }
-
-            $action = $this->getActionById($nextId);
         }
-
-        return $action;
     }
 
     public function getLatestAction()
