@@ -208,7 +208,7 @@ abstract class Action
         } catch (Throwable $t) {
             $msg = trans('messages.automation.trigger.error.action_failed', [
                 'email' => $this->autoTrigger->subscriber->email,
-                'id' => $this->getId(),
+                'id' => "Trigger {$this->autoTrigger->id}=>{$this->getId()}",
                 'title' => $this->getTitle(),
                 'err' => $t->getMessage(),
             ]);
