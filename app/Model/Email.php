@@ -396,6 +396,11 @@ class Email extends Model implements HasTemplateInterface
         $this->save();
     }
 
+    public function checkDelayFlag()
+    {
+        return false; // not supported
+    }
+
     public function debug(Closure $callback = null)
     {
         // @important: temporary function to avoid Automation bug
