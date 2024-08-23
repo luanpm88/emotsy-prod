@@ -199,6 +199,10 @@ class AutoTrigger extends Model
         // Starting point
         $action = $this->getTrigger();
 
+        if (is_null($action)) {
+            return;
+        }
+
         do {
             /* DEPRECATED: traverse through ALL actions, do not BREAK
              *             as there might be NEW ACTIONS inserted to automations (they do not have last_executed value)
@@ -208,7 +212,7 @@ class AutoTrigger extends Model
             //     break;
             // }
 
-            if ($action->getId() == $lastActionToExecute->getId() || !is_null($action->getLastExecuted())) {
+            if (($lastActionToExecute && $action->getId() == $lastActionToExecute->getId()) || !is_null($action->getLastExecuted())) {
                 $callback($action);
             }
 
