@@ -1397,7 +1397,7 @@ class Automation2 extends Model
             'api-3-0',
             'weekly-recurring',
             'monthly-recurring',
-            Automation2::TRIGGER_TAG_BASED,
+            self::TRIGGER_TAG_BASED,
         ];
 
         if (config('custom.woo')) {

@@ -585,7 +585,7 @@
   'automation.trigger.subscriber-added-date.intro' => 'Automation starts yearly on your subscribers joining date. Sometimes you may want to trigger the automation prior to the date. You can schedule it accordingly below',
   'automation.trigger.tag-based' => 'Tag based',
   'automation.trigger.tag-based.desc' => 'Trigger the automation for your contacts if a specified tag is assigned to them',
-  'automation.trigger.tag-based.intro' => 'Specify the TAGS that shall trigger the automation',
+  'automation.trigger.tag-based.intro' => 'Specify the TAGS that will trigger the automation, separated by a space. The automation will be triggered if the contact is flagged with a tag that matches any of the tags listed below. Tags are case insensitive.',
   'automation.trigger.title' => ':title',
   'automation.trigger.tree.api-3-0' => 'Trigger manually via API 3.0 request',
   'automation.trigger.tree.monthly-recurring' => 'Monthly recurring',
