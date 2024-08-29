@@ -265,11 +265,6 @@ class SubscriberController extends Controller
             $subscribers = $this->search($list, $request);
         }
 
-        // get related mail lists to update the cached information
-        $lists = $subscribers->get()->map(function ($e) {
-            return MailList::find($e->mail_list_id);
-        })->unique();
-
         // actually delete the subscriber
         foreach ($subscribers->get() as $subscriber) {
             // authorize
@@ -279,10 +274,6 @@ class SubscriberController extends Controller
                 // Log
                 $subscriber->log('deleted', $customer);
             }
-        }
-
-        foreach ($lists as $list) {
-            event(new \Acelle\Events\MailListUpdated($list));
         }
 
         // Redirect to my lists page
@@ -323,9 +314,6 @@ class SubscriberController extends Controller
                     'message_id' => null,
                     'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : '#unknown',
                 ]);
-
-                // update MailList cache
-                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
                 // Log
                 $subscriber->log('subscribed', $customer);
@@ -370,9 +358,6 @@ class SubscriberController extends Controller
 
                 // Log
                 $subscriber->log('unsubscribed', $customer);
-
-                // update MailList cache
-                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
             }
         }
 

@@ -2,10 +2,12 @@
 
 namespace Acelle\Listeners;
 
-use Acelle\Events\MailListSubscription;
-use Acelle\Events\MailListUnsubscription;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+
+use Acelle\Events\MailListSubscription;
+use Acelle\Events\MailListUnsubscription;
+use Acelle\Events\SubscribersTagsUpdate;
 
 use Acelle\Model\Automation2;
 
@@ -88,6 +90,30 @@ class TriggerAutomation
         }
     }
 
+    public function handleSubscribersTagsUpdate(SubscribersTagsUpdate $event)
+    {
+        $automations = $event->subscriber->mailList->automations;
+        $automations = $automations->filter(function ($auto, $key) {
+            return $auto->isActive() && (
+                $auto->getTriggerType() == Automation2::TRIGGER_TAG_BASED
+            );
+        });
+
+        foreach ($automations as $auto) {
+            $tags = $auto->getTriggerAction()->getOption('tags');
+            if ($event->subscriber->hasTags($tags)) {
+                $existingTrigger = $auto->getAutoTriggerFor($event->subscriber);
+
+                if (is_null($existingTrigger)) {
+                    $trigger = $auto->initTrigger($event->subscriber);
+                    $trigger->check($manually = true);
+                } else {
+                    $auto->logger()->info('Tag matched but already triggered');
+                }
+            }
+        }
+    }
+
     // Subscribe to many events
     public function subscribe($events)
     {
@@ -99,6 +125,11 @@ class TriggerAutomation
         $events->listen(
             'Acelle\Events\MailListUnsubscription',
             [TriggerAutomation::class, 'handleMailListUnsubscription']
+        );
+
+        $events->listen(
+            SubscribersTagsUpdate::class,
+            [TriggerAutomation::class, 'handleSubscribersTagsUpdate']
         );
     }
 }

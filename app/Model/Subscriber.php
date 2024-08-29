@@ -36,6 +36,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Schema;
 use Acelle\Library\LaravelExtension\EloquentBuilder as ExtendedEloquentBuilder;
+use Acelle\Events\SubscribersTagsUpdate;
 
 class Subscriber extends Model
 {
@@ -756,6 +757,11 @@ class Subscriber extends Model
     public function getTags(): array
     {
         // Notice: json_decode() returns null if input is null or empty
+
+        if (is_null($this->tags)) {
+            return [];
+        }
+
         return json_decode($this->tags, true) ?: [];
     }
 
@@ -783,6 +789,8 @@ class Subscriber extends Model
 
         $this->tags = json_encode($nTags);
         $this->save();
+
+        SubscribersTagsUpdate::dispatch($this);
     }
 
     public function removeTags($arr)
@@ -824,6 +832,8 @@ class Subscriber extends Model
         //
         $this->tags = json_encode($newTags, JSON_UNESCAPED_UNICODE);
         $this->save();
+
+        SubscribersTagsUpdate::dispatch($this);
     }
 
     /**
@@ -1265,5 +1275,12 @@ class Subscriber extends Model
     public function newEloquentBuilder($query)
     {
         return new ExtendedEloquentBuilder($query);
+    }
+
+    //
+    public function hasTags(array $tags)
+    {
+        $intersected = array_intersect(array_map('strtolower', $this->getTags()), array_map('strtolower', $tags));
+        return (!empty($intersected));
     }
 }
