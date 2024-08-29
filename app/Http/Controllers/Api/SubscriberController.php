@@ -147,11 +147,11 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($uid)
+    public function show($id)
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Acelle\Model\Subscriber::where('uid', '=', $uid)
+        $item = \Acelle\Model\Subscriber::where('id', '=', $id)
             ->first();
 
         $list = $item->mailList;
