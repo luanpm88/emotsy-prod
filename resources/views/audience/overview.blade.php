@@ -197,7 +197,7 @@
     <script>
         var AudienceOverviewImportSelectList = {
             url: '{!! action('MailListController@selectList', [
-                'redirect' => action('SubscriberController@import', [
+                'redirect' => action('SubscriberController@import2', [
                     'list_uid' => 'list_uid',                    
                 ]),
                 'title' => trans('messages.audience.import_contacts.title'),
