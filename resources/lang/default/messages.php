@@ -585,7 +585,7 @@
   'automation.trigger.subscriber-added-date.intro' => 'Automation starts yearly on your subscribers joining date. Sometimes you may want to trigger the automation prior to the date. You can schedule it accordingly below',
   'automation.trigger.tag-based' => 'Tag based',
   'automation.trigger.tag-based.desc' => 'Trigger the automation for your contacts if a specified tag is assigned to them',
-  'automation.trigger.tag-based.intro' => 'Specify the TAGS that shall trigger the automation',
+  'automation.trigger.tag-based.intro' => 'Specify the TAGS that will trigger the automation, separated by a space. The automation will be triggered if the contact is flagged with a tag that matches any of the tags listed below. Tags are case insensitive.',
   'automation.trigger.title' => ':title',
   'automation.trigger.tree.api-3-0' => 'Trigger manually via API 3.0 request',
   'automation.trigger.tree.monthly-recurring' => 'Monthly recurring',
@@ -1226,9 +1226,7 @@
   'email_verification_plan.plan_name' => 'Plan name',
   'email_verification_plan.plans' => 'Email verification plans',
   'email_verification_plan.select_plan' => 'Select email verification credits plan',
-  'email_verification_plan.select_plan.wording' => 'By subscribing to the Email Verification Credits Plan, you can extend the current
-    credit verification limit inherent to each plan. Purchasing additional email verification credits
-    separately can help reduce costs tailored to your specific needs.',
+  'email_verification_plan.select_plan.wording' => 'By purchasing a one-time Email Verification Credits Plan, you can extend the current credit verification limit inherent to each plan. These additional email verification credits never expire, allowing you to tailor your purchase to your specific needs while reducing costs.',
   'email_verification_plan.update.success' => 'Plan was successfully updated',
   'email_verification_plan.wording' => 'You can subscribe to an additional email verification
     credits plan to increase the capacity of verifying your emails. Depending on the size of your lists,
@@ -1700,6 +1698,7 @@
   'list.updated' => 'List was successfully updated',
   'list.validation.not_email' => 'The :field must be a valid email address.',
   'list.validation.required' => 'The :field is required',
+  'list.verification.progress.batch_info' => 'Current batch #:j, processed :p/:t',
   'list.verification.progress.done' => 'Verification done, all contacts email addresses are verified',
   'list.verification.progress.running' => 'Verification is in progresss. :c done since started, a total of :v/:t email addresses have been verified',
   'list.verification.progress.started' => 'Verification is in progress...',
