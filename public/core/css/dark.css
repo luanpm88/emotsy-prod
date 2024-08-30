@@ -900,3 +900,6 @@ body.mode-dark .iti__country-list {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
 }
+body.mode-dark input.disabled {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
