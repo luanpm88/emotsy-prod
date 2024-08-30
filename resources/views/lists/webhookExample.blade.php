@@ -5,7 +5,7 @@
             <div>
                 <div class="d-flex">
                     <div class="me-2 w-100">
-                        <input type="text" class="form-control disabled" disabled name="" value="{{ action("Api\SubscriberController@store") }}" />
+                        <input type="text" class="form-control disabled" disabled name="" value="{{ action("Api\Public\SubscriberController@store") }}" />
                     </div>
                     <div>
                         <button webhook-control="copy-action" class="btn btn-secondary">{{ trans('messages.copy') }}</button>
@@ -55,9 +55,7 @@
 
         // copy action
         $('[webhook-control="copy-action"]').on('click', function(e) {
-            copyToClipboard('{{ action('SubscriberController@store', [
-                'list_uid' => $list->uid,
-            ]) }}', $('#WebhookPopup'));
+            copyToClipboard('{{ action('Api\Public\SubscriberController@store') }}', $('#WebhookPopup'));
 
             //
             notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.list.webhook.action.copied') }}');
