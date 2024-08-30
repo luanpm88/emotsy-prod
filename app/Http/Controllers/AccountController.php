@@ -29,10 +29,18 @@ class AccountController extends Controller
 
         // Save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $user->rules());
+            $this->validate($request, [
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'timezone' => 'required',
+                'language_id' => 'required',
+                'image' => 'nullable|image',
+            ]);
 
-            // Update user account for customer
-            $user->fill($request->all());
+            // Update user attributes
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);

@@ -155,7 +155,10 @@
                 <div class="sub_section">
                     <h3 class="text-semibold text-primary mb-4">{{ trans('messages.account') }}</h3>
 
-                    @include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $customer->user->email, 'help_class' => 'profile', 'rules' => $user->rules()])
+                    <div class="form-group">
+                        <label class="form-label">{{ trans('messages.email') }}</label>
+                        <input type="text" class="form-control disabled" disabled value="{{ $customer->user->email }}" />
+                    </div>
 
                     @include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $user->rules()])
 
