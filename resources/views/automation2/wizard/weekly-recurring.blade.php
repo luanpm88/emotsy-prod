@@ -26,6 +26,10 @@
         'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
     ])
 
+    <div class="automation-segment">
+
+    </div>
+
     <script>
         $('.day-week-select button').click(function(e) {
             e.preventDefault();

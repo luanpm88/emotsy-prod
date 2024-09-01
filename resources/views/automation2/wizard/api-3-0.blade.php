@@ -36,4 +36,8 @@
         'value' => '',
         'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
     ])
+
+    <div class="automation-segment">
+
+    </div>
 </div>

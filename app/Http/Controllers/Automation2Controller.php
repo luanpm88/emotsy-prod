@@ -355,6 +355,13 @@ class Automation2Controller extends Controller
             Automation2::TRIGGER_TAG_BASED => [
                 'options.tags' => 'required',
             ],
+            Automation2::TRIGGER_REMOVE_TAG => [
+                'options.tags' => 'required',
+            ],
+            Automation2::TRIGGER_ATTRIBUTE_UPDATE => [
+                'options.field_uid' => 'required',
+                'options.value' => 'required',
+            ],
         ];
     }
 

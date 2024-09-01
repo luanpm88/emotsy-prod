@@ -8,3 +8,7 @@
     'value' => '',
     'options' => Auth::user()->customer->getMailListSelectOptions([], true),
 ])
+
+<div class="automation-segment">
+
+</div>

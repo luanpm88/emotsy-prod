@@ -3473,4 +3473,13 @@
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'your_subscription' => 'Your subscription',
   'zip_postal_code' => 'Zip / Postal code',
+  'automation.trigger.remove-tag' => 'Remove Tag',
+  'automation.trigger.remove-tag.desc' => 'Trigger the automation for your contacts when a specified tag is removed',
+  'automation.trigger.remove-tag.intro' => 'Trigger the automation for your contacts when a specified tag is removed. <br><br> Specify the TAGS that will trigger the automation, separated by a space. The automation will be triggered if the contact is flagged with a tag that matches any of the tags listed below. Tags are case insensitive.',
+  'automation.trigger.tree.remove-tag' => 'Remove Tag',
+  'automation.trigger.attribute-update' => 'Contact Attribute Update',
+  'automation.trigger.attribute-update.desc' => 'Trigger the automation if a contact attribute matches the specified value. Also support wildcards like: *, ?',
+  'automation.trigger.attribute-update.intro' => 'Trigger the automation if a contact attribute matches the specified value. Also support wildcards like: *, ?',
+  'automation.trigger.tree.attribute-update' => 'Contact Attribute Update',
+  'subscriber.choose_a_field' => 'Choose a field',
 ) ?>

@@ -65,6 +65,8 @@ class Automation2 extends Model
     public const TRIGGER_MONTHLY_RECURRING = 'monthly-recurring';
     public const TRIGGER_TAG_BASED = 'tag-based';
     public const TRIGGER_WOO_ABANDONED_CART = 'woo-abandoned-cart';
+    public const TRIGGER_REMOVE_TAG = 'remove-tag';
+    public const TRIGGER_ATTRIBUTE_UPDATE = 'attribute-update';
 
     /**
      * Items per page.
@@ -554,6 +556,10 @@ class Automation2 extends Model
                 $this->checkForAbandonedCart();
                 // no break
             case self::TRIGGER_TAG_BASED:
+                break;
+            case self::TRIGGER_REMOVE_TAG:
+                break;
+            case self::TRIGGER_ATTRIBUTE_UPDATE:
                 break;
             case 'others':
                 // others
@@ -1398,6 +1404,8 @@ class Automation2 extends Model
             'weekly-recurring',
             'monthly-recurring',
             self::TRIGGER_TAG_BASED,
+            self::TRIGGER_REMOVE_TAG,
+            self::TRIGGER_ATTRIBUTE_UPDATE,
         ];
 
         if (config('custom.woo')) {
@@ -1599,6 +1607,37 @@ class Automation2 extends Model
                     'key' => self::TRIGGER_TAG_BASED,
                     'type' => self::TRIGGER_TAG_BASED,
                     'tags' => $params['options']['tags'],
+                    'init' => 'true',
+                ],
+                'last_executed' => null,
+                'evaluationResult' => null,
+            ];
+        } elseif ($type == self::TRIGGER_REMOVE_TAG) {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.remove-tag'),
+                'type' => 'ElementTrigger',
+                'child' => null,
+                'options' => [
+                    'key' => self::TRIGGER_REMOVE_TAG,
+                    'type' => self::TRIGGER_REMOVE_TAG,
+                    'tags' => $params['options']['tags'],
+                    'init' => 'true',
+                ],
+                'last_executed' => null,
+                'evaluationResult' => null,
+            ];
+        } elseif ($type == self::TRIGGER_ATTRIBUTE_UPDATE) {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.attribute-update'),
+                'type' => 'ElementTrigger',
+                'child' => null,
+                'options' => [
+                    'key' => self::TRIGGER_ATTRIBUTE_UPDATE,
+                    'type' => self::TRIGGER_ATTRIBUTE_UPDATE,
+                    'field_uid' => $params['options']['field_uid'],
+                    'value' => $params['options']['value'],
                     'init' => 'true',
                 ],
                 'last_executed' => null,
