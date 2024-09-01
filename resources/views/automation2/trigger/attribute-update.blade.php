@@ -6,6 +6,7 @@
         $value = $trigger->getOption('value') ?? null;
     @endphp
 
+    <p class="mb-1">{{ trans('messages.automation.trigger.tree.attribute-update.select_field_value') }}</p>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">

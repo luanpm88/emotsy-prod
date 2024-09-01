@@ -3479,7 +3479,8 @@
   'automation.trigger.tree.remove-tag' => 'Remove Tag',
   'automation.trigger.attribute-update' => 'Contact Attribute Update',
   'automation.trigger.attribute-update.desc' => 'Trigger the automation if a contact attribute matches the specified value. Also support wildcards like: *, ?',
-  'automation.trigger.attribute-update.intro' => 'Trigger the automation if a contact attribute matches the specified value. Also support wildcards like: *, ?',
+  'automation.trigger.attribute-update.intro' => 'Trigger the automation if a contact attribute matches the specified value.',
   'automation.trigger.tree.attribute-update' => 'Contact Attribute Update',
+  'automation.trigger.tree.attribute-update.select_field_value' => 'Select the list field and the value that matches. Wildcards such as * and ? are also supported',
   'subscriber.choose_a_field' => 'Choose a field',
 ) ?>
