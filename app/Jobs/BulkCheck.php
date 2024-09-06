@@ -76,7 +76,7 @@ class BulkCheck implements ShouldQueue
                     'status' => $verificationStatus,
                     'raw' => $raw,
                 ];
-            }, function ($response, $batchId = null, $batchSize = null, $processed = null) {
+            }, function (string $response, $batchId = null, $batchSize = null, $processed = null) {
 
                 if ($batchId && $batchSize) {
                     $this->monitor->updateJsonData([

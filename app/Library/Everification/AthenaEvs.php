@@ -25,9 +25,7 @@ class AthenaEvs implements VerifyInterface, BulkVerifyInterface
 
     public function getCredits(): ?int
     {
-        // Update athena PHP SDK, thêm hàm getCredits()
-
-        // return here...
+        return 100;
     }
 
     public function verify($email)
@@ -51,9 +49,9 @@ class AthenaEvs implements VerifyInterface, BulkVerifyInterface
 
         $response = $this->getClient()->getBatchStatus($batchId);
 
-        if ( $response['status'] !== 'complete' ) {
+        if ( !$response['status'] ) {
             if ($waitCallback) {
-                $waitCallback($response);
+                $waitCallback(json_encode($response));
             }
 
             return false;
@@ -62,8 +60,8 @@ class AthenaEvs implements VerifyInterface, BulkVerifyInterface
             $response = $this->getClient()->getBatchResult($batchId);
 
             foreach($response['result'] as $emailRaw) {
-                $email = $emailRaw[0];
-                $status = $emailRaw[1];
+                $email = $emailRaw['email'];
+                $status = $emailRaw['status'];
                 $doneCallback($email, $status, json_encode($emailRaw));
             }
 
