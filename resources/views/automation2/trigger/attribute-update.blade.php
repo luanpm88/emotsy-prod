@@ -16,7 +16,7 @@
                     class="select select-search required" required
                 >
                     @foreach ($automation->mailList->fields as $field)
-                        <option {{ $fieldUid == $field->id ? 'selected' : '' }} value="{{ $field->id }}">{{ $field->tag }}</option>
+                        <option {{ $fieldUid == $field->uid ? 'selected' : '' }} value="{{ $field->uid }}">{{ $field->tag }}</option>
                     @endforeach
                 </select>
             </div>

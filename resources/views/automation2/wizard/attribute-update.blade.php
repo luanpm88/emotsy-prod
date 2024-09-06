@@ -46,7 +46,7 @@
 <script>
     $(() => {
         new FieldSelector({
-            url: '{{ action('MailListController@listFieldOptions', [
+            url: '{{ action('MailListController@listFieldOptionsUid', [
                 'uid' => 'LIST_UID',
             ]) }}',
             container: $('[data-control="field-value"]'),
@@ -94,7 +94,7 @@
             }).done((options) => {
                 // Add new options
                 options.forEach(function(option) {
-                    var newOption = new Option(option.text, option.id, false, false);
+                    var newOption = new Option(option.text, option.uid, false, false);
                     $select.append(newOption);
                 });
 

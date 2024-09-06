@@ -1010,4 +1010,16 @@ class MailListController extends Controller
             ];
         })->toArray());
     }
+
+    public function listFieldOptionsUid(Request $request, $uid)
+    {
+        $list = MailList::findByUid($uid);
+
+        return response()->json($list->fields->map(function ($field) {
+            return [
+                'text' => $field->tag,
+                'uid' => $field->uid,
+            ];
+        })->toArray());
+    }
 }
