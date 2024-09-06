@@ -22,6 +22,7 @@ use Acelle\Library\Everification\ZeroBounce;
 use Acelle\Library\Everification\EmailListValidation;
 use Acelle\Library\Everification\MyEmailVerifier;
 use Acelle\Library\Everification\Bouncify;
+use Acelle\Library\Everification\AthenaEvs;
 
 class EmailVerificationServer extends Model
 {
@@ -88,6 +89,11 @@ class EmailVerificationServer extends Model
             case 'bouncify.io':
                 $apiKey = $this->getOptions()['api_key'];
                 $this->service = new Bouncify($apiKey);
+                return $this->service;
+
+            case 'athenaevs.com':
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new AthenaEvs($apiKey);
                 return $this->service;
 
             default:

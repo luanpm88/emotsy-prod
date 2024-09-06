@@ -98,7 +98,7 @@ return [
         ], [
             'id' => 'athenaevs.com',
             'name' => 'AthenaEVS',
-            'fields' => [ 'api_token' ],
+            'fields' => [ 'api_key' ],
         ]
 
     ]
