@@ -25,7 +25,9 @@ class AthenaEvs implements VerifyInterface, BulkVerifyInterface
 
     public function getCredits(): ?int
     {
-        return 100;
+        $response = $this->getClient()->getCredits();
+
+        return $response['credits'];
     }
 
     public function verify($email)
