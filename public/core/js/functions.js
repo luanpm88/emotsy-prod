@@ -71,6 +71,7 @@ function initJs(container)
             minimumResultsForSearch: 20,
             templateResult: formatSelect2TextOption,
             templateSelection: formatSelect2TextSelected,
+            tokenSeparators: [','],
             placeholder: function(){
                 $(this).attr('data-placeholder');
             },
