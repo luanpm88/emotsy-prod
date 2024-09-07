@@ -254,7 +254,7 @@ class Subscriber extends Model
         $this->save();
 
         $changes = $this->findDifferentCustomAttributes($before);
-        SubscribersAttributesUpdate::dispatch($this, $changes);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     public function updateFields2($attributes)
@@ -271,7 +271,7 @@ class Subscriber extends Model
         $this->save();
 
         $changes = $this->findDifferentCustomAttributes($before);
-        SubscribersAttributesUpdate::dispatch($this, $changes);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     /**

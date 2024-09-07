@@ -18,16 +18,18 @@ class SubscribersAttributesUpdate
 
     public $subscriber;
     public $changes;
+    public $oldAttributes;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Subscriber $subscriber, array $changes)
+    public function __construct(Subscriber $subscriber, array $changes, array $oldAttributes)
     {
         $this->subscriber = $subscriber;
         $this->changes = $changes;
+        $this->oldAttributes = $oldAttributes;
     }
 
     /**

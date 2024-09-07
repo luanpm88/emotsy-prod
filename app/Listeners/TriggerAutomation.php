@@ -158,6 +158,26 @@ class TriggerAutomation
                 $auto->logger()->info("Condition to trigger automation '{$auto->name}': field {$field->tag} = '{$requiredValue}', however, the new value of '{$event->subscriber->email} it is actually '{$fieldNewValue}'");
             }
         }
+
+        // Now check for tag
+        $automations = $automations->filter(function ($auto, $key) {
+            return $auto->isActive() && (
+                $auto->getTriggerType() == Automation2::TRIGGER_REMOVE_TAG
+            );
+        });
+
+        foreach ($automations as $auto) {
+            $tagsToCheck = $auto->getTriggerAction()->getOption('tags');
+            $tagsChange = $event->changes['event'] ?? [];
+
+            if (empty($tagsChange)) {
+                continue;
+            }
+
+            foreach ($tagsToCheck as $tag) {
+                $existsBefore = in_array($tag, array_keys($event->oldAttributes['tags']));
+            }
+        }
     }
 
     // Subscribe to many events
