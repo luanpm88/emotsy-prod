@@ -4,10 +4,13 @@ namespace Acelle\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Exception;
 
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUnsubscription;
 use Acelle\Events\SubscribersTagsUpdate;
+use Acelle\Events\SubscribersAttributesUpdate;
+use Acelle\Model\Field;
 
 use Acelle\Model\Automation2;
 
@@ -114,6 +117,49 @@ class TriggerAutomation
         }
     }
 
+    public function handleSubscribersAttributesUpdate(SubscribersAttributesUpdate $event)
+    {
+        $automations = $event->subscriber->mailList->automations;
+        $automations = $automations->filter(function ($auto, $key) {
+            return $auto->isActive() && (
+                $auto->getTriggerType() == Automation2::TRIGGER_ATTRIBUTE_UPDATE
+            );
+        });
+
+        foreach ($automations as $auto) {
+            $fieldUid = $auto->getTriggerAction()->getOption('field_uid');
+            $field = Field::findByUid($fieldUid);
+
+            if (is_null($field)) {
+                throw new Exception("Field UID does not exist", 1);
+            }
+
+            $auto->logger()->info("Automation '{$auto->name}' triggers on {$field->tag} change");
+            $isFieldChanged = in_array($field->uid, array_keys($event->changes));
+
+            if (!$isFieldChanged) {
+                continue;
+            }
+
+            $fieldNewValue = $event->subscriber->getValueByField($field);
+            $requiredValue = $auto->getTriggerAction()->getOption('value');
+
+            if ($isFieldChanged && $fieldNewValue == $requiredValue) {
+                $existingTrigger = $auto->getAutoTriggerFor($event->subscriber);
+
+                if (is_null($existingTrigger)) {
+                    $auto->logger()->info("Field {$field->tag} changes to '{$fieldNewValue}', okay, triggering...");
+                    $trigger = $auto->initTrigger($event->subscriber);
+                    $trigger->check($manually = true);
+                } else {
+                    $auto->logger()->info("Field {$field->tag} changes to '{$fieldNewValue}', HOWEVER, an auto trigger already exists");
+                }
+            } else {
+                $auto->logger()->info("Condition to trigger automation '{$auto->name}': field {$field->tag} = '{$requiredValue}', however, the new value of '{$event->subscriber->email} it is actually '{$fieldNewValue}'");
+            }
+        }
+    }
+
     // Subscribe to many events
     public function subscribe($events)
     {
@@ -130,6 +176,11 @@ class TriggerAutomation
         $events->listen(
             SubscribersTagsUpdate::class,
             [TriggerAutomation::class, 'handleSubscribersTagsUpdate']
+        );
+
+        $events->listen(
+            SubscribersAttributesUpdate::class,
+            [TriggerAutomation::class, 'handleSubscribersAttributesUpdate']
         );
     }
 }

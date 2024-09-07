@@ -37,6 +37,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Schema;
 use Acelle\Library\LaravelExtension\EloquentBuilder as ExtendedEloquentBuilder;
 use Acelle\Events\SubscribersTagsUpdate;
+use Acelle\Events\SubscribersAttributesUpdate;
 
 class Subscriber extends Model
 {
@@ -225,6 +226,8 @@ class Subscriber extends Model
      */
     public function updateFields($params)
     {
+        $before = $this->getCustomAttributes();
+
         foreach ($this->mailList->getFields as $field) {
             // Thank you John Wigley and acorna.com team for pointing this out
             if (!isset($params[$field->tag])) {
@@ -249,10 +252,14 @@ class Subscriber extends Model
         }
 
         $this->save();
+
+        $changes = $this->findDifferentCustomAttributes($before);
+        SubscribersAttributesUpdate::dispatch($this, $changes);
     }
 
     public function updateFields2($attributes)
     {
+        $before = $this->getCustomAttributes();
         foreach ($attributes as $tag => $value) {
             $field = $this->mailList->getFieldByTag($tag);
 
@@ -262,6 +269,9 @@ class Subscriber extends Model
         }
 
         $this->save();
+
+        $changes = $this->findDifferentCustomAttributes($before);
+        SubscribersAttributesUpdate::dispatch($this, $changes);
     }
 
     /**
@@ -395,11 +405,6 @@ class Subscriber extends Model
         }
     }
 
-    /**
-     * Get field value by list field.
-     *
-     * @return value
-     */
     public function getValueByTag($tag)
     {
         $field = $this->mailList->fields()->where('tag', $tag)->first();
@@ -409,6 +414,32 @@ class Subscriber extends Model
         } else {
             return $this->getValueByField($field);
         }
+    }
+
+    public function getCustomAttributes()
+    {
+        $attributes = [];
+        $fields = $this->mailList->fields;
+        foreach ($fields as $field) {
+            $attributes[$field->uid] = $this->getValueByField($field);
+        }
+
+        $attributes['tags'] = $this->getTags();
+
+        return $attributes;
+    }
+
+    public function findDifferentCustomAttributes(array $attributes)
+    {
+        $diffs = [];
+        $myAttributes = $this->getCustomAttributes();
+        foreach ($myAttributes as $key => $value) {
+            if (array_key_exists($key, $attributes) && $attributes[$key] != $value) {
+                $diffs[$key] = $value;
+            }
+        }
+
+        return $diffs;
     }
 
     /**
