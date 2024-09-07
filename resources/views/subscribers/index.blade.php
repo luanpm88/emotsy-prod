@@ -117,12 +117,12 @@
 					<span class="filter-group">
 						<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 						<select class="select" name="sort_order">
+							<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>
 							<option value="subscribers.email">{{ trans('messages.email') }}</option>
-							<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>							
-							<option value="subscribers.updated_at">{{ trans('messages.updated_at') }}</option>
+							<option value="tag">{{ trans('messages.tag') }}</option>
 						</select>
-						<input type="hidden" name="sort_direction" value="asc" />
-						<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+						<input type="hidden" name="sort_direction" value="desc" />
+						<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 							<span class="material-symbols-rounded desc">sort</span>
 						</button>
 					</span>

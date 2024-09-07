@@ -19,10 +19,18 @@ class SubscriberController extends Controller
      */
     public function search($list, $request)
     {
+        $sortOrder = $request->sort_order ? $request->sort_order : 'created_at';
+        $sortDirection = $request->sort_direction ? $request->sort_direction : 'asc';
+
         $subscribers = $list->subscribers()
             ->search($request->keyword, $list->fields)
-            ->filter($request)
-            ->orderBy($request->sort_order ? $request->sort_order : 'created_at', $request->sort_direction ? $request->sort_direction : 'asc');
+            ->filter($request);
+
+        if ($sortOrder == 'tag') {
+            // sort by tag
+        } else {
+            $subscribers = $subscribers->orderBy($sortOrder, $sortDirection);
+        }
 
         return $subscribers;
     }
