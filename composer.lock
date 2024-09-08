@@ -293,12 +293,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/athenaevs/athenaevs-php.git",
-                "reference": "9bf92f5bea38475ac3228734324329a86c6c1aaa"
+                "reference": "14121fd42cb2e554e6aca3e6cbb42fce0ecc6ea1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/athenaevs/athenaevs-php/zipball/9bf92f5bea38475ac3228734324329a86c6c1aaa",
-                "reference": "9bf92f5bea38475ac3228734324329a86c6c1aaa",
+                "url": "https://api.github.com/repos/athenaevs/athenaevs-php/zipball/14121fd42cb2e554e6aca3e6cbb42fce0ecc6ea1",
+                "reference": "14121fd42cb2e554e6aca3e6cbb42fce0ecc6ea1",
                 "shasum": ""
             },
             "require": {
@@ -329,7 +329,7 @@
                 "source": "https://github.com/athenaevs/athenaevs-php/tree/master",
                 "issues": "https://github.com/athenaevs/athenaevs-php/issues"
             },
-            "time": "2024-08-14T13:27:59+00:00"
+            "time": "2024-09-07T02:11:32+00:00"
         },
         {
             "name": "aws/aws-crt-php",

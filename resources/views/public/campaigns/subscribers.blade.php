@@ -214,12 +214,17 @@
 
 <script>
     var SubscribersIndex = {
+        list: null,
         getList: function() {
-            return makeList({
-                url: '{{ action('Pub\CampaignController@subscribersListing', $campaign->uid) }}',
-                container: $('.listing-form'),
-                content: $('.pml-table-container')
-            });
+            if (this.list == null) {
+                this.list = makeList({
+                    url: '{{ action('Pub\CampaignController@subscribersListing', $campaign->uid) }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+            
+            return this.list;
         }
     };
 

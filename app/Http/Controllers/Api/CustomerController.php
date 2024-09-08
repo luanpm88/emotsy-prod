@@ -374,6 +374,25 @@ class CustomerController extends Controller
     }
 
     /**
+     * Assign plan to customer.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function subscriptionUpdate(Request $request, $uid)
+    {
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        // terminate if customer already has new or active subscription
+        if ($customer->getNewOrActiveGeneralSubscription()) {
+            $customer->getNewOrActiveGeneralSubscription()->terminate();
+        }
+
+        return $this->assignPlan($request, $uid, $request->plan_uid);
+    }
+
+    /**
      * Generate one time token.
      *
      * PATCH /api/v1/customers/{uid}/login-token
