@@ -254,7 +254,7 @@ class Subscriber extends Model
         $this->save();
 
         $changes = $this->findDifferentCustomAttributes($before);
-        SubscribersAttributesUpdate::dispatch($this, $changes);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     public function updateFields2($attributes)
@@ -271,7 +271,7 @@ class Subscriber extends Model
         $this->save();
 
         $changes = $this->findDifferentCustomAttributes($before);
-        SubscribersAttributesUpdate::dispatch($this, $changes);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     /**
@@ -861,10 +861,15 @@ class Subscriber extends Model
         //
         // which cannot be searched for
         //
+
+        $before = $this->getCustomAttributes();
+
         $this->tags = json_encode($newTags, JSON_UNESCAPED_UNICODE);
         $this->save();
 
         SubscribersTagsUpdate::dispatch($this);
+        $changes = $this->findDifferentCustomAttributes($before);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     /**
@@ -878,8 +883,13 @@ class Subscriber extends Model
             unset($tags[$key]);
         }
 
+        $before = $this->getCustomAttributes();
+
         $this->tags = json_encode($tags);
         $this->save();
+
+        $changes = $this->findDifferentCustomAttributes($before);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     /**

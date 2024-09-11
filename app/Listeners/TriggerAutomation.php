@@ -134,11 +134,13 @@ class TriggerAutomation
                 throw new Exception("Field UID does not exist", 1);
             }
 
-            $auto->logger()->info("Automation '{$auto->name}' triggers on {$field->tag} change");
             $isFieldChanged = in_array($field->uid, array_keys($event->changes));
 
             if (!$isFieldChanged) {
+                $auto->logger()->info("Automation '{$auto->name}' is set up to trigger on {$field->tag} change of {$event->subscriber->email}. However, this field's value does not change");
                 continue;
+            } else {
+                $auto->logger()->info("Automation '{$auto->name}' is set up to trigger on {$field->tag} change of {$event->subscriber->email}");
             }
 
             $fieldNewValue = $event->subscriber->getValueByField($field);
@@ -155,7 +157,50 @@ class TriggerAutomation
                     $auto->logger()->info("Field {$field->tag} changes to '{$fieldNewValue}', HOWEVER, an auto trigger already exists");
                 }
             } else {
-                $auto->logger()->info("Condition to trigger automation '{$auto->name}': field {$field->tag} = '{$requiredValue}', however, the new value of '{$event->subscriber->email} it is actually '{$fieldNewValue}'");
+                $auto->logger()->info("Condition to trigger automation '{$auto->name}': field {$field->tag} = '{$requiredValue}', however, the new value of {$event->subscriber->email} it is actually {$field->tag} = '{$fieldNewValue}'");
+            }
+        }
+
+
+        // Now check for tag
+        $automations = $event->subscriber->mailList->automations;
+        $automations = $automations->filter(function ($auto, $key) {
+            return $auto->isActive() && (
+                $auto->getTriggerType() == Automation2::TRIGGER_REMOVE_TAG
+            );
+        });
+
+        foreach ($automations as $auto) {
+            $tagsToCheck = $auto->getTriggerAction()->getOption('tags');
+            $tagsChange = $event->changes['tags'] ?? [];
+
+            if (empty($tagsChange)) {
+                continue;
+            }
+
+            foreach ($tagsToCheck as $tag) {
+                $existsBefore = in_array($tag, $event->oldAttributes['tags']);
+                if ($existsBefore) {
+                    $auto->logger()->info("Tag '{$tag}' was once available for this contact {$event->subscriber->email}, checking if it is dropped or not...");
+                } else {
+                    $auto->logger()->info("Tag '{$tag}' never exists for this contact {$event->subscriber->email}");
+                    continue;
+                }
+
+                $isDroppedNow = in_array($tag, $event->subscriber->getTags());
+                if (!$isDroppedNow) {
+                    $existingTrigger = $auto->getAutoTriggerFor($event->subscriber);
+
+                    if (is_null($existingTrigger)) {
+                        $auto->logger()->info("Hey, tag '{$tag}' was recently dropped for this contact {$event->subscriber->email}, triggering");
+                        $trigger = $auto->initTrigger($event->subscriber);
+                        $trigger->check($manually = true);
+                    } else {
+                        $auto->logger()->info("Tag '{$tag}' was recently dropped for this contact {$event->subscriber->email}, but a trigger already exists");
+                    }
+                } else {
+                    // echo "It is still there";
+                }
             }
         }
     }
