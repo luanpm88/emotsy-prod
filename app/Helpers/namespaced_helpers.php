@@ -11,6 +11,7 @@ use Mika56\SPFCheck\SPFCheck;
 use Mika56\SPFCheck\DNSRecordGetterDirect;
 use Mika56\SPFCheck\DNSRecordGetter;
 use DB;
+use Illuminate\Support\Facades\File;
 
 function generatePublicPath($absPath, $withHost = false)
 {
@@ -656,4 +657,17 @@ function create_temp_db_table($fields, $data, Closure $callback)
 
     // DB::statement("CREATE INDEX `_index_email_{$nameWithPrefix}` ON `{$name}`(`email`);");
     // DB::statement("UPDATE `{$nameWithPrefix}` AS dup INNER JOIN `subscribers` s ON dup.email = s.email SET dup.selected_id = s.id WHERE s.mail_list_id = {$this->defaultMailList->id}");
+}
+
+function loadAppTemplate($name)
+{
+    $filePath = database_path('app_templates/' . $name . '.html');
+
+    if (File::exists($filePath)) {
+        return File::get($filePath);
+        // Do something with the $content
+    } else {
+        // Handle file not found scenario
+        abort(404, 'File not found');
+    }
 }

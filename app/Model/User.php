@@ -143,7 +143,7 @@ class User extends Authenticatable
      */
     public function sendActivationMail($name = null, $planUid = null)
     {
-        $layout = \Acelle\Model\Layout::where('alias', 'registration_confirmation_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('registration_confirmation_email');
         $token = $this->getToken();
 
         $layout->content = str_replace('{ACTIVATION_URL}', join_url(config('app.url'), action('UserController@activate', ['token' => $token, 'plan_uid' => $planUid], false)), $layout->content);

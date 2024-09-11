@@ -877,7 +877,7 @@ class MailList extends Model
             }
         }
 
-        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('sign_up_confirmation_email');
         $send_page = \Acelle\Model\Page::findPage($this, $layout);
         $send_page->renderContent(null, $subscriber);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
@@ -901,7 +901,7 @@ class MailList extends Model
     {
         $list = $this;
 
-        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_welcome_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('sign_up_welcome_email');
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
     }
@@ -913,14 +913,14 @@ class MailList extends Model
     {
         $list = $this;
 
-        $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_goodbye_email');
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
     }
 
     public function sendSubscriptionNotificationEmailToListOwner($subscriber)
     {
-        $template = Layout::where('alias', 'subscribe_notification_for_list_owner')->first();
+        $template = Layout::findByAlias('subscribe_notification_for_list_owner');
 
         $message = $template->getMessage(function ($html) use ($subscriber) {
             $html = str_replace('{LIST_NAME}', $this->name, $html);
@@ -951,7 +951,7 @@ class MailList extends Model
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
 
-        $template = \Acelle\Model\Layout::where('alias', 'unsubscribe_notification_for_list_owner')->first();
+        $template = \Acelle\Model\Layout::findByAlias('unsubscribe_notification_for_list_owner');
         $htmlContent = $template->content;
 
         $htmlContent = str_replace('{LIST_NAME}', $this->name, $htmlContent);
@@ -976,7 +976,7 @@ class MailList extends Model
     {
         $list = $this;
 
-        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('profile_update_email');
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
     }

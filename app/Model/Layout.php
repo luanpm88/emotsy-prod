@@ -198,4 +198,10 @@ class Layout extends Model
 
         return $query;
     }
+
+    public static function findByAlias($name)
+    {
+        // get lastest layout
+        return self::where('alias', $name)->orderByDesc('created_at')->first();
+    }
 }

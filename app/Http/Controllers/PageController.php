@@ -130,7 +130,7 @@ class PageController extends Controller
     public function signUpForm(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_form')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('sign_up_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
 
         // Language
@@ -223,7 +223,7 @@ class PageController extends Controller
     public function signUpThankyouPage(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('sign_up_thankyou_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::find($request->subscriber_id);
 
@@ -257,7 +257,7 @@ class PageController extends Controller
     {
         $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('sign_up_confirmation_thankyou');
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
@@ -301,7 +301,7 @@ class PageController extends Controller
         // IMPORTANT: it does not create TrackingLog!!!
         $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_form')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
@@ -350,7 +350,7 @@ class PageController extends Controller
     {
         $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_success_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
@@ -385,7 +385,7 @@ class PageController extends Controller
     {
         $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_form')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('profile_update_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
@@ -456,7 +456,7 @@ class PageController extends Controller
     {
         $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_success_page')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('profile_update_success_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
@@ -491,7 +491,7 @@ class PageController extends Controller
     {
         $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email_sent')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('profile_update_email_sent');
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
