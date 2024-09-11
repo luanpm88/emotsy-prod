@@ -2973,7 +2973,7 @@
   'subscription.terminated_at' => 'Terminated at',
   'subscription.updated' => 'サブスクリプションは正常に更新されました',
   'subscription.updated_at' => '更新日',
-  'subscription.verify_transaction' => 'Refresh transaction status',
+  'subscription.verify_transaction' => '取引状況を更新する',
   'subscription.wording' => 'この機能を使用すると、顧客のサブスクリプションの詳細を監視できます。 支払いを承認したり、サブスクリプションを有効または無効にしたりできます。 既存の顧客向けに新しいサブスクリプションを作成することもできます',
   'subscription.your_order' => 'ご注文',
   'subscription.your_order.desc' => '<strong>:plan</strong>を計画するためにサブスクライブしています。以下はご注文の詳細です。',
@@ -3450,4 +3450,14 @@
   'your_current_license' => 'お買い上げありがとうございます！ 以下は、購入コードとも呼ばれるライセンス キーです。 あなたのライセンスの種類は',
   'your_subscription' => 'Your subscription',
   'zip_postal_code' => '郵便番号',
+  'tracking_domain.enable_https' => 'トラッキングドメインのHTTPSを有効にする',
+  'setting.tracking_domain.enable_https.help' => 'トラッキングドメインは、メールコンテンツ内でのユーザーのやり取りを追跡します。HTTPSを有効にすることで、トラッキングドメインが保護され、データが守られ、信頼性が確保されます。',
+  'campaign.duplicate' => 'キャンペーンの複製を許可する',
+  'setting.campaign.duplicate.help' => 'この設定により、既存のキャンペーンを複製できるようになります。これにより、キャンペーンの構造やコンテンツを再利用しやすくなります。',
+  'email.default.skip_failed_message' => '失敗したメールメッセージをスキップする',
+  'setting.email.default.skip_failed_message.help' => 'この設定により、以前に失敗したメールの送信をスキップできるようになります。これにより、再試行を避け、全体的なメール処理の効率が向上します。',
+  'email.enable_one_click_unsubscribe_headers' => 'ワンクリックでの退会ヘッダーを有効にする',
+  'setting.email.enable_one_click_unsubscribe_headers.help' => 'この設定により、メールにワンクリックでの退会ヘッダーが追加され、受信者が簡単に将来のメッセージをオプトアウトできるようになります。',
+  'list.default.double_optin' => '新しいリストのデフォルトダブルオプトイン',
+  'setting.list.default.double_optin.help' => 'この設定により、新しいメールリストの作成時にデフォルトでダブルオプトインが有効になります。これにより、すべての新しいサブスクライバーが二重確認ステップを通じてサブスクリプションを確認し、リストの品質が向上します。'
 ) ?>
