@@ -129,7 +129,7 @@ class InMemoryRateTrackerTest extends TestCase
 
         $exceeded = false;
 
-        $rateExceedingCallback = function($msg) use (&$exceeded) {
+        $rateExceedingCallback = function ($msg) use (&$exceeded) {
             $exceeded = true;
         };
 
