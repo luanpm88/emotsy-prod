@@ -51,7 +51,7 @@ class AthenaEvs implements VerifyInterface, BulkVerifyInterface
 
         $response = $this->getClient()->getBatchStatus($batchId);
 
-        if ( !$response['status'] ) {
+        if (!$response['status']) {
             if ($waitCallback) {
                 $waitCallback(json_encode($response));
             }

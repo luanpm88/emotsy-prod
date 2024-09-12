@@ -40,7 +40,7 @@ class AccountController extends Controller
             // Update user attributes
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
-            
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);

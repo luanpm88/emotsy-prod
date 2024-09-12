@@ -8,12 +8,13 @@ use Acelle\Library\DynamicRateTracker;
 use Acelle\Library\RateLimit;
 use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
-use function \Acelle\Helpers\execute_with_limits;
 use Exception;
+
+use function Acelle\Helpers\execute_with_limits;
 
 class DynamicRateTrackerTest extends TestCase
 {
-    function test_just_works()
+    public function test_just_works()
     {
         $key = 'test-dynamic-rate-tracker';
         $limits = [
@@ -46,7 +47,7 @@ class DynamicRateTrackerTest extends TestCase
         $this->assertEquals($credits, 0);
     }
 
-    function test_with_exception_with_and_without_rate_exceeding_callback()
+    public function test_with_exception_with_and_without_rate_exceeding_callback()
     {
         $key = 'test-dynamic-rate-tracker';
         $limits = [
@@ -65,7 +66,7 @@ class DynamicRateTrackerTest extends TestCase
 
         $exceeded = false;
 
-        $rateExceedingCallback = function($msg) use (&$exceeded) {
+        $rateExceedingCallback = function ($msg) use (&$exceeded) {
             $exceeded = true;
         };
 
@@ -91,7 +92,7 @@ class DynamicRateTrackerTest extends TestCase
         $tracker->count(now(), $rateExceedingCallback);
     }
 
-    function test_with_no_limits_at_all()
+    public function test_with_no_limits_at_all()
     {
         $key = 'test-dynamic-rate-tracker';
         $tracker = new DynamicRateTracker($key, $limits = []);
@@ -109,7 +110,7 @@ class DynamicRateTrackerTest extends TestCase
         $tracker->test();
     }
 
-    function test_with_multi_trackers()
+    public function test_with_multi_trackers()
     {
         $key1 = 'test-dynamic-rate-tracker-1';
         $key2 = 'test-dynamic-rate-tracker-2';
@@ -123,7 +124,7 @@ class DynamicRateTrackerTest extends TestCase
         // The idea is: tracker2 will hit rate limit
         // However, make sure tracker1 remaining credits are not counted!
         for($i = 1; $i <= 5; $i += 1) {
-            execute_with_limits([$tracker1, $tracker2], $credits = [], function() {
+            execute_with_limits([$tracker1, $tracker2], $credits = [], function () {
                 // do nothing
             });
 
@@ -138,7 +139,7 @@ class DynamicRateTrackerTest extends TestCase
         for($i = 1; $i <= 2; $i += 1) {
 
             try {
-                execute_with_limits([$tracker1, $tracker2], $credits = [], function() {
+                execute_with_limits([$tracker1, $tracker2], $credits = [], function () {
                     // do nothing
                 });
 
@@ -155,7 +156,7 @@ class DynamicRateTrackerTest extends TestCase
         }
     }
 
-    function test_with_multi_process()
+    public function test_with_multi_process()
     {
         $key = 'test-dynamic-rate-tracker';
         $limits = [
@@ -185,7 +186,7 @@ class DynamicRateTrackerTest extends TestCase
 
         while (true) {
             try {
-                execute_with_limits($rateTrackers = [$tracker], $creditsTrackers = [], function() {
+                execute_with_limits($rateTrackers = [$tracker], $creditsTrackers = [], function () {
                     // ONLY WRITE 2 lines (in total) every 30 seconds
                     $now = now()->toString();
                     $message = "{$now}: Added by ".getmypid()."\n";
@@ -197,14 +198,14 @@ class DynamicRateTrackerTest extends TestCase
             } catch (RateLimitExceeded $ex) {
                 // no problem, try again
                 echo " - Rate exceeded\n";
-                sleep(rand(1,5));
+                sleep(rand(1, 5));
             }
         }
     }
 
-    function test_reserved_by_others()
+    public function test_reserved_by_others()
     {
-    	$key = 'test-dynamic-rate-tracker';
+        $key = 'test-dynamic-rate-tracker';
         $limits = [
             new RateLimit(2, 5, 'seconds', '2 per 30 secs'),
             new RateLimit(200, 12, 'hour', '5 per 24 hours (per day)'),
@@ -216,7 +217,7 @@ class DynamicRateTrackerTest extends TestCase
         $this->assertFalse($tracker->isReservedByOthers(now()));
     }
 
-    function test_get_reserved_until_value_from_reserved_by_another_exception()
+    public function test_get_reserved_until_value_from_reserved_by_another_exception()
     {
         $until = now()->add('1 hour');
 

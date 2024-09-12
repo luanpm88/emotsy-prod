@@ -121,11 +121,13 @@ class DynamicRateTracker
 
     // Test and throw exception, do not count()
     // Used by DelayedJob
-    public function test(Carbon $now = null, $failedCallback = null) {
+    public function test(Carbon $now = null, $failedCallback = null)
+    {
         $this->doCount($now, $count = false, $failedCallback);
     }
 
-    public function count(Carbon $now = null, $failedCallback = null) {
+    public function count(Carbon $now = null, $failedCallback = null)
+    {
         $this->doCount($now, $count = true, $failedCallback);
     }
 
