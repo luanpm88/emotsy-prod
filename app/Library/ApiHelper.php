@@ -756,12 +756,14 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$force', 'description' => 'If the customer is already subscribed to a plan and force == true, terminate the existing subscription. Default: false'],
                         ['name' => '$disable_billing', 'description' => 'Activate the subscription without checking out. Default: false'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
 ' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).' \
--d api_token=' .\Auth::user()->api_token,
+-d api_token=' .\Auth::user()->api_token . ' \
+-d force=true',
                 ],
 
                 [
@@ -771,7 +773,6 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
-                        ['name' => '$force', 'description' => 'If the customer is already subscribed to a plan and force == true, terminate the existing subscription. Default: false'],
                         ['name' => '$disable_billing', 'description' => 'Activate the subscription without checking out. Default: false'],
                     ],
                     'returns' => 'Action messages in json',
