@@ -349,6 +349,14 @@ class CustomerController extends Controller
             }
         }
 
+        // force terminate if customer already has new or active subscription
+        if ($request->force == 'true') {
+            // terminate if customer already has new or active subscription
+            if ($customer->getNewOrActiveGeneralSubscription()) {
+                $customer->getNewOrActiveGeneralSubscription()->terminate();
+            }
+        }
+
         // rollback if something went wrong
         \DB::transaction(function () use ($plan, $customer, $request, $offlineGateway) {
             $subscription = $customer->assignGeneralPlan($plan);

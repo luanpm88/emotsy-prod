@@ -771,6 +771,7 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$force', 'description' => 'If the customer is already subscribed to a plan and force == true, terminate the existing subscription. Default: false'],
                         ['name' => '$disable_billing', 'description' => 'Activate the subscription without checking out. Default: false'],
                     ],
                     'returns' => 'Action messages in json',
