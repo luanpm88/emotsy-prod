@@ -53,7 +53,7 @@
     </div>
 </div>
 
-<div class="listing-form"
+<div id="CampaignSubscribersContainer" class="listing-form"
         data-url="{{ action('CampaignController@subscribersListing', $campaign->uid) }}"
         per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
     >
@@ -206,7 +206,7 @@
         </div>
     </div>
 
-    <div class="pml-table-container">
+    <div id="CampaignSubscribersList" class="pml-table-container">
 
 
     </div>
