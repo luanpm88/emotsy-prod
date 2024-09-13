@@ -30,9 +30,7 @@ class Frontend
         }
 
         // Site offline
-        if (\Acelle\Model\Setting::get('site_online') == 'false' &&
-            (isset($user) && get_tmp_quota($user->customer, 'access_when_offline') != 'yes')
-        ) {
+        if (\Acelle\Model\Setting::get('site_online') == 'false') {
             return redirect()->action('Controller@offline');
         }
 
