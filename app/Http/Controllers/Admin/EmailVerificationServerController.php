@@ -54,10 +54,10 @@ class EmailVerificationServerController extends Controller
 
         $servers = \Acelle\Model\EmailVerificationServer::search($request);
 
-        // hide athena server
-        if (\Acelle\Model\Plugin::isInstalled('acelle/athena') && \Acelle\Model\Plugin::getByName('acelle/athena')->isActive()) {
-            $servers = $servers->where('type', '!=', 'athenaevs.com');
-        }
+        // // hide athena server
+        // if (\Acelle\Model\Plugin::isInstalled('acelle/athena') && \Acelle\Model\Plugin::getByName('acelle/athena')->isActive()) {
+        //     $servers = $servers->where('type', '!=', 'athenaevs.com');
+        // }
 
         $servers = $servers->paginate($request->per_page);
 
