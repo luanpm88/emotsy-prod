@@ -21,7 +21,7 @@ class CreateTranslationPhrasesTable extends Migration
             $table->string('file');
             $table->string('key');
             $table->string('ja')->nullable();
-            
+
             $table->timestamps();
         });
     }
