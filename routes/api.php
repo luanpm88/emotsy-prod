@@ -90,4 +90,7 @@ Route::group(['namespace' => 'Api\Public', 'prefix' => 'v1'], function () {
     Route::post('email-verification/customer/find-create', 'EmailVerificationController@findOrCreateCustomer');
     Route::get('email-verification/feature-plan', 'EmailVerificationController@getFeaturePlan');
     Route::post('email-verification/subscribe', 'EmailVerificationController@subscribe');
+
+    // Plans
+    Route::get('public/plans/available', 'PlanController@availablePlans');
 });
