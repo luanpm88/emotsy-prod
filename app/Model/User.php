@@ -657,6 +657,11 @@ class User extends Authenticatable
         $customer->language_id = $language->id;
         $customer->status = 'active';
         $customer->timezone = date_default_timezone_get();
+        
+        if (!$customer->name) {
+            $customer->name = $user->email;
+        }
+
         $customer->save();
 
         // assign customer
