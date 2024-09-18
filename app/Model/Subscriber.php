@@ -924,7 +924,8 @@ class Subscriber extends Model
                     $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
 
                     foreach ($listFields as $f) {
-                        $q->orwhere("subscribers.{$f->custom_field_name}", 'LIKE', '%'.$keyword.'%');;
+                        $q->orwhere("subscribers.{$f->custom_field_name}", 'LIKE', '%'.$keyword.'%');
+                        ;
                     }
 
                 });
@@ -1211,5 +1212,30 @@ class Subscriber extends Model
             });
 
         }
+    }
+
+    /**
+     * assgin tags.
+     */
+    public static function addSubscribersTags($subscribers, $tags)
+    {
+        // make validator
+        $validator = \Validator::make([
+            'tags' => $tags,
+        ], [
+            'tags' => 'required|array',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // add tags
+        foreach ($subscribers->get() as $subscriber) {
+            $subscriber->addTags($tags);
+        }
+
+        return $validator;
     }
 }

@@ -2184,7 +2184,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 $fromEmailAddress = $this->from_email;
             }
 
-            $this->logger()->info('Setting up before send (page 1 only) for server '.$server->uid);
+            $this->logger()->info('Setting up sending server before send: '.$server->uid);
             $server->setupBeforeSend($fromEmailAddress);
             $server->getRateLimitTracker()->cleanup('24 hours');
         }

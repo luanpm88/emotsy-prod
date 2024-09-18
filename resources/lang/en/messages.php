@@ -3852,4 +3852,9 @@
   'automation.trigger.tag-based.desc' => 'Trigger the automation for your contacts if a specified tag is assigned to them',
   'automation.trigger.tag-based.intro' => 'Specify the TAGS that shall trigger the automation',
   'automation.brief-intro.tag-based' => 'Automate actions based on tag assignments',
+  'subscriber.add_tag' => 'Add tag(s)',
+  'subscribers.tag_added' => 'Subscribers\' tags were added!',
+  'subscriber.add_tag.wording' => 'Your are about to add tag(s) to <span class="font-weight-semibold">:count</span> contacts',
+  'subscriber.add_tag.choose_tags' => 'Choose one or many tags',
+  'subscriber.add_tag.loading' => 'Adding tag(s). Please wait...',
 ) ?>
