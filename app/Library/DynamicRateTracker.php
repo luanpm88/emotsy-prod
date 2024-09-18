@@ -131,7 +131,7 @@ class DynamicRateTracker
         $this->doCount($now, $count = true, $failedCallback);
     }
 
-    private function doCount(Carbon $now = null, $count = true, $failedCallback)
+    private function doCount(Carbon $now = null, $count = true, $failedCallback = null)
     {
         if (empty($this->limits)) {
             return;

@@ -5,8 +5,9 @@ namespace Acelle\Library\Exception;
 use Exception;
 use Throwable;
 use Illuminate\Support\Carbon;
+use Acelle\Library\Exception\RateLimitExceeded;
 
-class RateLimitReservedByAnotherFileSystem extends Exception
+class RateLimitReservedByAnotherFileSystem extends RateLimitExceeded
 {
     protected $reservedUntil;
 
