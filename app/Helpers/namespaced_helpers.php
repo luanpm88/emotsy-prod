@@ -671,3 +671,21 @@ function loadAppTemplate($name)
         abort(404, 'File not found');
     }
 }
+
+
+function convertPrice($amount, $fromCurrency, $toCurrency) {
+    $exchangeRates = config('exchange');
+    
+    // Check if the currencies exist in the exchange rates array
+    if (!isset($exchangeRates[$fromCurrency]) || !isset($exchangeRates[$toCurrency])) {
+        throw new Exception('Invalid currency code.');
+    }
+
+    // Convert the amount to the base currency (USD in this case)
+    $amountInUSD = $amount / $exchangeRates[$fromCurrency];
+
+    // Convert from USD to the target currency
+    $convertedAmount = $amountInUSD * $exchangeRates[$toCurrency];
+
+    return $convertedAmount;
+}
