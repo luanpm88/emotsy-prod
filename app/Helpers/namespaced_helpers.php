@@ -677,8 +677,13 @@ function convertPrice($amount, $fromCurrency, $toCurrency) {
     $exchangeRates = config('exchange');
     
     // Check if the currencies exist in the exchange rates array
-    if (!isset($exchangeRates[$fromCurrency]) || !isset($exchangeRates[$toCurrency])) {
-        throw new Exception('Invalid currency code.');
+    if (!isset($exchangeRates[$fromCurrency])) {
+        throw new Exception('From currency code ['.$fromCurrency.'] is not in exchange rates array. Update the exchange rates.');
+    }
+
+    // Check if the currencies exist in the exchange rates array
+    if (!isset($exchangeRates[$toCurrency])) {
+        throw new Exception('To currency code ['.$toCurrency.'] is not in exchange rates array. Update the exchange rates.');
     }
 
     // Convert the amount to the base currency (USD in this case)
