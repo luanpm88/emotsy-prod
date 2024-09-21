@@ -77,7 +77,7 @@ class VerifySubscriber extends Base
                 ];
             }
 
-            execute_with_limits($rateTrackers, $creditTrackers, function () {
+            execute_with_limits($rateTrackers, $pool = null, $creditTrackers, function () {
                 $this->subscriber->verify($this->server);
             });
         } catch (RateLimitReservedByAnotherFileSystem $ex) {

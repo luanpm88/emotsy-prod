@@ -13,6 +13,9 @@ use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
 use Exception;
 use Carbon\Carbon;
+use Acelle\Library\RouletteWheel;
+
+use function Acelle\Helpers\with_rate_limits;
 
 class Delay implements ShouldQueue
 {
@@ -40,17 +43,19 @@ class Delay implements ShouldQueue
     protected $wait;
     protected $campaign;
     protected $rateTrackers;
+    protected $servers;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($wait, $campaign, $rateTrackers)
+    public function __construct($wait, $campaign, array $rateTrackers, RouletteWheel $servers)
     {
         $this->wait = $wait;
         $this->campaign = $campaign;
         $this->rateTrackers = $rateTrackers;
+        $this->servers = $servers;
     }
 
     /**
@@ -78,23 +83,17 @@ class Delay implements ShouldQueue
         }
 
         try {
-            foreach ($this->rateTrackers as $rateTracker) {
-                $now = now();
-                $rateTracker->test($now);
-            }
+            $this->campaign->logger()->info("Evaluating limit trackers to decide whether or not to resume");
+
+            // Throw Exception here
+            with_rate_limits($this->rateTrackers, $this->servers, $rateExceededCallback = null, $creditCounted = [], $testMode = true);
 
             // if everything is okie, then just release this job, remove delay flag
             // The JOB_TYPE_DISPATCH_AND_SEND_MESSAGES batch will trigger the THEN callback and continue
-
             $this->campaign->setDelayFlag(null);
-            $this->campaign->logger()->warning('RESUME Campaign');
+            $this->campaign->logger()->warning('Evaluation ok, RESUMING Campaign...');
 
             return;
-
-        } catch (RateLimitReservedByAnotherFileSystem $ex) {
-            // simply release the job, waiting for a process from a filesystem that owns the reservation to check it
-            $this->campaign->logger()->warning('Release Delay job, wait for a process from the filesystem that owns the reservation to try it again');
-            $this->release(1);
 
         } catch (RateLimitExceeded $ex) {
 
@@ -110,8 +109,7 @@ class Delay implements ShouldQueue
                 return $info;
             });
 
-            $this->campaign->logger()->warning(sprintf("Delay for [ANOTHER] %s seconds! %s", $this->wait, $ex->getMessage()));
-
+            $this->campaign->logger()->warning(sprintf("Resume evaludation failed! Delay for another %s seconds! %s", $this->wait, $ex->getMessage()));
             $this->release($this->wait);
 
         } catch (Throwable $ex) {

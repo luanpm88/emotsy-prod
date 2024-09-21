@@ -20,6 +20,7 @@ use Exception;
 use Throwable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use Acelle\Library\RouletteWheel;
 
 use function Acelle\Helpers\execute_with_limits;
 
@@ -48,22 +49,25 @@ class SendMessage implements ShouldQueue
     // public $tries = 1;
 
     protected $subscriber;
-    protected $server;
+    protected $servers;
     protected $campaign;
     protected $subscription;
     protected $triggerId;
     protected $stopOnError = false;
+
+    protected $selectedServer;
+    protected $msgId;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($campaign, Subscriber $subscriber, SendingServer $server, Subscription $subscription = null, $triggerId = null)
+    public function __construct($campaign, Subscriber $subscriber, RouletteWheel $servers, Subscription $subscription = null, $triggerId = null)
     {
         $this->campaign = $campaign;
         $this->subscriber = $subscriber;
-        $this->server = $server;
+        $this->servers = $servers;
         $this->subscription = $subscription;
         $this->triggerId = $triggerId;
     }
@@ -125,25 +129,16 @@ class SendMessage implements ShouldQueue
         try {
             // debug
             $startAt = Carbon::now()->getTimestampMs();
+            $email = $this->subscriber->getEmail(); // important: $email must be here, in case code in Exception block needs it
 
             $logger = $this->campaign->logger();
-            $email = $this->subscriber->getEmail();
-
-            // Prepare the email message to send
-            // In case of an invalid email, an exception will arise at: Swift_Mime_SimpleMessage->setTo(...)
-            list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server, $fromCache = true);
-
-            // Start sending
-            $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
+            $serverRateLimitTracker = null;
 
             // Rate limit trackers
             // Here we have 2 rate trackers
             // 1. Sending server sending rate tracker with 1 or more limits.
             // 2. Subscription (plan) sending speed limits with 1 or more limits.
-            $rateTrackers = [
-                $this->server->getRateLimitTracker(),
-            ];
-
+            $rateTrackers = [];
             $creditTrackers = [];
 
             if (!is_null($this->subscription)) {
@@ -158,13 +153,23 @@ class SendMessage implements ShouldQueue
             // END DEBUG
 
             $startGettingLock = Carbon::now()->getTimestampMs();
-            execute_with_limits($rateTrackers, $creditTrackers, function () use ($startAt, $message, $logger, $msgId, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock) {
+            execute_with_limits($rateTrackers, $this->servers, $creditTrackers, function ($selectedServer) use ($startAt, $logger, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock) {
 
                 $getLockAt = Carbon::now()->getTimestampMs();
                 $getLockDiff = ($getLockAt - $startAt) / 1000;
                 $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
-
                 $logger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
+
+                // Assign it here in order to retrieve it elsewhere
+                $this->selectedServer = $selectedServer;
+                $logger->info(sprintf('Server %s (id %s) selected', $this->selectedServer->name, $this->selectedServer->id));
+
+                // Prepare the email message to send
+                // In case of an invalid email, an exception will arise at: Swift_Mime_SimpleMessage->setTo(...)
+                list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->selectedServer, $fromCache = true);
+
+                // Assign it here in order to retrieve it elsewhere
+                $this->msgId = $msgId;
 
                 if (!$this->subscriber->isSubscribed()) {
                     // @important: do not throw an exception here
@@ -184,9 +189,9 @@ class SendMessage implements ShouldQueue
                     }
 
                     if (config('custom.dryrun') || $this->campaign->name == '_DRYRUN') {
-                        $sent = $this->server->dryrun($message);
+                        $sent = $this->selectedServer->dryrun($message);
                     } else {
-                        $sent = $this->server->send($message);
+                        $sent = $this->selectedServer->send($message);
                     }
                 }
 
@@ -195,13 +200,13 @@ class SendMessage implements ShouldQueue
                 $logger->info(sprintf('Sent to %s', $email));
 
                 // Log successful shot
-                $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
+                $this->campaign->trackMessage($sent, $this->subscriber, $this->selectedServer, $this->msgId, $this->triggerId);
 
                 // Callback after a job is done
                 $this->afterSuccess();
 
                 // Done, written to tracking_logs table
-                $logger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
+                $logger->info(sprintf('Done with %s [Server "%s"]', $email, $this->selectedServer->name));
             });
 
             // Debug
@@ -278,7 +283,7 @@ class SendMessage implements ShouldQueue
 
             if ($this->batch()) {
                 $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
-                with_cache_lock($lockKey, function () use ($ex, $rateTrackers, $logger, $email) {
+                with_cache_lock($lockKey, function () use ($ex, $logger, $email, $rateTrackers) {
                     // Use DELAY FLAG to make sure that only ONE DelayJob is created
                     $delayFlag = $this->campaign->checkDelayFlag();
 
@@ -295,7 +300,16 @@ class SendMessage implements ShouldQueue
 
                         // set delay flag to true
                         $this->campaign->setDelayFlag(true);
-                        $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers);
+
+                        // Important: here we have
+                        // - Subscription/plan rate limit
+                        // - All possible servers rate limit
+                        // Delay job will evaluate all these conditions before resuming the campaign
+
+                        // Reset is required
+                        $this->servers->reset();
+
+                        $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers, $this->servers);
                         $this->batch()->add($delay);
 
                         $this->campaign->debug(function ($info) use ($ex) {
@@ -338,13 +352,7 @@ class SendMessage implements ShouldQueue
             if ($this->stopOnError || $forceEndCampaign) {
                 throw new Exception($message);
             } else {
-                if (!isset($msgId)) {
-                    // Just in case there is an exception before the execution of "list($message, $msgId) = $this->campaign->prepareEmail..."
-                    // then $msgID is not available
-                    $msgId = null;
-                }
-
-                $this->campaign->trackMessage(['status' => 'failed', 'error' => $message], $this->subscriber, $this->server, $msgId, $this->triggerId);
+                $this->campaign->trackMessage(['status' => 'failed', 'error' => $message], $this->subscriber, $this->selectedServer, $this->msgId, $this->triggerId);
             }
         } finally {
             //
@@ -358,10 +366,7 @@ class SendMessage implements ShouldQueue
 
     public function handleRateLimitExceeded($email, RateLimitExceeded $ex)
     {
-        $secondsToDelay = 600;
-        $this->campaign->logger()->warning(sprintf("Delay [%s] for %s seconds (no batch): %s", $email, $secondsToDelay, $ex->getMessage()));
-        $this->release($secondsToDelay); // should be only 60 seconds
-
-        return $secondsToDelay;
+        // Nothing here
+        // For no-batch case only
     }
 }

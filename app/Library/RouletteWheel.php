@@ -26,6 +26,8 @@ class RouletteWheel
 {
     public $weights = [];
     public $elements = [];
+    public $allElements = [];
+    public $allWeights = [];
 
     // @deprecated
     public static function take($a)
@@ -74,6 +76,9 @@ class RouletteWheel
         $newElementIndex = sizeof($this->elements);
         $this->elements[$newElementIndex] = $element;
         $this->weights[$newElementIndex] = $weightValue;
+
+        $this->allWeights[$newElementIndex] = $weightValue;
+        $this->allElements[$newElementIndex] = $element;
     }
 
     public function select($takeOutOfList = false)
@@ -92,5 +97,26 @@ class RouletteWheel
         }
 
         return $selectedElement;
+    }
+
+    public function count()
+    {
+        return sizeof($this->elements);
+    }
+
+    public function getElements()
+    {
+        return $this->elements;
+    }
+
+    public function getAllElementsInclDroppedOnes()
+    {
+        return $this->allElements;
+    }
+
+    public function reset()
+    {
+        $this->elements = $this->allElements;
+        $this->weights = $this->allWeights;
     }
 }

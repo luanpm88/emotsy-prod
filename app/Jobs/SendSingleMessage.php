@@ -72,7 +72,8 @@ class SendSingleMessage extends SendMessage
 
     public function handleRateLimitExceeded($email, RateLimitExceeded $ex)
     {
-        $secondsToDelay = parent::handleRateLimitExceeded($email, $ex);
+        $secondsToDelay = 600;
+        $this->campaign->logger()->warning(sprintf("Delay [%s] for %s seconds (no batch): %s", $email, $secondsToDelay, $ex->getMessage()));
 
         $this->getAutoTrigger()->withUpdateLock(function ($trigger) use ($email, $ex, $secondsToDelay) {
             $delayNote = sprintf("Delayed for %s seconds: %s", $secondsToDelay, $ex->getMessage());
@@ -81,5 +82,8 @@ class SendSingleMessage extends SendMessage
             $action->setOption('delay_note', $delayNote);
             $action->save();
         });
+
+        $this->release($secondsToDelay); // should be only 60 seconds
+        return $secondsToDelay;
     }
 }

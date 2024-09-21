@@ -128,7 +128,7 @@ class ZeroBounce implements VerifyInterface, BulkVerifyInterface
     public function bulkSubmit(Builder $subscriberQuery): string
     {
         // Likely to throw RateLimitExceeded
-        $fileId = execute_with_limits([$this->initRateLimitTracker()], $creditTrackers = [], function () use ($subscriberQuery) {
+        $fileId = execute_with_limits([$this->initRateLimitTracker()], $pool = null, $creditTrackers = [], function () use ($subscriberQuery) {
             return $this->submit($subscriberQuery);
         });
 

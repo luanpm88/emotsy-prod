@@ -210,7 +210,7 @@ class DynamicRateTracker
         // Set local
         $this->updateReservedCredits($until, $credits);
 
-        // Set remote reservef flag
+        // Set remote reserved flag
         Cache::put($this->resourceKey, $until->timestamp);
     }
 
