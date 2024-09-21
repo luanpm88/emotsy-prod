@@ -83,7 +83,7 @@ class RouletteWheel
 
     public function select($takeOutOfList = false)
     {
-        $selectedIndex = static::take( $this->weights );
+        $selectedIndex = static::take($this->weights);
 
         if (is_null($selectedIndex)) {
             return;

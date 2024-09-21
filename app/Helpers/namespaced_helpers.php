@@ -722,9 +722,10 @@ function loadAppTemplate($name)
 }
 
 
-function convertPrice($amount, $fromCurrency, $toCurrency) {
+function convertPrice($amount, $fromCurrency, $toCurrency)
+{
     $exchangeRates = config('exchange');
-    
+
     // Check if the currencies exist in the exchange rates array
     if (!isset($exchangeRates[$fromCurrency])) {
         throw new Exception('From currency code ['.$fromCurrency.'] is not in exchange rates array. Update the exchange rates.');
