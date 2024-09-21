@@ -2183,7 +2183,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         return $this->serversPool;
-
     }
 
     /**

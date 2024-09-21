@@ -6,19 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 use Validator;
 use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;
-use Acelle\Library\Tool;
-use Acelle\Library\StringHelper;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Acelle\Jobs\SendSingleMessage;
 use Acelle\Library\Traits\HasTemplate;
 use Acelle\Library\Traits\HasUid;
-use Exception;
 use Acelle\Library\Contracts\HasTemplateInterface;
 use Acelle\Library\HtmlHandler\InjectTrackingPixel;
 use Acelle\Library\HtmlHandler\TransformUrl;
+use Acelle\Library\RouletteWheel;
 use Closure;
+use Exception;
 
 class Email extends Model implements HasTemplateInterface
 {
@@ -28,6 +27,8 @@ class Email extends Model implements HasTemplateInterface
     // Email types
     public const TYPE_REGULAR = 'regular';
     public const TYPE_PLAIN_TEXT = 'plain-text';
+
+    protected $serversPool = null;
 
     /**
      * The attributes that are mass assignable.
@@ -187,9 +188,31 @@ class Email extends Model implements HasTemplateInterface
         }
     }
 
+    public function getServersPool()
+    {
+        if (is_null($this->serversPool)) {
+            // Available sending servers
+            $serversAndWeights = $this->automation->mailList->getSendingServers();
+            // No sending server ready for delivery
+            if (empty($serversAndWeights)) {
+                throw new Exception('No sending server avaialble');
+            }
+
+            $pool = new RouletteWheel();
+            foreach ($serversAndWeights as $serverId => $weight) {
+                $server = SendingServer::find($serverId)->mapType();
+                $pool->add($server, $weight);
+            }
+
+            $this->serversPool = $pool;
+        }
+
+        return $this->serversPool;
+    }
+
     public function queueDeliverTo($subscriber, $autoTriggerId, $actionId, $queue)
     {
-        $server = $subscriber->mailList->pickSendingServer();
+        $serversPool = $this->getServersPool();
 
         if (config('app.saas')) {
             $subscription = $this->automation->customer->getCurrentActiveGeneralSubscription();
@@ -200,7 +223,7 @@ class Email extends Model implements HasTemplateInterface
         $job = new SendSingleMessage(
             $this,
             $subscriber,
-            $server,
+            $serversPool,
             $subscription,
             $autoTriggerId,
             $actionId,

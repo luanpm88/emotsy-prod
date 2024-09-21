@@ -7,6 +7,7 @@ use Acelle\Model\Subscriber;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscription;
 use Acelle\Library\Exception\RateLimitExceeded;
+use Acelle\Library\RouletteWheel;
 use Throwable;
 
 class SendSingleMessage extends SendMessage
@@ -16,9 +17,9 @@ class SendSingleMessage extends SendMessage
     protected $actionId;
     protected $action;
 
-    public function __construct($campaign, Subscriber $subscriber, SendingServer $server, Subscription $subscription = null, $autoTriggerId = null, $actionId = null)
+    public function __construct($campaign, Subscriber $subscriber, RouletteWheel $servers, Subscription $subscription = null, $autoTriggerId = null, $actionId = null)
     {
-        parent::__construct($campaign, $subscriber, $server, $subscription);
+        parent::__construct($campaign, $subscriber, $servers, $subscription);
 
         $this->autoTriggerId = $autoTriggerId;
         $this->actionId = $actionId;
