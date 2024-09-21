@@ -895,4 +895,14 @@ class Invoice extends Model
     {
         return format_price($this->total(), $this->currency->format);
     }
+
+    public function getAmountInCurrencyCode($currencyCode)
+    {
+        if ($currencyCode == $this->currency->code) {
+            return $this->total();
+        }
+
+        // convert amount
+        return \Acelle\Helpers\convertPrice($this->total(), $this->currency->code, $currencyCode);
+    }
 }
