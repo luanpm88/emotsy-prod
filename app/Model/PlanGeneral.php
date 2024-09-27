@@ -1051,7 +1051,6 @@ class PlanGeneral extends Plan implements PlanInterface
             'frequency_unit' => 'month',
             'trial_amount' => '0',
             'trial_unit' => 'day',
-            'vat' => 0
         ]);
 
         $plan->status = self::STATUS_INACTIVE;
