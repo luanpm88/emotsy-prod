@@ -737,14 +737,14 @@ class Template extends Model
             }
 
             if (parse_url($url, PHP_URL_HOST) === false) {
-                // false ==> if url is invalid
-                // null ==> if url does not have host information
+                // false ==> if url is invalid (whereas null ==> if url does not have host information)
                 return $url;
             }
 
             if (StringHelper::isTag($url)) {
                 return $url;
             }
+
 
             if (!is_null(parse_url($url, PHP_URL_HOST))) {
                 // url is with a host like "http://" or "//"

@@ -299,6 +299,10 @@ class TrackingDomain extends Model
         return $this->verify();
     }
 
+    // If tracking domain is of type HOST
+    // ==> https://tracking.com/aHR0cHM6Ly9sb2NhbGhvc3QvcC9hSFIwY0RvdkwyZHZiMmRzWlM1amIyMC9jbGljay9UVk5IU1VR
+    // Or, if tracking domain is of type DNS
+    // ==> https://tracking.com/p/aHR0cDovL2dvb2dsZS5jb20/click/TVNHSUQ
     public function buildTrackingUrl(string $url)
     {
         if (!parse_url($url, PHP_URL_HOST)) {
@@ -314,7 +318,12 @@ class TrackingDomain extends Model
             // Replace the default host with the tracking host
             // For example, transform "http://myapp.com/foo" to "http://tracking.com/aHR0cDovL215YXBwLmNvbS9mb28"
             $encodedUrl = StringHelper::base64UrlEncode($url);
-            $final = join_url($this->getUrl(), $encodedUrl);
+
+            // Old way:
+            // $final = join_url($this->getUrl(), $encodedUrl);
+
+            // Better way:
+            $final = join_url($this->getUrl(), "?" . http_build_query(['t' => $encodedUrl]));
         } elseif ($this->verification_method == self::VERIFICATION_METHOD_CNAME) {
             // Replace the default host with the tracking host
             // For example, transform "http://myapp.com/foo" to "http://tracking.com/foo"
