@@ -7,6 +7,7 @@ use Acelle\Model\Subscriber;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscription;
 use Acelle\Library\Exception\RateLimitExceeded;
+use Acelle\Library\RouletteWheel;
 use Throwable;
 
 class SendSingleMessage extends SendMessage
@@ -16,9 +17,9 @@ class SendSingleMessage extends SendMessage
     protected $actionId;
     protected $action;
 
-    public function __construct($campaign, Subscriber $subscriber, SendingServer $server, Subscription $subscription = null, $autoTriggerId = null, $actionId = null)
+    public function __construct($campaign, Subscriber $subscriber, RouletteWheel $servers, Subscription $subscription = null, $autoTriggerId = null, $actionId = null)
     {
-        parent::__construct($campaign, $subscriber, $server, $subscription);
+        parent::__construct($campaign, $subscriber, $servers, $subscription);
 
         $this->autoTriggerId = $autoTriggerId;
         $this->actionId = $actionId;
@@ -72,7 +73,8 @@ class SendSingleMessage extends SendMessage
 
     public function handleRateLimitExceeded($email, RateLimitExceeded $ex)
     {
-        $secondsToDelay = parent::handleRateLimitExceeded($email, $ex);
+        $secondsToDelay = 600;
+        $this->campaign->logger()->warning(sprintf("Delay [%s] for %s seconds (no batch): %s", $email, $secondsToDelay, $ex->getMessage()));
 
         $this->getAutoTrigger()->withUpdateLock(function ($trigger) use ($email, $ex, $secondsToDelay) {
             $delayNote = sprintf("Delayed for %s seconds: %s", $secondsToDelay, $ex->getMessage());
@@ -81,5 +83,8 @@ class SendSingleMessage extends SendMessage
             $action->setOption('delay_note', $delayNote);
             $action->save();
         });
+
+        $this->release($secondsToDelay); // should be only 60 seconds
+        return $secondsToDelay;
     }
 }

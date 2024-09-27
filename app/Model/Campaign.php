@@ -61,6 +61,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public const DELIVERY_STATUS_BOUNCED = 'bounced';
     public const DELIVERY_STATUS_FEEDBACK = 'feedback';
 
+    protected $serversPool = null;
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -2120,16 +2122,16 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public function prepare()
     {
         // Available sending servers
-        $sendingServersPool = $this->defaultMailList->getSendingServers();
+        $servers = $this->defaultMailList->getSendingServers();
 
         // No sending server ready for delivery
-        if (empty($sendingServersPool)) {
+        if (empty($servers)) {
             throw new Exception('No sending server avaialble');
         }
 
         // @important: make sure this function is called twice at the same time.
         // Otherwise, concurrency issue might happen: "Campaign stopped. Timeout getting lock #Lockable for: /home/app/public_html/storage/locks/sending-server-sns-6512d..."
-        foreach ($sendingServersPool as $serverId => $fitness) {
+        foreach ($servers as $serverId => $fitness) {
             $server = SendingServer::find($serverId)->mapType();
 
             if ($this->useSendingServerFromEmailAddress()) {
@@ -2161,22 +2163,36 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
     }
 
+    public function getServersPool()
+    {
+        if (is_null($this->serversPool)) {
+            // Available sending servers
+            $serversAndWeights = $this->defaultMailList->getSendingServers();
+            // No sending server ready for delivery
+            if (empty($serversAndWeights)) {
+                throw new Exception('No sending server avaialble');
+            }
+
+            $pool = new RouletteWheel();
+            foreach ($serversAndWeights as $serverId => $weight) {
+                $server = SendingServer::find($serverId)->mapType();
+                $pool->add($server, $weight);
+            }
+
+            $this->serversPool = $pool;
+        }
+
+        return $this->serversPool;
+    }
+
     /**
      * Load delivery jobs from a list of IDs
      */
     public function loadDeliveryJobsByIds(Closure $callback, int $page, array $listOfIds)
     {
-        // Available sending servers
-        $sendingServersPool = $this->defaultMailList->getSendingServers();
-
-        // No sending server ready for delivery
-        if (empty($sendingServersPool)) {
-            throw new Exception('No sending server avaialble');
-        }
-
         // Query subscribers
         $subscribers = $this->subscribersToSend()->whereIn('subscribers.id', $listOfIds)->get();
-
+        $serverPool = $this->getServersPool();
         if (sizeof($subscribers) == 0) {
             $this->logger()->info("Page {$page}, no contacts in this page");
         } else {
@@ -2184,18 +2200,14 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         foreach ($subscribers as $subscriber) {
-            $serverId = RouletteWheel::take($sendingServersPool);
-            $server = SendingServer::find($serverId)->mapType();
-
             // Dispatch delivery job and return it to the LoadCampaign to monitor
-
             if (config('app.saas')) {
                 $subscription = $this->customer->getCurrentActiveGeneralSubscription();
             } else {
                 $subscription = null;
             }
 
-            $job = new SendMessage($this, $subscriber, $server, $subscription);
+            $job = new SendMessage($this, $subscriber, $serverPool, $subscription);
             $stopOnError = $this->stopOnError();
             // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
             $job->setStopOnError($stopOnError);

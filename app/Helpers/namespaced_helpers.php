@@ -379,13 +379,14 @@ function load_env_from_file($path)
  * Roll back credits if failure
  * @important: only rollback credits count. Do not rollback rate count because
  *             even a failed operation attempt is counted
- * Parameter 1: \Acelle\Library\RateTracker[]
+ *
+ * Parameter 1: \Acelle\Library\RateTracker[]       : all trackers in this array must be available (AND condition)
+ * Parameter 2: \Acelle\Library\RateTrackersPool[]  : at least one of the tracker in this array is available
  * Parameter 2: \Acelle\Library\CreditTracker[]
  */
-function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure $task = null, $rateExceedingCallback = null)
+function execute_with_limits(array $rateTrackers, $rateTrackersPool, array $creditTrackers, Closure $task = null, $rateExceedingCallback = null)
 {
     // Remove null tracker from array
-    $rateTrackers = array_values(array_filter($rateTrackers));
     $creditTrackers = array_values(array_filter($creditTrackers));
 
     // Check credits first, because credits can be rolled back
@@ -409,31 +410,8 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         throw $exception;
     }
 
-    $rateCounted = [];
-    try {
-        // Might throw \Acelle\Library\Exception\RateLimitExceeded
-        foreach ($rateTrackers as $rateTracker) {
-            $rateTracker->count(now(), $rateExceedingCallback);
-            $rateCounted[] = $rateTracker;
-        }
-    } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {
-        // Credits must not be counted
-        foreach ($creditCounted as $creditTracker) {
-            $creditTracker->rollback();
-        }
-
-        // In case of more than one rate trackers
-        // + Tracker A works just fine
-        // + Tracker B works just fine
-        // + Tracker C fails
-        // Rollback tracker A and B
-        foreach ($rateCounted as $rateTracker) {
-            $rateTracker->rollback();
-        }
-
-        // This exception is safely handled in SendMessage ( i.e. catch (RateLimitExceeded $ex) )
-        throw $exception;
-    }
+    // Evaluate Rate
+    $selectedServer = \Acelle\Helpers\with_rate_limits($rateTrackers, $rateTrackersPool, $rateExceedingCallback, $creditCounted, $testMode = false);
 
     try {
         // Return null if task is null, i.e. count credits but do not actually do anything
@@ -442,7 +420,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         }
 
         // Execute task
-        return $task();
+        return $task($selectedServer);
     } catch (\Throwable $exception) {
         // Rollback 2: when task error
         // @important: rate is counted even for a failed operation attempt
@@ -455,6 +433,77 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         throw $exception;
     }
 }
+
+function with_rate_limits(array $rateTrackers, $rateTrackersPool, $rateExceedingCallback, $creditCounted = [], $testMode = false)
+{
+    $rateTrackers = array_values(array_filter($rateTrackers));
+    $rateCounted = [];
+    $selectedServer = null;
+
+    try {
+        foreach ($rateTrackers as $t) {
+            if ($testMode == true) {
+                $t->test(now(), $rateExceedingCallback);
+            } else {
+                $t->count(now(), $rateExceedingCallback);
+            }
+
+            $rateCounted[] = $t;
+        }
+
+        // pool
+        do {
+            if (is_null($rateTrackersPool)) {
+                // Okay, don't care about it, just move forward
+                break;
+            }
+
+            $selectedServer = $rateTrackersPool->select($removeFromList = true);
+
+            if (is_null($selectedServer)) {
+                throw new \Acelle\Library\Exception\RateLimitExceeded('No server available to pickup in pool!');
+            }
+
+            $serverRateLimitTracker = $selectedServer->getRateLimitTracker();
+
+            try {
+                if ($testMode == true) {
+                    $serverRateLimitTracker->test(now());
+                } else {
+                    $serverRateLimitTracker->count(now());
+                }
+
+                $passed = true;
+            } catch(\Acelle\Library\Exception\RateLimitExceeded $rateException) {
+                $passed = false;
+            }
+        } while(false == $passed);
+
+        // MUST return
+        return $selectedServer;
+
+    } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {
+        if (!$testMode) {
+            // Credits must not be counted
+            foreach ($creditCounted as $creditTracker) {
+                $creditTracker->rollback();
+            }
+
+            // In case of more than one rate trackers
+            // + Tracker A works just fine
+            // + Tracker B works just fine
+            // + Tracker C fails
+            // Rollback tracker A and B
+            foreach ($rateCounted as $rateTracker) {
+                $rateTracker->rollback();
+            }
+        }
+
+        // This exception is safely handled in SendMessage ( i.e. catch (RateLimitExceeded $ex) )
+        throw $exception;
+    }
+}
+
 
 // Load the list of connection settings from config/sharding.php and set default Laravel database connection
 function set_userdb_connection($name)
@@ -673,9 +722,10 @@ function loadAppTemplate($name)
 }
 
 
-function convertPrice($amount, $fromCurrency, $toCurrency) {
+function convertPrice($amount, $fromCurrency, $toCurrency)
+{
     $exchangeRates = config('exchange');
-    
+
     // Check if the currencies exist in the exchange rates array
     if (!isset($exchangeRates[$fromCurrency])) {
         throw new Exception('From currency code ['.$fromCurrency.'] is not in exchange rates array. Update the exchange rates.');
