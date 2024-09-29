@@ -41,6 +41,7 @@ class UpdateMailListJob extends Base implements ShouldBeUnique
      *
      * @return string
      */
+    public $uniqueFor = 60 * 24 * 30; // 1 month
     public function uniqueId()
     {
         return $this->list->id;

@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Acelle\Model\Automation2;
 
-class UpdateAutomation extends Base
+class UpdateAutomation extends Base implements ShouldBeUnique
 {
     protected $automation;
 
@@ -40,6 +40,7 @@ class UpdateAutomation extends Base
      *
      * @return string
      */
+    public $uniqueFor = 60 * 24 * 30; // 1 month
     public function uniqueId()
     {
         return $this->automation->id;

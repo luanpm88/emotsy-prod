@@ -27,6 +27,7 @@ class UpdateUserJob extends Base implements ShouldBeUnique
         }
     }
 
+    public $uniqueFor = 60 * 24 * 30; // 1 month
     public function uniqueId()
     {
         return $this->customer->id;

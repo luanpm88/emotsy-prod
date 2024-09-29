@@ -1928,7 +1928,7 @@ class CampaignController extends Controller
         // Hack: update users cache before going to campaign setting page (where there is list cache data)
         $job = new \Acelle\Jobs\UpdateUserJob($request->user()->customer);
         $job->onqueue('high');
-        safe_dispatch($job);
+        dispatch($job);
 
         return view('campaigns.select_type');
     }

@@ -1301,7 +1301,7 @@ class Automation2 extends Model
 
     public function updateCacheInBackground()
     {
-        safe_dispatch(new \Acelle\Jobs\UpdateAutomation($this));
+        dispatch(new \Acelle\Jobs\UpdateAutomation($this));
     }
 
     public function setLastError($message)

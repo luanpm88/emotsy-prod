@@ -2,7 +2,7 @@
 
 namespace Acelle\Jobs;
 
-class UpdateSegmentJob extends Base
+class UpdateSegmentJob extends Base implements ShouldBeUnique
 {
     protected $segment;
 
@@ -26,6 +26,7 @@ class UpdateSegmentJob extends Base
      *
      * @return string
      */
+    public $uniqueFor = 60 * 24 * 30; // 1 month
     public function uniqueId()
     {
         return $this->segment->id;
