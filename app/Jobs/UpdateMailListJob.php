@@ -5,6 +5,7 @@ namespace Acelle\Jobs;
 use Acelle\Model\MailList;
 use Acelle\Model\Blacklist;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Support\Facades\Cache;
 
 class UpdateMailListJob extends Base implements ShouldBeUnique
 {
@@ -41,7 +42,7 @@ class UpdateMailListJob extends Base implements ShouldBeUnique
      *
      * @return string
      */
-    public $uniqueFor = 60 * 24 * 30; // 1 month
+    public $uniqueFor = 1200; // 20 minutes
     public function uniqueId()
     {
         return $this->list->id;

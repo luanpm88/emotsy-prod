@@ -8,6 +8,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Acelle\Model\Automation2;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Support\Facades\Cache;
 
 class UpdateAutomation extends Base implements ShouldBeUnique
 {
@@ -40,9 +42,14 @@ class UpdateAutomation extends Base implements ShouldBeUnique
      *
      * @return string
      */
-    public $uniqueFor = 60 * 24 * 30; // 1 month
+    public $uniqueFor = 1200; // 20 minutes
     public function uniqueId()
     {
         return $this->automation->id;
+    }
+
+    public function uniqueVia()
+    {
+        return Cache::driver('file');
     }
 }
