@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Cache;
 class UpdateCampaignJob extends Base implements ShouldBeUnique
 {
     protected $campaign;
-    public $uniqueFor = 3600;
 
     public function __construct($campaign)
     {
