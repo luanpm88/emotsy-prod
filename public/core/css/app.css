@@ -6245,7 +6245,7 @@ h1, h1 {
     position: absolute;
     border-radius: 100%;
     left: 3px;
-    top: 4px;
+    top: 3px;
     /* transform: translateY(19997px); */
 }
 .checkbox-right-switch .styled[type="radio"]:checked ~ .check-symbol:after {
@@ -8472,4 +8472,11 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
 }
 .phrase-list .inline-editable.mode-view.mode-focus {
     border-style: dashed;
+}
+.radio-label {
+    color: #000;
+    transition: all 0.2s ease-in-out;
+}
+.radio-label:hover {
+    cursor: pointer;
 }
