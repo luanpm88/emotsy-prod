@@ -8476,7 +8476,9 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
 .radio-label {
     color: #000;
     transition: all 0.2s ease-in-out;
+    border-bottom: dashed 1px transparent;
 }
 .radio-label:hover {
     cursor: pointer;
+    border-bottom: dashed 1px #aaa;
 }

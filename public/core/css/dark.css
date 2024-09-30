@@ -906,3 +906,6 @@ body.mode-dark input.disabled {
 body.mode-dark .radio-label {
     color: rgba(255,255,255,0.9)!important;
 }
+.radio-label:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
