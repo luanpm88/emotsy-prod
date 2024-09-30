@@ -130,8 +130,10 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
         if ($this->use_default_sending_server_from_email) {
             $rules['from_email'] = 'nullable|email';
+            $rules['reply_to'] = 'nullable|email';
         } else {
             $rules['from_email'] = 'required|email';
+            $rules['reply_to'] = 'required|email';
         }
 
         // tracking domain

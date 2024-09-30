@@ -685,4 +685,11 @@ class SendingServerController extends Controller
         $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
     }
+
+    public function fromEmails(Request $request)
+    {
+        return view('sending_servers.fromEmails', [
+            'sendingServers' => $request->user()->customer->sendingServers,
+        ]);
+    }
 }

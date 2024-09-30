@@ -3493,4 +3493,15 @@
   'setting.email.enable_one_click_unsubscribe_headers.help' => 'This setting enables one-click unsubscribe headers in emails, allowing recipients to easily opt out of future messages.',
   'list.default.double_optin' => 'Default double opt-in for new lists',
   'setting.list.default.double_optin.help' => 'This setting allows the system to skip sending emails that have previously failed. It helps avoid repeated attempts and improves overall email processing efficiency.',
+  'use_default_sending_server_from_email.wording' => '<i>You have more than one sending servers available.</i><br>
+    Notice that different sending servers have different set of accepted FROM EMAIL address identity.
+    As a result, you should either use only ONE sending server or have the 
+    campaign use each sending server\'s defalt FROM EMAIL address
+  ',
+  'use_default_sending_server_from_email.title' => 'Use sending server\'s default FROM EMAIL address.',
+  'use_default_sending_server_from_email.intro' => 'Click <a href="javascript:;" data-control="show-from-emails">here</a> to see the list of available sending servers and there defalt FROM email addresses',
+  'use_fixed_from_email.title' => 'Use a fixed FROM EMAIL address.',
+  'use_fixed_from_email.intro' => '*When choosing this option, make sure ALL your sending servers accept this identity.',
+  'below_are_from_emails' => 'Below are the :number sending servers available to send your campaign messages, with their defalt FROM EMAIL addresses',
+  'default_from_email.not_set' => 'Default from email not set',
 ) ?>

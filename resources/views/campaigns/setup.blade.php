@@ -69,52 +69,135 @@
 					'rules' => $rules,
 					'help_class' => 'campaign'
 				])
-				
-				<div class="hiddable-box" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
+
+				@if (Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() &&
+					Auth::user()->customer->sendingServers()->count()
+				)
+					<p>{!! trans('messages.use_default_sending_server_from_email.wording') !!}</p>
+
+					<div>
+						<div data-control="option-container" class="d-flex">
+							<div class="me-3">
+								<input {{ $campaign->use_default_sending_server_from_email ? 'checked' : '' }} type="radio" name="use_default_sending_server_from_email" value="1" id="udesfe_true" class="" />
+							</div>
+							<div>
+								<label for="udesfe_true" class="fw-semibold">{{ trans('messages.use_default_sending_server_from_email.title') }}</label>
+								<p>
+									{!! trans('messages.use_default_sending_server_from_email.intro') !!}
+								</p>
+							</div>
+						</div>
+						<div data-control="option-container" class="d-flex">
+							<div class="me-3">
+								<input {{ !$campaign->use_default_sending_server_from_email ? 'checked' : '' }} type="radio" name="use_default_sending_server_from_email" value="0" id="udesfe_false" class="" />
+							</div>
+							<div>
+								<label for="udesfe_false" class="fw-semibold">{{ trans('messages.use_fixed_from_email.title') }}</label>
+								<p class="text-danger">
+									{!! trans('messages.use_fixed_from_email.intro') !!}
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<script>
+						$(() => {
+							new FromEmailOption({
+								fixedBox: $('[data-control="from-reply"]'),
+								radios: $('[name="use_default_sending_server_from_email"]'),
+								showFromEmailsButton: $('[data-control="show-from-emails"]'),
+							});
+						})
+
+						var FromEmailOption = class {
+							constructor(options) {
+								this.fixedBox = options.fixedBox;
+								this.radios = options.radios;
+								this.showFromEmailsButton = options.showFromEmailsButton;
+								this.fromEmailsPopup = new Popup({
+									url: '{{ action('SendingServerController@fromEmails') }}',
+								});
+
+								this.check();
+
+								this.events();
+							}
+
+							getCheckedRadio() {
+								return this.radios.filter(':checked');
+							}
+
+							getUseSendingServerValue() {
+								return this.getCheckedRadio().val();
+							}
+
+							check() {
+								this.radios.closest('[data-control="option-container"]').addClass('text-muted2');
+								this.getCheckedRadio().closest('[data-control="option-container"]').removeClass('text-muted2');
+
+								if(this.getUseSendingServerValue() == '1') {
+									//
+									this.fixedBox.hide();
+								} else {
+									//
+									this.fixedBox.show();
+								}
+							}
+
+							showFromEmails() {
+								this.fromEmailsPopup.load();
+							}
+
+							events() {
+								this.radios.on('change', () => {
+									this.check();
+								});
+
+								this.showFromEmailsButton.on('click', () => {
+									this.showFromEmails();
+								});
+							}
+						}
+					</script>
+				@else
+					<input type="hidden" name="use_default_sending_server_from_email" value="0" />
+				@endif
+
+				<div data-control="from-reply">
+					<div class="hiddable-box" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
+						@include('helpers.form_control', [
+							'type' => 'autofill',
+							'id' => 'sender_from_input',
+							'name' => 'from_email',
+							'label' => trans('messages.from_email'),
+							'value' => $campaign->from_email,
+							'rules' => $rules,
+							'help_class' => 'campaign',
+							'url' => action('SenderController@dropbox'),
+							'empty' => trans('messages.sender.dropbox.empty'),
+							'error' => trans('messages.sender.dropbox.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
+								'sender_link' => action('SendingDomainController@index'),
+							]),
+							'header' => trans('messages.verified_senders'),
+						])
+					</div>
+
 					@include('helpers.form_control', [
 						'type' => 'autofill',
-						'id' => 'sender_from_input',
-						'name' => 'from_email',
-						'label' => trans('messages.from_email'),
-						'value' => $campaign->from_email,
-						'rules' => $rules,
-						'help_class' => 'campaign',
+						'id' => 'sender_reply_to_input',
+						'name' => 'reply_to',
+						'label' => trans('messages.reply_to'),
+						'value' => $campaign->reply_to,
 						'url' => action('SenderController@dropbox'),
+						'rules' => $campaign->rules(),
+						'help_class' => 'campaign',
 						'empty' => trans('messages.sender.dropbox.empty'),
-						'error' => trans('messages.sender.dropbox.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
+						'error' => trans('messages.sender.dropbox.reply.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
 							'sender_link' => action('SendingDomainController@index'),
 						]),
 						'header' => trans('messages.verified_senders'),
 					])
 				</div>
-
-                <div class="hide">
-                    @include('helpers.form_control', ['type' => 'checkbox2',
-                        'name' => 'use_default_sending_server_from_email',
-                        'label' => trans('messages.use_sending_server_default_value'),
-                        'value' => $campaign->use_default_sending_server_from_email,
-                        'rules' => $rules,
-                        'help_class' => 'campaign',
-                        'options' => ['0','1'],
-                    ])
-                </div>
-												
-				@include('helpers.form_control', [
-                    'type' => 'autofill',
-                    'id' => 'sender_reply_to_input',
-                    'name' => 'reply_to',
-                    'label' => trans('messages.reply_to'),
-                    'value' => $campaign->reply_to,
-                    'url' => action('SenderController@dropbox'),
-                    'rules' => $campaign->rules(),
-                    'help_class' => 'campaign',
-                    'empty' => trans('messages.sender.dropbox.empty'),
-                    'error' => trans('messages.sender.dropbox.reply.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
-                        'sender_link' => action('SendingDomainController@index'),
-                    ]),
-                    'header' => trans('messages.verified_senders'),
-                ])
-				
 			</div>
 			<div class="col-md-6 segments-select-box">
 				<div class="form-group checkbox-right-switch">

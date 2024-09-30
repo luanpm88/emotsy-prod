@@ -37,6 +37,7 @@ class Email extends Model implements HasTemplateInterface
      */
     protected $fillable = [
         'subject', 'from_email', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id', 'skip_failed_message',
+        'use_default_sending_server_from_email',
     ];
 
     // Cached HTML content
@@ -115,6 +116,14 @@ class Email extends Model implements HasTemplateInterface
             'from_email' => 'required|email',
             'from_name' => 'required',
         ];
+
+        if ($this->use_default_sending_server_from_email) {
+            $rules['from_email'] = 'nullable|email';
+            $rules['reply_to'] = 'nullable|email';
+        } else {
+            $rules['from_email'] = 'required|email';
+            $rules['reply_to'] = 'required|email';
+        }
 
         // tracking domain
         if (isset($request) && $request->custom_tracking_domain) {
