@@ -28,7 +28,7 @@ class CampaignUpdatedListener
     public function handle(CampaignUpdated $event)
     {
         if ($event->delayed) {
-            safe_dispatch(new UpdateCampaignJob($event->campaign));
+            dispatch(new UpdateCampaignJob($event->campaign));
         } else {
             // @deprecated
             $event->campaign->updateCache();

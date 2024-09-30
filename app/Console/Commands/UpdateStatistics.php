@@ -48,12 +48,12 @@ class UpdateStatistics extends Command
 
             $campaigns = $customer->campaigns;
             foreach ($campaigns as $campaign) {
-                safe_dispatch(new \Acelle\Jobs\UpdateCampaignJob($campaign));
+                dispatch(new \Acelle\Jobs\UpdateCampaignJob($campaign));
             }
 
             $lists = $customer->lists;
             foreach ($lists as $list) {
-                safe_dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
+                dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
             }
         }
 
