@@ -82,18 +82,18 @@
 							</label>
 							<div>
 								<label for="udesfe_true" class="mb-1 radio-label">{{ trans('messages.use_default_sending_server_from_email.title') }}</label>
-								<p class="text-muted">
+								<p class="text-muted" data-control="desc">
 									{!! trans('messages.use_default_sending_server_from_email.intro') !!}
 								</p>
 							</div>
 						</div>
-						<div data-control="option-container" class="d-flex">
+						<div data-control="option-container" class="d-flex mt-2">
 							<label class="me-3">
 								<input {{ !$campaign->use_default_sending_server_from_email ? 'checked' : '' }} type="radio" name="use_default_sending_server_from_email" value="0" id="udesfe_false" class="styled" />
 							</label>
 							<div>
 								<label for="udesfe_false" class="mb-1 radio-label">{{ trans('messages.use_fixed_from_email.title') }}</label>
-								<p class="text-muted">
+								<p class="text-muted" data-control="desc">
 									{!! trans('messages.use_fixed_from_email.intro') !!}
 								</p>
 							</div>
@@ -132,15 +132,15 @@
 							}
 
 							check() {
-								// this.radios.closest('[data-control="option-container"]').addClass('text-muted2');
-								// this.getCheckedRadio().closest('[data-control="option-container"]').removeClass('text-muted2');
+								this.radios.closest('[data-control="option-container"]').find('[data-control="desc"]').hide();
+								this.getCheckedRadio().closest('[data-control="option-container"]').find('[data-control="desc"]').fadeIn();
 
 								if(this.getUseSendingServerValue() == '1') {
 									//
-									this.fixedBox.hide();
+									this.fixedBox.fadeOut();
 								} else {
 									//
-									this.fixedBox.show();
+									this.fixedBox.fadeIn();
 								}
 							}
 
