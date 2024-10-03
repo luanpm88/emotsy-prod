@@ -54,7 +54,11 @@
         <div class="stats-box px-4" style="width:33.3%">
             <div class="d-flex">
                 <h3 class="mb-1">
-                    {{ number_with_delimiter(Auth::user()->customer->getCurrentActiveSubscription()->getVerifyEmailCreditTracker()->getRemainingCredits()) }}
+                    @if (Auth::user()->customer->getCurrentActiveSubscription()->getVerifyEmailCreditTracker()->getRemainingCredits() == '-1')
+                        {{ trans('messages.unlimited') }}
+                    @else
+                        {{ number_with_delimiter(Auth::user()->customer->getCurrentActiveSubscription()->getVerifyEmailCreditTracker()->getRemainingCredits()) }}
+                    @endif
                 </h3>
             </div>
             
@@ -62,7 +66,7 @@
             <div class="text-start">
                 <a data-action="buy-credit"
                     href="{{ action("EmailVerificationPlanController@select") }}" role="button"
-                    class="btn btn-primary text-nowrap mt-2"
+                    class="btn btn-primary text-nowrap mt-2 @if (Auth::user()->customer->getCurrentActiveSubscription()->getVerifyEmailCreditTracker()->getRemainingCredits() == '-1') disabled pe-none @endif"
                 >
                     <span class="material-symbols-rounded me-1">add</span> {{ trans('messages.email_verification_plan.buy_more') }}
                 </a>
