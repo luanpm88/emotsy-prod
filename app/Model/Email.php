@@ -437,4 +437,9 @@ class Email extends Model implements HasTemplateInterface
     {
         // @important: temporary function to avoid Automation bug
     }
+
+    public function useSendingServerDefaultFromEmailAddress()
+    {
+        return $this->use_default_sending_server_from_email == true;
+    }
 }

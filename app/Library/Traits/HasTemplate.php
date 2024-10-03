@@ -205,7 +205,7 @@ trait HasTemplate
      *
      * @return MIME text message
      */
-    public function prepareEmail($subscriber, $server = null, $fromCache = false, $expiresInSeconds = 600)
+    public function prepareEmail($subscriber, $server, $fromCache = false, $expiresInSeconds = 600)
     {
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
@@ -225,14 +225,24 @@ trait HasTemplate
         }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
-        if (!is_null($server) && $server->allowCustomReturnPath()) {
+        if ($server->allowCustomReturnPath()) {
             $returnPath = $server->getVerp($subscriber->email);
             if ($returnPath) {
                 $message->setReturnPath($returnPath);
             }
         }
         $message->setSubject($this->getSubject($subscriber, $msgId));
-        $message->setFrom(array($this->from_email => $this->from_name));
+
+        if ($this->useSendingServerDefaultFromEmailAddress()) {
+            if (is_null($server->default_from_email)) {
+                throw new Exception("Your campaign was set up to use sending servers' default FROM EMAIL address. However, server `{$server->name}` does not have a DEFAULT FROM EMAIL value");
+            }
+
+            $message->setFrom($server->default_from_email);
+        } else {
+            $message->setFrom(array($this->from_email => $this->from_name));
+        }
+
         $message->setTo($subscriber->email);
 
         if (!empty(Setting::get('campaign.bcc'))) {

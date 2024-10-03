@@ -59,6 +59,9 @@ trait HasCache
         foreach ($cacheIndex as $key => $callback) {
             $this->putCache($key, $callback());
         }
+
+        $this->updated_at = now();
+        $this->save();
     }
 
     public function clearCache()
