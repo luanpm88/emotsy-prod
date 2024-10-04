@@ -5878,7 +5878,7 @@ table.table-log tr th {
 .tox .tox-statusbar {
   background: transparent!important;
 }
-.tox .tox-edit-area__iframe {
+body:not(.mode-dark) .tox .tox-edit-area__iframe {
   background: transparent!important;
 }
 .tox-tinymce {
