@@ -645,7 +645,7 @@ class ApiHelper
                     'uri' => '/api/v1/customers/by-email/{email}',
                     'description' => 'Get information about a specific customer',
                     'parameters' => [
-                        ['name' => '$uid', 'description' => 'Customer\'s email'],
+                        ['name' => '$email', 'description' => 'Customer\'s email'],
                     ],
                     'returns' => 'Customer information in json (profile, contact, sunscriptions,... )',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
