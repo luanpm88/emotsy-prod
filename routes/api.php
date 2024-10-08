@@ -57,6 +57,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('plans', 'PlanController');
 
     // Customer
+    Route::get('customers/by-email/{email}', 'CustomerController@findByEmail');
     Route::post('customers/{uid}/subscription/update', 'CustomerController@subscriptionUpdate');
     Route::post('customers/{uid}/change-plan/{plan_uid}', 'CustomerController@changePlan');
     Route::match(['get','post'], 'login-token', 'CustomerController@loginToken');

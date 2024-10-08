@@ -635,7 +635,21 @@ class ApiHelper
                     ],
                     'returns' => 'Customer information in json (profile, contact, sunscriptions,... )',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@update", '-ID-')).' \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@show", '-ID-')).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+
+                [
+                    'view' => 'backend',
+                    'method' => 'GET',
+                    'uri' => '/api/v1/customers/by-email/{email}',
+                    'description' => 'Get information about a specific customer',
+                    'parameters' => [
+                        ['name' => '$email', 'description' => 'Customer\'s email'],
+                    ],
+                    'returns' => 'Customer information in json (profile, contact, sunscriptions,... )',
+                    'example' => 'curl -X GET -H "accept:application/json" -G \
+' .str_replace('-EMAIL-', '<redbold>{email}</redbold>', action("Api\CustomerController@findByEmail", '-EMAIL-')).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 

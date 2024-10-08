@@ -537,4 +537,67 @@ class CustomerController extends Controller
             return \Response::json(array('status' => 0, 'message' => $e->getMessage()), 500);
         }
     }
+
+    public function findByEmail($email)
+    {
+        $user = \Auth::guard('api')->user();
+
+        $u = \Acelle\Model\User::whereEmail($email)->first();
+
+        // check if item exists
+        if (!$u) {
+            return \Response::json(array('message' => 'Customer not found by email: '. $email), 404);
+        }
+
+        $customer = $u->customer;
+
+        // authorize
+        if (!$user->can('read', $customer)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        // Customer info
+        $result = [
+            'uid' => $customer->uid,
+            'first_name' => $customer->user->first_name,
+            'last_name' => $customer->user->last_name,
+            'timezone' => $customer->timezone,
+            'status' => $customer->status,
+        ];
+
+        // Customer contact
+        $contact = $customer->contact;
+        if ($contact) {
+            $result['contact'] = [
+                'first_name' => $contact->first_name,
+                'last_name' => $contact->last_name,
+                'company' => $contact->company,
+                'address_1' => $contact->address_1,
+                'address_2' => $contact->address_2,
+                'country' => $contact->countryName(),
+                'state' => $contact->state,
+                'city' => $contact->city,
+                'zip' => $contact->zip,
+                'phone' => $contact->phone,
+                'url' => $contact->url,
+                'email' => $contact->email,
+            ];
+        }
+
+        // Current subscription
+        $subscription = $customer->getNewOrActiveGeneralSubscription();
+        if ($subscription) {
+            $result['current_subscription'] = [
+                'uid' => $subscription->uid,
+                'plan_name' => $subscription->plan_name,
+                'price' => $subscription->price,
+                'currency_code' => $subscription->currency_code,
+                'start_at' => $subscription->start_at,
+                'end_at' => $subscription->end_at,
+                'status' => $subscription->status,
+            ];
+        }
+
+        return \Response::json(['customer' => $result], 200);
+    }
 }
