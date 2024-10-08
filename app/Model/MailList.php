@@ -1205,6 +1205,8 @@ class MailList extends Model
      */
     public function import($file, $mapArray = null, $progressCallback = null, $invalidRecordCallback = null)
     {
+        $importBatchId = uniqid();
+
         // Read CSV files, keep original headers' case (do not lowercase or uppercase)
         list($headers, $total, $results) = $this->readCsv($file);
 
@@ -1236,7 +1238,7 @@ class MailList extends Model
 
         try {
             // process by batches
-            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
+            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($importBatchId, $map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
 
                 // Throw exception if no room left
                 if (!$this->customer->user->can('addMoreSubscribers', [ $this, $more = 1 ])) {
@@ -1376,7 +1378,6 @@ class MailList extends Model
                  * STEP 3: INSERT NEW RECORDS
                  *
                  */
-                $importBatchId = uniqid();
 
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
@@ -1442,18 +1443,18 @@ class MailList extends Model
 
                 // Trigger updating related campaigns cache
                 $this->updateCachedInfo();
-
-                try {
-                    // blacklist new emails (if any)
-                    Blacklist::doBlacklist($this->customer);
-                } catch (\Exception $ex) {
-                    // It might cause "Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction"
-                    // Temporarily ignore this issue
-                }
-
-                // Event MailListImported($list)
-                MailListImported::dispatch($this, $importBatchId);
             });
+
+            try {
+                // blacklist new emails (if any)
+                Blacklist::doBlacklist($this->customer);
+            } catch (\Exception $ex) {
+                // It might cause "Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction"
+                // Temporarily ignore this issue
+            }
+
+            // Event MailListImported($list)
+            MailListImported::dispatch($this, $importBatchId);
 
             if (!is_null($progressCallback)) {
                 $progressCallback($processed, $total, $failed, $message = "Processed: {$processed}/{$total} records, skipped: {$failed} records.");
