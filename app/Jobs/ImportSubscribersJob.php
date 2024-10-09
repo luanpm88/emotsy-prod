@@ -19,7 +19,7 @@ class ImportSubscribersJob extends Base
      *
      */
 
-    public $timeout = 7200;
+    public $timeout = 259200; // 3 days
 
     // @todo this should better be a constant
     protected $list;
