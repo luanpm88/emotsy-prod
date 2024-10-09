@@ -111,7 +111,7 @@ class VerifiedEmailsClient
         ]);
 
         if (!isset($data) || !isset($data[0]) || !isset($data[0]['verify'])) {
-            throw new \Exception("Something went wrong. Reponse: " . json_decode($data));
+            throw new \Exception("Something went wrong. Reponse: " . json_encode($data));
         }
 
         return $data[0]["response"];
@@ -124,7 +124,7 @@ class VerifiedEmailsClient
         ]);
 
         if (!isset($data) || !isset($data[0]) || !isset($data[0]['verify'])) {
-            throw new \Exception("Something went wrong. Reponse: " . json_decode($data));
+            throw new \Exception("Something went wrong. Reponse: " . json_encode($data));
         }
 
         //
