@@ -99,6 +99,10 @@ return [
             'id' => 'athenaevs.com',
             'name' => 'AthenaEVS',
             'fields' => [ 'api_key' ],
+        ], [
+            'id' => 'verifiedemails.io',
+            'name' => 'VerifiedEmails.io',
+            'fields' => [ 'api_token' ],
         ]
 
     ]

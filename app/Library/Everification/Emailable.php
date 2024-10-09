@@ -156,7 +156,7 @@ class Emailable implements VerifyInterface, BulkVerifyInterface
     private function getVerificationStatus($emailRaw)
     {
         if (!array_key_exists('state', $emailRaw)) {
-            throw new Exception('The "state" value is not found: '.json_encode($raw['Result']));
+            throw new Exception('The "state" value is not found: '.json_encode($emailRaw['Result']));
         }
 
         if (!array_key_exists($emailRaw['state'], $this->map)) {

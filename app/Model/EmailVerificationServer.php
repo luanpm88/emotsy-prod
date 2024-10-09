@@ -23,6 +23,7 @@ use Acelle\Library\Everification\EmailListValidation;
 use Acelle\Library\Everification\MyEmailVerifier;
 use Acelle\Library\Everification\Bouncify;
 use Acelle\Library\Everification\AthenaEvs;
+use Acelle\Library\Everification\VerifiedEmails;
 
 class EmailVerificationServer extends Model
 {
@@ -94,6 +95,11 @@ class EmailVerificationServer extends Model
             case 'athenaevs.com':
                 $apiKey = $this->getOptions()['api_key'];
                 $this->service = new AthenaEvs($apiKey);
+                return $this->service;
+                
+            case 'verifiedemails.io':
+                $apiToken = $this->getOptions()['api_token'];
+                $this->service = new VerifiedEmails($apiToken);
                 return $this->service;
 
             default:
