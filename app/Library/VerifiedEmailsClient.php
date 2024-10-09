@@ -73,10 +73,6 @@ class VerifiedEmailsClient
             // Decode the JSON response if necessary
             $data = json_decode($body, true);
 
-            if (isset($data['code']) && $data['code'] == 100) {
-                throw new \Exception("Failed to authenticate!");
-            }
-
             // Output the data
             return [$statusCode, $data];
         } catch (\GuzzleHttp\Exception\ClientException $e) {
@@ -114,6 +110,10 @@ class VerifiedEmailsClient
             'verify' => $email,
         ]);
 
+        if (!isset($data) || !isset($data[0]) || !isset($data[0]['verify'])) {
+            throw new \Exception("Something went wrong. Reponse: " . json_decode($data));
+        }
+
         return $data[0]["response"];
     }
 
@@ -122,6 +122,10 @@ class VerifiedEmailsClient
         list($statusCode, $data) = $this->makeRequest('GET', '', [
             'verify' => implode(',', $emails),
         ]);
+
+        if (!isset($data) || !isset($data[0]) || !isset($data[0]['verify'])) {
+            throw new \Exception("Something went wrong. Reponse: " . json_decode($data));
+        }
 
         //
         $batchId = uniqid();
