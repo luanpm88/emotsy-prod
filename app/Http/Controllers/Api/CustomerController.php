@@ -229,8 +229,9 @@ class CustomerController extends Controller
                 'plan_name' => $subscription->plan_name,
                 'price' => $subscription->price,
                 'currency_code' => $subscription->currency_code,
-                'start_at' => $subscription->start_at,
-                'end_at' => $subscription->end_at,
+                'current_period_ends_at' => $subscription->current_period_ends_at,
+                'cancelled_at' => $subscription->cancelled_at,
+                'terminated_at' => $subscription->terminated_at,
                 'status' => $subscription->status,
             ];
         }
