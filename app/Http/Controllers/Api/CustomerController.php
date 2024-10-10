@@ -227,7 +227,6 @@ class CustomerController extends Controller
             $result['current_subscription'] = [
                 'uid' => $subscription->uid,
                 'plan_name' => $subscription->plan ? $subscription->plan->name : null,
-                'currency_code' => $subscription->currency_code,
                 'current_period_ends_at' => $subscription->current_period_ends_at,
                 'cancelled_at' => $subscription->cancelled_at,
                 'terminated_at' => $subscription->terminated_at,
@@ -590,7 +589,6 @@ class CustomerController extends Controller
             $result['current_subscription'] = [
                 'uid' => $subscription->uid,
                 'plan_name' => $subscription->plan ? $subscription->plan->name : null,
-                'currency_code' => $subscription->currency_code,
                 'current_period_ends_at' => $subscription->current_period_ends_at,
                 'cancelled_at' => $subscription->cancelled_at,
                 'terminated_at' => $subscription->terminated_at,
