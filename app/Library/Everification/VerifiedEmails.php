@@ -6,93 +6,114 @@ use Exception;
 use Acelle\Library\Contracts\VerifyInterface;
 use Acelle\Library\Contracts\BulkVerifyInterface;
 use Illuminate\Database\Eloquent\Builder;
-use Acelle\Library\VerifiedEmailsClient as Client;
+use GuzzleHttp\Client as GuzzleClient;
 use Closure;
 
-class VerifiedEmails implements VerifyInterface, BulkVerifyInterface
+class VerifiedEmails implements VerifyInterface
 {
+    protected $username;
     protected $apiToken;
+    protected $enpoint;
+    protected $client;
 
     protected $map = [
-        'Yes' => 'deliverable',
-        'No' => 'undeliverable',
-        'Risky' => 'risky',
+        'Valid' => 'deliverable',
+        'Invalid' => 'undeliverable',
+        'Catch All' => 'risky',
         'Unknown' => 'unknown',
     ];
 
-    public function __construct($apiToken)
+    const DEFAULT_ENPOINT = 'https://verifiedemails.io/api/v';
+
+    public function __construct($username, $apiToken)
     {
+        $this->username = $username;
         $this->apiToken = $apiToken;
-    }
-
-    public function getClient()
-    {
-        return new Client($this->apiToken);
-    }
-
-    public function getCredits(): ?int
-    {
-        $response = $this->getClient()->getCredits();
-
-        return $response;
-    }
-
-    public function verify($email)
-    {
-        $response = $this->getClient()->verify($email);
-
-        return [$this->map[$response['safetosend']], (string) json_encode($response)];
-    }
-
-    public function bulkSubmit(Builder $subscriberQuery): string
-    {
-        $response = $this->getClient()->batchVerify($subscriberQuery->pluck('email')->toArray());
-
-        $batchId = $response['batch_id'];
-
-        return $batchId;
-    }
-
-    public function bulkCheck(string $batchId, Closure $doneCallback, Closure $waitCallback): bool
-    {
-
-        $response = $this->getClient()->getBatchStatus($batchId);
-
-        if (!$response['status']) {
-            if ($waitCallback) {
-                $waitCallback(json_encode($response));
-            }
-
-            return false;
-        } else {
-            // fetch results
-            $response = $this->getClient()->getBatchResult($batchId);
-
-            foreach($response as $emailRaw) {
-                $email = $emailRaw["email"];
-                $status = $this->map[$emailRaw['status']];
-                $doneCallback($email, $status, json_encode($emailRaw));
-            }
-
-            return true;
-        }
-
-        return false;
+        $this->enpoint = static::DEFAULT_ENPOINT;
     }
 
     public function isBulkVerifySupported(): bool
     {
-        return true;
+        return false;
     }
 
-
-    public function getServiceName(): string
+    private function getClient()
     {
-        return 'VerifiedEmails.io';
+        if (!$this->client) {
+            $this->client = new GuzzleClient([
+                'base_uri' => $this->enpoint,
+                'verify' => false,
+                'headers' => [],
+            ]);
+        }
+
+        return $this->client;
     }
 
-    public function getServiceUrl(): string
+    private function makeRequest($method, $uri, $params = [])
     {
-        return 'https://verifiedemails.io';
+        $client = $this->getClient();
+
+        // API key
+        $params = array_merge($params, [
+            // 'user' => 'iamanantgupta',
+            // 'api_token' => '6fb6f064a046350710e04617', // $this->apiToken,
+            'user' => $this->username,
+            'api_token' => $this->apiToken,
+        ]);
+
+        //
+        try {
+            $options = [
+                // 'headers' => [
+                //     'Authorization' => "Bearer {$this->apiKey}",
+                //     'Accept' => 'application/json',
+                // ],
+            ];
+
+            // If the method is POST, add form_params
+            if (strtoupper($method) == 'POST') {
+                $options['form_params'] = $params;
+            } else if (strtoupper($method) == 'GET') {
+                $options['query'] = $params;
+            }
+
+            $response = $client->request($method, $uri, $options);
+
+            // Get the status code of the response
+            $statusCode = $response->getStatusCode();
+
+            // Get the response body
+            $body = $response->getBody();
+
+            // Decode the JSON response if necessary
+            $data = json_decode($body, true);
+
+            // Output the data
+            return $data;
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            // // Handle client exceptions
+            throw new \Exception($e->getResponse()->getBody()->getContents());
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            // // Handle request exceptions
+            throw new \Exception($e->getResponse()->getBody()->getContents());
+        } catch (Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
+
+    public function verify($email)
+    {
+        $data = $this->makeRequest('GET', '', [
+            'verify' => $email,
+        ]);
+
+        if (!isset($data) || !isset($data[0]) || !isset($data[0]['verify']) || !isset($data[0]['response'])) {
+            throw new \Exception("Something went wrong. Reponse: " . json_encode($data));
+        }
+
+        return [$this->map[$data[0]["response"]['status']], (string) json_encode($data[0]["response"])];
+    }
+
+    
 }

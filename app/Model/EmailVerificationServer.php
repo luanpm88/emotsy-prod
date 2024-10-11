@@ -98,8 +98,9 @@ class EmailVerificationServer extends Model
                 return $this->service;
                 
             case 'verifiedemails.io':
+                $username = $this->getOptions()['username'];
                 $apiToken = $this->getOptions()['api_token'];
-                $this->service = new VerifiedEmails($apiToken);
+                $this->service = new VerifiedEmails($username, $apiToken);
                 return $this->service;
 
             default:

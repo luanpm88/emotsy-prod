@@ -102,7 +102,7 @@ return [
         ], [
             'id' => 'verifiedemails.io',
             'name' => 'VerifiedEmails.io',
-            'fields' => [ 'api_token' ],
+            'fields' => [ 'username', 'api_token' ],
         ]
 
     ]
