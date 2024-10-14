@@ -1015,26 +1015,28 @@
         },
         {
             "name": "deeplcom/deepl-php",
-            "version": "v1.1.0",
+            "version": "v1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DeepLcom/deepl-php.git",
-                "reference": "bb6ab74e3d90a543d7effd5ee2578d450a744c12"
+                "reference": "b235af7647418ac74275e70476eff3b84f6c0ecc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeepLcom/deepl-php/zipball/bb6ab74e3d90a543d7effd5ee2578d450a744c12",
-                "reference": "bb6ab74e3d90a543d7effd5ee2578d450a744c12",
+                "url": "https://api.github.com/repos/DeepLcom/deepl-php/zipball/b235af7647418ac74275e70476eff3b84f6c0ecc",
+                "reference": "b235af7647418ac74275e70476eff3b84f6c0ecc",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "php": ">=7.3.0"
+                "php": ">=7.3.0",
+                "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3",
+                "php-mock/php-mock-phpunit": "^2.6",
                 "phpunit/phpunit": "^9",
                 "ramsey/uuid": "^4.2",
                 "squizlabs/php_codesniffer": "^3.3"
@@ -1064,9 +1066,9 @@
             ],
             "support": {
                 "issues": "https://github.com/DeepLcom/deepl-php/issues",
-                "source": "https://github.com/DeepLcom/deepl-php/tree/v1.1.0"
+                "source": "https://github.com/DeepLcom/deepl-php/tree/v1.4.0"
             },
-            "time": "2022-09-28T08:44:58+00:00"
+            "time": "2023-05-24T07:52:25+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
