@@ -3347,6 +3347,7 @@
   'verification.finish' => 'La verificación por correo electrónico finalizó correctamente',
   'verification.reset' => 'Los datos de verificación de correo electrónico se eliminaron correctamente',
   'verification.title.email_verification' => 'Email verificación',
+  'verification.username' => 'Username',
   'verification.wording.deliverable' => 'La direccion de correo :email fue verificada con exito en :at',
   'verification.wording.risky_or_unknown' => 'La direccion de correo :email ha sido verificada en :at. el resultado es :result',
   'verification.wording.undeliverable' => ':email NO es una dirección de correo electrónico válida. Por favor considere eliminar esta dirección de su lista',

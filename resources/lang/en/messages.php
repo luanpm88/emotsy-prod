@@ -3351,6 +3351,7 @@
   'verification.finish' => 'Email verification finished successfully',
   'verification.reset' => 'Email verification data was successfully deleted',
   'verification.title.email_verification' => 'Email verification',
+  'verification.username' => 'Username',
   'verification.wording.deliverable' => 'The email address :email was successfully verified at :at',
   'verification.wording.risky_or_unknown' => 'The email address :email was verified at :at. Verification result is :result',
   'verification.wording.undeliverable' => ':email is NOT a valid email address. Please consider removing it address from your list',
@@ -3504,5 +3505,4 @@
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'your_subscription' => 'Your subscription',
   'zip_postal_code' => 'Zip / Postal code',
-  'verification.username' => 'Username',
 ) ?>

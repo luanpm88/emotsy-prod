@@ -3348,6 +3348,7 @@
   'verification.finish' => 'A verificação do Email foi concluída com sucesso',
   'verification.reset' => 'Os dados de verificação de Email foram eliminados com sucesso',
   'verification.title.email_verification' => 'Verificação de Email',
+  'verification.username' => 'Username',
   'verification.wording.deliverable' => 'O endereço de Email :email foi verificado com sucesso em :at',
   'verification.wording.risky_or_unknown' => 'O endereço de Email :email foi verificado em :at. O resultado da verificação é :result',
   'verification.wording.undeliverable' => ':email NÃO é um endereço de Email válido. Considere remover o endereço da sua lista',

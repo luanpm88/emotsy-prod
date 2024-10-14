@@ -3348,6 +3348,7 @@
   'verification.finish' => 'E-Mail-Überprüfung erfolgreich beendet',
   'verification.reset' => 'E-Mail-Überprüfungsdaten wurden erfolgreich gelöscht',
   'verification.title.email_verification' => 'E-Mail-Überprüfung',
+  'verification.username' => 'Username',
   'verification.wording.deliverable' => 'Die E-Mail-Adresse :email wurde geprüft am:at',
   'verification.wording.risky_or_unknown' => 'Die E-Mail-Adresse :email wurde geprüft um :at. Verifizierungsergebnis ist :result',
   'verification.wording.undeliverable' => ':email ist keine gültige E-Mail-Adresse. Bitte entfernen Sie diese Adresse aus Ihrer Liste',

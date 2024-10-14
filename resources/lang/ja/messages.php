@@ -3327,6 +3327,7 @@
   'verification.finish' => 'メールの確認が正常に終了しました',
   'verification.reset' => 'メール確認データは正常に削除されました',
   'verification.title.email_verification' => 'メール認証',
+  'verification.username' => 'ユーザー名',
   'verification.wording.deliverable' => 'メールアドレス :email は :at で正常に確認されました',
   'verification.wording.risky_or_unknown' => 'メールアドレス :email は :at で確認されました。 検証結果は :result',
   'verification.wording.undeliverable' => ' :email は有効なメールアドレスではありません。 リストからアドレスを削除することを検討してください',
