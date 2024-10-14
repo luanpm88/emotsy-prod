@@ -461,7 +461,7 @@
   'automation.operation.change' => 'Change operation',
   'automation.operation.copy' => 'Copy contact',
   'automation.operation.copy.desc' => 'Copy contact to list <strong>:list_name</strong>',
-  'automation.operation.copy_contact' => 'Copy contact',
+  'automation.operation.copy_contact' => 'Copy/Move contact',
   'automation.operation.copy_contact.desc' => 'Copy or move contact to another list. You can also delete contact from your list',
   'automation.operation.delete' => 'Delete contact',
   'automation.operation.delete.desc' => 'Delete contact',
