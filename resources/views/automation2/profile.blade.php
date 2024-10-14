@@ -90,18 +90,18 @@
             
             <div class="d-flex align-items-center mt-5">
                 <h3 class="mr-auto">{{ trans('messages.automation.contact.activity_feed') }}</h3>
-                <div class="">
+                <div class="hide">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
                             <button id="btnGroupDrop1" role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.contact.all_activities') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
-                                <a class="dropdown-item" href="#">Open</a>
-                                <a class="dropdown-item" href="#">Click</a>
-                                <a class="dropdown-item" href="#">Subscribe</a>
-                                <a class="dropdown-item" href="#">Unsubscribe</a>
-                                <a class="dropdown-item" href="#">Updated</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.open') }}</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.click') }}</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.subscribe') }}</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.unsubscribe') }}</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.updated_at') }}</a>
                             </div>
                         </div>
                     </div>

@@ -83,20 +83,7 @@
                             </a>
                         </desc>
                     @else
-                        <label title="" class="text-end">
-                            <span class="text-truncate" style="max-width: 100px;margin-right:0px">
-                                @php
-                                    $latestAction = $trigger->getLatestAction() ?: $trigger->getTrigger();
-                                    $lastUpdate = $latestAction->getLastExecutedHumanReadable();
-
-                                    if (is_null($lastUpdate)) {
-                                        $lastUpdate = $trigger->created_at->diffForHumans(); // Triggered but not yet executed
-                                    }
-                                @endphp
-
-                                {{ $lastUpdate }}
-                            </span>
-                        </label>
+                        
                         <desc>{{ trans('messages.automation.last_activity') }} •
                             <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;"
                                 href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}"

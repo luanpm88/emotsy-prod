@@ -1324,4 +1324,14 @@ class Subscriber extends Model
         $intersected = array_intersect(array_map('strtolower', $this->getTags()), array_map('strtolower', $tags));
         return (!empty($intersected));
     }
+
+    public function timelines()
+    {
+        return $this->hasMany(Timeline::class);
+    }
+
+    public function readTimelines()
+    {
+        return $this->timelines;
+    }
 }
