@@ -72,6 +72,7 @@ class PlanGeneral extends Plan implements PlanInterface
         'trial_amount',
         'trial_unit',
         'own_tracking_domain_required',
+        'email_verification_credits',
     ];
 
     /**
@@ -346,13 +347,11 @@ class PlanGeneral extends Plan implements PlanInterface
             'max_file_size_upload' => '5',
             'unsubscribe_url_required' => 'no',
             'access_when_offline' => 'no',
-            //'create_sending_servers' => 'no',
             'create_sending_domains' => 'yes',
             'sending_servers_max' => '-1',
             'sending_domains_max' => '-1',
             'all_email_verification_servers' => 'yes',
             'create_email_verification_servers' => 'no',
-            'verification_credits_limit' => '10000',
             'email_verification_servers_max' => '-1',
             'list_import' => 'yes',
             'list_export' => 'yes',
@@ -758,6 +757,11 @@ class PlanGeneral extends Plan implements PlanInterface
             $this->asignOption('sending_quota_time', $limits['quota_base']);
             $this->asignOption('sending_quota_time_unit', $limits['quota_unit']);
         }
+
+        // email verification credits
+        if ($request->email_verification_credits) {
+            $this->email_verification_credits = $request->email_verification_credits;
+        }
     }
 
     /**
@@ -1055,6 +1059,9 @@ class PlanGeneral extends Plan implements PlanInterface
 
         $plan->status = self::STATUS_INACTIVE;
         $plan->type = self::TYPE_GENERAL;
+
+        //
+        $plan->email_verification_credits = 1000;
 
         return $plan;
     }
