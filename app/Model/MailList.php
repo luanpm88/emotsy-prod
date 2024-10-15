@@ -1259,7 +1259,7 @@ class MailList extends Model
                 // }
 
                 // Create a tmp table like: __tmp_subscribers(field_1, field_2, field_3, field_4, tags)
-                list($tmpTable, $emailFieldName)  = $map->createTmpTableFromMapping();
+                list($tmpTable, $tmpTableWithoutPrefix, $emailFieldName)  = $map->createTmpTableFromMapping();
 
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
@@ -1335,7 +1335,7 @@ class MailList extends Model
                  * STEP 1: INSERT FROM FILE to TMP table
                  *
                  */
-                DB::table('__tmp_subscribers')->insert($data);
+                DB::table($tmpTableWithoutPrefix)->insert($data);
                 $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.{$emailFieldName} = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
 
                 if ($newRecordCount > 0 && $insertLimit == 0) {
@@ -1442,7 +1442,7 @@ class MailList extends Model
                 }
 
                 // Cleanup
-                //DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
+                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
 
                 // Trigger updating related campaigns cache
                 $this->updateCachedInfo();
