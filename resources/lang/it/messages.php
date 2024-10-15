@@ -2559,6 +2559,7 @@
   'sending_server.intro.smtp' => 'Inviare e-mail tramite un servizio SMTP',
   'sending_server.intro.sparkpost-api' => 'Servizio e-mail di Sparkpost tramite Web API v1',
   'sending_server.intro.sparkpost-smtp' => 'Servizio e-mail di Sparkpost attraverso il protocollo SMTP',
+  'sending_server.list.messages_sent' => ':c sent',
   'sending_server.mailgun.error.host.required' => 'API region is required',
   'sending_server.quota.unlimited' => 'Illimitato',
   'sending_server.send_a_test_email' => 'Inviare un\'e-mail di prova',

@@ -2546,6 +2546,7 @@
   'sending_server.intro.smtp' => 'SMTP サービスを介して電子メールを送信する',
   'sending_server.intro.sparkpost-api' => 'Web API v1 による Sparkpost のメール サービス',
   'sending_server.intro.sparkpost-smtp' => 'SMTP プロトコルを介した Sparkpost のメール サービス',
+  'sending_server.list.messages_sent' => ':c sent',
   'sending_server.mailgun.error.host.required' => 'API リージョンが必要です',
   'sending_server.quota.unlimited' => '無制限',
   'sending_server.send_a_test_email' => 'テストメールを送信する',
