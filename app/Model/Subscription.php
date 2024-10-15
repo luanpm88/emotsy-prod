@@ -745,6 +745,10 @@ class Subscription extends Model
                 $this->getItsOnlyUnpaidChangePlanInvoice()->delete();
             }
 
+            // reset credits
+            $this->getSendEmailCreditTracker()->setCredits(0);
+            $this->getVerifyEmailCreditTracker()->setCredits(0);
+
             // set status = ended. Lưu thời điểm bị end lại trong cột cancelled_at
             $this->setCancelled();
             $this->cancelled_at = \Carbon\Carbon::now();
@@ -1055,9 +1059,32 @@ class Subscription extends Model
         if ($this->planGeneral->getOption('create_email_verification_servers') == 'yes') {
             $defaultCredits = InMemoryCreditTracker::UNLIMITED;
         } else {
-            $defaultCredits = (int)$this->planGeneral->getOption('verification_credits_limit');
+            $defaultCredits = (int)$this->planGeneral->email_verification_credits;
         }
 
         $this->getVerifyEmailCreditTracker()->setCredits($defaultCredits);
+    }
+
+    public function apiKey()
+    {
+        return $this->hasOne(ApiKey::class);
+    }
+
+    public function findOrCreateApiKeyForAcelle()
+    {
+        $apiKey = $this->apiKey;
+
+        if (!$apiKey) {
+            // create API key
+            $apiKey = $this->customer->newApiKey();
+            $apiKey->name = 'Athenaevs-Plugin-' . $this->uid;
+            $apiKey->status = ApiKey::STATUS_ACTIVE;
+            $apiKey->whitelisted = '';
+            $apiKey->key = fRand(29);
+            $apiKey->subscription_id = $this->id;
+            $apiKey->save();
+        }
+
+        return $apiKey;
     }
 }
