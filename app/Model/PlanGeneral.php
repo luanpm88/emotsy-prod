@@ -407,7 +407,7 @@ class PlanGeneral extends Plan implements PlanInterface
      */
     public function getOption($name)
     {
-        return $this->getOptions()[$name];
+        return $this->getOptions()[$name] ?? null;
     }
 
     /**
