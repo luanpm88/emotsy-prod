@@ -326,9 +326,11 @@ class SubscriptionController extends Controller
             return $this->notAuthorized();
         }
 
+        $tracker = $subscription->getVerifyEmailCreditTracker();
+
         if ($request->isMethod('post')) {
             try {
-                $subscription->getVerifyEmailCreditTracker()->setCredits((int)$request->credits);
+                $tracker->setCredits((int)$request->credits);
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.subscription.replenish_verification_credits.success'),
@@ -343,7 +345,7 @@ class SubscriptionController extends Controller
 
         return view('admin.subscriptions.replenishVerificationCredits', [
             'subscription' => $subscription,
-            'remaining' => $subscription->getRemainingEmailCredits(),
+            'remaining' => $tracker->getRemainingCredits(),
         ]);
     }
 }
