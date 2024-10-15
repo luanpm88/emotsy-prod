@@ -1424,7 +1424,7 @@
   'form_templates' => 'Form templates',
   'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br> When it comes to add a form popup, users can create a new form popup from a base one',
   'form_title' => 'Form title',
-  'forms' => 'Forms',
+  'forms' => 'Forms & Popups',
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
   'forms.deleted' => ':deleted/:total form(s) were successfully deleted',
   'forms.publish.confirm' => 'You\'re about to publish :number form(s).',
