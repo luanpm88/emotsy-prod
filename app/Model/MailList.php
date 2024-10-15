@@ -1203,7 +1203,7 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import($file, $mapArray = null, $progressCallback = null, $invalidRecordCallback = null)
+    public function import($file, $mapArray = null, $update = true, $progressCallback = null, $invalidRecordCallback = null)
     {
         $importBatchId = uniqid();
 
@@ -1238,7 +1238,7 @@ class MailList extends Model
 
         try {
             // process by batches
-            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($importBatchId, $map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
+            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($importBatchId, $map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $update, $progressCallback, $invalidRecordCallback) {
 
                 // Throw exception if no room left
                 if (!$this->customer->user->can('addMoreSubscribers', [ $this, $more = 1 ])) {
@@ -1350,29 +1350,32 @@ class MailList extends Model
                  * STEP 2: UPDATE EXISTING RECORDS
                  *
                  */
-                $setFieldValuesSql = array_map(function ($name) {
-                    return "main.{$name} = tmp.{$name}";
-                }, $map->getCustomFields());
-                $setFieldValuesSql = implode(', ', $setFieldValuesSql);
-                $updateSubscribersSql = strtr(
-                    '
-                    UPDATE %subscribers main
-                    INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
-                    SET main.tags = tmp.tags,
-                        main.status = tmp.status,
-                    %set_fields_values
-                    WHERE main.mail_list_id = %list_id',
-                    [
-                        '%subscribers' => table('subscribers'),
-                        '%list_id' => $this->id,
-                        '%set_fields_values' => $setFieldValuesSql,
-                        '%tmp' => $tmpTable,
-                        '%email_field' => $emailFieldName
-                    ]
-                );
 
-                // Actually UPDATE
-                DB::statement($updateSubscribersSql);
+                if ($update) {
+                    $setFieldValuesSql = array_map(function ($name) {
+                        return "main.{$name} = tmp.{$name}";
+                    }, $map->getCustomFields());
+                    $setFieldValuesSql = implode(', ', $setFieldValuesSql);
+                    $updateSubscribersSql = strtr(
+                        '
+                        UPDATE %subscribers main
+                        INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
+                        SET main.tags = tmp.tags,
+                            main.status = tmp.status,
+                        %set_fields_values
+                        WHERE main.mail_list_id = %list_id',
+                        [
+                            '%subscribers' => table('subscribers'),
+                            '%list_id' => $this->id,
+                            '%set_fields_values' => $setFieldValuesSql,
+                            '%tmp' => $tmpTable,
+                            '%email_field' => $emailFieldName
+                        ]
+                    );
+
+                    // Actually UPDATE
+                    DB::statement($updateSubscribersSql);
+                }
 
                 /*
                  * STEP 3: INSERT NEW RECORDS
