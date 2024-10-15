@@ -2,7 +2,7 @@
 
 return [
     // Enable autossl for tracking domain
-    'autossl' => true,
+    'autossl' => env('CADDY_AUTOSSL', false),
 
     // Caddy server IP address (for pointing an A record to)
     'server_hostname' => 'cname.sendmails.io',
