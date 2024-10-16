@@ -11,12 +11,26 @@ class Timeline extends Model
 
     protected $fillable = ['automation2_id', 'subscriber_id', 'auto_trigger_id', 'activity', 'activity_type'];
 
-    public const TYPE_ADDED = 'added';
-    public const TYPE_OPT_IN = 'opt_in';
-    public const TYPE_OPEN_CAMPAIGN_EMAIL = 'open_campaign_email';
-    public const TYPE_CLICK_CAMPAIGN_EMAIL = 'open_campaign_email';
-    public const TYPE_OPEN_AUTOMATION_EMAIL = 'open_campaign_email';
-    public const TYPE_CLICK_AUTOMATION_EMAIL = 'open_campaign_email';
+    public const TYPE_ADDED_BY_CUSTOMER = 'added_by_customer';
+    public const TYPE_SIGN_UP_FORM_OPT_IN = 'sign_up_form_opt_in';
+    public const TYPE_EMBEDDED_FORM_OPT_IN = 'embedded_form_opt_in';
+    public const TYPE_POPUP_FORM_OPT_IN = 'popup_form_opt_in';
+    public const TYPE_SUBSCRIBED_BY_CUSTOMER = 'subscribed_by_customer';
+    public const TYPE_UNSUBSCRIBED_BY_CUSTOMER = 'unsubscribed_by_customer';
+    public const TYPE_API_SUBSCRIBED = 'api_subscribed';
+    public const TYPE_API_ADDED = 'api_added';
+    public const TYPE_COPIED_FROM = 'copied_from';
+    public const TYPE_COPIED_TO = 'copied_to';
+    public const TYPE_MOVED_FROM = 'moved_from';
+    public const TYPE_UNSUBSCRIBED_FROM_LIST_UNSUBSCRIBE_FORM = 'unsubscribed_from_list_unsubscribe_form';
+    // public const TYPE_OPEN_CAMPAIGN_EMAIL = 'open_campaign_email';
+    // public const TYPE_CLICK_CAMPAIGN_EMAIL = 'open_campaign_email';
+    // public const TYPE_OPEN_AUTOMATION_EMAIL = 'open_campaign_email';
+    // public const TYPE_CLICK_AUTOMATION_EMAIL = 'open_campaign_email';
+
+    // 4 - subscriber imported (để tao xử)
+    // 5 - subscriber opens a campaign email
+    // 6 - subscriber clicks a campaign link
 
     /**
      * Associations.
@@ -33,6 +47,16 @@ class Timeline extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function mailList()
+    {
+        return $this->belongsTo(MailList::class);
+    }
+
+    public function form()
+    {
+        return $this->belongsTo(Form::class);
+    }
+
     public static function newDefault($subscriber, $type)
     {
         $timeline = new static();
@@ -43,11 +67,149 @@ class Timeline extends Model
         return $timeline;
     }
 
-    public static function recordAdded($subscriber, $customer)
+    // TYPE_ADDED_BY_CUSTOMER
+    public static function recordAddedByCustomer($subscriber, $mailList, $customer)
     {
-        $timeline = static::newDefault($subscriber, static::TYPE_ADDED);
+        $timeline = static::newDefault($subscriber, static::TYPE_ADDED_BY_CUSTOMER);
 
         $timeline->customer_id = $customer->id;
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+
+    // TYPE_SIGN_UP_FORM_OPT_IN
+    public static function recordSignUpFormOptIn($subscriber, $mailList)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_SIGN_UP_FORM_OPT_IN);
+
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+
+    // TYPE_EMBEDDED_FORM_OPT_IN
+    public static function recordEmbeddedFormOptIn($subscriber, $mailList)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_EMBEDDED_FORM_OPT_IN);
+
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+
+    // TYPE_POPUP_FORM_OPT_IN
+    public static function recordPopupFormOptIn($subscriber, $form)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_POPUP_FORM_OPT_IN);
+
+        $timeline->form_id = $form->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+
+    // TYPE_API_SUBSCRIBED
+    public static function recordApiSubscribed($subscriber, $mailList, $customer)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_API_SUBSCRIBED);
+
+        $timeline->customer_id = $customer->id;
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+    
+    // TYPE_API_ADDED
+    public static function recordApiAdded($subscriber, $mailList, $customer)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_API_ADDED);
+
+        $timeline->customer_id = $customer->id;
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+
+    // TYPE_SUBSCRIBED_BY_CUSTOMER
+    public static function recordSubscribedByCustomer($subscriber, $mailList, $customer)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_SUBSCRIBED_BY_CUSTOMER);
+
+        $timeline->customer_id = $customer->id;
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+
+    // TYPE_UNSUBSCRIBED_BY_CUSTOMER
+    public static function recordUnsubscribedByCustomer($subscriber, $mailList, $customer)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_UNSUBSCRIBED_BY_CUSTOMER);
+
+        $timeline->customer_id = $customer->id;
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+
+    // TYPE_COPIED_FROM
+    public static function recordCopiedFrom($subscriber, $mailList)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_COPIED_FROM);
+
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+
+    // TYPE_COPIED_TO
+    public static function recordCopiedTo($subscriber, $mailList)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_COPIED_TO);
+
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+    
+    // TYPE_MOVED_FROM
+    public static function recordMovedFrom($subscriber, $mailList)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_MOVED_FROM);
+
+        $timeline->mail_list_id = $mailList->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+    
+    // TYPE_UNSUBSCRIBED_FROM_LIST_UNSUBSCRIBE_FORM
+    public static function recordUnsubscribedFromListUnsubscribeForm($subscriber, $mailList)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_UNSUBSCRIBED_FROM_LIST_UNSUBSCRIBE_FORM);
+
+        $timeline->mail_list_id = $mailList->id;
 
         $timeline->save();
 

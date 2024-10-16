@@ -144,8 +144,8 @@ class SubscriberController extends Controller
             return back()->withInput()->withErrors($validator);
         }
 
-        // Update timeline
-        \Acelle\Model\Timeline::recordAdded($subscriber, $customer);
+        // Timeline record
+        \Acelle\Model\Timeline::recordAddedByCustomer($subscriber, $list, $customer);
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.subscriber.created'));
@@ -328,6 +328,9 @@ class SubscriberController extends Controller
 
                 // Log
                 $subscriber->log('subscribed', $customer);
+
+                // Timeline record
+                \Acelle\Model\Timeline::recordSubscribedByCustomer($subscriber, $list, $customer);
             }
         }
 
@@ -369,6 +372,9 @@ class SubscriberController extends Controller
 
                 // Log
                 $subscriber->log('unsubscribed', $customer);
+
+                // Timeline record
+                \Acelle\Model\Timeline::recordUnsubscribedByCustomer($subscriber, $list, $customer);
             }
         }
 

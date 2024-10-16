@@ -505,7 +505,7 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function copy(MailList $list, Closure $duplicateCallback = null)
+    public function doCopy(MailList $list, Closure $duplicateCallback = null)
     {
         // find exists
         $copy = $list->subscribers()->where('email', '=', $this->email)->first();
@@ -519,7 +519,8 @@ class Subscriber extends Model
         }
 
         // Actually copy
-        $copy = self::find($this->id)->replicate();
+        $subscriber = self::find($this->id);
+        $copy = $subscriber->replicate();
         $copy->uid = uniqid();
         $copy->mail_list_id = $list->id;
         $copy->save();
@@ -532,6 +533,18 @@ class Subscriber extends Model
         return $copy;
     }
 
+    public function copy(MailList $list, Closure $duplicateCallback = null)
+    {
+        $copy = $this->doCopy($list, $duplicateCallback);
+
+        // has copy action
+        if ($copy) {
+            // Timeline record
+            \Acelle\Model\Timeline::recordCopiedTo($this, $list);
+            \Acelle\Model\Timeline::recordCopiedFrom($copy, $this->mailList);
+        }
+    }
+
     /**
      * Move to list.
      *
@@ -539,7 +552,15 @@ class Subscriber extends Model
      */
     public function move($list)
     {
-        $this->copy($list);
+        $copy = $this->doCopy($list);
+
+        // has move action
+        if ($copy) {
+            // Timeline record
+            \Acelle\Model\Timeline::recordMovedFrom($copy, $this->mailList);
+        }
+
+        // delete current one
         $this->delete();
     }
 
@@ -1332,6 +1353,6 @@ class Subscriber extends Model
 
     public function readTimelines()
     {
-        return $this->timelines;
+        return $this->timelines()->orderBy('created_at', 'desc')->limit(100)->get();
     }
 }
