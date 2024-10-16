@@ -8482,3 +8482,19 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
     cursor: pointer;
     border-bottom: dashed 1px #aaa;
 }
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100px;
+}
+.activity-desc {
+    position: absolute;
+    bottom: 12px;
+    right: 17px;
+}
+.activity-feed .activity-media {
+    width: 130px;
+}

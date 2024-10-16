@@ -144,6 +144,9 @@ class SubscriberController extends Controller
             return back()->withInput()->withErrors($validator);
         }
 
+        // Update timeline
+        \Acelle\Model\Timeline::recordAdded($subscriber, $customer);
+
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.subscriber.created'));
         return redirect()->action('SubscriberController@index', $list->uid);
