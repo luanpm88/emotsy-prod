@@ -1203,7 +1203,7 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import($file, $mapArray = null, $progressCallback = null, $invalidRecordCallback = null)
+    public function import($file, $mapArray = null, $update = true, $progressCallback = null, $invalidRecordCallback = null)
     {
         $importBatchId = uniqid();
 
@@ -1238,7 +1238,7 @@ class MailList extends Model
 
         try {
             // process by batches
-            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($importBatchId, $map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
+            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($importBatchId, $map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $update, $progressCallback, $invalidRecordCallback) {
 
                 // Throw exception if no room left
                 if (!$this->customer->user->can('addMoreSubscribers', [ $this, $more = 1 ])) {
@@ -1259,7 +1259,7 @@ class MailList extends Model
                 // }
 
                 // Create a tmp table like: __tmp_subscribers(field_1, field_2, field_3, field_4, tags)
-                list($tmpTable, $emailFieldName)  = $map->createTmpTableFromMapping();
+                list($tmpTable, $tmpTableWithoutPrefix, $emailFieldName)  = $map->createTmpTableFromMapping();
 
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
@@ -1335,7 +1335,7 @@ class MailList extends Model
                  * STEP 1: INSERT FROM FILE to TMP table
                  *
                  */
-                DB::table('__tmp_subscribers')->insert($data);
+                DB::table($tmpTableWithoutPrefix)->insert($data);
                 $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.{$emailFieldName} = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
 
                 if ($newRecordCount > 0 && $insertLimit == 0) {
@@ -1350,29 +1350,32 @@ class MailList extends Model
                  * STEP 2: UPDATE EXISTING RECORDS
                  *
                  */
-                $setFieldValuesSql = array_map(function ($name) {
-                    return "main.{$name} = tmp.{$name}";
-                }, $map->getCustomFields());
-                $setFieldValuesSql = implode(', ', $setFieldValuesSql);
-                $updateSubscribersSql = strtr(
-                    '
-                    UPDATE %subscribers main
-                    INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
-                    SET main.tags = tmp.tags,
-                        main.status = tmp.status,
-                    %set_fields_values
-                    WHERE main.mail_list_id = %list_id',
-                    [
-                        '%subscribers' => table('subscribers'),
-                        '%list_id' => $this->id,
-                        '%set_fields_values' => $setFieldValuesSql,
-                        '%tmp' => $tmpTable,
-                        '%email_field' => $emailFieldName
-                    ]
-                );
 
-                // Actually UPDATE
-                DB::statement($updateSubscribersSql);
+                if ($update) {
+                    $setFieldValuesSql = array_map(function ($name) {
+                        return "main.{$name} = tmp.{$name}";
+                    }, $map->getCustomFields());
+                    $setFieldValuesSql = implode(', ', $setFieldValuesSql);
+                    $updateSubscribersSql = strtr(
+                        '
+                        UPDATE %subscribers main
+                        INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
+                        SET main.tags = tmp.tags,
+                            main.status = tmp.status,
+                        %set_fields_values
+                        WHERE main.mail_list_id = %list_id',
+                        [
+                            '%subscribers' => table('subscribers'),
+                            '%list_id' => $this->id,
+                            '%set_fields_values' => $setFieldValuesSql,
+                            '%tmp' => $tmpTable,
+                            '%email_field' => $emailFieldName
+                        ]
+                    );
+
+                    // Actually UPDATE
+                    DB::statement($updateSubscribersSql);
+                }
 
                 /*
                  * STEP 3: INSERT NEW RECORDS
@@ -1439,7 +1442,7 @@ class MailList extends Model
                 }
 
                 // Cleanup
-                //DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
+                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
 
                 // Trigger updating related campaigns cache
                 $this->updateCachedInfo();

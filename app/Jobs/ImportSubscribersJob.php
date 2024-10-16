@@ -81,6 +81,7 @@ class ImportSubscribersJob extends Base
         $this->list->import(
             $this->file,
             $this->map,
+            $update = true,
             function ($processed, $total, $failed, $message) use ($logger) {
                 $percentage = ($total && $processed) ? (int)($processed * 100 / $total) : 0;
 

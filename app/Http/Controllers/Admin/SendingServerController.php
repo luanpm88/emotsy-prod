@@ -180,6 +180,8 @@ class SendingServerController extends Controller
             return $this->notAuthorized();
         }
 
+        dispatch(new \Acelle\Jobs\UpdateSendingServerJob($server));
+
         // bounce / feedback hanlder nullable
         if ($request->old() && empty($request->old()["bounce_handler_id"])) {
             $server->bounce_handler_id = null;

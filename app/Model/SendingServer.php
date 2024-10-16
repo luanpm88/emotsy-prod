@@ -35,10 +35,13 @@ use Acelle\Library\InMemoryRateTracker;
 use Acelle\Library\DynamicRateTracker;
 use Exception;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasCache;
 
 class SendingServer extends Model
 {
     use HasUid;
+    use HasCache;
+
     protected $connection = 'mysql';
 
     public const DELIVERY_STATUS_SENT = 'sent';
@@ -1627,4 +1630,17 @@ class SendingServer extends Model
         // file_put_contents($output, $message->toString(), FILE_APPEND | LOCK_EX);
         return [ 'status' => self::DELIVERY_STATUS_SENT ];
     }
+
+    public function getCacheIndex()
+    {
+        // cache indexes
+        return [
+            // @note: SubscriberCount must come first as its value shall be used by the others
+            'SentCount' => function () {
+                return $this->trackingLogs()->count();
+            }
+        ];
+    }
+
+
 }
