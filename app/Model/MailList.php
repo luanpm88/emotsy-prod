@@ -1469,7 +1469,7 @@ class MailList extends Model
                 $this->logger()->info("- Temp table dropped, updating cache...");
 
                 // Trigger updating related campaigns cache
-                $this->updateCachedInfo();
+                $this->updateCache('SubscribeCount');
                 $this->logger()->info("- Cache updated");
             });
 
