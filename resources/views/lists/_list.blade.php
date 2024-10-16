@@ -36,7 +36,7 @@
                             <span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $list->readCache('SubscriberCount', 0))) }}</span>
                         </div>
                         <div class="single-stat-box pull-left ml-4">
-                            <span class="no-margin text-primary stat-num">{{ number_to_percentage($list->openUniqRate()) }}</span>
+                            <span class="no-margin text-primary stat-num">{{ number_to_percentage($list->readCache('UniqOpenRate', 0)) }}</span>
                             <div class="progress progress-xxs">
                                 <div class="progress-bar progress-bar-info" style="width: {{ $list->readCache('UniqOpenRate', 0)*100 }}%">
                                 </div>

@@ -1484,13 +1484,15 @@ class MailList extends Model
             // Event MailListImported($list)
             MailListImported::dispatch($this, $importBatchId);
 
-            if (!is_null($progressCallback)) {
-                $progressCallback($processed, $total, $failed, $message = "Processed: {$processed}/{$total} records, skipped: {$failed} records.");
-            }
-
             // clean up uploaded file
             \Illuminate\Support\Facades\File::delete($file);
 
+            // Update all cache
+            $this->updateCachedInfo();
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = "Processed: {$processed}/{$total} records, skipped: {$failed} records.");
+            }
         } catch (\Throwable $e) {
             if (!is_null($progressCallback)) {
                 $progressCallback($processed, $total, $failed, $message = $e->getMessage());
