@@ -1207,6 +1207,8 @@ class MailList extends Model
     {
         $importBatchId = uniqid();
 
+        $this->logger()->info("START IMPORT, batch id {$importBatchId}");
+
         // Read CSV files, keep original headers' case (do not lowercase or uppercase)
         list($headers, $total, $results) = $this->readCsv($file);
 
@@ -1238,7 +1240,10 @@ class MailList extends Model
 
         try {
             // process by batches
-            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($importBatchId, $map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $update, $progressCallback, $invalidRecordCallback) {
+            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($importBatchId, $map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $update, $progressCallback, $invalidRecordCallback, $results) {
+
+
+                $this->logger()->info("Processing a new batch: ".sizeof($batch));
 
                 // Throw exception if no room left
                 if (!$this->customer->user->can('addMoreSubscribers', [ $this, $more = 1 ])) {
@@ -1260,6 +1265,8 @@ class MailList extends Model
 
                 // Create a tmp table like: __tmp_subscribers(field_1, field_2, field_3, field_4, tags)
                 list($tmpTable, $tmpTableWithoutPrefix, $emailFieldName)  = $map->createTmpTableFromMapping();
+
+                $this->logger()->info("- Temp table created: {$tmpTable}, collect data...");
 
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
@@ -1313,10 +1320,14 @@ class MailList extends Model
                     return $record;
                 })->toArray();
 
+                $this->logger()->info("- Data collected. Making data unique...");
+
                 // make the import data table unique by email
                 $data = array_unique_by($data, function ($r) use ($emailFieldName) {
                     return $r[$emailFieldName];
                 });
+
+                $this->logger()->info("- Data is now unique, filter out invalid records....");
 
                 // validate and filter out invalid records
                 $data = array_where($data, function ($record) use (&$failed, $invalidRecordCallback, $emailFieldName) {
@@ -1330,6 +1341,8 @@ class MailList extends Model
 
                     return $valid;
                 });
+
+                $this->logger()->info("- All done, counting...");
 
                 /*
                  * STEP 1: INSERT FROM FILE to TMP table
@@ -1352,6 +1365,7 @@ class MailList extends Model
                  */
 
                 if ($update) {
+                    $this->logger()->info("- UPDATING...");
                     $setFieldValuesSql = array_map(function ($name) {
                         return "main.{$name} = tmp.{$name}";
                     }, $map->getCustomFields());
@@ -1375,12 +1389,18 @@ class MailList extends Model
 
                     // Actually UPDATE
                     DB::statement($updateSubscribersSql);
+
+                    $this->logger()->info("- UPDATE DONE!");
+                } else {
+                    $this->logger()->info("- UPDATE skipped");
                 }
 
                 /*
                  * STEP 3: INSERT NEW RECORDS
                  *
                  */
+
+                $this->logger()->info("- INSERTING...");
 
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
@@ -1434,6 +1454,8 @@ class MailList extends Model
                 // Actually INSERT
                 DB::statement($insertToSubscribersSql);
 
+                $this->logger()->info("- INSERT DONE!");
+
                 // **** STEP 4: FINALIZE
                 // update status, finish one batch
                 $processed += sizeof($batch);
@@ -1444,8 +1466,11 @@ class MailList extends Model
                 // Cleanup
                 DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
 
+                $this->logger()->info("- Temp table dropped, updating cache...");
+
                 // Trigger updating related campaigns cache
                 $this->updateCachedInfo();
+                $this->logger()->info("- Cache updated");
             });
 
             try {
