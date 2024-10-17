@@ -1253,7 +1253,7 @@ class SubscriberController extends Controller
 
         $timelines = $subscriber->timelines()
             ->orderBy('created_at', 'desc')
-            ->paginate($request->per_page ? $request->per_page : 15);
+            ->paginate($request->per_page ? $request->per_page : 10);
 
         return view('subscribers.timelineList', [
             'timelines' => $timelines,

@@ -20,7 +20,14 @@
                     ])
                 </action>
                 <div class="d-flex align-items-center mt-2">
-                    <div class="d-block small text-muted">{{ trans('messages.timeline.type.' . $timeline->type) }}</div>
+                    <div class="d-block small text-muted">
+                        <div class="d-flex align-items-center">
+                            <span class="material-symbols-rounded me-1">
+                                bookmark_border
+                            </span>
+                            <span>{{ trans('messages.timeline.type.' . $timeline->type) }}</span>
+                        </div>
+                    </div>
                     <desc class="d-block small text-muted small text-end activity-desc ms-auto">
                         <span class="material-symbols-rounded me-1">schedule</span> {{ Auth::user()->customer->formatDateTime($timeline->created_at, 'datetime_full') }}
                     </desc>
@@ -29,7 +36,7 @@
         </div>
     @endforeach
     <div class="mt-4">
-        @include('elements/_per_page_select', ["items" => $timelines])
+        @include('elements/_per_page_select_short', ["items" => $timelines])
     </div>
     
 @else
