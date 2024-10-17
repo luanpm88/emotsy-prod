@@ -248,48 +248,65 @@
             </div>
         @else
             <div class="col-sm-12 col-md-6 col-lg-6">
-                <h3 class="mr-auto">{{ trans('messages.automation.contact.activity_feed') }}</h3>
                 <div class="activity-feed mt-3">
-                    <label class="date small font-weight-semibold mb-0 divider">{{ trans('messages.automation.profile_timeline_head') }}</label>
-                    
-                    @if ($subscriber->readTimelines()->count() > 0)
-                        @foreach($subscriber->readTimelines() as $timeline)
-                            <div class="activity d-flex py-3 px-4">
-                                <div class="activity-media pr-4 text-center">
-                                    <div class="mb-2">
-                                        <span class="activity-icon border p-2 bg-light d-inline-block">
-                                            <span class="material-symbols-rounded">
-                                                person_add
-                                            </span>
-                                        </span>
-                                    </div>
-                                    <time class="d-block text-center mini mb-0">{{ $timeline->created_at->diffForHumans() }}</time>
-                                    {!! Acelle\Model\AutomationElement::getIconByType($timeline->activity_type) !!}
-                                </div>
-                                <div class="small w-100">
-                                    <action class="d-block mb-1">
-                                        @include('common.timelineMessage', [
-                                            'timeline' => $timeline,
-                                        ])
-                                    </action>
-                                    <desc class="d-block small text-muted small text-end activity-desc">
-                                        <span class="material-symbols-rounded me-1">schedule</span> {{ Auth::user()->customer->formatDateTime($timeline->created_at, 'datetime_full') }}
-                                    </desc>
+                    <div id="TimelineListContainer" class="listing-form top-sticky">
+                        <div class="d-flex top-list-controls top-sticky-content mb-3">
+                            <div>
+                                <h3 class="mr-auto mb-0">{{ trans('messages.automation.contact.activity_feed') }}</h3>
+                            </div>
+                            <div class="ms-auto">
+                                <div class="filter-box">
+                                    <span class="filter-group me-0">
+                                        <span class="title text-semibold text-muted">{{ trans('messages.timeline.type') }}</span>
+                                        <select class="select" name="type">
+                                            <option value="">{{ trans('messages.timeline.all_types') }}</option>
+                                            @foreach (Acelle\Model\Timeline::allTypes() as $type)
+                                                <option value="{{ $type }}">{{ trans('messages.timeline.type.' . $type) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </span>
+                                    <span class="text-nowrap search-container hide">
+                                        <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
+                                        <span class="material-symbols-rounded">search</span>
+                                    </span>
                                 </div>
                             </div>
-                        @endforeach
-                    @else
-                        <div class="empty-list">
-                            <i class="material-symbols-rounded">timeline</i>
-                            <span class="line-1">
-                                {{ trans('messages.automation.timeline.no_activities') }}
-                            </span>
                         </div>
-                    @endif
+
+                        <div id="TimelineListContent">
+
+
+
+                        </div>
+                    </div>
+
+                    <script>
+                        var TimelineList = {
+                            getList: function() {
+                                return makeList({
+                                    url: '{{ action('SubscriberController@timelineList', [
+                                        'id' => $subscriber->id,
+                                    ]) }}',
+                                    container: $('#TimelineListContainer'),
+                                    content: $('#TimelineListContent')
+                                });
+                            }
+                        };
+                
+                        $(document).ready(function() {
+                            TimelineList.getList().load();
+                        });
+                    </script>
+
+
                 </div>
             </div>
+
+            
         @endif
     </div>
+
+    
 
     <script>
         var tagContact = new Popup();

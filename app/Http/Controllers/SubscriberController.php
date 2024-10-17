@@ -1246,4 +1246,17 @@ class SubscriberController extends Controller
             'subscribers' => $subscribers,
         ]);
     }
+
+    public function timelineList(Request $request)
+    {
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
+
+        $timelines = $subscriber->timelines()
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->per_page ? $request->per_page : 15);
+
+        return view('subscribers.timelineList', [
+            'timelines' => $timelines,
+        ]);
+    }
 }

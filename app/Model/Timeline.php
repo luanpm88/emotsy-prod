@@ -32,6 +32,24 @@ class Timeline extends Model
     // 5 - subscriber opens a campaign email
     // 6 - subscriber clicks a campaign link
 
+    public static function allTypes()
+    {
+        return [
+            static::TYPE_ADDED_BY_CUSTOMER,
+            static::TYPE_SIGN_UP_FORM_OPT_IN,
+            static::TYPE_EMBEDDED_FORM_OPT_IN,
+            static::TYPE_POPUP_FORM_OPT_IN,
+            static::TYPE_SUBSCRIBED_BY_CUSTOMER,
+            static::TYPE_UNSUBSCRIBED_BY_CUSTOMER,
+            static::TYPE_API_SUBSCRIBED,
+            static::TYPE_API_ADDED,
+            static::TYPE_COPIED_FROM,
+            static::TYPE_COPIED_TO,
+            static::TYPE_MOVED_FROM,
+            static::TYPE_UNSUBSCRIBED_FROM_LIST_UNSUBSCRIBE_FORM,
+        ];
+    }
+
     /**
      * Associations.
      *
