@@ -1357,3 +1357,13 @@ function safe_dispatch($job)
 {
     return app(\Illuminate\Contracts\Bus\Dispatcher::class)->dispatch($job);
 }
+
+function get_inner_html($node) {
+    $innerHTML= '';
+    $children = $node->childNodes;
+    foreach ($children as $child) {
+        $innerHTML .= $child->ownerDocument->saveXML( $child );
+    }
+
+    return $innerHTML;
+}
