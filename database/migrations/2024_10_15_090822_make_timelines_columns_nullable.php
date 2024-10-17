@@ -18,7 +18,7 @@ class MakeTimelinesColumnsNullable extends Migration
             $table->integer('auto_trigger_id')->unsigned()->nullable()->change();
 
             $table->string('activity_type')->nullable()->change();
-            $table->string('activity')->nullable()->change();
+            $table->text('activity')->nullable()->change();
         });
     }
 
