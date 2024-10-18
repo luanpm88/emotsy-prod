@@ -15,7 +15,7 @@ class AddFormIdToTimelines extends Migration
     {
         Schema::table('timelines', function (Blueprint $table) {
             $table->bigInteger('form_id')->unsigned()->nullable();
-            $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
+            $table->foreign('form_id')->references('id')->on('forms')->onDelete('set null');
         });
     }
 

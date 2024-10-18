@@ -128,7 +128,7 @@ class SubscriberController extends Controller
             }
 
             // Timeline record
-            \Acelle\Model\Timeline::recordApiAdded($subscriber, $subscriber->mailList, $user->customer);
+            \Acelle\Model\Timeline::recordApiAdded($subscriber, $user->customer);
 
             return \Response::json(array(
                 'status' => 1,
@@ -235,7 +235,7 @@ class SubscriberController extends Controller
         $subscriber->subscribe($trackingInfo);
 
         // Timeline record
-        \Acelle\Model\Timeline::recordApiSubscribed($subscriber, $subscriber->mailList, $user->customer);
+        \Acelle\Model\Timeline::recordApiSubscribed($subscriber, $user->customer);
 
         // Log
         $subscriber->log('subscribed', $user->customer);

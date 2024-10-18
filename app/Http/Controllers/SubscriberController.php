@@ -145,7 +145,7 @@ class SubscriberController extends Controller
         }
 
         // Timeline record
-        \Acelle\Model\Timeline::recordAddedByCustomer($subscriber, $list, $customer);
+        \Acelle\Model\Timeline::recordAddedByCustomer($subscriber, $customer);
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.subscriber.created'));
@@ -330,7 +330,7 @@ class SubscriberController extends Controller
                 $subscriber->log('subscribed', $customer);
 
                 // Timeline record
-                \Acelle\Model\Timeline::recordSubscribedByCustomer($subscriber, $list, $customer);
+                \Acelle\Model\Timeline::recordSubscribedByCustomer($subscriber, $customer);
             }
         }
 
@@ -374,7 +374,7 @@ class SubscriberController extends Controller
                 $subscriber->log('unsubscribed', $customer);
 
                 // Timeline record
-                \Acelle\Model\Timeline::recordUnsubscribedByCustomer($subscriber, $list, $customer);
+                \Acelle\Model\Timeline::recordUnsubscribedByCustomer($subscriber, $customer);
             }
         }
 
@@ -1244,6 +1244,16 @@ class SubscriberController extends Controller
         return view('subscribers.addTag', [
             'list' => $list,
             'subscribers' => $subscribers,
+        ]);
+    }
+
+    public function timeline(Request $request)
+    {
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
+
+        return view('subscribers.timeline', [
+            'list' => $subscriber->mailList,
+            'subscriber' => $subscriber,
         ]);
     }
 

@@ -706,7 +706,7 @@ class MailListController extends Controller
             list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
 
             // Timeline record
-            \Acelle\Model\Timeline::recordEmbeddedFormOptIn($subscriber, $list);
+            \Acelle\Model\Timeline::recordEmbeddedFormOptIn($subscriber);
         } catch (\Exception $ex) {
             return view('somethingWentWrong', ['message' => $ex->getMessage()]);
         }
