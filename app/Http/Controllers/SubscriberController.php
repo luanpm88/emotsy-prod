@@ -1261,8 +1261,14 @@ class SubscriberController extends Controller
     {
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
-        $timelines = $subscriber->timelines()
-            ->orderBy('created_at', 'desc')
+        $timelines = $subscriber->timelines();
+            
+        // filter by type
+        if ($request->type) {
+            $timelines = $timelines->whereType($request->type);
+        }
+
+        $timelines = $timelines->orderBy('created_at', 'desc')
             ->paginate($request->per_page ? $request->per_page : 10);
 
         return view('subscribers.timelineList', [
