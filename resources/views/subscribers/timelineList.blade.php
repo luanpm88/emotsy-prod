@@ -1,5 +1,5 @@
-<label class="date small font-weight-semibold mb-0 divider">{{ trans('messages.automation.profile_timeline_head') }}</label>    
 @if ($timelines->count() > 0)
+    <label class="date small font-weight-semibold mb-0 divider">{{ trans('messages.automation.profile_timeline_head') }}</label>   
     @foreach($timelines as $timeline)
         <div class="activity d-flex py-3 px-3">
             <div class="activity-media pr-4 text-center">
