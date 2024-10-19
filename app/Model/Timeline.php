@@ -23,10 +23,10 @@ class Timeline extends Model
     public const TYPE_COPIED_TO = 'copied_to';
     public const TYPE_MOVED_FROM = 'moved_from';
     public const TYPE_UNSUBSCRIBED_FROM_LIST_UNSUBSCRIBE_FORM = 'unsubscribed_from_list_unsubscribe_form';
-    // public const TYPE_OPEN_CAMPAIGN_EMAIL = 'open_campaign_email';
-    // public const TYPE_CLICK_CAMPAIGN_EMAIL = 'open_campaign_email';
-    // public const TYPE_OPEN_AUTOMATION_EMAIL = 'open_campaign_email';
-    // public const TYPE_CLICK_AUTOMATION_EMAIL = 'open_campaign_email';
+    public const TYPE_OPENED_CAMPAIGN_EMAIL = 'opened_campaign_email';
+    public const TYPE_CLICKED_CAMPAIGN_EMAIL = 'clicked_campaign_email';
+    // public const TYPE_OPEN_AUTOMATION_EMAIL = 'opened_campaign_email';
+    // public const TYPE_CLICK_AUTOMATION_EMAIL = 'opened_campaign_email';
 
     // 4 - subscriber imported (để tao xử)
     // 5 - subscriber opens a campaign email
@@ -86,12 +86,11 @@ class Timeline extends Model
     }
 
     // TYPE_ADDED_BY_CUSTOMER
-    public static function recordAddedByCustomer($subscriber, $mailList, $customer)
+    public static function recordAddedByCustomer($subscriber, $customer)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_ADDED_BY_CUSTOMER);
 
         $timeline->customer_id = $customer->id;
-        $timeline->mail_list_id = $mailList->id;
 
         $timeline->save();
 
@@ -99,11 +98,9 @@ class Timeline extends Model
     }
 
     // TYPE_SIGN_UP_FORM_OPT_IN
-    public static function recordSignUpFormOptIn($subscriber, $mailList)
+    public static function recordSignUpFormOptIn($subscriber)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_SIGN_UP_FORM_OPT_IN);
-
-        $timeline->mail_list_id = $mailList->id;
 
         $timeline->save();
 
@@ -111,11 +108,9 @@ class Timeline extends Model
     }
 
     // TYPE_EMBEDDED_FORM_OPT_IN
-    public static function recordEmbeddedFormOptIn($subscriber, $mailList)
+    public static function recordEmbeddedFormOptIn($subscriber)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_EMBEDDED_FORM_OPT_IN);
-
-        $timeline->mail_list_id = $mailList->id;
 
         $timeline->save();
 
@@ -135,12 +130,11 @@ class Timeline extends Model
     }
 
     // TYPE_API_SUBSCRIBED
-    public static function recordApiSubscribed($subscriber, $mailList, $customer)
+    public static function recordApiSubscribed($subscriber, $customer)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_API_SUBSCRIBED);
 
         $timeline->customer_id = $customer->id;
-        $timeline->mail_list_id = $mailList->id;
 
         $timeline->save();
 
@@ -148,12 +142,11 @@ class Timeline extends Model
     }
     
     // TYPE_API_ADDED
-    public static function recordApiAdded($subscriber, $mailList, $customer)
+    public static function recordApiAdded($subscriber, $customer)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_API_ADDED);
 
         $timeline->customer_id = $customer->id;
-        $timeline->mail_list_id = $mailList->id;
 
         $timeline->save();
 
@@ -161,12 +154,11 @@ class Timeline extends Model
     }
 
     // TYPE_SUBSCRIBED_BY_CUSTOMER
-    public static function recordSubscribedByCustomer($subscriber, $mailList, $customer)
+    public static function recordSubscribedByCustomer($subscriber, $customer)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_SUBSCRIBED_BY_CUSTOMER);
 
         $timeline->customer_id = $customer->id;
-        $timeline->mail_list_id = $mailList->id;
 
         $timeline->save();
 
@@ -174,12 +166,11 @@ class Timeline extends Model
     }
 
     // TYPE_UNSUBSCRIBED_BY_CUSTOMER
-    public static function recordUnsubscribedByCustomer($subscriber, $mailList, $customer)
+    public static function recordUnsubscribedByCustomer($subscriber, $customer)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_UNSUBSCRIBED_BY_CUSTOMER);
 
         $timeline->customer_id = $customer->id;
-        $timeline->mail_list_id = $mailList->id;
 
         $timeline->save();
 
@@ -187,11 +178,11 @@ class Timeline extends Model
     }
 
     // TYPE_COPIED_FROM
-    public static function recordCopiedFrom($subscriber, $mailList)
+    public static function recordCopiedFrom($subscriber, $fromMailList)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_COPIED_FROM);
 
-        $timeline->mail_list_id = $mailList->id;
+        $timeline->mail_list_id = $fromMailList->id;
 
         $timeline->save();
 
@@ -199,11 +190,11 @@ class Timeline extends Model
     }
 
     // TYPE_COPIED_TO
-    public static function recordCopiedTo($subscriber, $mailList)
+    public static function recordCopiedTo($subscriber, $toMailList)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_COPIED_TO);
 
-        $timeline->mail_list_id = $mailList->id;
+        $timeline->mail_list_id = $toMailList->id;
 
         $timeline->save();
 
@@ -223,18 +214,37 @@ class Timeline extends Model
     }
     
     // TYPE_UNSUBSCRIBED_FROM_LIST_UNSUBSCRIBE_FORM
-    public static function recordUnsubscribedFromListUnsubscribeForm($subscriber, $mailList)
+    public static function recordUnsubscribedFromListUnsubscribeForm($subscriber)
     {
         $timeline = static::newDefault($subscriber, static::TYPE_UNSUBSCRIBED_FROM_LIST_UNSUBSCRIBE_FORM);
-
-        $timeline->mail_list_id = $mailList->id;
 
         $timeline->save();
 
         return $timeline;
     }
 
-    public static function recordOpenCampaignEmail($subscriber, $campaign)
+    // TYPE_OPENED_CAMPAIGN_EMAIL
+    public static function recordOpenedCampaignEmail($subscriber, $campaign)
     {
+        $timeline = static::newDefault($subscriber, static::TYPE_OPENED_CAMPAIGN_EMAIL);
+
+        $timeline->campaign_id = $campaign->id;
+
+        $timeline->save();
+
+        return $timeline;
+    }
+
+    // TYPE_CLICKED_CAMPAIGN_EMAIL
+    public static function recordClickedCampaignEmail($subscriber, $campaign, $url)
+    {
+        $timeline = static::newDefault($subscriber, static::TYPE_CLICKED_CAMPAIGN_EMAIL);
+
+        $timeline->campaign_id = $campaign->id;
+        $timeline->url = $url;
+
+        $timeline->save();
+
+        return $timeline;
     }
 }

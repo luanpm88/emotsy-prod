@@ -182,7 +182,7 @@ class PageController extends Controller
                 list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_WEB);
 
                 // Timeline record
-                \Acelle\Model\Timeline::recordSignUpFormOptIn($subscriber, $list);
+                \Acelle\Model\Timeline::recordSignUpFormOptIn($subscriber);
             } catch (\Exception $ex) {
                 return view('somethingWentWrong', ['message' => $ex->getMessage()]);
             }
@@ -333,7 +333,7 @@ class PageController extends Controller
                 $subscriber->unsubscribe($trackingInfo);
 
                 // Timeline record
-                \Acelle\Model\Timeline::recordUnsubscribedFromListUnsubscribeForm($subscriber, $subscriber->mailList);
+                \Acelle\Model\Timeline::recordUnsubscribedFromListUnsubscribeForm($subscriber);
             }
 
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id]);
