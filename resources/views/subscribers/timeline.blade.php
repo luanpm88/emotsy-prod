@@ -142,6 +142,7 @@
                                             @foreach (Acelle\Model\Timeline::allTypes() as $type)
                                                 <option value="{{ $type }}">{{ trans('messages.timeline.type.' . $type) }}</option>
                                             @endforeach
+                                            <option value="automation">{{ trans('messages.timeline.type.automation') }}</option>
                                         </select>
                                     </span>
                                     <span class="text-nowrap search-container hide">

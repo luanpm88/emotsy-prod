@@ -26,7 +26,7 @@
 	</div>
 		
 
-	<div class="listing-form subscribers-list"
+	<div id="SubscriberListContainer" class="listing-form subscribers-list"
 		data-url="{{ action('SubscriberController@listing', $list->uid) }}"
 		per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 	>
@@ -156,7 +156,7 @@
 									<li>
 										<a href="javascript:;" class="dropdown-item">
 											<label class="d-flex align-items-center">
-												<input {{ ($field->required || $key <= 3 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<input {{ (in_array($field->uid, $columns) ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
 												<span class="ms-2">{{ $field->label }}</span>
 											</label>
 										</a>
@@ -166,7 +166,7 @@
 							<li>
 								<a class="dropdown-item checkbox">
 									<label class="d-flex align-items-center">
-										<input checked="checked" type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
+										<input {{ (in_array('created_at', $columns) ? "checked='checked'" : "") }} type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
 										<span class="ms-2">{{ trans('messages.created_at') }}</span>
 									</label>
 								</a>
@@ -174,12 +174,42 @@
 							<li>
 								<a class="dropdown-item checkbox">
 									<label class="d-flex align-items-center">
-										<input checked="checked" type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
+										<input {{ (in_array('updated_at', $columns) ? "checked='checked'" : "") }} type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
 										<span class="ms-2">{{ trans('messages.updated_at') }}</span>
 									</label>
 								</a>
 							</li>
 						</ul>
+
+						<script>
+							$(function() {
+								new ColumnsManager($('#SubscriberListContainer [name="columns[]"]'), '{{ action('SubscriberController@saveColumnsSettings') }}');
+							})
+
+							var ColumnsManager = class {
+								constructor(columnCheckers, url) {
+									this.columnCheckers = columnCheckers;
+									this.url = url;
+
+									this.columnCheckers.on('change', () => {
+										this.save();
+									});
+								}
+
+								save() {
+									$.ajax({
+										url: this.url,
+										method: 'POST',
+										data: {
+											_token: CSRF_TOKEN,
+											columns: this.columnCheckers.filter(':checked').map(function() {
+												return $(this).val();
+											}).get()
+										},
+									});      
+								}
+							}
+						</script>
 					</div>
 					<span class="text-nowrap">
 						<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />

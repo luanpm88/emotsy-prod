@@ -49,7 +49,8 @@ class SubscriberController extends Controller
         }
 
         return view('subscribers.index', [
-            'list' => $list
+            'list' => $list,
+            'columns' => $request->user()->getSetting('subscribers_columns') ?? ['created_at', 'updated_at'],
         ]);
     }
 
@@ -72,11 +73,7 @@ class SubscriberController extends Controller
         $total = $subscribers->count();
         $subscribers->with(['mailList']);
         $subscribers = $subscribers->paginate($request->per_page ? $request->per_page : 50);
-
         $fields = $list->getFields->whereIn('uid', $request->columns);
-
-        // save columns settings
-        $request->columns;
 
         return view('subscribers._list', [
             'subscribers' => $subscribers,
@@ -1268,7 +1265,11 @@ class SubscriberController extends Controller
             
         // filter by type
         if ($request->type) {
-            $timelines = $timelines->whereType($request->type);
+            if ($request->type == 'automation') {
+                $timelines = $timelines->whereNotNull('activity');
+            } else {
+                $timelines = $timelines->whereType($request->type);
+            }
         }
 
         $timelines = $timelines->orderBy('created_at', 'desc')
@@ -1277,5 +1278,10 @@ class SubscriberController extends Controller
         return view('subscribers.timelineList', [
             'timelines' => $timelines,
         ]);
+    }
+
+    public function saveColumnsSettings(Request $request)
+    {
+        $request->user()->writeSetting('subscribers_columns', $request->columns);
     }
 }

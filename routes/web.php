@@ -423,6 +423,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
+    Route::post('subscribers/save-columns', 'SubscriberController@saveColumnsSettings');
     Route::get('subscribers/{id}/timeline', 'SubscriberController@timeline');
     Route::get('subscribers/{id}/timeline/list', 'SubscriberController@timelineList');
     Route::match(['post', 'get'], 'subscribers/{list_uid}/add-tag', 'SubscriberController@addTag');
