@@ -1077,6 +1077,13 @@ class CampaignController extends Controller
             // Execute open callbacks registered for the campaign
             if ($openLog->trackingLog && $openLog->trackingLog->campaign) {
                 $openLog->trackingLog->campaign->queueOpenCallbacks($openLog);
+
+                // Timeline record
+                \Acelle\Model\Timeline::recordOpenedCampaignEmail($openLog->trackingLog->subscriber, $openLog->trackingLog->campaign);
+            }
+
+            else {
+                // khoi loi noi dung email
             }
         } catch (\Exception $ex) {
             // do nothing
@@ -1099,8 +1106,11 @@ class CampaignController extends Controller
 
         if ($log && $log->trackingLog && $log->trackingLog->campaign) {
             $log->trackingLog->campaign->queueClickCallbacks($log);
-        }
 
+            // Timeline record
+            \Acelle\Model\Timeline::recordClickedCampaignEmail($log->trackingLog->subscriber, $log->trackingLog->campaign, $url);
+        }
+        
         return redirect()->away($url);
     }
 
