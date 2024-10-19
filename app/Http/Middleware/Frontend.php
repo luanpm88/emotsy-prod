@@ -48,7 +48,7 @@ class Frontend
         }
 
         // DB here
-        \Acelle\Helpers\set_userdb_connection('userdb');
+        // \Acelle\Helpers\set_userdb_connection('userdb');
 
         // Wordpress db by user
         /*
