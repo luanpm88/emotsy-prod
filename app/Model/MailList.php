@@ -2325,4 +2325,30 @@ class MailList extends Model
         // return [ 'field_100', 'field_101', ..., 'field_999'];
         return $list;
     }
+
+    public function createFields($type, $tag, $label, $default_value, $required, $visible)
+    {
+        $exist = \Acelle\Model\Field::where('mail_list_id', '=', $this->id)
+            ->where('tag', '=', $tag)
+            ->count();
+
+        if ($exist) {
+            throw new \Exception('Field tag exists');
+        }
+
+        // Save field
+        $field = new \Acelle\Model\Field();
+
+        $field->mail_list_id = $this->id;
+        $field->type = $type;
+        $field->tag = $tag;
+        $field->label = $label;
+        $field->default_value = $default_value;
+        $field->required = $required;
+        $field->visible = $visible;
+
+        $field->save();
+
+        return $field;
+    }
 }

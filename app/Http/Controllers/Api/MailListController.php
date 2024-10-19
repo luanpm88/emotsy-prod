@@ -196,26 +196,32 @@ class MailListController extends Controller
                 return response()->json($validator->messages(), 403);
             }
 
-            $exist = \Acelle\Model\Field::where('mail_list_id', '=', $list->id)
-                ->where('tag', '=', $request->tag)
-                ->count();
-
-            if ($exist) {
-                return \Response::json(array('status' => 0, 'message' => 'Field tag exists'), 403);
+            //
+            try {
+                $field = $list->createFields(
+                    $type = $request->type,
+                    $tag = $request->tag,
+                    $label = $request->label,
+                    $default_value = $request->default_value,
+                    $requred = false,
+                    $visible = true,
+                );
+            } catch (\Throwable $e) {
+                return \Response::json(array('status' => 0, 'message' => $e->getMessage()), 403);
             }
-
-            // Save field
-            $field = new \Acelle\Model\Field();
-            $field->mail_list_id = $list->id;
-            $field->visible = true;
-            $field->required = false;
-            $field->fill($request->all());
-            $field->save();
 
             return \Response::json(array(
                 'status' => 1,
                 'message' => trans('messages.field.created'),
-                'field' => $field->toArray()
+                'field' => [
+                    'uid' => $field->uid,
+                    'type' => $field->type,
+                    'tag' => $field->tag,
+                    'label' => $field->label,
+                    'default_value' => $field->default_value,
+                    'requred' => $field->requred,
+                    'visible' => $field->visible,
+                ],
             ), 200);
         }
     }
