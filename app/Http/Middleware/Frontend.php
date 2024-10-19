@@ -47,6 +47,9 @@ class Frontend
             \Carbon\Carbon::setLocale($user->customer->language->code);
         }
 
+        // DB here
+        \Acelle\Helpers\set_userdb_connection('userdb');
+
         // Wordpress db by user
         /*
         if (isset($user) && isset($user->customer)) {
