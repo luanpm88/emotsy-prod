@@ -26,6 +26,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
 use Acelle\Library\ExtendedSwiftMessage;
+use Acelle\Library\Traits\HasSettingsField;
 use Acelle\Model\Setting;
 use Illuminate\Http\UploadedFile;
 use App;
@@ -38,6 +39,8 @@ class User extends Authenticatable
 {
     use Notifiable;
     use HasUid;
+    use HasSettingsField;
+
     protected $connection = 'mysql';
 
     /*******
@@ -85,6 +88,18 @@ class User extends Authenticatable
     public function customer()
     {
         return $this->belongsTo('Acelle\Model\Customer');
+    }
+
+    public function getLocalCustomer()
+    {
+
+        $customer = $this->customer;
+        echo $customer->db_connection;
+        if (is_null($customer->db_connection)) {
+            throw new Exception("db_connection is missing for customer ".$customer->uid);
+        }
+        return LocalCustomer::on($customer->db_connection)->where('uid', $customer->uid)->first();
+        1/0;
     }
 
     public function admin()
