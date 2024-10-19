@@ -178,7 +178,7 @@ class MailListController extends Controller
 
             // try to add new field
             try {
-                $field = $list->createFields(
+                $field = $list->createField(
                     $type = $request->type,
                     $tag = $request->tag,
                     $label = $request->label,
