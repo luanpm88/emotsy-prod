@@ -1624,10 +1624,10 @@ class SendingServer extends Model
 
     public function dryrun($message)
     {
-        $toEmail = array_keys($message->getTo())[0];
-        $filename = "dryrun-{$toEmail}";
-        $output = "/tmp/dryrun/{$filename}";
-        file_put_contents($output, $message->toString(), FILE_APPEND | LOCK_EX);
+        // $toEmail = array_keys($message->getTo())[0];
+        // $filename = "dryrun-{$toEmail}";
+        // $output = "/tmp/dryrun/{$filename}";
+        // file_put_contents($output, $message->toString(), FILE_APPEND | LOCK_EX);
         return [ 'status' => self::DELIVERY_STATUS_SENT ];
     }
 
