@@ -151,6 +151,8 @@ class Source extends Model
             return $this->mailList;
         }
 
+        throw new \Exception('Rewrite this method: why ->save() in a Get method????');
+
         // contact
         $contact = new \Acelle\Model\Contact();
         $contact->address_1 = 'empty';
@@ -160,7 +162,7 @@ class Source extends Model
         // list
         $list = new \Acelle\Model\MailList();
         $list->customer_id = $this->customer_id;
-        $list->contact_id = $contact->id;
+        // $list->contact_id = $contact->id;
         $list->name = trans('messages.source.list.default_name', [
             'source' => $this->getName(),
         ]);
