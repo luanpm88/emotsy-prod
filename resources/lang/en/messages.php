@@ -3539,4 +3539,5 @@
   'subscriber.profile' => 'Profile',
   'subscriber.timeline' => 'Timeline',
   'general.n_a' => 'N/A',
+  'timeline.type.automation' => 'Automation',
 ) ?>

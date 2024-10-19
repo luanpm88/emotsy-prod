@@ -75,6 +75,9 @@ class SubscriberController extends Controller
 
         $fields = $list->getFields->whereIn('uid', $request->columns);
 
+        // save columns settings
+        $request->columns;
+
         return view('subscribers._list', [
             'subscribers' => $subscribers,
             'total' => $total,
