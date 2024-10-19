@@ -196,7 +196,7 @@ class MailListController extends Controller
                 return response()->json($validator->messages(), 403);
             }
 
-            //
+            // try to add new field
             try {
                 $field = $list->createFields(
                     $type = $request->type,
