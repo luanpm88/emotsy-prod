@@ -2326,7 +2326,7 @@ class MailList extends Model
         return $list;
     }
 
-    public function createFields($type, $tag, $label, $default_value, $required, $visible)
+    public function createField($type, $tag, $label, $default_value, $required, $visible)
     {
         $exist = \Acelle\Model\Field::where('mail_list_id', '=', $this->id)
             ->where('tag', '=', $tag)
