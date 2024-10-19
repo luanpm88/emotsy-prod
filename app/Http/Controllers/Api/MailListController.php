@@ -81,24 +81,6 @@ class MailListController extends Controller
             ];
         }
 
-        // Contact information
-        $contact = null;
-        if (isset($item->contact)) {
-            // contact information
-            $contact = [
-                'company' => $item->contact->company,
-                'address_1' => $item->contact->address_1,
-                'address_2' => $item->contact->address_2,
-                'country' => $item->contact->country->name,
-                'state' => $item->contact->state,
-                'zip' => $item->contact->zip,
-                'phone' => $item->contact->phone,
-                'url' => $item->contact->url,
-                'email' => $item->contact->email,
-                'city' => $item->contact->city,
-            ];
-        }
-
         // statistics
         $statistics = [
             'subscriber_count' => $item->subscribersCount(),
@@ -110,7 +92,7 @@ class MailListController extends Controller
             'unconfirmed_count' => $item->unconfirmedCount(),
         ];
 
-        return \Response::json(['list' => $list, 'contact' => $contact, 'statistics' => $statistics], 200);
+        return \Response::json(['list' => $list, 'statistics' => $statistics], 200);
     }
 
     /**
@@ -139,11 +121,9 @@ class MailListController extends Controller
                 return response()->json($validator->messages(), 403);
             }
 
-            // Save contact
-            $contact = \Acelle\Model\Contact::create($request->all()['contact']);
+            // Save
             $list->fill($request->all());
             $list->customer_id = $user->customer->id;
-            $list->contact_id = $contact->id;
             $list->save();
 
             // Log
