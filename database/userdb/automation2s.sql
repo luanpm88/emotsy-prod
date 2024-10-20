@@ -1,0 +1,23 @@
+CREATE TABLE `automation2s` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `uid` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_id` int unsigned DEFAULT NULL,
+  `mail_list_id` int unsigned DEFAULT NULL,
+  `time_zone` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `segment_id` text COLLATE utf8mb4_unicode_ci,
+  `cache` text COLLATE utf8mb4_unicode_ci,
+  `last_error` text COLLATE utf8mb4_unicode_ci,
+  `automation_template_id` bigint unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `automation2s_customer_id_foreign` (`customer_id`),
+  KEY `automation2s_mail_list_id_foreign` (`mail_list_id`),
+  KEY `automation2s_automation_template_id_foreign` (`automation_template_id`),
+  CONSTRAINT `automation2s_automation_template_id_foreign` FOREIGN KEY (`automation_template_id`) REFERENCES `automation_templates` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `automation2s_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `automation2s_mail_list_id_foreign` FOREIGN KEY (`mail_list_id`) REFERENCES `mail_lists` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,22 @@
+CREATE TABLE `sending_domains` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `uid` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin_id` int unsigned DEFAULT NULL,
+  `customer_id` int unsigned NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dkim_private` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dkim_public` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `signing_enabled` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `status` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `verification_token` text COLLATE utf8mb4_unicode_ci,
+  `sending_server_id` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sending_domains_sending_server_id_foreign` (`sending_server_id`),
+  KEY `sending_domains_admin_id_foreign` (`admin_id`),
+  KEY `sending_domains_customer_id_foreign` (`customer_id`),
+  CONSTRAINT `sending_domains_admin_id_foreign` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `sending_domains_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `sending_domains_sending_server_id_foreign` FOREIGN KEY (`sending_server_id`) REFERENCES `sending_servers` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci

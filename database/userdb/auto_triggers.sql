@@ -1,0 +1,20 @@
+CREATE TABLE `auto_triggers` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `subscriber_id` int unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `data` text COLLATE utf8mb4_unicode_ci,
+  `automation2_id` int unsigned NOT NULL,
+  `executed_index` text COLLATE utf8mb4_unicode_ci,
+  `error` tinyint(1) NOT NULL DEFAULT '0',
+  `is_error` tinyint(1) NOT NULL DEFAULT '0',
+  `uid` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `trigger_session_id` bigint unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `auto_triggers_subscriber_id_foreign` (`subscriber_id`),
+  KEY `auto_triggers_automation2_id_foreign` (`automation2_id`),
+  KEY `auto_triggers_trigger_session_id_foreign` (`trigger_session_id`),
+  CONSTRAINT `auto_triggers_automation2_id_foreign` FOREIGN KEY (`automation2_id`) REFERENCES `automation2s` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `auto_triggers_subscriber_id_foreign` FOREIGN KEY (`subscriber_id`) REFERENCES `subscribers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `auto_triggers_trigger_session_id_foreign` FOREIGN KEY (`trigger_session_id`) REFERENCES `trigger_sessions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=117898 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci

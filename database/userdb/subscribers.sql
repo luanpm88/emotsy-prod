@@ -1,0 +1,23 @@
+CREATE TABLE `subscribers` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `uid` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mail_list_id` int unsigned NOT NULL,
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `from` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `ip` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `subscription_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tags` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `verification_status` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_verification_at` datetime DEFAULT NULL,
+  `last_verification_by` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_verification_result` mediumtext COLLATE utf8mb4_unicode_ci,
+  `import_batch_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `subscribers_mail_list_id_email_index` (`mail_list_id`,`email`),
+  KEY `subscribers_email_index` (`email`),
+  KEY `subscribers_mail_list_id_index` (`mail_list_id`),
+  CONSTRAINT `subscribers_mail_list_id_foreign` FOREIGN KEY (`mail_list_id`) REFERENCES `mail_lists` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=815719 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
