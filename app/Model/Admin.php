@@ -372,8 +372,7 @@ class Admin extends Model
         $customer = \Acelle\Model\Customer::newCustomer();
         $customer->admin_id = $this->id;
         $customer->language_id = $this->language_id;
-        // [moved] $customer->first_name = $this->first_name;
-        // [moved] $customer->last_name = $this->last_name;
+        $customer->name = $this->user->displayName(get_localization_config('show_last_name_first', $this->getLanguageCode()));
         $customer->timezone = $this->timezone;
         $customer->status = $this->status;
         $customer->save();

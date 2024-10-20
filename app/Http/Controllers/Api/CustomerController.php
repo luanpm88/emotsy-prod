@@ -66,6 +66,7 @@ class CustomerController extends Controller
 
             // Save current user info
             $customer->admin_id = $current_user->admin->id;
+            $customer->name = $user->displayName(get_localization_config('show_last_name_first', $current_user->customer->getLanguageCode()));
             $customer->fill($request->all());
             $customer->status = 'active';
 
@@ -84,6 +85,9 @@ class CustomerController extends Controller
                 if ($request->_remove_image == 'true') {
                     $user->removeProfileImage();
                 }
+
+                // set default role to user
+                $user->setRole(\Acelle\Model\Role::getDefaultRole());
 
                 return \Response::json(array(
                     'status' => 1,
