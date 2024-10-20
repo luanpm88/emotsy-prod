@@ -130,7 +130,7 @@ class SubscriberController extends Controller
         $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
 
-        if (!$customer->user->can('addMoreSubscribers', [ $list, $more = 1 ])) {
+        if (!$request->user()->can('addMoreSubscribers', [ $list, $more = 1 ])) {
             return $this->noMoreItem();
         }
 

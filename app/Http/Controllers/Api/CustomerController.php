@@ -89,7 +89,7 @@ class CustomerController extends Controller
                     'status' => 1,
                     'message' => trans('messages.customer.created'),
                     'customer_uid' => $customer->uid,
-                    'api_token' => $customer->user->api_token
+                    'api_token' => $user->api_token
                 ), 200);
             }
         }
@@ -196,8 +196,7 @@ class CustomerController extends Controller
         // Customer info
         $result = [
             'uid' => $customer->uid,
-            'first_name' => $customer->user->first_name,
-            'last_name' => $customer->user->last_name,
+            'name' => $customer->name,
             'timezone' => $customer->timezone,
             'status' => $customer->status,
         ];
@@ -558,8 +557,7 @@ class CustomerController extends Controller
         // Customer info
         $result = [
             'uid' => $customer->uid,
-            'first_name' => $customer->user->first_name,
-            'last_name' => $customer->user->last_name,
+            'name' => $customer->name,
             'timezone' => $customer->timezone,
             'status' => $customer->status,
         ];

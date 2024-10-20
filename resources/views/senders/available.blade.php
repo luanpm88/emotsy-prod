@@ -6,7 +6,7 @@
 
 @section('page_header')
 <div class="row mc_section boxing">
-	<div class="col-md-{{ (null !== Session::get('orig_customer_id') && Auth::user()->customer) ? '6' : '6' }}">
+	<div class="col-md-{{ (null !== Session::get('orig_user_uid') && Auth::user()->customer) ? '6' : '6' }}">
 		<div class="page-title">
 			<ul class="breadcrumb breadcrumb-caret position-right">
 				<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
@@ -39,7 +39,7 @@
 			</tbody>
 		</table>
 	</div>
-	@if ((null !== Session::get('orig_customer_id') && Auth::user()->customer) || Auth::user()->admin)
+	@if ((null !== Session::get('orig_user_uid') && Auth::user()->customer) || Auth::user()->admin)
 		<div class="col-md-6">
 			@include('quicktip.identity')
 		</div>

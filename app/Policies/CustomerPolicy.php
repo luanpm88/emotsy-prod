@@ -24,16 +24,25 @@ class CustomerPolicy
         return $can;
     }
 
-    public function create(User $user, Customer $item)
+    public function create(User $user, Customer $item, $role='admin')
     {
         $can = $user->admin->getPermission('customer_create') == 'yes';
 
         return $can;
     }
 
-    public function profile(User $user, Customer $customer)
+    public function updateProfile(User $user, Customer $customer)
     {
-        return $user->customer_id == $customer->id;
+        $can = $user->customer_id == $customer->id;
+
+        // RBAC check
+        if ($user->hasPermission('account.full_access')) {
+            $permission = true;   
+        } else {
+            $permission = false;    
+        }
+
+        return $can && $permission;
     }
 
     public function update(User $user, Customer $item)
@@ -51,13 +60,6 @@ class CustomerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can;
-    }
-
-    public function loginAs(User $user, Customer $item)
-    {
-        $ability = $user->admin->getPermission('customer_login_as');
-        $can = $item->id != $user->customer_id && ($ability == 'all');
         return $can;
     }
 
@@ -112,5 +114,10 @@ class CustomerPolicy
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
+    }
+
+    public function profile(User $user, Customer $customer)
+    {
+        return $user->customer_id == $customer->id;
     }
 }

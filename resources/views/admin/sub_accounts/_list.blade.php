@@ -4,9 +4,6 @@
     >
         @foreach ($accounts as $key => $account)
             <tr class="position-relative">
-                <td width="1%" class="list-check-col">
-                    <img width="50" class="rounded-circle me-2" src="{{ $account->customer->user->getProfileImageUrl() }}" alt="">
-                </td>
                 <td>
                     <div class="single-stat-box pull-left ml-4">
                         <span class="no-margin stat-num kq_search">{{ $account->customer->displayName() }}</span>

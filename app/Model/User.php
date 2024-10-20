@@ -26,7 +26,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
 use Acelle\Library\ExtendedSwiftMessage;
-use Acelle\Library\Traits\HasSettingsField;
 use Acelle\Model\Setting;
 use Illuminate\Http\UploadedFile;
 use App;
@@ -34,13 +33,12 @@ use AppUrl;
 use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\Hook;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use HasUid;
-    use HasSettingsField;
-
     protected $connection = 'mysql';
 
     /*******
@@ -61,6 +59,13 @@ class User extends Authenticatable
     public const ASSETS_THUMB_DIR = 'home/thumbs';
     public const PROFILE_IMAGE_PATH = 'home/avatar';
     public const PROFILE_THUMB_PATH = 'home/avatar-thumb';
+
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+
+    // Role
+    public const ROLE_FULL_ACCESS = 'full-access';
+    public const ROLE_READ_ONLY = 'read-only';
 
     /**
      * The attributes that are mass assignable.
@@ -90,21 +95,23 @@ class User extends Authenticatable
         return $this->belongsTo('Acelle\Model\Customer');
     }
 
-    public function getLocalCustomer()
-    {
-
-        $customer = $this->customer;
-        echo $customer->db_connection;
-        if (is_null($customer->db_connection)) {
-            throw new Exception("db_connection is missing for customer ".$customer->uid);
-        }
-        return LocalCustomer::on($customer->db_connection)->where('uid', $customer->uid)->first();
-        1/0;
-    }
-
     public function admin()
     {
         return $this->hasOne('Acelle\Model\Admin');
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_role');
+    }
+
+    public function getRole()
+    {
+        if ($this->roles()->count() > 1) {
+            throw new \Exception('User can not have more than one role!');
+        }
+
+        return $this->roles()->first();
     }
 
     public function createUserDirectories()
@@ -668,6 +675,147 @@ class User extends Authenticatable
         ]);
     }
 
+    public static function scopeSearch($query, $keyword)
+    {
+        $query = $query->select('users.*');
+
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
+                });
+            }
+        }
+    }
+
+    public function displayName($lastNameFirst)
+    {
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->last_name.' '.$this->first_name));
+        } else {
+            return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
+        }
+    }
+
+    public function isActivated()
+    {
+        return $this->activated;
+    }
+
+    public static function newDefault()
+    {
+        $user = new self();
+        $user->activated = true;
+        $user->status = self::STATUS_ACTIVE;
+
+        return $user;
+    }
+
+    public function fillAttributes($params)
+    {
+        $this->fill($params);
+    }
+
+    public function saveFromRequest($request)
+    {
+        $rules = array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
+            'role_uid' => 'required',
+        );
+
+        if (isset($this->id)) {
+            $rules['password'] = 'nullable|confirmed|min:5|max:255';
+        } else {
+            $rules['password'] = 'required|confirmed|min:5|max:255';
+        }
+
+        $this->fillAttributes($request->all());
+
+        $validator = \Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return [false, $validator->errors()];
+        }
+
+        // Update password
+        if (!empty($request->password)) {
+            $this->password = bcrypt($request->password);
+        }
+
+        // save
+        $this->save();
+
+        // Upload and save image
+        if ($request->hasFile('image')) {
+            if ($request->file('image')->isValid()) {
+                // Remove old images
+                $this->uploadProfileImage($request->file('image'));
+            }
+        }
+
+        // Remove image
+        if ($request->_remove_image == 'true') {
+            $this->removeProfileImage();
+        }
+
+        // update user role
+        if ($request->role_uid) {
+            $this->setRole(Role::findByUid($request->role_uid));
+        }
+
+        return [true, $validator->errors()];
+    }
+
+    public function enable()
+    {
+        $this->activated = 1;
+        $this->save();
+    }
+
+    public function disable()
+    {
+        $this->activated = 0;
+        $this->save();
+    }
+
+    // @todo remove this later
+    public function isReadOnly()
+    {
+        return false;
+    }
+
+    public function setRole($role)
+    {
+        // for now, one user only has one role
+        // the same role, do nothing
+        if ($this->getRole() && $this->getRole()->id == $role->id) {
+            return;
+        }
+
+        // remove current role if it exists
+        if ($this->getRole()) {
+            $this->roles()->detach($this->getRole());
+        }
+
+        // set new role
+        $this->roles()->save($role);
+    }
+
+    public function hasPermission($permission)
+    {
+        // default is access all if has not role
+        if (!$this->getRole()) {
+            return false;
+        }
+        
+        return $this->getRole()->hasPermission($permission);
+    }
     public function getOnscreenIntros()
     {
         if (!$this->onscreen_intros) {

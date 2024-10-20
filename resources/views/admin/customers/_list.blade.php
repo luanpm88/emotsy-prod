@@ -4,14 +4,10 @@
     >
         @foreach ($customers as $key => $customer)
             <tr class="position-relative">
-                <td width="1%" class="list-check-col">
-                    <img width="50" class="rounded-circle me-2" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
-                </td>
                 <td>
                     <h5 class="m-0 text-bold">
                         <a class="kq_search d-block" href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">{{ $customer->displayName() }}</a>
                     </h5>
-                    <span class="text-muted kq_search">{{ $customer->user->email }}</span><br>
                     <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($customer->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>
                     <br />
                     <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($customer->created_at, 'datetime_full') }}</span>
@@ -33,7 +29,7 @@
                         <span class="text-muted2">{{ trans('messages.customer.no_active_subscription') }}</span>
                     @endif
                 </td>
-                <td class="stat-fix-size">
+                <td class="">
                     @if ($customer->getCurrentActiveGeneralSubscription())
                         <div class="d-flex">
                             <div class="single-stat-box pull-left me-5">
@@ -60,16 +56,18 @@
                     @endif
                 </td>
                 <td>
+                    @include('admin.customers._user_avatars', [
+                        'customer' => $customer,
+                    ])
+                    
+                    <span class="text-muted2">{{ trans('messages.customer.users') }}</span>
+                </td>
+                <td>
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $customer->status }}">{{ trans('messages.user_status_' . $customer->status) }}</span>
                     </span>
                 </td>
                 <td class="text-end">
-                    @can('loginAs', $customer)
-                        <a href="{{ action('Admin\CustomerController@loginAs', $customer->uid) }}" data-popup="tooltip"
-                            title="{{ trans('messages.login_as_this_customer') }}" role="button"
-                            class="btn btn-primary btn-icon"><span class="material-symbols-rounded">login</span></a>
-                    @endcan
                     @can('update', $customer)
                         <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}"
                             data-popup="tooltip" title="{{ trans('messages.edit') }}"
@@ -118,12 +116,7 @@
                                     </li>
                                 @endcan
                                 <li>
-                                    <a list-action="one-click-login" class="dropdown-item" href="{{ action('Admin\CustomerController@oneClickLogin', $customer->uid) }}">
-                                        <span class="material-symbols-rounded">link</span> {{ trans('messages.admin.generate_one_click_login') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $customer->uid]) }}">
+                                    <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.customer.delete.confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $customer->uid]) }}">
                                         <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>

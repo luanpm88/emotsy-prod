@@ -144,7 +144,7 @@ class CampaignPolicy
         $customer = $user->customer;
 
         // is admin or log as customer from admin
-        $can = ((null !== \Session::get('orig_customer_id') && \Auth::user()->customer) || $user->admin);
+        $can = ((null !== \Session::get('orig_user_uid') && \Auth::user()->customer) || $user->admin);
 
         // same as resume policy
         $can = $can && $item->customer_id == $customer->id && in_array($item->status, [

@@ -404,9 +404,9 @@ class Admin extends Model
     public function can($action, $item = null)
     {
         if ($item) {
-            return $this->user->can($action, [$item, 'admin']);
+            return \Auth::user()->can($action, [$item, 'admin']);
         } else {
-            return $this->user->can($action, ['admin']);
+            return \Auth::user()->can($action, ['admin']);
         }
     }
 

@@ -18,19 +18,11 @@
         <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}" class="search-result border-bottom d-block">
             <div class="d-flex align-items-center">
                 <div>
-                    <img width="40px" height="40px" class="shadow-sm me-3 rounded-circle"
-                        src="{{ isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $customer->uid : $customer->user->getProfileImageUrl() }}" />
-                </div>
-                <div>
                     <div class="d-flex">
                         <label class="fw-600">
                             {{ $customer->displayName() }}
                         </label>
                     </div>
-                        
-                    <p class="desc text-muted mb-0">
-                        {{ $customer->user->email }}
-                    </p>
                 </div>
             </div>
         </a>

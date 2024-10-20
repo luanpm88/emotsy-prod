@@ -55,7 +55,8 @@ class MailListController extends Controller
     public function create(Request $request)
     {
         // Generate info
-        $customer = $request->user()->customer;
+        $user = $request->user();
+        $customer = $user->customer;
         $list = new \Acelle\Model\MailList(['all_sending_servers' => true]);
         $list->contact = new \Acelle\Model\Contact();
 
@@ -63,7 +64,7 @@ class MailListController extends Controller
             $list->contact->fill($customer->contact->toArray());
             $list->send_to = $customer->contact->email;
         } else {
-            $list->send_to = $customer->user->email;
+            $list->send_to = $user->email;
         }
 
         // default values

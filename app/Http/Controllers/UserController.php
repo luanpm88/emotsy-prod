@@ -19,12 +19,15 @@ class UserController extends Controller
      */
     public function loginBack(Request $request)
     {
-        $id = \Session::pull('orig_user_id');
+        $customer = $request->user()->customer;
+        $id = \Session::pull('orig_user_uid');
         $orig_user = User::findByUid($id);
 
         \Auth::login($orig_user);
 
-        return redirect()->action('Admin\UserController@index');
+        return redirect()->action('Admin\UserController@index', [
+            'customer_uid' => $customer->uid,
+        ]);
     }
 
     /**
@@ -154,6 +157,199 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        return view('users.index');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        $users = $request->user()->customer->users()
+            ->search($request->keyword)
+            ->orderBy($request->sort_order ?? 'created_at', $request->sort_direction ?? 'desc')
+            ->paginate($request->per_page);
+
+        return view('users._list', [
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $user = $request->user()->customer->newUser();
+
+        return view('users.create', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        // Get current user
+        $user = $request->user()->customer->newUser();
+
+        // 
+        [$result, $errors] = $user->saveFromRequest($request);
+
+        // redirect if fails
+        if (!$result) {
+            return response()->view('users.create', [
+                'user' => $user,
+                'errors' => $errors,
+            ], 400);
+        }
+
+        return redirect()->action('UserController@index');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, $id)
+    {
+        $user = \Acelle\Model\User::findByUid($id);
+
+        return view('users.edit', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        // Get current user
+        $user = \Acelle\Model\User::findByUid($id);
+
+        // 
+        [$result, $errors] = $user->saveFromRequest($request);
+
+        // redirect if fails
+        if (!$result) {
+            return response()->view('users.edit', [
+                'user' => $user,
+                'errors' => $errors,
+            ], 400);
+        }
+
+        return redirect()->action('UserController@index');
+    }
+
+    /**
+     * Enable item.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request)
+    {
+        $users = \Acelle\Model\User::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
+
+        foreach ($users->get() as $user) {
+            // authorize
+            if ($user->customer->can('enable', $user)) {
+                $user->enable();
+            }
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.user.disabled');
+    }
+
+    /**
+     * Disable item.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request)
+    {
+        $users = \Acelle\Model\User::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
+
+        foreach ($users->get() as $user) {
+            // authorize
+            if ($user->customer->can('disable', $user)) {
+                $user->disable();
+            }
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.user.disabled');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
+
+        $users = \Acelle\Model\User::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
+
+        foreach ($users->get() as $user) {
+            // authorize
+            if (!$user->customer->can('delete', $user)) {
+                return;
+            }
+        }
+
+        foreach ($users->get() as $user) {
+            $user->delete();
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.user.deleted');
+    }
+    
     public function verifySelectMethod(Request $request)
     {
         if (!$request->user()->is2FAEnabled()) {

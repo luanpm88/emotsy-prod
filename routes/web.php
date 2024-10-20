@@ -638,6 +638,12 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/update-stats', 'CampaignController@updateStats');
     Route::get('campaigns/{uid}/debug', 'CampaignController@debug');
 
+    // User
+    Route::get('account/users/listing/{page?}', 'UserController@listing');
+    Route::get('account/users/delete', 'UserController@delete');
+    Route::get('account/users/disable', 'UserController@disable');
+    Route::get('account/users/enable', 'UserController@enable');
+    Route::resource('account/users', 'UserController');
     Route::get('users/login-back', 'UserController@loginBack');
 
     // Sending servers
@@ -996,11 +1002,13 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/notifications', 'NotificationController@index');
 
     // User
-    Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
-    Route::get('admin/users/listing/{page?}', 'UserController@listing');
-    Route::get('admin/users/sort', 'UserController@sort');
-    Route::get('admin/users/delete', 'UserController@delete');
-    Route::resource('admin/users', 'UserController');
+    Route::get('admin/users/{uid}/one-click-login', 'UserController@oneClickLogin');
+    Route::get('admin/customers/{customer_uid}/users/login-as/{uid}', 'UserController@loginAs');
+    Route::get('admin/customers/{customer_uid}/users/listing/{page?}', 'UserController@listing');
+    Route::get('admin/customers/{customer_uid}/users/delete', 'UserController@delete');
+    Route::get('admin/customers/{customer_uid}/users/disable', 'UserController@disable');
+    Route::get('admin/customers/{customer_uid}/users/enable', 'UserController@enable');
+    Route::resource('admin/customers/{customer_uid}/users', 'UserController');
 
     // Form Template
     Route::get('admin/templates/forms/{uid}/preview', 'FormTemplateController@preview');
@@ -1364,6 +1372,14 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Chat
     Route::post('admin/chat', 'ChatController@chat');
+
+    // Role
+    Route::post('admin/roles/delete', 'RoleController@delete');
+    Route::post('admin/roles/disable', 'RoleController@disable');
+    Route::post('admin/roles/enable', 'RoleController@enable');
+    Route::get('admin/roles/list', 'RoleController@list');
+    Route::resource('admin/roles', 'RoleController');
+    Route::post('admin/roles/{uid}/update', 'RoleController@update');
 
     //
     Route::post('admin/verify/index', 'VerificationController@index');
