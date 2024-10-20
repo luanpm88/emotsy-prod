@@ -16,6 +16,18 @@ class CreateUserdbSendingDomains extends Migration
         Schema::create('sending_domains', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->uuid('uid')->unique();
+
+            $table->string('name');
+            $table->string('status');
+            $table->text('dkim_private');
+            $table->text('dkim_public');
+            $table->string('signing_enabled')->default(true);
+            $table->text('verification_token')->nullable();
+            $table->integer('sending_server_id')->unsigned()->nullable();
+
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 

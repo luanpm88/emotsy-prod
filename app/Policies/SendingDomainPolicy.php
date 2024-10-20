@@ -72,7 +72,7 @@ class SendingDomainPolicy
             case 'admin':
                 $ability = $user->admin->getPermission('sending_domain_update');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
@@ -102,7 +102,7 @@ class SendingDomainPolicy
             case 'admin':
                 $ability = $user->admin->getPermission('sending_domain_delete');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
