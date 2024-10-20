@@ -40,12 +40,17 @@ class ChangeSendingDomains extends Migration
         // Clean upu invalid records
         \Acelle\Model\SendingDomain::whereNull('customer_id')->delete();
 
+        try {
+            Schema::table('sending_domains', function (Blueprint $table) {
+                $table->dropColumn('admin_id');
+            });
+        } catch (\Exception $ex) {
+
+        }
+
         // Change
         Schema::table('sending_domains', function (Blueprint $table) {
-            $table->integer('admin_id')->unsigned()->nullable()->change();
             $table->integer('customer_id')->unsigned()->nullable(false)->change();
-
-            $table->foreign('admin_id')->references('id')->nullable()->on('admins')->onDelete('set null');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
