@@ -48,6 +48,11 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = true;
                 break;
         }
@@ -63,6 +68,11 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = true;
                 break;
         }
@@ -78,6 +88,11 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = true;
                 break;
         }
@@ -93,6 +108,11 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = $user->customer->id == $blacklist->customer_id;
                 break;
         }
@@ -108,6 +128,11 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+                
                 $can = $user->customer->id == $blacklist->customer_id;
                 break;
         }

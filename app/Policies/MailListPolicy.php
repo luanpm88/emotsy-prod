@@ -18,6 +18,11 @@ class MailListPolicy
 
     public function create(User $user)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         // init
         $customer = $user->customer;
         $max = get_tmp_quota($customer, 'list_max');
@@ -41,18 +46,33 @@ class MailListPolicy
 
     public function update(User $user, MailList $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }
 
     public function delete(User $user, MailList $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }
 
     public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers = 1)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $max = get_tmp_quota($user->customer, 'subscriber_max');
         $maxPerList = get_tmp_quota($user->customer, 'subscriber_per_list_max');
         return $user->customer->id == $mailList->customer_id &&
@@ -62,6 +82,11 @@ class MailListPolicy
 
     public function import(User $user, MailList $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         $can = get_tmp_quota($customer, 'list_import');
 
@@ -70,6 +95,11 @@ class MailListPolicy
 
     public function export(User $user, MailList $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+        
         $customer = $user->customer;
         $can = get_tmp_quota($customer, 'list_export');
 

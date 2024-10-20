@@ -23,6 +23,11 @@ class SendingDomainPolicy
                 $can = $user->admin->getPermission('sending_domain_read') != 'no';
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
                 if ($subscription->planGeneral->useOwnSendingServer()) {
                     return true;
@@ -75,6 +80,11 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
                 if ($subscription->planGeneral->useOwnSendingServer()) {
@@ -105,6 +115,11 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+                
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
                 if ($subscription->planGeneral->useOwnSendingServer()) {
