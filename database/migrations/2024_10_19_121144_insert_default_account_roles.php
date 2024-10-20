@@ -20,6 +20,7 @@ class InsertDefaultAccountRoles extends Migration
             'description' => 'The default role for new users who have full access to the customer account.',
         ]);
         $administratorRole->default = true;
+        $administratorRole->readonly = true;
         $administratorRole->save();
 
         // add permission
@@ -32,7 +33,8 @@ class InsertDefaultAccountRoles extends Migration
             'name' => 'Read-only',
             'description' => 'The default role for new users who can view all customer account data without the ability to edit or change it.',
         ]);
-        $readOnlyRole->default = true;
+        $readOnlyRole->default = false;
+        $readOnlyRole->readonly = true;
         $readOnlyRole->save();
 
         // add permission

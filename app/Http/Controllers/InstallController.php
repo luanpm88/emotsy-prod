@@ -324,6 +324,9 @@ class InstallController extends Controller
             $customer = $admin->createCustomerAccount();
             $user->customer_id = $customer->id;
             $user->save();
+
+            // set default role to user
+            $user->setRole(\Acelle\Model\Role::getDefaultRole());
         }
 
         // Insert system urls settings

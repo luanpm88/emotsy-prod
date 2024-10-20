@@ -127,4 +127,9 @@ class Role extends Model
         return $this->rolePermissions()->where('permission', $permission)
             ->exists();
     }
+
+    public static function getDefaultRole()
+    {
+        return static::whereDefault(true)->first();
+    }
 }

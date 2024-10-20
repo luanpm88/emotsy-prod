@@ -19,14 +19,14 @@ class RolePolicy
 
     public function update(User $user, Role $role)
     {
-        $can = !$role->default;
+        $can = !$role->readonly;
 
         return $can;
     }
 
     public function enable(User $user, Role $role)
     {
-        $can = !$role->default;
+        $can = !$role->readonly;
 
         //
         $can = $can && !$role->isActive();
@@ -36,7 +36,7 @@ class RolePolicy
 
     public function disable(User $user, Role $role)
     {
-        $can = !$role->default;
+        $can = !$role->readonly;
 
         //
         $can = $can && $role->isActive();
@@ -46,7 +46,7 @@ class RolePolicy
 
     public function delete(User $user, Role $role)
     {
-        $can = !$role->default;
+        $can = !$role->readonly;
 
         return $can;
     }
