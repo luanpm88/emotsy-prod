@@ -99,7 +99,6 @@ class User extends Authenticatable
             throw new Exception("db_connection is missing for customer ".$customer->uid);
         }
         return LocalCustomer::on($customer->db_connection)->where('uid', $customer->uid)->first();
-        1/0;
     }
 
     public function admin()

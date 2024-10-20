@@ -31,7 +31,12 @@ class MailListController extends Controller
      */
     public function listing(Request $request)
     {
-        $customer = $request->user()->customer;
+        if (config('custom.db_sharding')) {
+            $customer = $request->user()->getLocalCustomer();
+        } else {
+            $customer = $request->user()->customer;
+        }
+
 
         $lists = $customer->mailLists()
             ->search($request->keyword)
@@ -57,10 +62,8 @@ class MailListController extends Controller
         // Generate info
         $customer = $request->user()->customer;
         $list = new \Acelle\Model\MailList(['all_sending_servers' => true]);
-        $list->contact = new \Acelle\Model\Contact();
 
         if ($customer->contact) {
-            $list->contact->fill($customer->contact->toArray());
             $list->send_to = $customer->contact->email;
         } else {
             $list->send_to = $customer->user->email;
@@ -79,9 +82,6 @@ class MailListController extends Controller
         // Get old post values
         if (null !== $request->old()) {
             $list->fill($request->old());
-        }
-        if (isset($request->old()['contact'])) {
-            $list->contact->fill($request->old()['contact']);
         }
 
         // Sending servers
@@ -139,11 +139,8 @@ class MailListController extends Controller
             }
             $this->validate($request, $rules);
 
-            // Save contact
-            $contact = \Acelle\Model\Contact::create($request->all()['contact']);
             $list->fill($request->all());
             $list->customer_id = $customer->id;
-            $list->contact_id = $contact->id;
             $list->save();
 
             // For sending servers
@@ -196,9 +193,6 @@ class MailListController extends Controller
         // Get old post values
         if (null !== $request->old()) {
             $list->fill($request->old());
-        }
-        if (isset($request->old()['contact'])) {
-            $list->contact->fill($request->old()['contact']);
         }
 
         // Sending servers
@@ -257,9 +251,6 @@ class MailListController extends Controller
             }
             $this->validate($request, $rules);
 
-            // Save contact
-            $list->contact->fill($request->all()['contact']);
-            $list->contact->save();
             $list->fill($request->all());
             $list->save();
 
