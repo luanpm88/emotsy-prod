@@ -175,10 +175,12 @@
                     </div>
 
                 </div>
-                <hr>
-        <div class="text-start">
-            <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-        </div>
+                @if (Auth::user()->can('updateProfile', $customer))
+                    <hr>
+                    <div class="text-start">
+                        <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+                    </div>
+                @endif
             </div>
         </div>
 

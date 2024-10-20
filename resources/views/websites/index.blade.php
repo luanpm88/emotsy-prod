@@ -73,11 +73,13 @@
                     </span>
                 </div>
             </div>
-            <div class="text-end">
-                <a href="{{ action('WebsiteController@create') }}" role="button" class="btn btn-secondary">
-                    <span class="material-symbols-rounded">add</span> {{ trans('messages.website.add') }}
-                </a>
-            </div>
+            @if (Auth::user()->customer->can('create', Acelle\Model\Website::class))
+                <div class="text-end">
+                    <a href="{{ action('WebsiteController@create') }}" role="button" class="btn btn-secondary">
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.website.add') }}
+                    </a>
+                </div>
+            @endif
         </div>
 
         <div id="WebsitesIndexContent" class="pml-table-container">

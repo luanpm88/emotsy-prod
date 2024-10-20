@@ -93,42 +93,44 @@
                             ]) !!}
                         </p>
                     @endif                        
+                    
+                    @if (Auth::user()->can('updateProfile', Auth::user()->customer))
+                        @if (\Auth::user()->customer->can('disableRecurring', $subscription))
+                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.disable_recurring.confirm') }}"
+                                href="{{ action('SubscriptionController@disableRecurring') }}"
+                                class="btn btn-secondary me-1"
+                            >
+                                {{ trans('messages.subscription.disable_recurring') }}
+                            </a>
+                        @endif
 
-                    @if (\Auth::user()->customer->can('disableRecurring', $subscription))
-                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.disable_recurring.confirm') }}"
-                            href="{{ action('SubscriptionController@disableRecurring') }}"
-                            class="btn btn-secondary me-1"
-                        >
-                            {{ trans('messages.subscription.disable_recurring') }}
-                        </a>
-                    @endif
+                        @if (\Auth::user()->customer->can('enableRecurring', $subscription))
+                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.enable_recurring.confirm') }}"
+                                href="{{ action('SubscriptionController@enableRecurring') }}"
+                                class="btn btn-secondary me-2"
+                            >
+                                {{ trans('messages.subscription.enable_recurring') }}
+                            </a>
+                        @endif
 
-                    @if (\Auth::user()->customer->can('enableRecurring', $subscription))
-                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.enable_recurring.confirm') }}"
-                            href="{{ action('SubscriptionController@enableRecurring') }}"
-                            class="btn btn-secondary me-2"
-                        >
-                            {{ trans('messages.subscription.enable_recurring') }}
-                        </a>
-                    @endif
+                        @if (\Auth::user()->customer->can('changePlan', $subscription))
+                            <a
+                                href="{{ action('SubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
+                                class="btn btn-default change_plan_button me-1"
+                                data-size="sm"
+                            >
+                                {{ trans('messages.subscription.change_plan') }}
+                            </a>
+                        @endif
 
-                    @if (\Auth::user()->customer->can('changePlan', $subscription))
-                        <a
-                            href="{{ action('SubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
-                            class="btn btn-default change_plan_button me-1"
-                            data-size="sm"
-                        >
-                            {{ trans('messages.subscription.change_plan') }}
-                        </a>
-                    @endif
-
-                    @if (\Auth::user()->customer->can('cancelNow', $subscription))
-                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
-                            href="{{ action('SubscriptionController@cancelNow') }}"
-                            class="btn btn-danger me-2"
-                        >
-                            {{ trans('messages.subscription.cancel_now') }}
-                        </a>
+                        @if (\Auth::user()->customer->can('cancelNow', $subscription))
+                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+                                href="{{ action('SubscriptionController@cancelNow') }}"
+                                class="btn btn-danger me-2"
+                            >
+                                {{ trans('messages.subscription.cancel_now') }}
+                            </a>
+                        @endif
                     @endif
                 @endif
             </div>

@@ -22,16 +22,31 @@ class SenderPolicy
 
     public function create(User $user, Sender $sender)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         return true;
     }
 
     public function update(User $user, Sender $sender)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         return $user->customer->id == $sender->customer_id;
     }
 
     public function delete(User $user, Sender $sender)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+        
         return $user->customer->id == $sender->customer_id;
     }
 

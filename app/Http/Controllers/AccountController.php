@@ -369,6 +369,11 @@ class AccountController extends Controller
      */
     public function editPaymentMethod(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         // Save posted data
         if ($request->isMethod('post')) {
             if (!Billing::isGatewayRegistered($request->payment_method)) {

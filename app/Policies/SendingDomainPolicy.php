@@ -23,11 +23,6 @@ class SendingDomainPolicy
                 $can = $user->admin->getPermission('sending_domain_read') != 'no';
                 break;
             case 'customer':
-                // RBAC check
-                if ($user->hasPermission('account.read_only')) {
-                    return false;   
-                }
-
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
                 if ($subscription->planGeneral->useOwnSendingServer()) {
                     return true;
@@ -61,9 +56,23 @@ class SendingDomainPolicy
         return $can;
     }
 
-    public function create(User $user)
+    public function create(User $user, SendingDomain $item, $role)
     {
-        return true;
+        switch ($role) {
+            case 'admin':
+                $can = true;
+                break;
+            case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
+                $can = true;
+                break;
+        }
+
+        return $can;
     }
 
     public function update(User $user, SendingDomain $item, $role)
@@ -119,7 +128,7 @@ class SendingDomainPolicy
                 if ($user->hasPermission('account.read_only')) {
                     return false;   
                 }
-                
+
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
                 if ($subscription->planGeneral->useOwnSendingServer()) {
