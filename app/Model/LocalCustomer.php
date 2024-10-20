@@ -26,4 +26,9 @@ class LocalCustomer extends Customer
 {
     protected $connection = null;
     protected $table = 'customers';
+
+    public function master()
+    {
+        return $this->setConnection('mysql')->refresh();
+    }
 }
