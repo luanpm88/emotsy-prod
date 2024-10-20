@@ -1576,6 +1576,7 @@ class CampaignController extends Controller
             'subscribers' => $subscribers,
             'campaign' => $campaign,
             'list' => $campaign->defaultMailList,
+            'columns' => $request->user()->getSetting('subscribers_columns') ?? ['created_at', 'updated_at'],
         ]);
     }
 
