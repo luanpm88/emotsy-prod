@@ -16,7 +16,7 @@ class CreateUserdbSubscribers extends Migration
         Schema::create('subscribers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid')->unique();
+            $table->uuid('uid');
 
             $table->string('email');
             $table->string('status');
@@ -40,6 +40,7 @@ class CreateUserdbSubscribers extends Migration
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
 
             // Indexes
+            $table->unique(['mail_list_id', 'email']);
             $table->index('mail_list_id');
             $table->index('email');
         });
