@@ -1985,4 +1985,18 @@ class Customer extends Model
 
         return [$customer, $user];
     }
+
+    public function hasLocalDb()
+    {
+        return !is_null($this->db_connection);
+    }
+
+    public function local()
+    {
+        if (!$this->hasLocalDb()) {
+            throw new Exception('Customer does not have a local DB');
+        }
+
+        return LocalCustomer::on($this->db_connection)->where('uid', $this->uid)->first();
+    }
 }
