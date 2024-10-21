@@ -294,31 +294,21 @@ class InstallController extends Controller
         // Insert default superuser
         $mysqli->query(sprintf('DELETE FROM %s WHERE 1', table('users')));
 
-        // validation
-        list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
-            $admin = $request->user()->admin,
-            $name = $request->name,
-            $timezone = $request->timezone,
-            $language_id = $request->language_id,
-
-            $email = $request->email,
-            $password = $request->password,
-            $passwordConfirmation = $request->password_confirmation,
-            $first_name = $request->first_name,
-            $last_name = $request->last_name,
-            $image = $request->image,
-            $role_uid = $request->role_uid
+        // add user
+        $user = \Acelle\Model\User::newDefault();
+        [$result, $errors] = $user->saveUser(
+            $email = $site_info['email'],
+            $password = $site_info['password'],
+            $passwordConfirmation = $site_info['password'],
+            $first_name = $site_info['first_name'],
+            $last_name = $site_info['last_name'],
+            $image = null,
+            $role_uid = \Acelle\Model\Role::getDefaultRole()->uid
         );
 
-        $user = new \Acelle\Model\User();
-        $user->api_token = str_random(60);
-        $user->email = $site_info['email'];
-        $user->first_name = $site_info['first_name'];
-        $user->last_name = $site_info['last_name'];
-        $user->password = bcrypt($site_info['password']);
-        $user->status = 'active';
-        $user->activated = 1;
-        $user->save();
+        if (!$result) {
+            throw new \Exception($errors);
+        }
 
         // Create admin with appropriate locale / language_id
         $mysqli->query(sprintf('DELETE FROM %s WHERE 1', table('admins')));
@@ -326,23 +316,19 @@ class InstallController extends Controller
         $locale = \App::getLocale();
         $language = \Acelle\Model\Language::getFirstLanguageByCode($locale);
 
-        $admin = new \Acelle\Model\Admin();
-        $admin->user_id = 1;
-        $admin->admin_group_id = 1;
-        $admin->language_id = $language->id;
-        $admin->timezone = config('app.timezone');
-        $admin->status = 'active';
-        $admin->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
-        $admin->save();
+        // default admin
+        $admin = \Acelle\Model\Admin::newAdmin();
+        [$result, $errors] = $admin->saveAdmin(
+            $user = $user,
+            $admin_group_id = 1,
+            $creator_id = null,
+            $timezone = config('app.timezone'),
+            $language_id = $language->id,
+            $create_customer_account = 'yes'
+        );
 
-        if ($site_info['create_customer_account'] == 'yes') {
-            $mysqli->query(sprintf('DELETE FROM %s WHERE 1', table('customers')));
-            $customer = $admin->createCustomerAccount();
-            $user->customer_id = $customer->id;
-            $user->save();
-
-            // set default role to user
-            $user->setRole(\Acelle\Model\Role::getDefaultRole());
+        if (!$result) {
+            throw new \Exception($errors);
         }
 
         // Insert system urls settings

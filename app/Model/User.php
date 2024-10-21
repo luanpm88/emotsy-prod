@@ -980,7 +980,7 @@ class User extends Authenticatable
         }
 
         // Update password
-        if (!empty($request->password)) {
+        if (!empty($password)) {
             $this->password = bcrypt($password);
         }
 

@@ -589,6 +589,7 @@ class Admin extends Model
     {
         $admin = new self();
         $admin->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+        $admin->status = static::STATUS_ACTIVE;
 
         return $admin;
     }
@@ -626,5 +627,58 @@ class Admin extends Model
         } else {
             return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
         }
+    }
+
+    public function saveAdmin(
+        $user,
+        $admin_group_id,
+        $creator_id,
+        $timezone,
+        $language_id,
+        $create_customer_account=null
+    )
+    {
+        $rules = [
+            'user_id' => 'required',
+            'admin_group_id' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
+
+        // fill
+        $this->user_id = $user->id;
+        $this->admin_group_id = $admin_group_id;
+        $this->timezone = $timezone;
+        $this->language_id = $language_id;
+        if ($creator_id) {
+            $this->creator_id = $creator_id;
+        }
+
+        $validator = \Validator::make([
+            'user_id' => $user->id,
+            'admin_group_id' => $admin_group_id,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+        ], $rules);
+
+        if ($validator->fails()) {
+            return [false, $validator->errors()];
+        }
+
+        // save
+        $this->save();
+
+        // create customer account
+        if (!empty($create_customer_account) && $create_customer_account == 'yes') {
+            // create customer account
+            $customer = $this->createCustomerAccount();
+
+            // set customer_id to the user
+            $user->customer_id = $customer->id;
+            $user->save();
+        }
+
+        // success
+        return [true, $validator->errors()];
     }
 }

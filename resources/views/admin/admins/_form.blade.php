@@ -5,7 +5,7 @@
 			<div class="media profile-image">
 				<div class="media-left">
 					<a href="#" class="upload-media-container">
-						<img preview-for="image" empty-src="{{ AppUrl::asset('images/placeholder.jpg') }}" src="{{ $admin->user->getProfileImageUrl() }}" class="rounded-circle" alt="">
+						<img preview-for="image" empty-src="{{ AppUrl::asset('images/placeholder.jpg') }}" src="{{ $user->getProfileImageUrl() }}" class="rounded-circle" alt="">
 					</a>
 					<input type="file" name="image" class="file-styled previewable hide">
 					<input type="hidden" name="_remove_image" value='' />
@@ -24,7 +24,7 @@
 		<div class="sub_section">
 			<h2 class="text-semibold text-primary">{{ trans('messages.account') }}</h2>
 
-			@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $admin->user->email, 'help_class' => 'profile', 'rules' => $admin->user->rules()])
+			@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => $user->rules()])
 
 			@include('helpers.form_control', ['type' => 'select',
 											'name' => 'admin_group_id',
@@ -32,12 +32,12 @@
 											'value' => $admin->admin_group_id,
 											'options' => Acelle\Model\AdminGroup::getSelectOptions(Auth::user()->admin),
 											'include_blank' => trans('messages.choose'),
-											'rules' => $admin->user->rules()
+											'rules' => $user->rules()
 										])
 
-			@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $admin->user->rules()])
+			@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $user->rules()])
 
-			@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => $admin->user->rules()])
+			@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => $user->rules()])
 
 		</div>
 	</div>
@@ -48,19 +48,19 @@
             @if (get_localization_config('show_last_name_first', Auth::user()->admin->getLanguageCode()))
                 <div class="row">
                     <div class="col-md-6">
-                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $admin->user->last_name, 'rules' => $admin->user->rules()])
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
                     </div>
                     <div class="col-md-6">
-                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $admin->user->first_name, 'rules' => $admin->user->rules()])
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
                     </div>
                 </div>
             @else
                 <div class="row">
                     <div class="col-md-6">
-                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $admin->user->first_name, 'rules' => $admin->user->rules()])
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
                     </div>
                     <div class="col-md-6">
-                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $admin->user->last_name, 'rules' => $admin->user->rules()])
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
                     </div>
                 </div>
             @endif
@@ -75,7 +75,7 @@
                     'value' => $admin->timezone ?? config('app.timezone'),
                     'options' => Tool::getTimezoneSelectOptions(),
                     'include_blank' => trans('messages.choose'),
-                    'rules' => $admin->user->rules()
+                    'rules' => $user->rules()
                 ])
             @endif
 			
@@ -87,7 +87,7 @@
                 'value' => $admin->language_id ?? \Acelle\Model\Language::getDefaultLanguage()->id,
                 'options' => Acelle\Model\Language::getSelectOptions(),
                 'include_blank' => trans('messages.choose'),
-                'rules' => $admin->user->rules()
+                'rules' => $user->rules()
             ])
 			
 

@@ -93,11 +93,12 @@ class CustomerController extends Controller
     {
         // validation
         list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+            // customer information
             $admin = $request->user()->admin,
             $name = $request->name,
             $timezone = $request->timezone,
             $language_id = $request->language_id,
-
+            // user information
             $email = $request->email,
             $password = $request->password,
             $passwordConfirmation = $request->password_confirmation,
