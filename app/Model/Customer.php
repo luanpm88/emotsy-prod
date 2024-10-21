@@ -2214,38 +2214,27 @@ class Customer extends Model
         }
 
         // SAVE CUSTOMER
-        if ($admin) {
-            $customer->admin_id = $admin->id;
-        }
-        $customer->save();
-
-        // Execute registered hooks
-        Hook::execute('customer_added', [$customer]);
+        list($validator, $customer) = static::createCustomer(
+            $name,
+            $timezone,
+            $language_id,
+            $admin
+        );
 
         // SAVE USER
-        $user->password = bcrypt($password);
-        
+        list($result, $errors) = $user->saveUser(
+            $email,
+            $password,
+            $passwordConfirmation,
+            $first_name,
+            $last_name,
+            $image,
+            $role_uid
+        );
+
         // set customer
         $user->customer_id = $customer->id;
         $user->save();
-
-        // Upload and save image
-        if ($image) {
-            if ($image->isValid()) {
-                // Remove old images
-                $user->uploadProfileImage($image);
-            }
-        }
-
-        // update user role
-        if ($role_uid) {
-            $user->setRole(Role::findByUid($role_uid));
-        }
-
-        // set default role
-        else {
-            $user->setRole(Role::getDefaultRole());
-        }
 
         // success
         return [$validator, $customer, $user];
