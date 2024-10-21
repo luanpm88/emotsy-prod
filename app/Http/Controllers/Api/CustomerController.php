@@ -35,68 +35,34 @@ class CustomerController extends Controller
     {
         // Get current user
         $current_user = \Auth::guard('api')->user();
-        $customer = \Acelle\Model\Customer::newCustomer();
-        $user = new \Acelle\Model\User();
 
-        // authorize
-        if (!$current_user->can('create', $customer)) {
-            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+        // validation
+        list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+            $admin = $current_user->admin,
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id,
+
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = \Acelle\Model\Role::getDefaultRole()->uid,
+        );
+
+        //  errors
+        if (!$validator->errors()->isEmpty()) {
+            return response()->json($validator->messages(), 403);
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $rules = $user->apiRules();
-
-            $validator = \Validator::make($request->all(), $rules);
-            if ($validator->fails()) {
-                return response()->json($validator->messages(), 403);
-            }
-
-            // Create user account for customer
-            $user = new \Acelle\Model\User();
-            $user->fill($request->all());
-            $user->email = $request->email;
-            $user->activated = true;
-
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            $user->save();
-
-            // Save current user info
-            $customer->admin_id = $current_user->admin->id;
-            $customer->name = $user->displayName(get_localization_config('show_last_name_first', $current_user->customer->getLanguageCode()));
-            $customer->fill($request->all());
-            $customer->status = 'active';
-
-            if ($customer->save()) {
-                $user->customer_id = $customer->id;
-                $user->save();
-
-                // Upload and save image
-                if ($request->hasFile('image')) {
-                    if ($request->file('image')->isValid()) {
-                        $user->uploadProfileImage($request->file('image'));
-                    }
-                }
-
-                // Remove image
-                if ($request->_remove_image == 'true') {
-                    $user->removeProfileImage();
-                }
-
-                // set default role to user
-                $user->setRole(\Acelle\Model\Role::getDefaultRole());
-
-                return \Response::json(array(
-                    'status' => 1,
-                    'message' => trans('messages.customer.created'),
-                    'customer_uid' => $customer->uid,
-                    'api_token' => $user->api_token
-                ), 200);
-            }
-        }
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.customer.created'),
+            'customer_uid' => $customer->uid,
+            'api_token' => $user->api_token
+        ), 200);
     }
 
     /**
@@ -124,52 +90,23 @@ class CustomerController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
-        // save posted data
-        if ($request->isMethod('patch')) {
-            // Prenvent save from demo mod
-            $user = $customer->getFirstUserLegacy();
-            $user->fill($request->all());
+        // validation
+        list($validator, $customer) = $customer->updateCustomer(
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id
+        );
 
-            if (config('app.demo')) {
-                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
-            }
-
-            $rules = $user->apiUpdateRules($request);
-
-            $validator = \Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                return response()->json($validator->messages(), 403);
-            }
-
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            $user->save();
-
-            // Save current user info
-            $customer->fill($request->all());
-            $customer->save();
-
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    $user->uploadProfileImage($request->file('image'));
-                }
-            }
-
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeProfileImage();
-            }
-
-            return \Response::json(array(
-                'status' => 1,
-                'message' => trans('messages.customer.updated'),
-                'customer_uid' => $customer->uid
-            ), 200);
+        //  errors
+        if (!$validator->errors()->isEmpty()) {
+            return response()->json($validator->messages(), 403);
         }
+
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.customer.updated'),
+            'customer_uid' => $customer->uid
+        ), 200);
     }
 
     /**

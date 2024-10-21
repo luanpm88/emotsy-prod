@@ -91,36 +91,28 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        // Get current user
-        $customer = \Acelle\Model\Customer::newCustomer();
-        $user = $customer->newUser();
+        // validation
+        list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+            $admin = $request->user()->admin,
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id,
 
-        // authorize
-        if (\Gate::denies('create', $customer)) {
-            return $this->notAuthorized();
-        }
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
 
-        $validator = $customer->validateFromRequest($request);
-
+        //  errors
         if (!$validator->errors()->isEmpty()) {
             return view('admin.customers.create', [
                 'customer' => $customer,
                 'user' => $user,
                 'errors' => $validator->errors(),
-            ]);
-        }
-
-        // 
-        $customer->saveFromRequest($request);
-        $user->customer_id = $customer->id;
-
-        list($result, $errors) = $user->saveFromRequest($request);
-
-        if (!$errors->isEmpty()) {
-            return view('admin.customers.create', [
-                'customer' => $customer,
-                'user' => $user,
-                'errors' => $errors,
             ]);
         }
 
@@ -180,15 +172,21 @@ class CustomerController extends Controller
             return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
-        // Get current user
+        //
         $customer = \Acelle\Model\Customer::findByUid($id);
 
-        $errors = $customer->saveFromRequest($request);
+        // validation
+        list($validator, $customer) = $customer->updateCustomer(
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id
+        );
 
-        if (!$errors->isEmpty()) {
-            return view('admin.customers.create', [
+        //  errors
+        if (!$validator->errors()->isEmpty()) {
+            return view('admin.customers.edit', [
                 'customer' => $customer,
-                'errors' => $errors,
+                'errors' => $validator->errors(),
             ]);
         }
 

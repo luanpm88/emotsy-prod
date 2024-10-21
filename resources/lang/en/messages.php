@@ -3583,4 +3583,5 @@
   'user.select_role' => 'Select user role',
   'user.status.activated' => 'Activated',
   'user.status.deactivated' => 'Deactivated',
+  'account.default_account_name' => 'Default Account',
 ) ?>

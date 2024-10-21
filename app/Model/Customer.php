@@ -627,7 +627,7 @@ class Customer extends Model
             $user->save();
             
             // default role
-            $user->setRole(Role::default()->first());
+            $user->setRole(Role::getDefaultRole());
         });
 
         // Important: return the newly created USER
@@ -2068,5 +2068,140 @@ class Customer extends Model
         return $this->id == $mailList->customer_id &&
             ($max >= $this->subscribersCount() + $addNumber || $max == -1) &&
             ($maxPerList >= $mailList->subscribersCount() + $addNumber || $maxPerList == -1);
+    }
+
+    public static function createCustomerWithDefaultUser(
+        $admin,
+        $name,
+        $timezone,
+        $language_id,
+
+        $email,
+        $password,
+        $passwordConfirmation,
+        $first_name,
+        $last_name,
+        $image,
+        $role_uid
+    ) {
+        // init
+        $customer = static::newCustomer();
+        $user = $customer->newUser();
+
+        // fill customer data
+        $customer->name = $name;
+        $customer->timezone = $timezone;
+        $customer->language_id = $language_id;
+
+        // fill user data
+        $user->email = $email;
+        $user->password = $password;
+        $user->first_name = $first_name;
+        $user->last_name = $last_name;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed|min:5|max:255',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
+            'role_uid' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $passwordConfirmation,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'image' => $image,
+            'role_uid' => $role_uid,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $customer, $user];
+        }
+
+        // SAVE CUSTOMER
+        if ($admin) {
+            $customer->admin_id = $admin->id;
+        }
+        $customer->save();
+
+        // Execute registered hooks
+        Hook::execute('customer_added', [$customer]);
+
+        // SAVE USER
+        $user->password = bcrypt($password);
+        
+        // set customer
+        $user->customer_id = $customer->id;
+        $user->save();
+
+        // Upload and save image
+        if ($image) {
+            if ($image->isValid()) {
+                // Remove old images
+                $user->uploadProfileImage($image);
+            }
+        }
+
+        // update user role
+        if ($role_uid) {
+            $user->setRole(Role::findByUid($role_uid));
+        }
+
+        // set default role
+        else {
+            $user->setRole(Role::getDefaultRole());
+        }
+
+        // success
+        return [$validator, $customer, $user];
+    }
+
+    public function updateCustomer(
+        $name,
+        $timezone,
+        $language_id
+    ) {
+        // fill customer data
+        $this->name = $name;
+        $this->timezone = $timezone;
+        $this->language_id = $language_id;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $this];
+        }
+
+        // SAVE CUSTOMER
+        $this->save();
+
+        // success
+        return [$validator, $this];
     }
 }

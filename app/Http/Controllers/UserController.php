@@ -101,15 +101,32 @@ class UserController extends Controller
         // Initiate customer object for filling the form
         $customer = Customer::newCustomer();
         $user = new User();
-        if (!empty($request->old())) {
-            $customer->fill($request->old());
-            $user->fill($request->old());
-        }
 
         // save posted data
         if ($request->isMethod('post')) {
             $user->fill($request->all());
-            $rules = $user->registerRules();
+
+            // // Captcha check
+            // if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
+            //     // @hCaptcha
+            //     if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
+            //         $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+            //         $success = $hcaptcha->check($request);
+            //         if (!$success) {
+            //             $rules['captcha_invalid'] = 'required';
+            //         }
+            //     } else {
+            //         $success = \Acelle\Library\Tool::checkReCaptcha($request);
+            //         if (!$success) {
+            //             $rules['recaptcha_invalid'] = 'required';
+            //         }
+            //     }
+            // }
+
+            // $this->validate($request, $rules);
+
+            // // Okay, create it
+            // $user = $customer->createAccountAndUser($request);
 
             // Captcha check
             if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
@@ -128,10 +145,30 @@ class UserController extends Controller
                 }
             }
 
-            $this->validate($request, $rules);
+            // validation
+            list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+                $admin = null,
+                $name = trans('messages.account.default_account_name'),
+                $timezone = $request->timezone,
+                $language_id = $request->language_id,
 
-            // Okay, create it
-            $user = $customer->createAccountAndUser($request);
+                $email = $request->email,
+                $password = $request->password,
+                $passwordConfirmation = $request->password,
+                $first_name = $request->first_name,
+                $last_name = $request->last_name,
+                $image = $request->image,
+                $role_uid = \Acelle\Model\Role::getDefaultRole()->uid
+            );
+
+            //  errors
+            if (!$validator->errors()->isEmpty()) {
+                return view('users.register', [
+                    'customer' => $customer,
+                    'user' => $user,
+                    'errors' => $validator->errors(),
+                ]);
+            }
 
             // user email verification
             if (true) {
