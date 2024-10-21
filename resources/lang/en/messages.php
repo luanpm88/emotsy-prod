@@ -3546,4 +3546,5 @@
   'subscription.review_plan_click_proceed' => 'By clicking the <strong><i>Proceed with payment</i></strong> button,
     you agree to our <span class="fw-600"><i>Term of Use</i> and <i>Privacy Policy</i></span>.',
   'subscription.get_started' => 'Get started',
+  'subscriber.activities' => 'Activities',
 ) ?>
