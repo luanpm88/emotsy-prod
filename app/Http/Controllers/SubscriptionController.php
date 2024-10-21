@@ -8,6 +8,8 @@ use Acelle\Model\SubscriptionLog;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Model\InvoiceNewSubscription;
+use Acelle\Model\InvoiceRenewSubscription;
+use Acelle\Model\InvoiceChangePlan;
 use Acelle\Model\Transaction;
 
 class SubscriptionController extends Controller
@@ -83,9 +85,28 @@ class SubscriptionController extends Controller
         // assign plan
         $subscription = $customer->assignGeneralPlan($plan);
 
-        // Check if subscriotion is new
+        //
+        $invoice = $subscription->getItsOnlyUnpaidInitInvoice();
+
+        // Nếu invoice cho plan mà bỏ qua payment when free thì return view confirmation
+        if (
+            in_array($invoice->type, [
+                InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
+                InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
+                InvoiceChangePlan::TYPE_CHANGE_PLAN,
+            ]) &&
+            $invoice->no_payment_required_when_free &&
+            $invoice->isFree()
+        ) {
+            // return to subscription
+            return redirect()->action('SubscriptionController@noPaymentConfirmation', [
+                'invoice_uid' => $invoice->uid,
+            ]);
+        }
+
+        // redirect to billing information step
         return redirect()->action('SubscriptionController@billingInformation', [
-            'invoice_uid' => $subscription->getItsOnlyUnpaidInitInvoice()->uid,
+            'invoice_uid' => $invoice->uid,
         ]);
     }
 
@@ -109,7 +130,24 @@ class SubscriptionController extends Controller
         }
 
         // always update invoice price from plan
-        $invoice->mapType()->refreshPrice();
+        $invoice = $invoice->mapType();
+        $invoice->refreshPrice();
+
+        // Nếu invoice cho plan mà bỏ qua payment when free thì return view confirmation
+        if (
+            in_array($invoice->type, [
+                InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
+                InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
+                InvoiceChangePlan::TYPE_CHANGE_PLAN,
+            ]) &&
+            $invoice->no_payment_required_when_free &&
+            $invoice->isFree()
+        ) {
+            // return to subscription
+            return redirect()->action('SubscriptionController@noPaymentConfirmation', [
+                'invoice_uid' => $invoice->uid,
+            ]);
+        }
 
         // Save posted data
         if ($request->isMethod('post')) {
@@ -171,13 +209,30 @@ class SubscriptionController extends Controller
         }
 
         // always update invoice price from plan
-        $invoice->mapType()->refreshPrice();
+        $invoice = $invoice->mapType();
+        $invoice->refreshPrice();
 
         // nếu đang có pending transaction thì luôn show màn hình pending
         if ($invoice->getPendingTransaction()) {
             return view('subscription.pending', [
                 'invoice' => $invoice,
                 'transaction' => $invoice->getPendingTransaction(),
+            ]);
+        }
+
+        // Nếu invoice cho plan mà bỏ qua payment when free thì return view confirmation
+        if (
+            in_array($invoice->type, [
+                InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
+                InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
+                InvoiceChangePlan::TYPE_CHANGE_PLAN,
+            ]) &&
+            $invoice->no_payment_required_when_free &&
+            $invoice->isFree()
+        ) {
+            // return to subscription
+            return redirect()->action('SubscriptionController@noPaymentConfirmation', [
+                'invoice_uid' => $invoice->uid,
             ]);
         }
 
@@ -451,5 +506,61 @@ class SubscriptionController extends Controller
                 'invoice_uid' => $invoice->uid,
             ]);
         }
+    }
+
+    public function noPaymentConfirmation(Request $request)
+    {
+        $invoice = $request->user()->customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
+        $invoice = $invoice->mapType();
+
+        // can not found the invoice
+        if (!$invoice) {
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] does not exist!");
+        }
+        
+        // always update invoice price from plan
+        $invoice->refreshPrice();
+
+        // 
+        if (!in_array($invoice->type, [
+            InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
+            InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
+            InvoiceChangePlan::TYPE_CHANGE_PLAN,
+        ])) {
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "Invoice type is invalid!");
+        }
+
+        // can not found the invoice
+        if ($invoice->isPaid()) {
+            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+        }
+
+        // check settings
+        if (!$invoice->no_payment_required_when_free) {
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The plan no_payment_required_when_free setting is false!");
+        }
+
+        // check settings
+        if (!$invoice->isFree()) {
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice total is not free!");
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            // checkout no payment
+            $invoice->bypassPayment();
+
+            return redirect()->action('SubscriptionController@index');
+        }
+
+        return view('subscription.noPaymentConfirmation', [
+            'invoice' => $invoice,
+        ]);
     }
 }

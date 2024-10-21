@@ -51,6 +51,7 @@ class Plan extends Model
         'currency_id',
         'trial_amount',
         'trial_unit',
+        'no_payment_required_when_free',
     ];
 
     public function mapType()

@@ -62,6 +62,12 @@ class SubscriptionManager
             }
             */
 
+            // Bypass payment when no_payment_required_when_free
+            if ($invoice->no_payment_required_when_free && $invoice->isFree()) {
+                $invoice->bypassPayment();
+                continue;
+            }
+
             // auto charge
             $customer->getPreferredPaymentGateway()->autoCharge($invoice);
         }
