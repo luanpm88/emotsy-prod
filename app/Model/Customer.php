@@ -66,7 +66,7 @@ class Customer extends Model
 
     public function subscriptions()
     {
-        return $this->hasMany('Acelle\Model\Subscription');
+        return $this->hasMany('Acelle\Model\Subscription', 'customer_id');
     }
 
     public function generalSubscriptions()
@@ -124,7 +124,7 @@ class Customer extends Model
 
     public function language()
     {
-        return $this->belongsTo('Acelle\Model\Language', 'customer_id');
+        return $this->belongsTo('Acelle\Model\Language');
     }
 
     public function campaigns()
@@ -624,12 +624,12 @@ class Customer extends Model
 
     public function sendingServers()
     {
-        return $this->hasMany('Acelle\Model\SendingServer');
+        return $this->hasMany('Acelle\Model\SendingServer', 'customer_id');
     }
 
     public function subAccounts()
     {
-        return $this->hasMany('Acelle\Model\SubAccount');
+        return $this->hasMany('Acelle\Model\SubAccount', 'customer_id');
     }
 
     /**
