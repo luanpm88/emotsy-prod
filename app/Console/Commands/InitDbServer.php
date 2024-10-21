@@ -38,8 +38,24 @@ class InitDbServer extends Command
     public function handle()
     {
         $connection = $this->argument('connection');
-        artisan_migrate($connection);
+
+        if (empty($connection)) {
+            throw new \Exception('Empty connection');
+        }
+
+        echo "Initizalizing connection {$connection}...\n";
+
+        \Artisan::call("migrate", [
+            '--database' => $connection,
+            '--path' => 'database/userdb_migrations',
+            '--force' => true
+        ]);
 
         return 0;
+    }
+
+    private function loadRawSql($filename)
+    {
+        return file_get_contents(database_path("userdb/{$filename}"));
     }
 }
