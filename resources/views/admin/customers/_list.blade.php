@@ -11,6 +11,11 @@
                     <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($customer->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>
                     <br />
                     <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($customer->created_at, 'datetime_full') }}</span>
+                    <div>
+                        @include('admin.customers._user_avatars', [
+                            'customer' => $customer,
+                        ])
+                    </div>
                 </td>
                 <td>
                     @if ($customer->getCurrentActiveGeneralSubscription())
@@ -56,18 +61,33 @@
                     @endif
                 </td>
                 <td>
-                    @include('admin.customers._user_avatars', [
-                        'customer' => $customer,
-                    ])
-                    
-                    <span class="text-muted2">{{ trans('messages.customer.users') }}</span>
-                </td>
-                <td>
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $customer->status }}">{{ trans('messages.user_status_' . $customer->status) }}</span>
                     </span>
                 </td>
-                <td class="text-end">
+                <td class="text-end text-nowarp">
+                    <div class="btn-group">
+                        <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+                            {{ trans('messages.login_as') }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            @foreach ($customer->users()->where('id', '!=', Auth::user()->id)->limit(5)->get() as $index => $user)
+                                <li>
+                                    <a class="dropdown-item" href="{{ action('Admin\UserController@loginAs', [
+                                        'customer_uid' => $customer->uid,
+                                        'uid' => $user->uid,
+                                    ]) }}">
+                                        <div class="fw-600">
+                                            {{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}
+                                        </div>
+                                        <div>
+                                            {{ $user->email }}
+                                        </div>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                     @can('update', $customer)
                         <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}"
                             data-popup="tooltip" title="{{ trans('messages.edit') }}"

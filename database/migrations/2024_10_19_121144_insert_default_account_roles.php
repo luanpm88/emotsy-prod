@@ -16,7 +16,7 @@ class InsertDefaultAccountRoles extends Migration
         // 1. Default role: administrator
         $administratorRole = \Acelle\Model\Role::newDefault();
         $administratorRole->fillAttributes([
-            'name' => 'Administrator',
+            'name' => 'Full-access',
             'description' => 'The default role for new users who have full access to the customer account.',
         ]);
         $administratorRole->default = true;

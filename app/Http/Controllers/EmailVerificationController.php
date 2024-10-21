@@ -15,10 +15,10 @@ class EmailVerificationController extends Controller
         $subscription = \Acelle\Model\Subscription::findByUid($request->subscription_uid);
 
         // login
-        \Auth::login($subscription->customer->user);
+        \Auth::login($subscription->customer->getFirstUserLegacy());
 
         // 2FA
-        $subscription->customer->user->set2FAAuthenticated();
+        $subscription->customer->getFirstUserLegacy()->set2FAAuthenticated();
 
         // Billing return url
         $returnUrl = $this->addUrlParams($request->return_url, [

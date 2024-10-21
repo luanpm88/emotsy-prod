@@ -1798,7 +1798,7 @@
   'login.remember_me' => 'Remember me on this device',
   'login_as' => 'Login com',
   'login_as_this_admin' => 'Login com este administrador',
-  'login_as_this_customer' => 'Login com este cliente',
+  'login_as_this_user' => 'Login com este cliente',
   'login_recaptcha' => 'Captcha',
   'logout' => 'Sair',
   'logs' => 'Registos',

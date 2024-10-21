@@ -8502,13 +8502,17 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
 }
 .avatar-layers {
     position: relative;
-    min-width: 80px;
+    height: 45px;
+    padding-right: 10px;
 }
 .avatar-layer {
-    position: absolute;
+    width: 28px;
 }
 .avatar-layer .avatar-img {
-    border: solid 1px #888;
-    height: 28px;
-    width: 28px;
+    border: solid 2px #fff;
+    height: 36px;
+    width: 36px;
+}
+.avatar-layer .avatar-img:hover {
+    border: solid 2px #efefef;
 }

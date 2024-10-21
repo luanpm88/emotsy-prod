@@ -127,7 +127,7 @@ class CustomerController extends Controller
         // save posted data
         if ($request->isMethod('patch')) {
             // Prenvent save from demo mod
-            $user = $customer->user;
+            $user = $customer->getFirstUserLegacy();
             $user->fill($request->all());
 
             if (config('app.demo')) {
@@ -424,7 +424,7 @@ class CustomerController extends Controller
                 return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
             }
 
-            $user = $customer->user;
+            $user = $customer->getFirstUserLegacy();
         }
 
         $user->generateOneTimeToken();

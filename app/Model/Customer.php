@@ -103,14 +103,14 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\MailList', 'customer_id');
     }
 
-    public function user()
-    {
-        return $this->hasOne('Acelle\Model\User');
-    }
-
     public function users()
     {
         return $this->hasMany('Acelle\Model\User');
+    }
+
+    public function getFirstUserLegacy()
+    {
+        return $this->users()->first();
     }
 
     public function admin()
@@ -2059,5 +2059,14 @@ class Customer extends Model
             return null;
         }
         return json_decode($this->google_auth, true)['access_token'];
+    }
+
+    public function checkAddingSubscribersToMailListReachLimit($mailList, $addNumber)
+    {
+        $max = get_tmp_quota($this, 'subscriber_max');
+        $maxPerList = get_tmp_quota($this, 'subscriber_per_list_max');
+        return $this->id == $mailList->customer_id &&
+            ($max >= $this->subscribersCount() + $addNumber || $max == -1) &&
+            ($maxPerList >= $mailList->subscribersCount() + $addNumber || $maxPerList == -1);
     }
 }

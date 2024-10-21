@@ -1796,7 +1796,7 @@
   'login.remember_me' => 'Remember me on this device',
   'login_as' => 'Login as',
   'login_as_this_admin' => 'Login as this admin',
-  'login_as_this_customer' => 'Login as this customer',
+  'login_as_this_user' => 'Login as this user',
   'login_recaptcha' => 'Captcha',
   'logout' => 'Log Out',
   'logs' => 'Logs',

@@ -1581,7 +1581,7 @@
   'login.remember_me' => 'このデバイスで私を覚えておいてください',
   'login_as' => 'としてログイン',
   'login_as_this_admin' => 'この管理者としてログイン',
-  'login_as_this_customer' => 'この顧客としてログインします',
+  'login_as_this_user' => 'この顧客としてログインします',
   'login_recaptcha' => 'キャプチャ',
   'logout' => 'ログアウト',
   'logs' => 'ログ',

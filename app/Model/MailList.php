@@ -1220,12 +1220,12 @@ class MailList extends Model
                 $this->logger()->info("Processing a new batch: ".sizeof($batch));
 
                 // Throw exception if no room left
-                if (!$this->customer->user->can('addMoreSubscribers', [ $this, $more = 1 ])) {
+                if (!$this->customer->getFirstUserLegacy()->can('addMoreSubscribers', [ $this, $more = 1 ])) {
                     throw new Exception('MAX CONTACTS quota exceeded');
                 }
 
                 // The last time, only import the allowed room
-                if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
+                if ($this->customer->getFirstUserLegacy()->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {
                     $insertLimit = $this->getRemainingAddSubscribersQuota();
