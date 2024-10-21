@@ -294,6 +294,22 @@ class InstallController extends Controller
         // Insert default superuser
         $mysqli->query(sprintf('DELETE FROM %s WHERE 1', table('users')));
 
+        // validation
+        list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+            $admin = $request->user()->admin,
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id,
+
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
+
         $user = new \Acelle\Model\User();
         $user->api_token = str_random(60);
         $user->email = $site_info['email'];

@@ -2070,6 +2070,88 @@ class Customer extends Model
             ($maxPerList >= $mailList->subscribersCount() + $addNumber || $maxPerList == -1);
     }
 
+    public static function createCustomer(
+        $name,
+        $timezone,
+        $language_id,
+        $admin=null
+    ) {
+        // init
+        $customer = static::newCustomer();
+
+        // fill customer data
+        $customer->name = $name;
+        $customer->timezone = $timezone;
+        $customer->language_id = $language_id;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $customer];
+        }
+
+        // SAVE CUSTOMER
+        if ($admin) {
+            $customer->admin_id = $admin->id;
+        }
+        $customer->save();
+
+        // Execute registered hooks
+        Hook::execute('customer_added', [$customer]);
+
+        // success
+        return [$validator, $customer];
+    }
+
+    public function updateCustomer(
+        $name,
+        $timezone,
+        $language_id
+    ) {
+        // fill customer data
+        $this->name = $name;
+        $this->timezone = $timezone;
+        $this->language_id = $language_id;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $this];
+        }
+
+        // SAVE CUSTOMER
+        $this->save();
+
+        // success
+        return [$validator, $this];
+    }
+
     public static function createCustomerWithDefaultUser(
         $admin,
         $name,
@@ -2167,41 +2249,5 @@ class Customer extends Model
 
         // success
         return [$validator, $customer, $user];
-    }
-
-    public function updateCustomer(
-        $name,
-        $timezone,
-        $language_id
-    ) {
-        // fill customer data
-        $this->name = $name;
-        $this->timezone = $timezone;
-        $this->language_id = $language_id;
-
-        // rules
-        $rules = [
-            'name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-        ];
-
-        // validation
-        $validator = \Validator::make([
-            'name' => $name,
-            'timezone' => $timezone,
-            'language_id' => $language_id,
-        ], $rules);
-
-        // errors
-        if ($validator->fails()) {
-            return [$validator, $this];
-        }
-
-        // SAVE CUSTOMER
-        $this->save();
-
-        // success
-        return [$validator, $this];
     }
 }

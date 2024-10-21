@@ -8512,6 +8512,7 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
     border: solid 2px #fff;
     height: 36px;
     width: 36px;
+    background-color: #fff;
 }
 .avatar-layer .avatar-img:hover {
     border: solid 2px #efefef;

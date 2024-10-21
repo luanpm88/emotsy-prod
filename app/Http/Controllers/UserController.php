@@ -106,28 +106,6 @@ class UserController extends Controller
         if ($request->isMethod('post')) {
             $user->fill($request->all());
 
-            // // Captcha check
-            // if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
-            //     // @hCaptcha
-            //     if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
-            //         $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
-            //         $success = $hcaptcha->check($request);
-            //         if (!$success) {
-            //             $rules['captcha_invalid'] = 'required';
-            //         }
-            //     } else {
-            //         $success = \Acelle\Library\Tool::checkReCaptcha($request);
-            //         if (!$success) {
-            //             $rules['recaptcha_invalid'] = 'required';
-            //         }
-            //     }
-            // }
-
-            // $this->validate($request, $rules);
-
-            // // Okay, create it
-            // $user = $customer->createAccountAndUser($request);
-
             // Captcha check
             if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
                 // @hCaptcha
@@ -248,7 +226,15 @@ class UserController extends Controller
         $user = $request->user()->customer->newUser();
 
         // 
-        [$result, $errors] = $user->saveFromRequest($request);
+        [$result, $errors] = $user->saveUser(
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
 
         // redirect if fails
         if (!$result) {
@@ -291,7 +277,15 @@ class UserController extends Controller
         $user = \Acelle\Model\User::findByUid($id);
 
         // 
-        [$result, $errors] = $user->saveFromRequest($request);
+        [$result, $errors] = $user->saveUser(
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
 
         // redirect if fails
         if (!$result) {
@@ -299,6 +293,11 @@ class UserController extends Controller
                 'user' => $user,
                 'errors' => $errors,
             ], 400);
+        }
+
+        // Remove image
+        if ($request->_remove_image == 'true') {
+            $user->removeProfileImage();
         }
 
         return redirect()->action('UserController@index');

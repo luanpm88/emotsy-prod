@@ -730,59 +730,6 @@ class User extends Authenticatable
         $this->fill($params);
     }
 
-    public function saveFromRequest($request)
-    {
-        $rules = array(
-            'email' => 'required|email|unique:users,email,'.$this->id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'image' => 'nullable|image',
-            'role_uid' => 'required',
-        );
-
-        if (isset($this->id)) {
-            $rules['password'] = 'nullable|confirmed|min:5|max:255';
-        } else {
-            $rules['password'] = 'required|confirmed|min:5|max:255';
-        }
-
-        $this->fillAttributes($request->all());
-
-        $validator = \Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return [false, $validator->errors()];
-        }
-
-        // Update password
-        if (!empty($request->password)) {
-            $this->password = bcrypt($request->password);
-        }
-
-        // save
-        $this->save();
-
-        // Upload and save image
-        if ($request->hasFile('image')) {
-            if ($request->file('image')->isValid()) {
-                // Remove old images
-                $this->uploadProfileImage($request->file('image'));
-            }
-        }
-
-        // Remove image
-        if ($request->_remove_image == 'true') {
-            $this->removeProfileImage();
-        }
-
-        // update user role
-        if ($request->role_uid) {
-            $this->setRole(Role::findByUid($request->role_uid));
-        }
-
-        return [true, $validator->errors()];
-    }
-
     public function enable()
     {
         $this->activated = 1;
@@ -984,5 +931,73 @@ class User extends Authenticatable
     public function is2FAGoogleAuthentictorEnabled()
     {
         return $this->enable_2fa_google_authenticator && $this->google_2fa_secret_key;
+    }
+
+    public function saveUser(
+        $email,
+        $password,
+        $passwordConfirmation,
+        $first_name,
+        $last_name,
+        $image,
+        $role_uid
+    )
+    {
+        $rules = [
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
+            'role_uid' => 'required',
+        ];
+
+        if (isset($this->id)) {
+            $rules['password'] = 'nullable|confirmed|min:5|max:255';
+        } else {
+            $rules['password'] = 'required|confirmed|min:5|max:255';
+        }
+
+        // fill
+        $this->email = $email;
+        if ($password) {
+            $this->password = $password;
+        }
+        $this->first_name = $first_name;
+        $this->last_name = $last_name;
+
+        $validator = \Validator::make([
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $passwordConfirmation,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'image' => $image,
+            'role_uid' => $role_uid,
+        ], $rules);
+
+        if ($validator->fails()) {
+            return [false, $validator->errors()];
+        }
+
+        // Update password
+        if (!empty($request->password)) {
+            $this->password = bcrypt($password);
+        }
+
+        // save
+        $this->save();
+
+        // Upload and save image
+        if ($image) {
+            if ($image->isValid()) {
+                // Remove old images
+                $this->uploadProfileImage($image);
+            }
+        }
+
+        // role is required
+        $this->setRole(Role::findByUid($role_uid));
+
+        return [true, $validator->errors()];
     }
 }
