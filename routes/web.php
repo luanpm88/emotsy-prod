@@ -319,7 +319,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], fun
     Route::get('websites', 'WebsiteController@index');
 
     // New subscription
-    // =================== REVIEWED
+    // =================== REVIEWED 
+    Route::match(['get', 'post'], 'account/subscription/{invoice_uid}/no-payment-confirmation', 'SubscriptionController@noPaymentConfirmation');
     Route::post('account/subscription/verify-transaction/{invoice_uid}', 'SubscriptionController@verifyPendingTransaction');
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription/order-box/{invoice_uid}', 'SubscriptionController@orderBox');

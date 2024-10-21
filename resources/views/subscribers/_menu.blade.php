@@ -15,7 +15,7 @@
                 <a href="{{ action('SubscriberController@timeline', [
                     'id' => $subscriber->id,
                 ]) }}" class="nav-link">
-                    <span class="material-symbols-rounded">history_toggle_off</span> {{ trans('messages.subscriber.timeline') }}
+                    <span class="material-symbols-rounded">history_toggle_off</span> {{ trans('messages.subscriber.activities') }}
                 </a>
             </li>
         </ul>

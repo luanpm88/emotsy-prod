@@ -214,6 +214,20 @@
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])
+
+                    <div class="mb-2">
+                        <label class="form-label mb-0">
+                            <span class="form-label d-flex align-items-center">
+                                <label>
+                                    <input type="hidden" name="plan[general][no_payment_required_when_free]" value="0">
+                                    <input {{ $plan->no_payment_required_when_free ? 'checked' : '' }} type="checkbox" class="styled me-2 numeric"
+                                        name="plan[general][no_payment_required_when_free]" value="1" />
+                                    <span class="check-symbol"></span>
+                                </label>
+                                <span class="ms-2">{{ trans('messages.plan.no_payment_required_when_free') }}</span>
+                            </span>
+                        </label>
+                    </div>
                  </div>
             </div>
         </div>
