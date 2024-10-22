@@ -16,7 +16,7 @@ class CreateUserdbSenders extends Migration
         Schema::create('senders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid');
+            $table->uuid('uid')->unique();
 
             $table->string('name');
             $table->string('email');

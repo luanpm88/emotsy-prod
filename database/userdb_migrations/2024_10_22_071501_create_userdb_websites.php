@@ -16,7 +16,7 @@ class CreateUserdbWebsites extends Migration
         Schema::create('websites', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid');
+            $table->uuid('uid')->unique();
 
             $table->string('title');
             $table->string('url');
