@@ -391,7 +391,7 @@ class Subscription extends Model
         $invoice->new_plan_id = $newPlan->id;
 
         // set no_payment_required_when_free to invoice from plan
-        $invoice->no_payment_required_when_free = $this->planGeneral->no_payment_required_when_free;
+        $invoice->no_payment_required_when_free = $newPlan->no_payment_required_when_free;
 
         // save
         $invoice->save();
