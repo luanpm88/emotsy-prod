@@ -1010,6 +1010,10 @@ class Subscription extends Model
 
     public static function createNewSubscription($customer, $plan)
     {
+        if ($customer->getNewOrActiveGeneralSubscription()) {
+            throw new \Exception(trans('messages.customer.already_new_active_sub'));
+        }
+
         $subscription = new self();
         $subscription->status = self::STATUS_NEW;
         $subscription->customer_id = $customer->id;
