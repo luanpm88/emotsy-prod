@@ -563,6 +563,11 @@ class Subscription extends Model
             throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
         }
 
+        // already have active subscription
+        if ($this->customer->getCurrentActiveSubscription()) {
+            throw new \Exception("Customer already has active subscription!");
+        }
+
         if ($this->plan->hasTrial()) {
             $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
         } else {

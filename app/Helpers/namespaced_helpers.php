@@ -219,17 +219,6 @@ function spfcheck($ipOrHostname, $domain)
     return $result;
 }
 
-function forceAddCustomerToUnlimitedPlan($customer)
-{
-    // Default subscription
-    $subscription = new \Acelle\Model\Subscription();
-    $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
-    $subscription->current_period_ends_at = \Carbon\Carbon::now()->addYears(1000);
-    $subscription->plan_id = \Acelle\Model\PlanGeneral::UNLIMITED_PLAN_ID;
-    $subscription->customer_id = $customer->id;
-    $subscription->save();
-}
-
 function isValidPublicHostnameOrIpAddress($host)
 {
     if ($host == '127.0.0.1' || $host == 'localhost') {
