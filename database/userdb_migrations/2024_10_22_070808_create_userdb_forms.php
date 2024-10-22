@@ -16,7 +16,7 @@ class CreateUserdbForms extends Migration
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid');
+            $table->uuid('uid')->unique();
 
             $table->longText('metadata')->nullable();
             $table->string('status');
