@@ -16,7 +16,7 @@ class CreateUserdbAutoTriggers extends Migration
         Schema::create('auto_triggers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid');
+            $table->uuid('uid')->unique();
 
             $table->text('data')->nullable();
             $table->text('executed_index')->nullable();
