@@ -131,7 +131,7 @@
                     <div id="TimelineListContainer" class="listing-form top-sticky">
                         <div class="d-flex top-list-controls top-sticky-content mb-3">
                             <div>
-                                <h3 class="mr-auto mb-0">{{ trans('messages.automation.contact.activity_feed') }}</h3>
+                                <h3 class="mr-auto mb-0">{{ trans('messages.subscriber.activities') }}</h3>
                             </div>
                             <div class="ms-auto">
                                 <div class="filter-box">

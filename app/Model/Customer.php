@@ -67,7 +67,7 @@ class Customer extends Model
 
     public function subscriptions()
     {
-        return $this->hasMany('Acelle\Model\Subscription');
+        return $this->hasMany('Acelle\Model\Subscription', 'customer_id');
     }
 
     public function generalSubscriptions()
@@ -130,7 +130,7 @@ class Customer extends Model
 
     public function language()
     {
-        return $this->belongsTo('Acelle\Model\Language', 'customer_id');
+        return $this->belongsTo('Acelle\Model\Language');
     }
 
     public function campaigns()
@@ -636,12 +636,12 @@ class Customer extends Model
 
     public function sendingServers()
     {
-        return $this->hasMany('Acelle\Model\SendingServer');
+        return $this->hasMany('Acelle\Model\SendingServer', 'customer_id');
     }
 
     public function subAccounts()
     {
-        return $this->hasMany('Acelle\Model\SubAccount');
+        return $this->hasMany('Acelle\Model\SubAccount', 'customer_id');
     }
 
     /**
@@ -2238,5 +2238,19 @@ class Customer extends Model
 
         // success
         return [$validator, $customer, $user];
+    }
+    
+    public function hasLocalDb()
+    {
+        return !is_null($this->db_connection);
+    }
+
+    public function local()
+    {
+        if (!$this->hasLocalDb()) {
+            throw new Exception('Customer does not have a local DB');
+        }
+
+        return LocalCustomer::on($this->db_connection)->where('uid', $this->uid)->first();
     }
 }

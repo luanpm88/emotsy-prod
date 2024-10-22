@@ -73,6 +73,7 @@ class PlanGeneral extends Plan implements PlanInterface
         'trial_unit',
         'own_tracking_domain_required',
         'email_verification_credits',
+        'no_payment_required_when_free',
     ];
 
     /**

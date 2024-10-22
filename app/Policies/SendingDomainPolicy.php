@@ -86,7 +86,7 @@ class SendingDomainPolicy
             case 'admin':
                 $ability = $user->admin->getPermission('sending_domain_update');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 // RBAC check
@@ -121,7 +121,7 @@ class SendingDomainPolicy
             case 'admin':
                 $ability = $user->admin->getPermission('sending_domain_delete');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 // RBAC check

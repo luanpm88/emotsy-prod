@@ -232,6 +232,11 @@ class Subscription extends Model
 
         // save subscription to invoice
         $invoice->subscription_id = $this->id;
+
+        // set no_payment_required_when_free to invoice from plan
+        $invoice->no_payment_required_when_free = $this->planGeneral->no_payment_required_when_free;
+
+        // save
         $invoice->save();
 
         // return
@@ -273,6 +278,11 @@ class Subscription extends Model
 
         // save subscription to invoice
         $invoice->subscription_id = $this->id;
+
+        // set no_payment_required_when_free to invoice from plan
+        $invoice->no_payment_required_when_free = $this->planGeneral->no_payment_required_when_free;
+
+        // save
         $invoice->save();
 
         // return
@@ -320,6 +330,11 @@ class Subscription extends Model
 
             // save subscription to invoice
             $invoice->subscription_id = $this->id;
+
+            // set no_payment_required_when_free to invoice from plan
+            $invoice->no_payment_required_when_free = $this->planGeneral->no_payment_required_when_free;
+
+            // save
             $invoice->save();
 
             return $invoice;
@@ -374,6 +389,11 @@ class Subscription extends Model
         // save subscription to invoice
         $invoice->subscription_id = $this->id;
         $invoice->new_plan_id = $newPlan->id;
+
+        // set no_payment_required_when_free to invoice from plan
+        $invoice->no_payment_required_when_free = $this->planGeneral->no_payment_required_when_free;
+
+        // save
         $invoice->save();
 
         // return
@@ -990,6 +1010,10 @@ class Subscription extends Model
 
     public static function createNewSubscription($customer, $plan)
     {
+        if ($customer->getNewOrActiveGeneralSubscription()) {
+            throw new \Exception(trans('messages.customer.already_new_active_sub'));
+        }
+
         $subscription = new self();
         $subscription->status = self::STATUS_NEW;
         $subscription->customer_id = $customer->id;
