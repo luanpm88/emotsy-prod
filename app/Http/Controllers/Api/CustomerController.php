@@ -16,8 +16,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = \Acelle\Model\Customer::select('customers.*')
-            ->get();
+        $customers = \Acelle\Model\Customer::select('customers.*')->get();
 
         return \Response::json($customers, 200);
     }
