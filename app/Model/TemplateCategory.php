@@ -9,6 +9,8 @@ class TemplateCategory extends Model
 {
     use HasUid;
 
+    protected $connection = 'mysql';
+
     /**
      * The attributes that are mass assignable.
      *

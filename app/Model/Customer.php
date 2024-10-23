@@ -1999,4 +1999,9 @@ class Customer extends Model
 
         return LocalCustomer::on($this->db_connection)->where('uid', $this->uid)->first();
     }
+
+    public function createLocalInstance()
+    {
+        return LocalCustomer::sync($this);
+    }
 }
