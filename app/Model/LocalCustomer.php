@@ -25,7 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\Customer as MasterCustomer;
 
-class LocalCustomer extends Model
+class LocalCustomer extends Customer
 {
     protected $connection = 'set-it-to-a-dummy-value-to-avoid-falling-back-to-the-connection-of-the-caller-class';
 
@@ -33,7 +33,7 @@ class LocalCustomer extends Model
 
     public function master()
     {
-        return $this->setConnection('mysql')->refresh();
+        return MasterCustomer::on('mysql')->where('uid', $this->uid)->first();
     }
 
     public static function sync(MasterCustomer $masterCustomer)

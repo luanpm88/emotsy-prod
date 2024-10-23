@@ -92,9 +92,7 @@ class User extends Authenticatable
 
     public function getLocalCustomer()
     {
-
         $customer = $this->customer;
-        echo $customer->db_connection;
         if (is_null($customer->db_connection)) {
             throw new Exception("db_connection is missing for customer ".$customer->uid);
         }
