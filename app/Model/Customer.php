@@ -1771,12 +1771,12 @@ class Customer extends Model
 
     public function assignGeneralPlan($plan)
     {
-        if ($this->getNewOrActiveGeneralSubscription()) {
-            throw new \Exception(trans('messages.customer.already_new_active_sub'));
-        }
-
         // Put in transaction. Make sure senderID always with subscription
         $subscription = \DB::transaction(function () use ($plan) {
+            if ($this->getNewOrActiveGeneralSubscription()) {
+                throw new \Exception(trans('messages.customer.already_new_active_sub'));
+            }
+
             // allways create init subscription with init invoice (by design)
             $subscription = Subscription::createNewSubscription($this, $plan);
 

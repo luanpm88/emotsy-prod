@@ -559,23 +559,25 @@ class Subscription extends Model
      */
     public function activate()
     {
-        if (!$this->isNew()) {
-            throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
-        }
+        \DB::transaction(function() {
+            if (!$this->isNew()) {
+                throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
+            }
 
-        // already have active subscription
-        if ($this->customer->getCurrentActiveSubscription()) {
-            throw new \Exception("Customer already has active subscription!");
-        }
+            // already have active subscription
+            if ($this->customer->getCurrentActiveSubscription()) {
+                throw new \Exception("Customer already has active subscription!");
+            }
 
-        if ($this->plan->hasTrial()) {
-            $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
-        } else {
-            $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
-        }
+            if ($this->plan->hasTrial()) {
+                $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
+            } else {
+                $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
+            }
 
-        $this->status = self::STATUS_ACTIVE;
-        $this->save();
+            $this->status = self::STATUS_ACTIVE;
+            $this->save();
+        });
     }
 
     /**

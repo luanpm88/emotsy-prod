@@ -39,10 +39,14 @@ class CreateUserdbSubscribers extends Migration
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
 
-            // Indexes
+            // Unique indexes
             $table->unique(['mail_list_id', 'email']);
-            $table->index('mail_list_id');
+
+            // Do not make unique index on "uid" or it might slow down INSERT
+            $table->index('uid');
             $table->index('email');
+            $table->index('status');
+            $table->index('verification_status');
         });
     }
 

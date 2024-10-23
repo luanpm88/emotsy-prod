@@ -347,16 +347,16 @@ class CustomerController extends Controller
             }
         }
 
-        // force terminate if customer already has new or active subscription
-        if ($request->force == 'true') {
-            // terminate if customer already has new or active subscription
-            if ($customer->getNewOrActiveGeneralSubscription()) {
-                $customer->getNewOrActiveGeneralSubscription()->terminate();
-            }
-        }
-
         // rollback if something went wrong
         \DB::transaction(function () use ($plan, $customer, $request, $offlineGateway) {
+            // force terminate if customer already has new or active subscription
+            if ($request->force == 'true') {
+                // terminate if customer already has new or active subscription
+                if ($customer->getNewOrActiveGeneralSubscription()) {
+                    $customer->getNewOrActiveGeneralSubscription()->terminate();
+                }
+            }
+
             $subscription = $customer->assignGeneralPlan($plan);
 
             // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step

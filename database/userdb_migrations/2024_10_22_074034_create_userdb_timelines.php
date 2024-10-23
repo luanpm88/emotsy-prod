@@ -20,7 +20,7 @@ class CreateUserdbTimelines extends Migration
 
             $table->text('activity')->nullable();
             $table->text('activity_type')->nullable();
-            $table->text('type')->nullable();
+            $table->string('type')->nullable();
 
             $table->bigInteger('automation2_id')->unsigned();
             $table->bigInteger('subscriber_id')->unsigned();
@@ -37,6 +37,9 @@ class CreateUserdbTimelines extends Migration
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
             $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+
+            // INDEX
+            $table->index('type');
         });
     }
 
