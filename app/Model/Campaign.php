@@ -457,8 +457,10 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         // Step 2
-        if (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
-                && !empty($this->from_email) && !empty($this->reply_to)) {
+        if (!empty($this->name) && !empty($this->subject) &&
+            !empty($this->from_name) &&
+            ($this->use_default_sending_server_from_email || (!empty($this->from_email) && !empty($this->reply_to)))
+        ) {
             $step = 2;
         } else {
             return $step;
