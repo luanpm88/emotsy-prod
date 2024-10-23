@@ -1169,7 +1169,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     // Customer
     Route::get('admin/customers/{uid}/one-click-login', 'CustomerController@oneClickLogin');
     Route::match(['get', 'post'], 'admin/customers/{uid}/assign-plan', 'CustomerController@assignPlan');
-    Route::get('admin/customers/{uid}/su-account', 'CustomerController@subAccount');
     Route::post('admin/customers/{uid}/contact', 'CustomerController@contact');
     Route::get('admin/customers/{id}/contact', 'CustomerController@contact');
     Route::get('admin/customers/growthChart', 'CustomerController@growthChart');
@@ -1235,7 +1234,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/plans/{uid}/visible/on', 'PlanController@visibleOn');
     Route::post('admin/plans/{uid}/visible/off', 'PlanController@visibleOff');
 
-    Route::match(['get', 'post'], 'admin/plans/{uid}/sending-server/subaccount', 'PlanController@sendingServerSubaccount');
     Route::match(['get', 'post'], 'admin/plans/{uid}/sending-server/own', 'PlanController@sendingServerOwn');
     Route::match(['get', 'post'], 'admin/plans/{uid}/sending-server/option', 'PlanController@sendingServerOption');
     Route::match(['get', 'post'], 'admin/plans/{uid}/wizard/sending-server', 'PlanController@wizardSendingServer');
@@ -1302,12 +1300,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/email_verification_servers/disable', 'EmailVerificationServerController@disable');
     Route::get('admin/email_verification_servers/enable', 'EmailVerificationServerController@enable');
     Route::resource('admin/email_verification_servers', 'EmailVerificationServerController');
-
-    // Sub account
-    Route::get('admin/sub_accounts/{uid}/delete/confirm', 'SubAccountController@deleteConfirm');
-    Route::delete('admin/sub_accounts/{uid}/delete', 'SubAccountController@delete');
-    Route::get('admin/sub_accounts/listing/{page?}', 'SubAccountController@listing');
-    Route::resource('admin/sub_accounts', 'SubAccountController');
 
     // Payment gateways
     Route::post('admin/payment/gateways/{name}/disable', 'PaymentController@disable');

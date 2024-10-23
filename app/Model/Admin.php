@@ -537,36 +537,6 @@ class Admin extends Model
     }
 
     /**
-     * Get sub-account sending servers.
-     *
-     * @return int
-     */
-    public function getSubaccountSendingServers()
-    {
-        $query = $this->getAllSendingServers();
-
-        $query = $query->whereIn('type', \Acelle\Model\SendingServer::getSubAccountTypes());
-
-        return $query;
-    }
-
-    /**
-     * Get sub-account sending servers options.
-     *
-     * @return int
-     */
-    public function getSubaccountSendingServersSelectOptions()
-    {
-        $options = [];
-
-        foreach ($this->getSubaccountSendingServers()->get() as $server) {
-            $options[] = ['value' => $server->uid, 'text' => $server->name];
-        }
-
-        return $options;
-    }
-
-    /**
      * Get system notification.
      *
      * @return int

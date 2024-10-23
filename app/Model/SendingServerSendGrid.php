@@ -45,13 +45,8 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
     public function client()
     {
         if (!$this->client) {
-            if (is_null($this->subAccount)) {
-                MailLog::info('Using master account');
-                $this->client = new \SendGrid($this->api_key);
-            } else {
-                MailLog::info("Using subaccount {$this->subAccount->getSubAccountUsername()}");
-                $this->client = new \SendGrid($this->subAccount->api_key);
-            }
+            MailLog::info('Using master account');
+            $this->client = new \SendGrid($this->api_key);
         }
 
         return $this->client;

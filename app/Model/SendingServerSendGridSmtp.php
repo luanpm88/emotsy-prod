@@ -44,15 +44,9 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
         $header->setUniqueArgs(array('runtime_message_id' => $msgId));
         $message->getHeaders()->addTextHeader(HEADER::NAME, $header->jsonString());
 
-        if (is_null($this->subAccount)) {
-            // use master account
-            $username = $this->smtp_username;
-            $password = $this->smtp_password;
-        } else {
-            // use sub account
-            $username = $this->subAccount->getSubAccountUsername();
-            $password = decrypt($this->subAccount->password);
-        }
+        // use master account
+        $username = $this->smtp_username;
+        $password = $this->smtp_password;
 
         $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
         $transport->setUsername($username);
@@ -70,10 +64,6 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
                 'runtime_message_id' => $msgId,
                 'status' => self::DELIVERY_STATUS_SENT,
             );
-
-            if (!is_null($this->subAccount)) {
-                $result['sub_account_id'] = $this->subAccount->id;
-            }
 
             return $result;
         } else {

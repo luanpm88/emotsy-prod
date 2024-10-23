@@ -372,38 +372,8 @@ class PlanController extends Controller
         } elseif ($plan->getOption('sending_server_option') == PlanGeneral::SENDING_SERVER_OPTION_OWN) {
             return redirect()->action('Admin\PlanController@sendingServerOwn', $plan->uid);
         } elseif ($plan->getOption('sending_server_option') == PlanGeneral::SENDING_SERVER_OPTION_SUBACCOUNT) {
-            return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
+            return '#';
         }
-    }
-
-    /**
-     * Plan sending server subaccount setting.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sendingServerSubaccount(Request $request, $uid)
-    {
-        $plan = PlanGeneral::findByUid($uid);
-
-        // authorize
-        if (\Gate::denies('update', $plan)) {
-            return $this->notAuthorized();
-        }
-
-        // save posted data
-        if ($request->isMethod('post')) {
-            $plan->fillAll($request);
-            $plan->save();
-
-            $request->session()->flash('alert-success', trans('messages.plan.sending_server.saved'));
-            return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
-        }
-
-        return view('admin.plans.sending_server.subaccount', [
-            'plan' => $plan,
-        ]);
     }
 
     /**

@@ -67,7 +67,6 @@ class SendingServer extends Model
     public const TYPE_BLASTENGINE_SMTP = 'blastengine-smtp';
 
     protected $quotaTracker;
-    protected $subAccount;
 
     /**
      * The attributes that are mass assignable.
@@ -917,24 +916,6 @@ class SendingServer extends Model
     public function isElasticEmailServer()
     {
         return $this->type == 'elasticemail-api' || $this->type == 'elasticemail-smtp';
-    }
-
-    /**
-     * Get all sub-account supported sending server types.
-     *
-     * @return array
-     */
-    public static function getSubAccountTypes()
-    {
-        return [
-            'sendgrid-api',
-            'sendgrid-smtp',
-        ];
-    }
-
-    public function setSubAccount($subAccount)
-    {
-        $this->subAccount = $subAccount;
     }
 
     /**
