@@ -174,6 +174,11 @@
             editor.addWidget(new RssWidget(), {
                 index: 3
             });
+
+            // Rss widget
+            editor.addWidget(new SignatureWidget(), {
+                index: 3
+            });
           
             editor.init();
 

@@ -87,6 +87,8 @@
                 </div>
             @endif
 
+            @include('signatures.selectBox')
+
             <div class="sub-section">   
                 <h2 class="mt-0 mb-3">{{ trans('messages.campaign.attachment') }}</h2>
                 <p>{{ trans('messages.campaign.attachment.intro') }}</p>

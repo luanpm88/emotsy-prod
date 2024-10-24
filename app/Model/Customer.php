@@ -224,7 +224,12 @@ class Customer extends Model
      */
     public function sources()
     {
-        return $this->hasmany('Acelle\Model\Source', 'customer_id');
+        return $this->hasMany('Acelle\Model\Source', 'customer_id');
+    }
+
+    public function signatures()
+    {
+        return $this->hasMany(Signature::class, 'customer_id');
     }
 
     // billing addresses
@@ -2003,5 +2008,13 @@ class Customer extends Model
     public function createLocalInstance()
     {
         return LocalCustomer::sync($this);
+    }
+
+    public function newSignature()
+    {
+        $signature = Signature::newDefault();
+        $signature->customer_id = $this->id;
+
+        return $signature;
     }
 }

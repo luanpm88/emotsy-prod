@@ -593,4 +593,6 @@
   'youtube.width' => 'Width',
   'youtube_video' => 'YouTube Video',
   'youtube_video.add_button' => 'Click here to add YouTube video',
+
+  'widget.signature' => 'Signature',
 ) ?>

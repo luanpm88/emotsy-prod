@@ -276,6 +276,16 @@ Route::group(['middleware' => ['not_installed', 'auth', '2fa']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
+    // Signature
+    Route::get('signatures/select-box', 'SignatureController@selectBox');
+    Route::post('signatures/{uid}/set-default', 'SignatureController@setDefault');
+    Route::post('signatures/disable', 'SignatureController@disable');
+    Route::post('signatures/enable', 'SignatureController@enable');
+    Route::get('signatures/list/{page?}', 'SignatureController@list');
+    Route::get('signatures/sort', 'SignatureController@sort');
+    Route::post('signatures/delete', 'SignatureController@delete');
+    Route::resource('signatures', 'SignatureController');
+
     // Checkout
     Route::get('checkout/{invoice_uid}/transactions/list', 'CheckoutController@transactionList');
     Route::get('checkout/{invoice_uid}/invoices/list', 'CheckoutController@invoiceList');
