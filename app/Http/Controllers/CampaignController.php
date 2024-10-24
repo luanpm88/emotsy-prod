@@ -35,7 +35,7 @@ class CampaignController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaigns = $customer->campaigns();
+        $campaigns = $customer->local()->campaigns();
 
         return view('campaigns.index', [
             'campaigns' => $campaigns,
@@ -51,7 +51,7 @@ class CampaignController extends Controller
     {
         $customer = $request->user()->customer;
 
-        $campaigns = $customer->campaigns()
+        $campaigns = $customer->local()->campaigns()
             ->search($request->keyword)
             ->filter($request);
 

@@ -9,17 +9,6 @@ use Acelle\Model\Customer;
 
 class MonitorCampaignController extends Controller
 {
-    // public function index(Request $request)
-    // {
-    //     $campaigns = Campaign::error()->orderBy('updated_at', 'DESC')->get();
-    //     $html = [];
-    //     foreach($campaigns as $campaign) {
-    //         $html[] = "<p title='{$campaign->last_error}'>{$campaign->uid} ({$campaign->customer->user->email}) <p>";
-    //     }
-
-    //     return response(empty($html) ? 'no campaign' : implode('', $html ));
-    // }
-
     /**
      * Display a listing of the resource.
      *
