@@ -140,7 +140,7 @@ class SignatureController extends Controller
         //
         $signature = Signature::findByUid($id);
 
-        return view('signatures.create', [
+        return view('signatures.edit', [
             'signature' => $signature,
         ]);
     }
@@ -172,7 +172,7 @@ class SignatureController extends Controller
 
         // redirect if fails
         if (!$result) {
-            return response()->view('signatures.create', [
+            return response()->view('signatures.edit', [
                 'signature' => $signature,
                 'errors' => $errors,
             ], 400);
