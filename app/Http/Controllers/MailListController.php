@@ -31,14 +31,9 @@ class MailListController extends Controller
      */
     public function listing(Request $request)
     {
-        if (config('custom.db_sharding')) {
-            $customer = $request->user()->getLocalCustomer();
-        } else {
-            $customer = $request->user()->customer;
-        }
+        $customer = $request->user()->customer;
 
-
-        $lists = $customer->mailLists()
+        $lists = $customer->local()->mailLists()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);

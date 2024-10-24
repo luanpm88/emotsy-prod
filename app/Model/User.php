@@ -90,15 +90,6 @@ class User extends Authenticatable
         return $this->belongsTo('Acelle\Model\Customer');
     }
 
-    public function getLocalCustomer()
-    {
-        $customer = $this->customer;
-        if (is_null($customer->db_connection)) {
-            throw new Exception("db_connection is missing for customer ".$customer->uid);
-        }
-        return LocalCustomer::on($customer->db_connection)->where('uid', $customer->uid)->first();
-    }
-
     public function admin()
     {
         return $this->hasOne('Acelle\Model\Admin');
