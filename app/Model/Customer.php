@@ -627,11 +627,6 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\SendingServer', 'customer_id');
     }
 
-    public function subAccounts()
-    {
-        return $this->hasMany('Acelle\Model\SubAccount', 'customer_id');
-    }
-
     /**
      * Customers count by time.
      *

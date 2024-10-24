@@ -1245,7 +1245,7 @@ function get_tmp_primary_server()
     }
 }
 
-function get_tmp_quota($customer, $name)
+function get_tmp_quota(\Acelle\Model\Customer $customer, $name)
 {
     // PART 1: PLAN & MISC SETTINGS
     $settings = [

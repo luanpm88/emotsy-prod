@@ -1757,8 +1757,6 @@ class MailList extends Model
                     return [$server->sending_server_id, $server->fitness];
                 });
             }
-            //} elseif ($subscription->useSubAccount()) {
-            //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
         }
 
         $assoc = [];
