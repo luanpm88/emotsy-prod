@@ -15,9 +15,21 @@
         </div>
         <div class="col-md-8">
             <button data-control="signature-refresh" type="button" class="btn btn-secondary">
-                {{ trans('messages.signature.refresh') }} <span class="material-symbols-rounded">refresh</span>
+                <span class="material-symbols-rounded">refresh</span>
+                {{ trans('messages.signature.refresh') }}
             </button>
-            <a href="{{ action('SignatureController@index') }}" target="_blank" class="btn btn-light">{{ trans('messages.signature.manage_signatures') }} <span class="material-symbols-rounded">open_in_new</span></a>
+
+            @if (!Auth::user()->customer->signatures()->count())
+                <a href="{{ action('SignatureController@create') }}" target="_blank" class="btn btn-primary">
+                    <span class="material-symbols-rounded">add</span>
+                    {{ trans('messages.signature.add_new') }}
+                </a>
+            @else
+                <a href="{{ action('SignatureController@index') }}" target="_blank" class="btn btn-light">
+                    {{ trans('messages.signature.manage_signatures') }}
+                    <span class="material-symbols-rounded">open_in_new</span>
+                </a>
+            @endif
 
             <span data-control="loader" class="spinner-border spinner-border-sm ms-3" style="display: none;" aria-hidden="true"></span>
         </div>
