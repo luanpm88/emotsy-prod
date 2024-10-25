@@ -24,7 +24,7 @@ class Automation2Policy
         $customer = $user->customer;
         $max = get_tmp_quota($customer, 'automation_max');
 
-        $can = $max > $customer->automationsCount() || $max == -1;
+        $can = $max > $customer->local()->automationsCount() || $max == -1;
 
         return $can;
     }

@@ -97,8 +97,7 @@ class Automation2Controller extends Controller
                 ], 400);
             }
 
-            $customer = $request->user()->customer->local();
-            $automation = $customer->automation2s()->make()->newDefault();
+            $automation = $request->user()->customer->local()->automation2s()->make()->newDefault();
 
             return view('automation2.wizard', [
                 'automation' => $automation,
@@ -126,8 +125,8 @@ class Automation2Controller extends Controller
 
     public function wizard(Request $request)
     {
-        $customer = $request->user()->customer->local();
-        $automation = $customer->automation2s()->make()->newDefault();
+        $localCustomer = $request->user()->customer->local();
+        $automation = $localCustomer->automation2s()->make()->newDefault();
 
         // authorize
         if (\Gate::denies('create', $automation)) {
@@ -139,7 +138,7 @@ class Automation2Controller extends Controller
             $params = $request->all();
 
             if (isset($params['options'])) {
-                $params['options'] = $this->prepareOptions($params['options'], $customer->master());
+                $params['options'] = $this->prepareOptions($params['options'], $localCustomer->master());
             }
 
             $validator = $automation->createFromArray($params);
