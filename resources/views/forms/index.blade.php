@@ -95,7 +95,7 @@
                             'include_blank' => '-- ' . trans('messages.form.all_sites') . '--',
                             'label' => '',
                             'value' => '',
-                            'options' => Auth::user()->customer->getConnectedWebsiteSelectOptions(false),
+                            'options' => Auth::user()->customer->local()->getConnectedWebsiteSelectOptions(false),
                             'rules' => [],
                         ])
                     </span>

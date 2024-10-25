@@ -18,7 +18,7 @@
             'include_blank' => '-' . trans('messages.form.choose_site') . '-',
             'label' => '',
             'value' => $form->getMetadata('website_uid'),
-            'options' => Auth::user()->customer->getConnectedWebsiteSelectOptions(),
+            'options' => Auth::user()->customer->local()->getConnectedWebsiteSelectOptions(),
             'rules' => [],
         ])
 

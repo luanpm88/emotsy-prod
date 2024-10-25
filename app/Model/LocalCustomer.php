@@ -197,6 +197,21 @@ class LocalCustomer extends Customer
         return $source;
     }
 
+    public function getConnectedWebsiteSelectOptions($long = true)
+    {
+        $query = $this->websites()->connected();
+
+        $result = $query->orderBy('title')->get()->map(function ($item) use ($long) {
+            if ($long) {
+                return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
+            } else {
+                return ['value' => $item->uid, 'text' => $item->title];
+            }
+        });
+
+        return $result;
+    }
+
     public function createAbandonedEmailAutomation($store)
     {
         $auto = $this->automation2s()->create([
