@@ -230,6 +230,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
         if ($lists_segments->isEmpty()) {
             $lists_segment = new CampaignsListsSegment();
+            $lists_segment->customer_id = $this->customer_id;
             $lists_segment->campaign_id = $this->id;
             $lists_segment->is_default = true;
 
@@ -1380,6 +1381,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                         $segment = Segment::findByUid($segment_uid);
 
                         $lists_segment = new CampaignsListsSegment();
+                        $lists_segment->customer_id = $this->customer_id;
                         $lists_segment->campaign_id = $this->id;
                         if ($mail_list) {
                             $lists_segment->mail_list_id = $mail_list->id;
@@ -1389,6 +1391,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                     }
                 } else {
                     $lists_segment = new CampaignsListsSegment();
+                    $lists_segment->customer_id = $this->customer_id;
                     $lists_segment->campaign_id = $this->id;
                     if ($mail_list) {
                         $lists_segment->mail_list_id = $mail_list->id;
