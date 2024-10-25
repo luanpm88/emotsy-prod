@@ -39,7 +39,7 @@ class ProductController extends Controller
     {
         $wordpress = new \Acelle\Library\WordpressManager();
 
-        $product = $request->user()->customer->newProduct();
+        $product = $request->user()->customer->local()->newProduct();
 
         wp_login('lusn', '123456');
 

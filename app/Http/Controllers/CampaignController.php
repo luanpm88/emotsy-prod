@@ -74,7 +74,7 @@ class CampaignController extends Controller
      */
     public function create(Request $request)
     {
-        $campaign = $request->user()->customer->newDefaultCampaign();
+        $campaign = $request->user()->customer->local()->newDefaultCampaign();
 
         // authorize
         if (\Gate::denies('create', $campaign)) {

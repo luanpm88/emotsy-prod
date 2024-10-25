@@ -86,7 +86,7 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         // init
-        $product = $request->user()->customer->newProduct();
+        $product = $request->user()->customer->local()->newProduct();
 
         return view('store.products.create', [
             'product' => $product,
@@ -96,7 +96,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // init
-        $product = $request->user()->customer->newProduct();
+        $product = $request->user()->customer->local()->newProduct();
 
         // Try to save
         $validator = $product->saveFromParams($request->all());
@@ -287,7 +287,7 @@ class ProductController extends Controller
         if ($request->uid) {
             $product = Product::findByUid($request->uid);
         } else {
-            $product = $request->user()->customer->newProduct();
+            $product = $request->user()->customer->local()->newProduct();
         }
 
         return view('store.products.attributes', [

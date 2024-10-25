@@ -34,7 +34,7 @@ class SourceController extends Controller
      */
     public function listing(Request $request)
     {
-        $sources = $request->user()->customer->sources()
+        $sources = $request->user()->customer->local()->sources()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -72,7 +72,7 @@ class SourceController extends Controller
         $customer = $request->user()->customer;
 
         // Get lazada connection
-        $lazadaSource = $request->user()->customer->newProductSource('Lazada');
+        $lazadaSource = $request->user()->customer->local()->newProductSource('Lazada');
 
         // authorize
         if (\Gate::denies('create', Source::class)) {
@@ -92,7 +92,7 @@ class SourceController extends Controller
     public function connect(Request $request)
     {
         // connection
-        $lazadaSource = $request->user()->customer->newProductSource('Lazada');
+        $lazadaSource = $request->user()->customer->local()->newProductSource('Lazada');
         $lazadaSource->init($request->code);
 
         // redirect

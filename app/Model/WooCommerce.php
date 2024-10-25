@@ -16,7 +16,7 @@ class WooCommerce extends Source
      */
     public static function init($connectUrl, $customer)
     {
-        $source = $customer->newProductSource('WooCommerce');
+        $source = $customer->local()->newProductSource('WooCommerce');
         $meta = [
             'connect_url' => $connectUrl,
             'data' => null,

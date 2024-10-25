@@ -32,7 +32,7 @@ class ProductController extends Controller
     public function listing(Request $request)
     {
         // search
-        $products = $request->user()->customer->products()
+        $products = $request->user()->customer->local()->products()
             ->search($request->keyword);
 
         // filter
