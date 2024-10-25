@@ -248,7 +248,7 @@
 								'name' => 'tracking_domain_uid',
 								'label' => '',
 								'value' => $campaign->trackingDomain? $campaign->trackingDomain->uid : null,
-								'options' => Auth::user()->customer->getVerifiedTrackingDomainOptions(),
+								'options' => Auth::user()->customer->local()->getVerifiedTrackingDomainOptions(),
 								'include_blank' => trans('messages.campaign.select_tracking_domain'),
 								'help_class' => 'campaign',
 								'rules' => $rules

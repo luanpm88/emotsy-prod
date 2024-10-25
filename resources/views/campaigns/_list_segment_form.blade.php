@@ -32,7 +32,7 @@
                 'type' => 'select',
                 'label' => trans('messages.which_list_send'),
                 'value' => ($lists_segment_group['list'] ? $lists_segment_group['list']->uid : ""),
-                'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+                'options' => Auth::user()->customer->local()->readCache('MailListSelectOptions', []),
                 'rules' => isset($rules) ? $rules : []
             ])
         </div>

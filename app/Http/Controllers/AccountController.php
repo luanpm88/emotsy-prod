@@ -181,7 +181,7 @@ class AccountController extends Controller
         $campaignsCount = $customer->local()->campaignsCount();
         $campaignsUsed = ($maxCampaigns == -1) ? 0 : (($maxCampaigns == 0) ? 1 : $campaignsCount / $maxCampaigns);
 
-        $subscribersCount = $customer->readCache('SubscriberCount', 0);
+        $subscribersCount = $customer->local()->readCache('SubscriberCount', 0);
         $subscribersUsed = ($maxSubscribers == -1) ? 0 : (($maxSubscribers == 0) ? 1 : $subscribersCount / $maxSubscribers);
 
         $automationsCount = $customer->local()->automationsCount();
@@ -246,7 +246,7 @@ class AccountController extends Controller
         $campaignsCount = $customer->local()->campaignsCount();
         $campaignsUsed = ($maxCampaigns == -1) ? 0 : (($maxCampaigns == 0) ? 1 : $campaignsCount / $maxCampaigns);
 
-        $subscribersCount = $customer->readCache('SubscriberCount', 0);
+        $subscribersCount = $customer->local()->readCache('SubscriberCount', 0);
         $subscribersUsed = ($maxSubscribers == -1) ? 0 : (($maxSubscribers == 0) ? 1 : $subscribersCount / $maxSubscribers);
 
         $automationsCount = $customer->local()->automationsCount();

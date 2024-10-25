@@ -25,7 +25,7 @@
             'include_blank' => '--',
             'label' => '',
             'value' => '',
-            'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+            'options' => Auth::user()->customer->local()->readCache('MailListSelectOptions', []),
             'rules' => [],
         ])
 

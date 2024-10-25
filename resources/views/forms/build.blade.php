@@ -212,7 +212,7 @@
                                     'name' => 'mail_list_uid',
                                     'label' => trans('messages.list'),
                                     'value' => $form->mailList->uid,
-                                    'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+                                    'options' => Auth::user()->customer->local()->readCache('MailListSelectOptions', []),
                                     'rules' => [],
                                 ])
                             </div>

@@ -45,13 +45,13 @@ class AudienceController extends Controller
 
         // data
         foreach ($times as $time) {
-            $result['total'][] = \Acelle\Model\Customer::subscribersCountByTime(
+            $result['total'][] = \Acelle\Model\LocalCustomer::subscribersCountByTime(
                 \Carbon\Carbon::now($currentTimezone)->subYears(1000),
                 $time->endOfDay(),
                 $request->user()->customer->id
             );
 
-            $result['unsubscribed'][] = \Acelle\Model\Customer::subscribersCountByTime(
+            $result['unsubscribed'][] = \Acelle\Model\LocalCustomer::subscribersCountByTime(
                 \Carbon\Carbon::now($currentTimezone)->subYears(1000),
                 $time->endOfDay(),
                 $request->user()->customer->id,

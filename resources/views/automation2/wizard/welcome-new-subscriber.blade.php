@@ -6,7 +6,7 @@
     'type' => 'select',
     'label' => trans('messages.list'),
     'value' => '',
-    'options' => Auth::user()->customer->getMailListSelectOptions([], true),
+    'options' => Auth::user()->customer->local()->getMailListSelectOptions([], true),
 ])
 
 <div class="automation-segment">

@@ -24,9 +24,12 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\Customer as MasterCustomer;
+use Acelle\Library\Traits\HasCache;
 
 class LocalCustomer extends Customer
 {
+    use HasCache;
+
     protected $connection = 'set-it-to-a-dummy-value-to-avoid-falling-back-to-the-connection-of-the-caller-class';
 
     protected $table = 'customers';
@@ -103,12 +106,183 @@ class LocalCustomer extends Customer
         return $this->hasMany('Acelle\Model\Website', 'customer_id');
     }
 
-    /**
-     * Get user sources.
-     */
     public function sources()
     {
         return $this->hasmany('Acelle\Model\Source', 'customer_id');
+    }
+
+    public function getVerifiedTrackingDomainOptions()
+    {
+        return $this->trackingDomains()->verified()->get()->map(function ($domain) {
+            return ['value' => $domain->uid, 'text' => $domain->name];
+        });
+    }
+
+        public function subscribersCount($cache = false)
+    {
+        if ($cache) {
+            return $this->readCache('SubscriberCount');
+        }
+
+        // return distinctCount($this->subscribers(), 'subscribers.email', 'distinct');
+        return $this->subscribers()->count();
+    }
+
+    public function subscribersUsage($cache = false)
+    {
+        $max = $this->maxSubscribers();
+        $count = $this->subscribersCount($cache);
+
+        if ($max == '∞') {
+            return 0;
+        }
+        if ($max == 0) {
+            return 0;
+        }
+        if ($count > $max) {
+            return 100;
+        }
+
+        return round((($count / $max) * 100), 2);
+    }
+
+    /**
+     * Calculate subscibers usage.
+     *
+     * @return number
+     */
+    public function displaySubscribersUsage()
+    {
+        if ($this->maxSubscribers() == '∞') {
+            return trans('messages.unlimited');
+        }
+
+        // @todo: avoid using cached value in a function
+        //        cache value must be called directly from view only
+        return $this->readCache('SubscriberUsage', 0).'%';
+    }
+
+    public function listsCount()
+    {
+        return $this->lists()->count();
+    }
+
+    public function campaignsCount()
+    {
+        return $this->campaigns()->count();
+    }
+
+    public function newProductSource($type)
+    {
+        $class = '\\Acelle\\Model\\' . $type;
+        $source = new $class();
+        $source->customer_id = $this->id;
+        $source->type = $type;
+
+        return $source;
+    }
+
+    public function findProductSource($type)
+    {
+        $source = $this->sources()
+            ->where('type', '=', $type)
+            ->first();
+
+        if (!$source) {
+            $source = new Source();
+            $source->customer_id = $this->id;
+            $source->type = $type;
+        }
+
+        return $source;
+    }
+
+    public function getSelectOptions($type = null)
+    {
+        $query = $this->sources();
+
+        if ($type) {
+            $query = $query->where('type', '=', $type);
+        }
+
+        return $query->get()->map(function ($source) {
+            return ['text' => $source->getData()['data']['name'], 'value' => $source->uid];
+        });
+    }
+
+    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null, $status = null)
+    {
+        $query = \Acelle\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
+                                ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id');
+
+        if (isset($list_id)) {
+            $query = $query->where('subscribers.mail_list_id', '=', $list_id);
+        }
+        if (isset($customer_id)) {
+            $query = $query->where('customers.id', '=', $customer_id);
+        }
+        if (isset($status)) {
+            $query = $query->where('subscribers.status', '=', $status);
+        }
+
+        $query = $query->where('subscribers.created_at', '>=', $begin)
+                        ->where('subscribers.created_at', '<=', $end);
+
+        return $query->count();
+    }
+
+    public function getMailListSelectOptions($options = [], $cache = false)
+    {
+        $query = $this->mailLists();
+
+        # Other list
+        if (isset($options['other_list_of'])) {
+            $query->where('id', '!=', $options['other_list_of']);
+        }
+
+        $result = $query->orderBy('name')->get()->map(function ($item) use ($cache) {
+            return ['id' => $item->id, 'value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount($cache).' '.strtolower(trans('messages.subscribers')).')'];
+        });
+
+        return $result;
+    }
+
+    /**
+     * Update Campaign cached data.
+     */
+    public function getCacheIndex()
+    {
+        // cache indexes
+        return [
+            // @note: SubscriberCount must come first as its value shall be used by the others
+            'SubscriberCount' => function () {
+                return $this->subscribersCount(false);
+            },
+            'SubscriberUsage' => function () {
+                return $this->subscribersUsage(true);
+            },
+            'SubscribedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_SUBSCRIBED);
+            },
+            'UnsubscribedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_UNSUBSCRIBED);
+            },
+            'UnconfirmedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_UNCONFIRMED);
+            },
+            'BlacklistedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_BLACKLISTED);
+            },
+            'SpamReportedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_SPAM_REPORTED);
+            },
+            'MailListSelectOptions' => function () {
+                return $this->getMailListSelectOptions([], true);
+            },
+            'Bounce/FeedbackRate' => function () {
+                return $this->getBounceFeedbackRate();
+            },
+        ];
     }
 
     public function master()

@@ -1557,7 +1557,7 @@ class MailList extends Model
         }
 
         // Update user's cached information
-        $this->customer->updateCache();
+        $this->customer->local()->updateCache();
     }
 
     public function mailListsSendingServers()

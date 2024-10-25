@@ -12,7 +12,7 @@
                         <a class="kq_search d-block" href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">{{ $customer->displayName() }}</a>
                     </h5>
                     <span class="text-muted kq_search">{{ $customer->user->email }}</span><br>
-                    <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($customer->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>
+                    <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($customer->local()->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>
                     <br />
                     <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($customer->created_at, 'datetime_full') }}</span>
                 </td>
@@ -50,10 +50,10 @@
                             <div class="single-stat-box pull-left">
                                 <span class="no-margin text-primary stat-num">{{ $customer->displaySubscribersUsage() }}</span>
                                 <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-info" style="width: {{ $customer->readCache('SubscriberUsage') }}%">
+                                    <div class="progress-bar progress-bar-info" style="width: {{ $customer->local()->readCache('SubscriberUsage') }}%">
                                     </div>
                                 </div>
-                                <span class="text-muted"><strong>{{ number_with_delimiter($customer->readCache('SubscriberCount')) }}/{{ number_with_delimiter($customer->maxSubscribers()) }}</strong>
+                                <span class="text-muted"><strong>{{ number_with_delimiter($customer->local()->readCache('SubscriberCount')) }}/{{ number_with_delimiter($customer->maxSubscribers()) }}</strong>
                                 <br /> {{ trans('messages.subscribers') }}</span>
                             </div>
                         </div>
