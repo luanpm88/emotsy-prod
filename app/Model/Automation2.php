@@ -448,6 +448,7 @@ class Automation2 extends Model
         $sessionId = is_null($session) ? null : $session->id;
         DB::transaction(function () use (&$trigger, $subscriber, $sessionId) {
             $trigger = $this->autoTriggers()->create();
+            $trigger->customer_id = $this->customer_id;
             $trigger->trigger_session_id = $sessionId;
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
             $trigger->updateWorkflow();

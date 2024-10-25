@@ -2839,6 +2839,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         $campaignHeader = campaignHeader::newDefault();
         $campaignHeader->campaign_id = $this->id;
+        $campaignHeader->customer_id = $this->customer_id;
 
         return $campaignHeader;
     }
