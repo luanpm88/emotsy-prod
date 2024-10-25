@@ -1496,9 +1496,18 @@ class Customer extends Model
                 throw new Exception('Customer does not have a local DB (DB SHARDING mode enabled)');
             }
 
-            return LocalCustomer::on($this->db_connection)->where('uid', $this->uid)->first();
+            $local = LocalCustomer::on($this->db_connection)->where('uid', $this->uid)->first();
+
+            if (is_null($local)) {
+                throw new Exception("Cannot find a local customer with UID '{$this->uid}' in '{$this->db_connection}' connection. Execute the 'createLocalInstance()' function to create one");
+            }
+
+            return $local;
         } else {
-            return $this;
+
+            // In case of NO SHARDING, simply return the same customer in the same connection, typecast it to a LocalCustomer;
+            $local = LocalCustomer::on('mysql')->where('uid', $this->uid)->first();
+            return $local;
         }
     }
 
