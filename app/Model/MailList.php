@@ -1005,7 +1005,7 @@ class MailList extends Model
         $maxPerList = get_tmp_quota($this->customer, 'subscriber_per_list_max');
 
         $remainingForList = $maxPerList - $this->refresh()->subscribers->count();
-        $remaining = $max - $this->refresh()->customer->subscribersCount(); // no cache
+        $remaining = $max - $this->refresh()->customer->local()->subscribersCount(); // no cache
 
         if ($maxPerList == -1) {
             return ($max == -1) ? -1 : $remaining;

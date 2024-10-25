@@ -53,7 +53,7 @@ class Sender extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = $user->customer->senders();
+        $query = $user->customer->local()->senders();
 
         // Keyword
         if (!empty(trim($request->keyword))) {

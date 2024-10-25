@@ -10,16 +10,16 @@ class AudienceController extends Controller
     public function overview(Request $request)
     {
         // stats
-        $subscriberCount = $request->user()->customer->subscribers()->count();
-        $subscribedCount = $request->user()->customer->subscribers()->subscribed()->count();
+        $subscriberCount = $request->user()->customer->local()->subscribers()->count();
+        $subscribedCount = $request->user()->customer->local()->subscribers()->subscribed()->count();
         $activeContactPercent = $subscriberCount > 0 ? ($subscribedCount / $subscriberCount) : 0;
 
         return view('audience.overview', [
             'subscriberCount' => $subscriberCount,
             'subscribedCount' => $subscribedCount,
             'activeContactPercent' => $activeContactPercent,
-            'formCount' => $request->user()->customer->forms()->count(),
-            'blacklistedCount' => $request->user()->customer->subscribers()
+            'formCount' => $request->user()->customer->local()->forms()->count(),
+            'blacklistedCount' => $request->user()->customer->local()->subscribers()
                 ->join('blacklists', 'subscribers.email', '=', 'blacklists.email')->count(),
         ]);
     }

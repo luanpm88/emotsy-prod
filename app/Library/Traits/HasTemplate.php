@@ -375,7 +375,7 @@ trait HasTemplate
             return;
         }
 
-        $domain = $this->customer->sendingDomains()->where('name', $domainName)->first();
+        $domain = $this->customer->local()->sendingDomains()->where('name', $domainName)->first();
 
         return $domain;
     }

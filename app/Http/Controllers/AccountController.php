@@ -175,22 +175,22 @@ class AccountController extends Controller
         $maxUpload = get_tmp_quota($customer, 'max_size_upload_total');
         $maxDomains = get_tmp_quota($customer, 'sending_domains_max');
 
-        $listsCount = $customer->listsCount();
+        $listsCount = $customer->local()->listsCount();
         $listsUsed = ($maxLists == -1) ? 0 : (($maxLists == 0) ? 1 : $listsCount / $maxLists);
 
-        $campaignsCount = $customer->campaignsCount();
+        $campaignsCount = $customer->local()->campaignsCount();
         $campaignsUsed = ($maxCampaigns == -1) ? 0 : (($maxCampaigns == 0) ? 1 : $campaignsCount / $maxCampaigns);
 
         $subscribersCount = $customer->readCache('SubscriberCount', 0);
         $subscribersUsed = ($maxSubscribers == -1) ? 0 : (($maxSubscribers == 0) ? 1 : $subscribersCount / $maxSubscribers);
 
-        $automationsCount = $customer->automationsCount();
+        $automationsCount = $customer->local()->automationsCount();
         $automationsUsed = ($maxAutomations == -1) ? 0 : (($maxAutomations == 0) ? 1 : $automationsCount / $maxAutomations);
 
         $uploadCount = $customer->totalUploadSize();
         $uploadUsed = ($maxUpload == -1) ? 0 : (($maxUpload == 0) ? 1 : $uploadCount / $maxUpload);
 
-        $domainsCount = $customer->sendingDomainsCount();
+        $domainsCount = $customer->local()->sendingDomainsCount();
         $domainsUsed = ($maxDomains == -1) ? 0 : (($maxDomains == 0) ? 1 : $domainsCount / $maxDomains);
 
         return view('account.quota_log', [
@@ -240,22 +240,22 @@ class AccountController extends Controller
         $maxUpload = get_tmp_quota($customer, 'max_size_upload_total');
         $maxDomains = get_tmp_quota($customer, 'sending_domains_max');
 
-        $listsCount = $customer->listsCount();
+        $listsCount = $customer->local()->listsCount();
         $listsUsed = ($maxLists == -1) ? 0 : (($maxLists == 0) ? 1 : $listsCount / $maxLists);
 
-        $campaignsCount = $customer->campaignsCount();
+        $campaignsCount = $customer->local()->campaignsCount();
         $campaignsUsed = ($maxCampaigns == -1) ? 0 : (($maxCampaigns == 0) ? 1 : $campaignsCount / $maxCampaigns);
 
         $subscribersCount = $customer->readCache('SubscriberCount', 0);
         $subscribersUsed = ($maxSubscribers == -1) ? 0 : (($maxSubscribers == 0) ? 1 : $subscribersCount / $maxSubscribers);
 
-        $automationsCount = $customer->automationsCount();
+        $automationsCount = $customer->local()->automationsCount();
         $automationsUsed = ($maxAutomations == -1) ? 0 : (($maxAutomations == 0) ? 1 : $automationsCount / $maxAutomations);
 
         $uploadCount = $customer->totalUploadSize();
         $uploadUsed = ($maxUpload == -1) ? 0 : (($maxUpload == 0) ? 1 : $uploadCount / $maxUpload);
 
-        $domainsCount = $customer->sendingDomainsCount();
+        $domainsCount = $customer->local()->sendingDomainsCount();
         $domainsUsed = ($maxDomains == -1) ? 0 : (($maxDomains == 0) ? 1 : $domainsCount / $maxDomains);
 
         return view('account.quota_log_2', [
