@@ -2343,7 +2343,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         $webhook = new \Acelle\Model\CampaignWebhook();
         $webhook->campaign_id = $this->id;
-
+        $webhook->customer_id = $this->customer_id;
         return $webhook;
     }
 
