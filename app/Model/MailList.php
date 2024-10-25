@@ -2074,6 +2074,7 @@ class MailList extends Model
             if (!$field) {
                 $field = new \Acelle\Model\Field();
                 $field->mail_list_id = $this->id;
+                $field->customer_id = $this->customer_id;
 
                 // assign avaialble field slot
                 $field->custom_field_name = $this->getAvailableField();
@@ -2091,6 +2092,7 @@ class MailList extends Model
                 if (isset($item['options'])) {
                     foreach ($item['options'] as $key2 => $item2) {
                         $option = new \Acelle\Model\FieldOption($item2);
+                        $option->customer_id = $this->customer_id;
                         $option->field_id = $field->id;
                         $option->save();
                     }
@@ -2128,6 +2130,7 @@ class MailList extends Model
                 if (!$field) {
                     $field = new \Acelle\Model\Field();
                     $field->uid = $key;
+                    $field->customer_id = $this->customer_id;
                 }
                 $field->fill($item);
 
@@ -2142,7 +2145,8 @@ class MailList extends Model
                 if (isset($item['options'])) {
                     $field->fieldOptions = collect();
                     foreach ($item['options'] as $key2 => $item2) {
-                        $option = new \Acelle\Model\FieldOption($item2);
+                        $option = new \Acelle\Model\FieldOption($item2); 
+                        $option->customer_id = $this->customer_id;
                         $option->uid = $key2;
                         $field->fieldOptions->push($option);
                     }
@@ -2297,6 +2301,7 @@ class MailList extends Model
         // Save field
         $field = new \Acelle\Model\Field();
 
+        $field->customer_id = $this->customer_id;
         $field->mail_list_id = $this->id;
         $field->type = $type;
         $field->tag = $tag;
