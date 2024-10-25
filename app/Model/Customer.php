@@ -147,6 +147,45 @@ class Customer extends Model
         return $this->hasManyThrough('Acelle\Model\Transaction', 'Acelle\Model\Invoice', 'customer_id');
     }
 
+    // billing addresses
+    public function billingAddresses()
+    {
+        return $this->hasMany('Acelle\Model\BillingAddress', 'customer_id');
+    }
+
+    public function newBillingAddress()
+    {
+        $address = new \Acelle\Model\BillingAddress();
+        $address->customer_id = $this->id;
+        return $address;
+    }
+
+    public function getDefaultBillingAddress()
+    {
+        return $this->billingAddresses()->first();
+    }
+
+    public function updateBillingInformationFromInvoice($invoice)
+    {
+        $billingAddress = $this->getDefaultBillingAddress();
+
+        // has no address yet
+        if (!$billingAddress) {
+            $billingAddress = $this->newBillingAddress();
+        }
+
+        $billingAddress->fill([
+            'first_name' => $invoice->billing_first_name,
+            'last_name' => $invoice->billing_last_name,
+            'address' => $invoice->billing_address,
+            'email' => $invoice->billing_email,
+            'phone' => $invoice->billing_phone,
+            'country_id' => $invoice->billing_country_id,
+        ]);
+
+        $billingAddress->save();
+    }
+
     public function getBasePath($path = null)
     {
         $base = storage_path(join_paths(self::BASE_DIR, $this->uid)); // storage/app/customers/000000/
@@ -1299,28 +1338,6 @@ class Customer extends Model
         $this->save();
     }
 
-    /**
-     * Get default billing address.
-     *
-     * @var object
-     */
-    public function newBillingAddress()
-    {
-        $address = new \Acelle\Model\BillingAddress();
-        $address->customer_id = $this->id;
-        return $address;
-    }
-
-    /**
-     * Get default billing address.
-     *
-     * @var object
-     */
-    public function getDefaultBillingAddress()
-    {
-        return $this->billingAddresses()->first();
-    }
-
     public function createAbandonedEmailAutomation($store)
     {
         $auto = $this->automation2s()->create([
@@ -1375,11 +1392,6 @@ class Customer extends Model
         return $auto;
     }
 
-    /**
-     * Get auto billing data.
-     *
-     * @var object
-     */
     public function getAutoBillingData()
     {
         if ($this->auto_billing_data == null) {
@@ -1389,11 +1401,6 @@ class Customer extends Model
         return AutoBillingData::fromJson($this->auto_billing_data);
     }
 
-    /**
-     * Get auto billing data.
-     *
-     * @var object
-     */
     public function setAutoBillingData(AutoBillingData $autoBillingData)
     {
         $this->auto_billing_data = $autoBillingData->toJson();
@@ -1522,27 +1529,6 @@ class Customer extends Model
         });
 
         return $result;
-    }
-
-    public function updateBillingInformationFromInvoice($invoice)
-    {
-        $billingAddress = $this->getDefaultBillingAddress();
-
-        // has no address yet
-        if (!$billingAddress) {
-            $billingAddress = $this->newBillingAddress();
-        }
-
-        $billingAddress->fill([
-            'first_name' => $invoice->billing_first_name,
-            'last_name' => $invoice->billing_last_name,
-            'address' => $invoice->billing_address,
-            'email' => $invoice->billing_email,
-            'phone' => $invoice->billing_phone,
-            'country_id' => $invoice->billing_country_id,
-        ]);
-
-        $billingAddress->save();
     }
 
     public static function newCustomer()

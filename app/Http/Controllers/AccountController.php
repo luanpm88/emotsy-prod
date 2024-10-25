@@ -326,7 +326,7 @@ class AccountController extends Controller
 
         // has no address yet
         if (!$billingAddress) {
-            $billingAddress = $customer->local()->newBillingAddress();
+            $billingAddress = $customer->newBillingAddress();
         }
 
         // copy from contacy

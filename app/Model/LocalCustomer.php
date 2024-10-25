@@ -111,12 +111,6 @@ class LocalCustomer extends Customer
         return $this->hasmany('Acelle\Model\Source', 'customer_id');
     }
 
-    // billing addresses
-    public function billingAddresses()
-    {
-        return $this->hasMany('Acelle\Model\BillingAddress', 'customer_id');
-    }
-
     public function master()
     {
         return MasterCustomer::on('mysql')->where('uid', $this->uid)->first();
