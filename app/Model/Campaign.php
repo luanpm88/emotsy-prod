@@ -416,6 +416,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             // Campaign link
             if ($this->campaignLinks()->where('url', '=', $url)->count() == 0) {
                 $cl = new CampaignLink();
+                $cl->customer_id = $this->customer_id;
                 $cl->campaign_id = $this->id;
                 $cl->url = $url;
                 $cl->save();
