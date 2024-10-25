@@ -30,7 +30,7 @@ class HomeController extends Controller
         $campaignsCount = $customer->local()->campaignsCount();
         $campaignsUsed = ($maxCampaigns == -1) ? 0 : $campaignsCount / $maxCampaigns;
 
-        $subscribersCount = $customer->readCache('SubscriberCount', 0);
+        $subscribersCount = $customer->local()->readCache('SubscriberCount', 0);
         $subscribersUsed = ($maxSubscribers == -1) ? 0 : $subscribersCount / $maxSubscribers;
 
         if (config('app.cartpaye')) {

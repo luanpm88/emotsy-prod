@@ -19,7 +19,7 @@
                 'label' => '',
                 'value' => '',
                 'include_blank' => trans('messages.all'),
-                'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+                'options' => Auth::user()->customer->local()->readCache('MailListSelectOptions', []),
             ])
         </div>
     </div>

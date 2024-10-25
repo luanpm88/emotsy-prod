@@ -162,7 +162,7 @@ class CampaignController extends Controller
         // Show this warning to user
         $lastExecutedTimeUtc = \Carbon\Carbon::createFromTimestamp(Setting::get('cronjob_last_execution') ?? 0);
         $lastExecutedTime = $lastExecutedTimeUtc->timezone($customer->getTimezone());
-        if (empty($customer->readCache('MailListSelectOptions'))) {
+        if (empty($customer->local()->readCache('MailListSelectOptions'))) {
             // If there is no data populated, then it is very likely that cronjob has not been set up correctly
             // Pass the last executed time to the view to show up with the warning
             $cronjobWarning = $lastExecutedTime;

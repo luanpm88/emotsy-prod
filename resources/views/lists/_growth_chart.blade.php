@@ -69,7 +69,7 @@
         </script>
     </div>
     <div class="col-md-6">
-        @if ($list->readCache('SubscriberCount') || (!isset($list->id) && Auth::user()->customer->readCache('SubscriberCount')))
+        @if ($list->readCache('SubscriberCount') || (!isset($list->id) && Auth::user()->customer->local()->readCache('SubscriberCount')))
             <!-- Basic column chart -->
             <div class="border p-3 shadow-sm rounded">
                 <div class="">
