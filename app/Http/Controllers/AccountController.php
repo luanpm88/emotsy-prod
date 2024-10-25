@@ -94,7 +94,7 @@ class AccountController extends Controller
     {
         // Get current user
         $customer = $request->user()->customer;
-        $contact = $customer->getContact();
+        $contact = $customer->contact;
 
         // Create new company if null
         if (!$contact) {
