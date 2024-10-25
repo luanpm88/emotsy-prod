@@ -37,7 +37,7 @@ class UserDbDump extends Command
      */
     public function handle()
     {
-        $connection = $this->argument('customer-id');
+        $customerId = $this->argument('customer-id');
         $dumpfile = $this->argument('dumpfile');
 
         $dirname = dirname($dumpfile);
@@ -56,7 +56,11 @@ class UserDbDump extends Command
         $masterDb = 'mysql';
         $connectionInfo = config("database.connections.{$masterDb}");
 
-        $fullCmd = "mysqldump -u{$connectionInfo['username']} -h{$connectionInfo['host']} -P{$connectionInfo['port']} {$connectionInfo['database']} -p{$connectionInfo['password']} {$tables} 2>&1 > {$dumpfile}";
+        $fullCmd = "mysqldump {$connectionInfo['database']} {$tables} --where='customer_id={$customerId}' \
+            -u{$connectionInfo['username']} \
+            -h{$connectionInfo['host']} \
+            -P{$connectionInfo['port']} \
+            -p{$connectionInfo['password']} 2>&1 > {$dumpfile}";
         $result = exec($fullCmd, $output, $return);
 
         if ($return != 0) {
