@@ -8,24 +8,24 @@
                 <select data-control="signature-selector" name="signature_uid" class="select">
                     <option value="">{{ trans('messages.signature.dont_insert_signature') }}</option>
                     @foreach (Auth::user()->customer->signatures()->active()->get() as $signature)
-                        <option value="{{ $signature->uid }}">{{ $signature->name }}</option>
+                        <option {{ $currentSignature && $currentSignature->id == $signature->id ? 'selected' : '' }} value="{{ $signature->uid }}">{{ $signature->name }}</option>
                     @endforeach
                 </select>
             </div>
         </div>
         <div class="col-md-8">
-            <button data-control="signature-refresh" type="button" class="btn btn-secondary">
+            <button data-control="signature-refresh" type="button" class="btn btn-secondary me-1">
                 <span class="material-symbols-rounded">refresh</span>
                 {{ trans('messages.signature.refresh') }}
             </button>
 
             @if (!Auth::user()->customer->signatures()->count())
-                <a href="{{ action('SignatureController@create') }}" target="_blank" class="btn btn-primary">
+                <a href="{{ action('SignatureController@create') }}" target="_blank" class="btn btn-primary me-1">
                     <span class="material-symbols-rounded">add</span>
                     {{ trans('messages.signature.add_new') }}
                 </a>
             @else
-                <a href="{{ action('SignatureController@index') }}" target="_blank" class="btn btn-light">
+                <a href="{{ action('SignatureController@index') }}" target="_blank" class="btn btn-light me-1">
                     {{ trans('messages.signature.manage_signatures') }}
                     <span class="material-symbols-rounded">open_in_new</span>
                 </a>
@@ -40,7 +40,10 @@
     $(() => {
         new SignatureSelectBox({
             container: $('#SignatureSelectBox'),
-            url: '{{ action('SignatureController@selectBox') }}',
+            url: '{{ action('SignatureController@selectBox', [
+                'saveUrl' => $saveUrl,
+            ]) }}',
+            saveUrl: '{{ $saveUrl }}',
         });
     })
 
@@ -48,6 +51,7 @@
         constructor(options) {
             this.container = options.container;
             this.url = options.url;
+            this.saveUrl = options.saveUrl;
 
             this.events();
         }
@@ -70,6 +74,12 @@
 
                 this.refresh();
             });
+
+            this.getSelector().on('change', (e) => {
+                e.preventDefault();
+
+                this.save();
+            });
         }
 
         refresh() {
@@ -81,6 +91,9 @@
 
             $.ajax({
                 url: this.url,
+                data: {
+                    current_signature_uid: this.getSelector().val(),
+                }
             }).done((res) => {
                 this.container.html($(res).html());
                 initJs(this.container);
@@ -88,6 +101,16 @@
                 // events
                 this.events();
             });
+        }
+
+        save() {
+            $.ajax({
+                url: this.saveUrl,
+                data: {
+                    _token: CSRF_TOKEN,
+                    signature_uid: this.getSelector().val(),
+                }
+            }).done();
         }
     }
 </script>

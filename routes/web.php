@@ -538,6 +538,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
+    Route::get('campaigns/{uid}/save-signature', 'CampaignController@saveSignature');
+    Route::post('campaigns/{uid}/save-signature', 'CampaignController@saveSignature');
     Route::post('campaigns/campaign-header/{campaign_header_uid}/remove', 'CampaignController@campaignHeaderRemove');
     Route::match(['get', 'post'], 'campaigns/{uid}/campaign-header/add', 'CampaignController@campaignHeaderAdd');
     Route::get('campaigns/{uid}/campaign-header', 'CampaignController@campaignHeader');
@@ -729,6 +731,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::get('automation/{email_uid}/save-signature', 'Automation2Controller@emailSaveSignature');
     Route::get('automation/{email_uid}/overview', 'Automation2Controller@emailOverview');
     Route::post('automation/{uid}/trigger-all', 'Automation2Controller@triggerAll');
 

@@ -87,7 +87,10 @@
                 </div>
             @endif
 
-            @include('signatures.selectBox')
+            @include('signatures.selectBox', [
+                'currentSignature' => $campaign->signature,
+                'saveUrl' => action('CampaignController@saveSignature', $campaign->uid),
+            ])
 
             <div class="sub-section">   
                 <h2 class="mt-0 mb-3">{{ trans('messages.campaign.attachment') }}</h2>

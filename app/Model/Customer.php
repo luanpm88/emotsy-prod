@@ -1681,6 +1681,12 @@ class Customer extends Model
         $campaign = Campaign::newDefault();
         $campaign->customer_id = $this->id;
 
+        // default signature
+        $defaultSignature = $this->signatures()->isDefault()->first();
+        if ($defaultSignature) {
+            $campaign->signature_id = $defaultSignature->id;
+        }
+
         return $campaign;
     }
 

@@ -89,6 +89,11 @@ class Signature extends Model
         $query->where('status', static::STATUS_ACTIVE);
     }
 
+    public static function scopeIsDefault($query)
+    {
+        $query->where('is_default', true);
+    }
+
     public function saveSignature($name, $content, $is_default=false)
     {
         // fill
@@ -106,6 +111,11 @@ class Signature extends Model
         }
 
         $this->save();
+
+        //
+        if ($this->is_default) {
+            $this->setDefault();
+        }
 
         return [true, $validator->errors()];
 

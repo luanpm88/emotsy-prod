@@ -297,6 +297,9 @@ class SignatureController extends Controller
             return $this->notAuthorized();
         }
 
-        return view('signatures.selectBox');
+        return view('signatures.selectBox', [
+            'currentSignature' => $request->current_signature_uid ? Signature::findByUid($request->current_signature_uid) : null,
+            'saveUrl' => $request->saveUrl,
+        ]);
     }
 }

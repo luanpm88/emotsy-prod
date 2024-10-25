@@ -61,6 +61,11 @@
                     </a>
                 </div>
             </div>
+
+            @include('signatures.selectBox', [
+                'currentSignature' => $email->signature,
+                'saveUrl' => action('Automation2Controller@emailSaveSignature', $email->uid),
+            ])
                 
             <div class="sub-section">   
                 <h5 class="mt-5 mb-3">{{ trans('messages.campaign.attachment') }}</h5>

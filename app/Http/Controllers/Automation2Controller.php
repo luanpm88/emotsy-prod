@@ -2880,4 +2880,12 @@ class Automation2Controller extends Controller
             ], 500);
         }
     }
+
+    public function emailSaveSignature(Request $request, $email_uid)
+    {
+        $email = Email::findByUid($email_uid);
+        $signature = \Acelle\Model\Signature::findByUid($request->signature_uid);
+
+        $email->setSignature($signature);
+    }
 }

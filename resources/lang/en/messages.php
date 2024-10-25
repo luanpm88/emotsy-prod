@@ -3568,7 +3568,7 @@
   'signature.enable.confirm' => 'You are about to enable :number signature(es).',
   'signature.disable.confirm' => 'You are about to disable :number signature(es).',
   'signature.default' => 'Default signature',
-  'signature.set_default' => 'Set default',
+  'signature.set_default' => 'Mark as Default',
   'signature.tempate.intro' => 'Select a signature for this campaign. It will be automatically inserted into the email template content.',
   'signature.select_signature' => 'Select signature',
   'signature.dont_insert_signature' => 'Do not insert a signature.',
