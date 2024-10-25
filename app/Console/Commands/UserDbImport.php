@@ -4,14 +4,14 @@ namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class InitDbServer extends Command
+class UserDbImport extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'dbserver:init {connection}';
+    protected $signature = 'userdb:import {connection} {dumpfile}';
 
     /**
      * The console command description.
@@ -38,18 +38,28 @@ class InitDbServer extends Command
     public function handle()
     {
         $connection = $this->argument('connection');
+        $inputfile = $this->argument('inputfile');
 
-        if (empty($connection)) {
-            throw new \Exception('Empty connection');
+        if (!file_exists($inputfile)) {
+            throw new \Exception("File '$inputfile' does not exist!");
         }
 
-        echo "Initizalizing connection {$connection}...\n";
+        echo "Importing...\n";
 
-        \Artisan::call("migrate", [
-            '--database' => $connection,
-            '--path' => 'database/userdb_migrations',
-            '--force' => true
-        ]);
+        $tables = implode(' ', array_map(function($table) {
+            return \DB::getTablePrefix().$table; }
+            , config('userdb_tables'))
+        );
+
+        $fullCmd = "mysqldump -u{$connectionInfo['username']} -h{$connectionInfo['host']} -P{$connectionInfo['port']} {$connectionInfo['database']} -p{$connectionInfo['password']} < $inputfile 2>&1";
+
+        $result = exec($fullCmd, $output, $return);
+
+        if ($return != 0) {
+            throw new \Exception("Failed importing: {$result}");
+        }
+
+        echo "+ Done\n";
 
         return 0;
     }
