@@ -212,6 +212,59 @@ class LocalCustomer extends Customer
         return $result;
     }
 
+    public function getSubscriberCountByStatus($status)
+    {
+        // @note: in this particular case, a simple count(distinct) query is much more efficient
+        $query = $this->subscribers()->where('subscribers.status', $status)->distinct('subscribers.email');
+
+        return $query->count();
+    }
+
+    public function getBounceFeedbackRate()
+    {
+        $delivery = $this->trackingLogs()->count();
+
+        if ($delivery == 0) {
+            return 0;
+        }
+
+        $bounce = DB::table('bounce_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')->count();
+        $feedback = DB::table('feedback_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')->count();
+
+        $percentage = ($feedback + $bounce) / $delivery;
+    }
+
+    public function sendingDomainsCount()
+    {
+        return $this->sendingDomains()->count();
+    }
+
+    public function automationsCount()
+    {
+        return $this->automation2sCount();
+    }
+
+    public function automation2sCount()
+    {
+        return $this->automation2s()->count();
+    }
+
+    public function newProduct()
+    {
+        $product = new \Acelle\Model\Product();
+        $product->customer_id = $this->id;
+
+        return $product;
+    }
+
+    public function newDefaultCampaign()
+    {
+        $campaign = Campaign::newDefault();
+        $campaign->customer_id = $this->id;
+
+        return $campaign;
+    }
+
     public function createAbandonedEmailAutomation($store)
     {
         $auto = $this->automation2s()->create([

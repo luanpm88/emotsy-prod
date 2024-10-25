@@ -492,28 +492,6 @@ class Customer extends Model
         return $query->count();
     }
 
-    public function getSubscriberCountByStatus($status)
-    {
-        // @note: in this particular case, a simple count(distinct) query is much more efficient
-        $query = $this->subscribers()->where('subscribers.status', $status)->distinct('subscribers.email');
-
-        return $query->count();
-    }
-
-    public function getBounceFeedbackRate()
-    {
-        $delivery = $this->trackingLogs()->count();
-
-        if ($delivery == 0) {
-            return 0;
-        }
-
-        $bounce = DB::table('bounce_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')->count();
-        $feedback = DB::table('feedback_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')->count();
-
-        $percentage = ($feedback + $bounce) / $delivery;
-    }
-
     /**
      * Sending servers count.
      *
@@ -522,16 +500,6 @@ class Customer extends Model
     public function sendingServersCount()
     {
         return $this->sendingServers()->count();
-    }
-
-    /**
-     * Sending domains count.
-     *
-     * @var int
-     */
-    public function sendingDomainsCount()
-    {
-        return $this->sendingDomains()->count();
     }
 
     /**
@@ -651,39 +619,6 @@ class Customer extends Model
         } else {
             return $count;
         }
-    }
-
-    /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function sendingDomainsUsage()
-    {
-        $max = $this->maxSendingDomains();
-        $count = $this->sendingDomainsCount();
-
-        if ($max == '∞') {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Count customer automations.
-     *
-     * @return number
-     */
-    public function automationsCount()
-    {
-        return $this->automation2sCount();
     }
 
     /**
@@ -972,16 +907,6 @@ class Customer extends Model
         return $droplist;
     }
 
-    /**
-     * Count customer automation2s.
-     *
-     * @return number
-     */
-    public function automation2sCount()
-    {
-        return $this->automation2s()->count();
-    }
-
     public function getLockPath($path)
     {
         return $this->user->getLockPath($path);
@@ -1235,14 +1160,6 @@ class Customer extends Model
         return $customer;
     }
 
-    public function newProduct()
-    {
-        $product = new \Acelle\Model\Product();
-        $product->customer_id = $this->id;
-
-        return $product;
-    }
-
     public static function scopeByPlan($query, $plan)
     {
         $query = $query->whereHas('subscriptions', function ($q) use ($plan) {
@@ -1260,15 +1177,6 @@ class Customer extends Model
             return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
         }
     }
-
-    public function newDefaultCampaign()
-    {
-        $campaign = Campaign::newDefault();
-        $campaign->customer_id = $this->id;
-
-        return $campaign;
-    }
-
 
     /*
      *
@@ -1326,14 +1234,14 @@ class Customer extends Model
 
         // own emails
         if (!config('app.saas') || $this->getCurrentActiveGeneralSubscription()->planGeneral->allowSenderVerification()) {
-            $senders = $this->senders()->verified()->get();
+            $senders = $this->local()->senders()->verified()->get();
             foreach ($senders as $sender) {
                 $list[] = $sender->name.' <'.$sender->email.'>';
             }
         }
 
         // own domain
-        $domains = $this->sendingDomains()->active();
+        $domains = $this->local()->sendingDomains()->active();
 
         if (config('app.saas')) {
             $plan = $this->getCurrentActiveGeneralSubscription()->planGeneral;
