@@ -31,6 +31,92 @@ class LocalCustomer extends Customer
 
     protected $table = 'customers';
 
+    public function mailLists()
+    {
+        return $this->hasMany('Acelle\Model\MailList', 'customer_id');
+    }
+
+    public function lists()
+    {
+        return $this->hasMany('Acelle\Model\MailList', 'customer_id');
+    }
+
+    public function campaigns()
+    {
+        return $this->hasMany('Acelle\Model\Campaign', 'customer_id');
+    }
+
+    public function sentCampaigns()
+    {
+        return $this->hasMany('Acelle\Model\Campaign', 'customer_id')->where('status', '=', 'done')->orderBy('created_at', 'desc');
+    }
+
+    public function subscribers()
+    {
+        return $this->hasManyThrough('Acelle\Model\Subscriber', 'Acelle\Model\MailList', 'customer_id');
+    }
+
+    public function trackingLogs()
+    {
+        return $this->hasMany('Acelle\Model\TrackingLog', 'customer_id')->orderBy('created_at', 'asc');
+    }
+
+    public function automation2s()
+    {
+        return $this->hasMany('Acelle\Model\Automation2', 'customer_id');
+    }
+
+    public function activeAutomation2s()
+    {
+        return $this->hasMany('Acelle\Model\Automation2', 'customer_id')->where('status', Automation2::STATUS_ACTIVE);
+    }
+
+    public function sendingDomains()
+    {
+        return $this->hasMany('Acelle\Model\SendingDomain', 'customer_id');
+    }
+
+    // Only direct senders children
+    public function senders()
+    {
+        return $this->hasMany('Acelle\Model\Sender', 'customer_id');
+    }
+
+    // tracking domain
+    public function trackingDomains()
+    {
+        return $this->hasMany('Acelle\Model\TrackingDomain', 'customer_id');
+    }
+
+    public function products()
+    {
+        return $this->hasMany('Acelle\Model\Product', 'customer_id');
+    }
+
+    public function forms()
+    {
+        return $this->hasMany('Acelle\Model\Form', 'customer_id');
+    }
+
+    public function websites()
+    {
+        return $this->hasMany('Acelle\Model\Website', 'customer_id');
+    }
+
+    /**
+     * Get user sources.
+     */
+    public function sources()
+    {
+        return $this->hasmany('Acelle\Model\Source', 'customer_id');
+    }
+
+    // billing addresses
+    public function billingAddresses()
+    {
+        return $this->hasMany('Acelle\Model\BillingAddress', 'customer_id');
+    }
+
     public function master()
     {
         return MasterCustomer::on('mysql')->where('uid', $this->uid)->first();
