@@ -202,6 +202,14 @@
             editor.addWidget(new RssWidget(), {
                 index: 3
             });
+
+            // SignatureWidget
+            @if ($email->signature)
+                window.SingatureContent = `{!! $email->signature->content !!}`;
+                editor.addWidget(new SignatureWidget(), {
+                    index: 3
+                });
+            @endif
           
             editor.init();
 

@@ -103,7 +103,7 @@ class Email extends Model implements HasTemplateInterface
 
     public function setSignature($signature)
     {
-        $this->signature_id = $signature->id;
+        $this->signature_id = $signature ? $signature->id : null;
         $this->save();
     }
 

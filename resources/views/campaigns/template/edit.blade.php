@@ -175,10 +175,13 @@
                 index: 3
             });
 
-            // Rss widget
-            editor.addWidget(new SignatureWidget(), {
-                index: 3
-            });
+            @if ($campaign->signature)
+                // SignatureWidget
+                window.SingatureContent = `{!! $campaign->signature->content !!}`;
+                editor.addWidget(new SignatureWidget(), {
+                    index: 3
+                });
+            @endif
           
             editor.init();
 

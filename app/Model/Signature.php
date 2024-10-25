@@ -25,12 +25,14 @@ class Signature extends Model
         $signature->is_default = false;
 
         $signature->content = '
-            <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333;">
-                <strong builder-element="TextElement" style="font-size: 16px;">John Doe</strong><br>
-                Software Engineer<br>
-                <a builder-element href="mailto:johndoe@example.com" style="color: #007BFF; text-decoration: none;">johndoe@example.com</a><br>
-                <a builder-element href="tel:+1234567890" style="color: #007BFF; text-decoration: none;">+1 (234) 567-890</a><br>
-                <a builder-element href="https://www.linkedin.com/in/johndoe" style="color: #007BFF; text-decoration: none;">LinkedIn</a>
+            <div>
+                <p builder-element="TextElement"  style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333;">
+                    <strong builder-element="TextElement" style="font-size: 16px;">John Doe</strong><br>
+                    Software Engineer<br>
+                    <a builder-element href="mailto:johndoe@example.com" style="color: #007BFF; text-decoration: none;">johndoe@example.com</a><br>
+                    <a builder-element href="tel:+1234567890" style="color: #007BFF; text-decoration: none;">+1 (234) 567-890</a><br>
+                    <a builder-element href="https://www.linkedin.com/in/johndoe" style="color: #007BFF; text-decoration: none;">LinkedIn</a>
+                </p>
             </div>
         ';
 

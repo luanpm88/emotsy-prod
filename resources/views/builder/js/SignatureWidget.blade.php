@@ -27,7 +27,7 @@
                 <div id="`+this.id+`"
                     builder-element="SignatureElement"
                 >
-                    <span f-role="placeholder">{SIGNATURE}</span>
+                    `+window.SingatureContent+`
                 </div>
             `);
 
