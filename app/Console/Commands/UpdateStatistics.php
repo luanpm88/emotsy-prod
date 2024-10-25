@@ -46,7 +46,7 @@ class UpdateStatistics extends Command
                 continue;
             }
 
-            $campaigns = $customer->campaigns;
+            $campaigns = $customer->local()->campaigns;
             foreach ($campaigns as $campaign) {
                 dispatch(new \Acelle\Jobs\UpdateCampaignJob($campaign));
             }

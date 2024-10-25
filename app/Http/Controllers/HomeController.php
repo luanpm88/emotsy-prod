@@ -27,7 +27,7 @@ class HomeController extends Controller
         $listsCount = $customer->listsCount();
         $listsUsed = ($maxLists == -1) ? 0 : $listsCount / $maxLists;
 
-        $campaignsCount = $customer->campaignsCount();
+        $campaignsCount = $customer->local()->campaignsCount();
         $campaignsUsed = ($maxCampaigns == -1) ? 0 : $campaignsCount / $maxCampaigns;
 
         $subscribersCount = $customer->readCache('SubscriberCount', 0);

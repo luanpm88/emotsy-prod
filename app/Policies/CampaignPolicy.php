@@ -21,12 +21,12 @@ class CampaignPolicy
     {
         $max = get_tmp_quota($user->customer, 'campaign_max');
 
-        $can = $max > $user->customer->campaigns()->count() || $max == -1;
+        $can = $max > $user->customer->local()->campaigns()->count() || $max == -1;
 
         // config/limit.php
         $limit = app_profile('campaign.limit');
         if (!is_null($limit)) {
-            $campaignsCount = $user->customer->campaignsCount();
+            $campaignsCount = $user->customer->local()->campaignsCount();
             $can = $can && ($campaignsCount < $limit);
         } else {
             // ignore limit because it is null
