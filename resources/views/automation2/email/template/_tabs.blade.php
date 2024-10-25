@@ -1,5 +1,5 @@
 <ul class="nav nav-tabs email-template-tabs nav-underline" id="pills-tab" role="tablist">
-    @foreach (Acelle\Model\TemplateCategory::all() as $cat)
+    @foreach (Acelle\Model\TemplateCategory::getAll() as $cat)
         <li class="nav-item">
             <a class="nav-link {{ request()->category_uid == $cat->uid ? 'active' : '' }}" href="javascript:;"
                 data-href="{{ action('Automation2Controller@templateLayout', [
