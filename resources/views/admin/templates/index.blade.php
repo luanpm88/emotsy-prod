@@ -61,7 +61,7 @@
                     <span class="filter-group">
                         <select class="select" name="category_uid">
                             <option value="">{{ trans('messages.template.all_categories') }}</option>
-                            @foreach (\Acelle\Model\TemplateCategory::all() as $category)
+                            @foreach (\Acelle\Model\TemplateCategory::getAll() as $category)
                                 <option value="{{ $category->uid }}">{{ $category->name }}</option>
                             @endforeach
                         </select>
