@@ -51,7 +51,7 @@ class UpdateStatistics extends Command
                 dispatch(new \Acelle\Jobs\UpdateCampaignJob($campaign));
             }
 
-            $lists = $customer->lists;
+            $lists = $customer->local()->lists;
             foreach ($lists as $list) {
                 dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
             }

@@ -24,7 +24,7 @@ class HomeController extends Controller
         $maxCampaigns = get_tmp_quota($customer, 'campaign_max');
         $maxSubscribers = get_tmp_quota($customer, 'subscriber_max');
 
-        $listsCount = $customer->listsCount();
+        $listsCount = $customer->local()->listsCount();
         $listsUsed = ($maxLists == -1) ? 0 : $listsCount / $maxLists;
 
         $campaignsCount = $customer->local()->campaignsCount();
