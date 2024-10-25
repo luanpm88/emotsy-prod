@@ -52,7 +52,7 @@ class SourceController extends Controller
     public function show(Request $request, $uid)
     {
         $source = Source::findByUid($uid);
-        $automation = $request->user()->customer->getAbandonedEmailAutomation($source);
+        $automation = $request->user()->customer->local()->getAbandonedEmailAutomation($source);
         // var_dump($automation);die();
 
         return view('sources.show', [

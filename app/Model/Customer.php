@@ -1102,60 +1102,6 @@ class Customer extends Model
         $this->save();
     }
 
-    public function createAbandonedEmailAutomation($store)
-    {
-        $auto = $this->automation2s()->create([
-            'name' => 'Abandoned Cart Notification - Auto',
-            'mail_list_id' => $store->getList()->id,
-            'status' => 'inactive',
-        ]);
-
-        $email = new \Acelle\Model\Email([
-            'action_id' => '1000000001',
-        ]);
-        $email->customer_id = $this->id;
-        $email->automation2_id = $auto->id;
-        $email->save();
-
-        $auto->data = json_encode([
-            [
-                "title" => "Abandoned Cart Reminder",
-                "id" => "trigger",
-                "type" => "ElementTrigger",
-                "child" => "1000000001",
-                "options" => [
-                    "key" => "woo-abandoned-cart",
-                    "type" => "woo-abandoned-cart",
-                    "source_uid" => $store->uid,
-                    "wait" => "24_hour",
-                    "init"  => "true"
-                ]
-            ], [
-                "title" => "Hey, you have an item left in cart",
-                "id" => "1000000001",
-                "type" => "ElementAction",
-                "child" => null,
-                "options" => [
-                    "init" => "true",
-                    "email_uid" => $email->uid
-                ]
-            ]
-        ]);
-
-        $auto->save();
-
-        return $auto;
-    }
-
-    public function getAbandonedEmailAutomation($store)
-    {
-        $auto = $this->automation2s()->where('mail_list_id', '=', $store->mail_list_id)->first();
-        if (!$auto) {
-            $auto = $this->createAbandonedEmailAutomation($store);
-        }
-        return $auto;
-    }
-
     public function getAutoBillingData()
     {
         if ($this->auto_billing_data == null) {
