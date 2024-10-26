@@ -48,15 +48,17 @@ class UserDbDump extends Command
 
         echo "Exporting...\n";
 
+        // Get the list of UserDB's table, except for 'subscribers' which will be treated specially
+        $tables = array_values(array_diff(config('userdb_tables'), ['subscribers']));
         $tables = implode(' ', array_map(function($table) {
             return \DB::getTablePrefix().$table; }
-            , config('userdb_tables'))
+            , $tables)
         );
 
         $masterDb = 'mysql';
         $connectionInfo = config("database.connections.{$masterDb}");
 
-        $fullCmd = "mysqldump {$connectionInfo['database']} {$tables} --where='customer_id={$customerId}' \
+        $fullCmd = "mysqldump --no-create-info {$connectionInfo['database']} {$tables} --where='customer_id={$customerId}' \
             -u{$connectionInfo['username']} \
             -h{$connectionInfo['host']} \
             -P{$connectionInfo['port']} \
@@ -67,13 +69,22 @@ class UserDbDump extends Command
             throw new \Exception("Dump faield: {$result}");
         }
 
+        $subscribersTable = \DB::getTablePrefix()."subscribers";
+        $mailListsTable = \DB::getTablePrefix()."mail_lists";
+
+        $fullCmd = "mysqldump --no-create-info {$connectionInfo['database']} $subscribersTable --where='mail_list_id IN (SELECT id FROM {$mailListsTable} WHERE customer_id = {$customerId})' \
+            -u{$connectionInfo['username']} \
+            -h{$connectionInfo['host']} \
+            -P{$connectionInfo['port']} \
+            -p{$connectionInfo['password']} 2>&1 >> {$dumpfile}"; // Notice the ">>" sign
+        $result = exec($fullCmd, $output, $return);
+
+        if ($return != 0) {
+            throw new \Exception("Dump subscribers faield: {$result}");
+        }
+
         echo "+ Done. File written to {$dumpfile}\n";
 
         return 0;
-    }
-
-    private function loadRawSql($filename)
-    {
-        return file_get_contents(database_path("userdb/{$filename}"));
     }
 }

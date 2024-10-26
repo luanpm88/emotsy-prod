@@ -607,9 +607,16 @@ class Automation2 extends Model
         $this->autoTriggers()->delete(); // Delete legacy triggers that were not bound to a session
 
         // Create new sessions
-        $session = $this->triggerSessions()->create();
+        $session = $this->createTriggerSession();
 
         $this->forceTriggerAll($session);
+    }
+
+    public function createTriggerSession()
+    {
+        $session = new TriggerSession();
+        $session->customer_id = $this->customer_id;
+        return $this->triggerSessions()->save($session);
     }
 
     public function checkForMonthlyRecurring()
@@ -804,7 +811,8 @@ class Automation2 extends Model
         $this->autoTriggers()->delete(); // Delete legacy triggers that were not bound to a session
 
         // Create new sessions
-        $session = $this->triggerSessions()->create();
+        $session = $this->createTriggerSession();
+
         $this->forceTriggerAll($session);
     }
 
