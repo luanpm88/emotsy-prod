@@ -65,6 +65,7 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = new \Acelle\Model\Segment();
         $segment->mail_list_id = $list->id;
+        $segment->customer_id = $list->customer_id;
 
         // authorize
         if (\Gate::denies('create', $segment)) {
@@ -78,6 +79,7 @@ class SegmentController extends Controller
             $segment->segmentConditions = collect();
             foreach ($request->old()['conditions'] as $key => $item) {
                 $condition = new \Acelle\Model\SegmentCondition();
+                $condition->customer_id = $segment->customer_id;
                 $condition->uid = $key;
                 $condition->fill($item);
                 $segment->segmentConditions->push($condition);
@@ -103,6 +105,7 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = new \Acelle\Model\Segment();
         $segment->mail_list_id = $list->id;
+        $segment->customer_id = $list->customer_id;
 
         // authorize
         if (\Gate::denies('create', $segment)) {
