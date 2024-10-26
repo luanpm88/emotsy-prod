@@ -217,7 +217,10 @@ class Subscriber extends Model
             MailListUnsubscription::dispatch($this);
 
             // Create log
-            $this->unsubscribeLogs()->create($trackingInfo);
+            $unsubscribeLog = new UnsubscribeLog();
+            $unsubscribeLog->fill($trackingInfo);
+            $unsubscribeLog->customer_id = $this->mailList->customer_id;
+            $this->unsubscribeLogs()->save($unsubscribeLog);
         });
     }
 

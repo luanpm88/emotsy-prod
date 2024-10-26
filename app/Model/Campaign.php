@@ -2605,6 +2605,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         foreach ($this->trackingLogs()->whereIn('id', $unsubscribeLogs)->get() as $r) {
             // Unsubscribe log
             $log = new \Acelle\Model\UnsubscribeLog();
+            $log->customer_id = $this->customer_id;
             $log->message_id = $r->message_id;
             $log->subscriber_id = $r->subscriber_id;
             $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
