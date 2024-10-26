@@ -1585,6 +1585,7 @@ class MailList extends Model
                 $server = SendingServer::findByUid($key);
                 $row = new MailListsSendingServer();
                 $row->mail_list_id = $this->id;
+                $row->customer_id = $this->customer_id;
                 $row->sending_server_id = $server->id;
                 $row->fitness = $param['fitness'];
                 $row->save();

@@ -87,6 +87,7 @@ class MailListController extends Controller
                     $server = \Acelle\Model\SendingServer::findByUid($key);
                     $row = new \Acelle\Model\MailListsSendingServer();
                     $row->mail_list_id = $list->id;
+                    $row->customer_id = $list->customer_id;
                     $row->sending_server_id = $server->id;
                     $row->fitness = $param['fitness'];
                     $list->mailListsSendingServers->push($row);
@@ -198,6 +199,7 @@ class MailListController extends Controller
                     $server = \Acelle\Model\SendingServer::findByUid($key);
                     $row = new \Acelle\Model\MailListsSendingServer();
                     $row->mail_list_id = $list->id;
+                    $row->customer_id = $list->customer_id;
                     $row->sending_server_id = $server->id;
                     $row->fitness = $param['fitness'];
                     $list->mailListsSendingServers->push($row);
