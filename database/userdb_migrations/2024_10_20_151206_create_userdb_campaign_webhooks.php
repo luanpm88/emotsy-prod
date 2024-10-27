@@ -20,7 +20,8 @@ class CreateUserdbCampaignWebhooks extends Migration
 
             $table->bigInteger('campaign_link_id')->unsigned()->nullable();
             $table->bigInteger('campaign_id')->unsigned();
-
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('campaign_link_id')->references('id')->on('campaign_links')->onDelete('cascade');
             $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
         });

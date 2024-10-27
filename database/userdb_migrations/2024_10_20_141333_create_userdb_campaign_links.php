@@ -20,7 +20,10 @@ class CreateUserdbCampaignLinks extends Migration
             $table->string('url');
 
             $table->bigInteger('campaign_id')->unsigned();
+            $table->bigInteger('customer_id')->unsigned();
+
             $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 

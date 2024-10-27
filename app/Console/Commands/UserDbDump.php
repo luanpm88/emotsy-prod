@@ -58,7 +58,7 @@ class UserDbDump extends Command
         $masterDb = 'mysql';
         $connectionInfo = config("database.connections.{$masterDb}");
 
-        $fullCmd = "mysqldump --no-create-info {$connectionInfo['database']} {$tables} --where='customer_id={$customerId}' \
+        $fullCmd = "mysqldump --no-create-info --complete-insert {$connectionInfo['database']} {$tables} --where='customer_id={$customerId}' \
             -u{$connectionInfo['username']} \
             -h{$connectionInfo['host']} \
             -P{$connectionInfo['port']} \
@@ -72,7 +72,7 @@ class UserDbDump extends Command
         $subscribersTable = \DB::getTablePrefix()."subscribers";
         $mailListsTable = \DB::getTablePrefix()."mail_lists";
 
-        $fullCmd = "mysqldump --single-transaction --no-create-info {$connectionInfo['database']} $subscribersTable --where='mail_list_id IN (SELECT id FROM {$mailListsTable} WHERE customer_id = {$customerId})' \
+        $fullCmd = "mysqldump --single-transaction --no-create-info --complete-insert {$connectionInfo['database']} $subscribersTable --where='mail_list_id IN (SELECT id FROM {$mailListsTable} WHERE customer_id = {$customerId})' \
             -u{$connectionInfo['username']} \
             -h{$connectionInfo['host']} \
             -P{$connectionInfo['port']} \

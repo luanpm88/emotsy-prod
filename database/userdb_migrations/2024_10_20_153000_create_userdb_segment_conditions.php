@@ -23,7 +23,8 @@ class CreateUserdbSegmentConditions extends Migration
 
             $table->bigInteger('segment_id')->unsigned();
             $table->bigInteger('field_id')->unsigned()->nullable();
-
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
             $table->foreign('segment_id')->references('id')->on('segments')->onDelete('cascade');
         });

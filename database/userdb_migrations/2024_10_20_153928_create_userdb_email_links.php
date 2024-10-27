@@ -19,7 +19,8 @@ class CreateUserdbEmailLinks extends Migration
             $table->uuid('uid')->unique();
 
             $table->string('link');
-
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->bigInteger('email_id')->unsigned();
             $table->foreign('email_id')->references('id')->on('emails')->onDelete('cascade');
         });

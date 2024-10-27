@@ -11,7 +11,7 @@ class UserDbImport extends Command
      *
      * @var string
      */
-    protected $signature = 'userdb:import {connection} {dumpfile}';
+    protected $signature = 'userdb:import {connection} {inputfile}';
 
     /**
      * The console command description.
@@ -46,12 +46,8 @@ class UserDbImport extends Command
 
         echo "Importing...\n";
 
-        $tables = implode(' ', array_map(function($table) {
-            return \DB::getTablePrefix().$table; }
-            , config('userdb_tables'))
-        );
-
-        $fullCmd = "mysqldump -u{$connectionInfo['username']} -h{$connectionInfo['host']} -P{$connectionInfo['port']} {$connectionInfo['database']} -p{$connectionInfo['password']} < $inputfile 2>&1";
+        $connectionInfo = config("database.connections.{$connection}");
+        $fullCmd = "mysql -u{$connectionInfo['username']} -h{$connectionInfo['host']} -P{$connectionInfo['port']} {$connectionInfo['database']} -p{$connectionInfo['password']} < $inputfile 2>&1";
 
         $result = exec($fullCmd, $output, $return);
 

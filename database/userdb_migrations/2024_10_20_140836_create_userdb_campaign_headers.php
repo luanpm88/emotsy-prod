@@ -23,7 +23,8 @@ class CreateUserdbCampaignHeaders extends Migration
             $table->boolean('editable')->default(false);
 
             $table->bigInteger('campaign_id')->unsigned();
-
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
         });
     }

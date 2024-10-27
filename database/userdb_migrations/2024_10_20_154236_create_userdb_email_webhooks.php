@@ -23,7 +23,8 @@ class CreateUserdbEmailWebhooks extends Migration
 
             $table->bigInteger('email_id')->unsigned();
             $table->bigInteger('email_link_id')->unsigned()->nullable();
-
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('email_id')->references('id')->on('emails')->onDelete('cascade');
             $table->foreign('email_link_id')->references('id')->on('email_links')->onDelete('cascade');
         });

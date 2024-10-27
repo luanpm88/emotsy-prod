@@ -18,6 +18,7 @@ class CreateUserdbForms extends Migration
             $table->timestamps();
             $table->uuid('uid')->unique();
 
+            $table->string('name');
             $table->longText('metadata')->nullable();
             $table->string('status');
 

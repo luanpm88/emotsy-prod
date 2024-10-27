@@ -110,7 +110,7 @@ class ExportAccountDB extends Command
             'sources'                    => "TRUE", // *temporarily take all
             'subscribers'                => ['mail_list_id', 'mail_lists'],
             'tracking_domains'           => null,
-            'tracking_logs'              => null, // *sending_server_id, *sub_account_id
+            'tracking_logs'              => null, // *sending_server_id
             'unsubscribe_logs'           => "TRUE", // *temporarily take all
             'websites'                   => null,
         ];

@@ -35,9 +35,15 @@ class CreateUserdbSubscribers extends Migration
             $table->bigInteger('mail_list_id')->unsigned();
             $table->bigInteger('customer_id')->unsigned();
 
+            // Custom field
+            for ($i = 100; $i <= 150; $i += 1) {
+                $table->mediumText("custom_{$i}")->nullable();
+            }
+
             // Foreign constraints
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+
 
             // Unique indexes
             $table->unique(['mail_list_id', 'email']);

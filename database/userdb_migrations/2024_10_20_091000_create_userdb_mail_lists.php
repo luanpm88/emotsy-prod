@@ -28,7 +28,7 @@ class CreateUserdbMailLists extends Migration
             $table->boolean('send_welcome_email')->default(false);
             $table->boolean('unsubscribe_notification')->default(false);
             $table->boolean('subscribe_confirmation')->default(true);
-
+            $table->text('cache')->nullable();
             $table->string('status')->nullable();
             $table->boolean('all_sending_servers')->nullable()->default(false);
             $table->text('embedded_form_options')->nullable();

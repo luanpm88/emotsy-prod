@@ -37,6 +37,7 @@ class CreateUserdbCampaigns extends Migration
             $table->text('preheader')->nullable();
             $table->integer('running_pid')->default(null)->nullable();
             $table->boolean('skip_failed_message')->default(false);
+            $table->text('cache')->nullable();
 
             $table->bigInteger('default_mail_list_id')->unsigned()->nullable();
             $table->bigInteger('tracking_domain_id')->unsigned()->nullable();

@@ -24,11 +24,13 @@ class CreateUserdbAutoTriggers extends Migration
 
             $table->bigInteger('subscriber_id')->unsigned();
             $table->bigInteger('automation2_id')->unsigned();
-            $table->bigInteger('trigger_session_id')->unsigned();
+            $table->bigInteger('trigger_session_id')->unsigned()->nullable();
+            $table->bigInteger('customer_id')->unsigned();
 
             $table->foreign('subscriber_id')->references('id')->on('subscribers')->onDelete('cascade');
             $table->foreign('automation2_id')->references('id')->on('automation2s')->onDelete('cascade');
             $table->foreign('trigger_session_id')->references('id')->on('trigger_sessions')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 

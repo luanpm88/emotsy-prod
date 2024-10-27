@@ -20,7 +20,8 @@ class CreateUserdbCampaignsListsSegments extends Migration
             $table->bigInteger('campaign_id')->unsigned();
             $table->bigInteger('mail_list_id')->unsigned();
             $table->bigInteger('segment_id')->unsigned();
-
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
             $table->foreign('segment_id')->references('id')->on('segments')->onDelete('cascade');

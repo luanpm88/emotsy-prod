@@ -17,7 +17,6 @@ return [
     'field_options',
     'fields',
     'forms',
-    'logs',
     'mail_lists',
     'mail_lists_sending_servers',
     'open_logs',
