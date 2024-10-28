@@ -169,6 +169,7 @@ class PlanGeneral extends Plan implements PlanInterface
             'options.max_process' => 'required',
             'options.max_size_upload_total' => 'required',
             'options.max_file_size_upload' => 'required',
+            'options.user_max' => 'required',
         );
 
         return $rules;
@@ -332,6 +333,7 @@ class PlanGeneral extends Plan implements PlanInterface
     public static function defaultOptions()
     {
         $options = array_merge([], [
+            'user_max' => '5',
             'email_max' => '-1',
             'list_max' => '-1',
             'subscriber_max' => '-1',
@@ -540,6 +542,15 @@ class PlanGeneral extends Plan implements PlanInterface
             return trans('messages.unlimited');
         } else {
             return number_with_delimiter($this->getOption('list_max'));
+        }
+    }
+
+    public function displayMaxUser()
+    {
+        if ($this->getOption('user_max') == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return number_with_delimiter($this->getOption('user_max'));
         }
     }
 

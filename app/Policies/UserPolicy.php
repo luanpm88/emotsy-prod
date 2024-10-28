@@ -32,11 +32,22 @@ class UserPolicy
                 break;
             case 'customer':
                 $can = $user->id != $item->id;
+
+                $permission = true;
+
+                // check plan
+                $customer = $user->customer;
+                $usersCount = $customer->users()->count();
+
+                // check quota limit
+                if ($customer->getCurrentActiveSubscription() &&
+                    $customer->getCurrentActiveSubscription()->plan->mapType()->getOption('user_max') <= $usersCount
+                ) {
+                    $permission = false;
+                }
                 
                 // RBAC check
-                if ($user->hasPermission('account.full_access')) {
-                    $permission = true;   
-                } else {
+                if (!$user->hasPermission('account.full_access')) {
                     $permission = false;    
                 }
 

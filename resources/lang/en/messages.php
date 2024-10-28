@@ -3592,4 +3592,5 @@
   'subscription.get_started' => 'Get started',
   'subscriber.activities' => 'Activities',
   'user.logged_in.go_to_client_area' => 'Logged in. Go to the client area.',
+  'plan.setting.max_users_per_customer' => 'Max users per customer/account',
 ) ?>
