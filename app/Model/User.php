@@ -186,6 +186,12 @@ class User extends Authenticatable
         $mailer = App::make('xmailer');
         $result = $mailer->sendWithDefaultFromAddress($message);
 
+        if (!empty(Setting::get('notification.on_user_created'))) {
+            $message->setTo( Setting::get('notification.on_user_created') );
+            $mailer->sendWithDefaultFromAddress($message);
+            echo "OK";
+        }
+
         if (array_key_exists('error', $result)) {
             throw new \Exception($result['error']);
         }
