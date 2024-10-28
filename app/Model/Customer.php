@@ -34,6 +34,7 @@ use Acelle\Library\Traits\TrackJobs;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\SubscriptionFacade;
+use Acelle\Library\Facades\Hook;
 
 class Customer extends Model
 {
@@ -96,9 +97,19 @@ class Customer extends Model
         return $this->belongsTo('Acelle\Model\Contact');
     }
 
-    public function user()
+    public function mailLists()
     {
-        return $this->hasOne('Acelle\Model\User');
+        return $this->hasMany('Acelle\Model\MailList', 'customer_id');
+    }
+
+    public function users()
+    {
+        return $this->hasMany('Acelle\Model\User');
+    }
+
+    public function getFirstUserLegacy()
+    {
+        return $this->users()->first();
     }
 
     public function admin()
@@ -273,7 +284,8 @@ class Customer extends Model
     public static function scopeSearch($query, $keyword)
     {
         $query = $query->select('customers.*')
-            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
+            ->leftJoin('users', 'users.customer_id', '=', 'customers.id')
+            ->distinct();
 
         // Keyword
         if (!empty(trim($keyword))) {
@@ -448,20 +460,25 @@ class Customer extends Model
      */
     public function createAccountAndUser($request)
     {
-        $user = new User();
+        $user = $this->newUser();
 
         DB::transaction(function () use ($request, &$user) {
+            // User
+            $user->fill($request->all());
+            $user->password = bcrypt($request->password);
+            $user->save();
+
             // Customer
             $this->fill($request->all());
             $this->status = self::STATUS_ACTIVE;
+            $this->name = $user->displayName(get_localization_config('show_last_name_first', $this->getLanguageCode()));
             $this->save();
 
-            // User
-            $user = new User();
-            $user->fill($request->all());
-            $user->password = bcrypt($request->password);
-            $user->customer()->associate($this);
+            //
             $user->save();
+            
+            // default role
+            $user->setRole(Role::getDefaultRole());
         });
 
         // Important: return the newly created USER
@@ -700,7 +717,7 @@ class Customer extends Model
      */
     public function can($action, $item)
     {
-        return $this->user->can($action, [$item, 'customer']);
+        return \Auth::user()->can($action, [$item, 'customer']);
     }
 
     /*
@@ -1030,9 +1047,6 @@ class Customer extends Model
         DB::transaction(function () {
             $user = $this->user;
             $this->delete();
-            if (!$user->admin()->exists()) {
-                $user->deleteAndCleanup();
-            }
         });
     }
 
@@ -1149,13 +1163,7 @@ class Customer extends Model
 
     public function displayName()
     {
-        $lastNameFirst = get_localization_config('show_last_name_first', $this->getLanguageCode());
-
-        if ($lastNameFirst) {
-            return htmlspecialchars(trim($this->user->last_name.' '.$this->user->first_name));
-        } else {
-            return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
-        }
+        return $this->name;
     }
 
     /*
@@ -1464,6 +1472,257 @@ class Customer extends Model
         return [$customer, $user];
     }
 
+    public function newUser()
+    {
+        $user = User::newDefault();
+        $user->customer_id = $this->id;
+        return $user;
+    }
+
+    public function saveChatgptApiKey($key)
+    {
+        $this->openai_api_key = $key;
+        $this->save();
+    }
+
+    public function getChatgptApiKey()
+    {
+        return $this->openai_api_key;
+    }
+
+    public function validateFromRequest($request)
+    {
+        // validation
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ]);
+
+        // errors
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        return $validator;
+    }
+
+    public function saveFromRequest($request)
+    {
+        // Save current user info
+        $this->admin_id = $request->user()->admin->id;
+        $this->fill($request->all());
+
+        //
+        $validator = $this->validateFromRequest($request);
+
+        // errors
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        // save
+        $this->save();
+
+        // Execute registered hooks
+        Hook::execute('customer_added', [$this]);
+
+        // return
+        return $validator->errors();
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    public function getGoogleAccessToken()
+    {
+        if (!$this->google_auth) {
+            return null;
+        }
+        return json_decode($this->google_auth, true)['access_token'];
+    }
+
+    public function checkAddingSubscribersToMailListReachLimit($mailList, $addNumber)
+    {
+        $max = get_tmp_quota($this, 'subscriber_max');
+        $maxPerList = get_tmp_quota($this, 'subscriber_per_list_max');
+        return $this->id == $mailList->customer_id &&
+            ($max >= $this->subscribersCount() + $addNumber || $max == -1) &&
+            ($maxPerList >= $mailList->subscribersCount() + $addNumber || $maxPerList == -1);
+    }
+
+    public static function createCustomer(
+        $name,
+        $timezone,
+        $language_id,
+        $admin=null
+    ) {
+        // init
+        $customer = static::newCustomer();
+
+        // fill customer data
+        $customer->name = $name;
+        $customer->timezone = $timezone;
+        $customer->language_id = $language_id;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $customer];
+        }
+
+        // SAVE CUSTOMER
+        if ($admin) {
+            $customer->admin_id = $admin->id;
+        }
+        $customer->save();
+
+        // Execute registered hooks
+        Hook::execute('customer_added', [$customer]);
+
+        // success
+        return [$validator, $customer];
+    }
+
+    public function updateCustomer(
+        $name,
+        $timezone,
+        $language_id
+    ) {
+        // fill customer data
+        $this->name = $name;
+        $this->timezone = $timezone;
+        $this->language_id = $language_id;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $this];
+        }
+
+        // SAVE CUSTOMER
+        $this->save();
+
+        // success
+        return [$validator, $this];
+    }
+
+    public static function createCustomerWithDefaultUser(
+        $admin,
+        $name,
+        $timezone,
+        $language_id,
+
+        $email,
+        $password,
+        $passwordConfirmation,
+        $first_name,
+        $last_name,
+        $image,
+        $role_uid
+    ) {
+        // init
+        $customer = static::newCustomer();
+        $user = $customer->newUser();
+
+        // fill customer data
+        $customer->name = $name;
+        $customer->timezone = $timezone;
+        $customer->language_id = $language_id;
+
+        // fill user data
+        $user->email = $email;
+        $user->password = $password;
+        $user->first_name = $first_name;
+        $user->last_name = $last_name;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed|min:5|max:255',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
+            'role_uid' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $passwordConfirmation,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'image' => $image,
+            'role_uid' => $role_uid,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $customer, $user];
+        }
+
+        // SAVE CUSTOMER
+        list($validator, $customer) = static::createCustomer(
+            $name,
+            $timezone,
+            $language_id,
+            $admin
+        );
+
+        // SAVE USER
+        list($result, $errors) = $user->saveUser(
+            $email,
+            $password,
+            $passwordConfirmation,
+            $first_name,
+            $last_name,
+            $image,
+            $role_uid
+        );
+
+        // set customer
+        $user->customer_id = $customer->id;
+        $user->save();
+
+        // success
+        return [$validator, $customer, $user];
+    }
+    
     public function hasLocalDb()
     {
         return !is_null($this->db_connection);

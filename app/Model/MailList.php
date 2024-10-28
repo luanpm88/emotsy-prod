@@ -900,13 +900,15 @@ class MailList extends Model
             return $html;
         });
 
-        $message->setSubject($template->subject);
-        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
-        $mailer = App::make('xmailer');
-        $result = $mailer->sendWithDefaultFromAddress($message);
+        foreach ($this->customer->users as $user) {
+            $message->setSubject($template->subject);
+            $message->setTo([ $user->email => $this->customer->displayName()]);
+            $mailer = App::make('xmailer');
+            $result = $mailer->sendWithDefaultFromAddress($message);
 
-        if (array_key_exists('error', $result)) {
-            throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            if (array_key_exists('error', $result)) {
+                throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            }
         }
     }
 
@@ -915,27 +917,29 @@ class MailList extends Model
      */
     public function sendUnsubscriptionNotificationEmailToListOwner($subscriber)
     {
-        // Create a message
-        $message = new ExtendedSwiftMessage();
-        $message->setContentType('text/html; charset=utf-8');
-        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
+        foreach ($this->customer->users as $user) {
+            // Create a message
+            $message = new ExtendedSwiftMessage();
+            $message->setContentType('text/html; charset=utf-8');
+            $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+            $message->setTo([ $user->email => $this->customer->displayName()]);
 
-        $template = \Acelle\Model\Layout::findByAlias('unsubscribe_notification_for_list_owner');
-        $htmlContent = $template->content;
+            $template = \Acelle\Model\Layout::findByAlias('unsubscribe_notification_for_list_owner');
+            $htmlContent = $template->content;
 
-        $htmlContent = str_replace('{LIST_NAME}', $this->name, $htmlContent);
-        $htmlContent = str_replace('{EMAIL}', $subscriber->email, $htmlContent);
-        $htmlContent = str_replace('{FULL_NAME}', $subscriber->getFullName(), $htmlContent);
+            $htmlContent = str_replace('{LIST_NAME}', $this->name, $htmlContent);
+            $htmlContent = str_replace('{EMAIL}', $subscriber->email, $htmlContent);
+            $htmlContent = str_replace('{FULL_NAME}', $subscriber->getFullName(), $htmlContent);
 
-        $message->setSubject($template->subject);
-        $message->addPart($htmlContent, 'text/html');
+            $message->setSubject($template->subject);
+            $message->addPart($htmlContent, 'text/html');
 
-        $mailer = App::make('xmailer');
-        $result = $mailer->sendWithDefaultFromAddress($message);
+            $mailer = App::make('xmailer');
+            $result = $mailer->sendWithDefaultFromAddress($message);
 
-        if (array_key_exists('error', $result)) {
-            throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            if (array_key_exists('error', $result)) {
+                throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            }
         }
     }
 
@@ -1216,12 +1220,12 @@ class MailList extends Model
                 $this->logger()->info("Processing a new batch: ".sizeof($batch));
 
                 // Throw exception if no room left
-                if (!$this->customer->user->can('addMoreSubscribers', [ $this, $more = 1 ])) {
+                if (!$this->customer->getFirstUserLegacy()->can('addMoreSubscribers', [ $this, $more = 1 ])) {
                     throw new Exception('MAX CONTACTS quota exceeded');
                 }
 
                 // The last time, only import the allowed room
-                if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
+                if ($this->customer->getFirstUserLegacy()->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {
                     $insertLimit = $this->getRemainingAddSubscribersQuota();

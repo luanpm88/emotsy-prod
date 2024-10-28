@@ -19,6 +19,11 @@ class CampaignPolicy
 
     public function create(User $user, Campaign $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $max = get_tmp_quota($user->customer, 'campaign_max');
 
         $can = $max > $user->customer->local()->campaigns()->count() || $max == -1;
@@ -43,6 +48,11 @@ class CampaignPolicy
 
     public function update(User $user, Campaign $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id
             && (in_array($item->status, [
@@ -56,6 +66,11 @@ class CampaignPolicy
 
     public function delete(User $user, Campaign $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_NEW,
@@ -70,6 +85,11 @@ class CampaignPolicy
 
     public function pause(User $user, Campaign $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_QUEUED,
@@ -80,6 +100,11 @@ class CampaignPolicy
 
     public function run(User $user, Campaign $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_NEW,
@@ -88,6 +113,11 @@ class CampaignPolicy
 
     public function resume(User $user, Campaign $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_PAUSED,
@@ -104,6 +134,11 @@ class CampaignPolicy
 
     public function copy(User $user, Campaign $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }
@@ -122,6 +157,11 @@ class CampaignPolicy
 
     public function resend(User $user, Campaign $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused());
     }
@@ -141,10 +181,15 @@ class CampaignPolicy
 
     public function resendHighPriority(User $user, Campaign $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;   
+        }
+        
         $customer = $user->customer;
 
         // is admin or log as customer from admin
-        $can = ((null !== \Session::get('orig_customer_id') && \Auth::user()->customer) || $user->admin);
+        $can = ((null !== \Session::get('orig_user_uid') && \Auth::user()->customer) || $user->admin);
 
         // same as resume policy
         $can = $can && $item->customer_id == $customer->id && in_array($item->status, [

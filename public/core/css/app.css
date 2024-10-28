@@ -780,7 +780,7 @@ input.error {
     border-color: #c4efab;
     color: #231c15;
 }
-.bg-terminated, .bg-unverified, .bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done, .bg-bounced {
+.bg-deactivated, .bg-terminated, .bg-unverified, .bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done, .bg-bounced {
     background-color: #777;
     border-color: #777;
     color: #fff;
@@ -8499,4 +8499,21 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
 #TimelineListContainer .filter-box .select2-container
 {
     min-width: 150px!important;
+}
+.avatar-layers {
+    position: relative;
+    height: 45px;
+    padding-right: 10px;
+}
+.avatar-layer {
+    width: 28px;
+}
+.avatar-layer .avatar-img {
+    border: solid 2px #fff;
+    height: 36px;
+    width: 36px;
+    background-color: #fff;
+}
+.avatar-layer .avatar-img:hover {
+    border: solid 2px #efefef;
 }

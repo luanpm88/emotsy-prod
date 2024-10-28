@@ -37,9 +37,9 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
-            // 'queue' => 'default', // use to the default database for queues/jobs
-            'queue' => 'mysql',      // with DB SHARDING mode, use the Master DB
-            'retry_after' => 9000, // 2.5 hours, resume jobs that were terminated without having a chance to reset the reserved_at field to null
+            'connection' => 'mysql',
+            'queue' => 'default',
+            'retry_after' => 9000,
             'after_commit' => false,
         ],
 

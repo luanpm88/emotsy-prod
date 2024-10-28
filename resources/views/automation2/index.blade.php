@@ -83,11 +83,13 @@
                     </span>
                 </div>
             </div>
-            <div class="text-end">
-                <a href="{{ action("Automation2Controller@wizard") }}" role="button" class="btn btn-secondary create-automation2">
-                    <span class="material-symbols-rounded">add</span> {{ trans('messages.automation.create') }}
-                </a>
-            </div>
+            @if (\Gate::allows('create', new Acelle\Model\Automation2()))
+                <div class="text-end">
+                    <a href="{{ action("Automation2Controller@wizard") }}" role="button" class="btn btn-secondary create-automation2">
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.automation.create') }}
+                    </a>
+                </div>
+            @endif
         </div>
         
         <div id="Automation2IndexContent">

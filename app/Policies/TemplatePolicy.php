@@ -31,6 +31,11 @@ class TemplatePolicy
                 $can = $user->admin->getPermission('template_create') == 'yes';
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+                
                 $can = true;
                 break;
         }
@@ -63,6 +68,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = $user->customer->id == $item->customer_id;
                 break;
         }
@@ -79,6 +89,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 break;
         }
@@ -95,6 +110,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = $user->customer->id == $item->customer_id;
                 break;
         }
@@ -127,6 +147,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if ($user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+                
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 break;
         }

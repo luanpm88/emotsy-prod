@@ -22,18 +22,22 @@
         </div>
     </div>
 
-    <a href="{{ action('AccountController@editPaymentMethod', [
-        'redirect' => isset($redirect) ? $redirect : action('AccountController@billing'),
-    ]) }}" class="btn btn-secondary payment-method-edit mt-4">
-        {{ trans('messages.change_payment_method') }}
-    </a>
+    @if (Auth::user()->can('updateProfile', Auth::user()->customer))
+        <a href="{{ action('AccountController@editPaymentMethod', [
+            'redirect' => isset($redirect) ? $redirect : action('AccountController@billing'),
+        ]) }}" class="btn btn-secondary payment-method-edit mt-4">
+            {{ trans('messages.change_payment_method') }}
+        </a>
+    @endif
 @else
     <p>{{ trans('messages.have_no_payment_method') }}</p>
-
-    <a href="{{ action('AccountController@editPaymentMethod') }}"
-        class="btn btn-secondary payment-method-edit">
-        {{ trans('messages.add_payment_method') }}
-    </a>
+    
+    @if (Auth::user()->can('updateProfile', Auth::user()->customer))
+        <a href="{{ action('AccountController@editPaymentMethod') }}"
+            class="btn btn-secondary payment-method-edit">
+            {{ trans('messages.add_payment_method') }}
+        </a>
+    @endif
 @endif
 
 <script>

@@ -48,7 +48,9 @@ class Frontend
         }
 
         // DB here
-        // \Acelle\Helpers\set_userdb_connection('userdb');
+        if (config('custom.db_sharding') && $user->customer->hasLocalDb()) {
+            \Acelle\Helpers\set_userdb_connection($user->customer->db_connection);
+        }
 
         // Wordpress db by user
         /*
