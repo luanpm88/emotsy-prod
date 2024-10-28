@@ -1425,6 +1425,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                         'campaign_id' => $this->id,
                         'mail_list_id' => $lists_segments_group['list']->id,
                         'segment_id' => $segment->id,
+                        'customer_id' => $this->customer_id,
                     ];
                 }
             } else {
@@ -1432,6 +1433,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                     'campaign_id' => $this->id,
                     'mail_list_id' => $lists_segments_group['list']->id,
                     'segment_id' => null,
+                    'customer_id' => $this->customer_id,
                 ];
             }
         }
