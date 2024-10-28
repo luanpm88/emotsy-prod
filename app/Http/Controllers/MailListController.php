@@ -57,7 +57,7 @@ class MailListController extends Controller
         // Generate info
         $user = $request->user();
         $customer = $user->customer;
-        $list = new \Acelle\Model\MailList(['all_sending_servers' => true]);
+        $list = $customer->newMailList();
 
         if ($customer->contact) {
             $list->send_to = $customer->contact->email;
@@ -115,7 +115,7 @@ class MailListController extends Controller
     {
         // Generate info
         $customer = $request->user()->customer;
-        $list = new \Acelle\Model\MailList();
+        $list = $customer->newMailList();
 
         // authorize
         if (\Gate::denies('create', $list)) {

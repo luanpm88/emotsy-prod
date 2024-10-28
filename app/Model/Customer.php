@@ -1754,4 +1754,12 @@ class Customer extends Model
     {
         return LocalCustomer::sync($this);
     }
+
+    public function newMailList()
+    {
+        $list = new MailList(['all_sending_servers' => true]);
+        $list->customer_id = $this->id;
+
+        return $list;
+    }
 }
