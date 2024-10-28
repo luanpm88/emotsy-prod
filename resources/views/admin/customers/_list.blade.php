@@ -49,7 +49,7 @@
                                 </span>
                             </div>
                             <div class="single-stat-box pull-left">
-                                <span class="no-margin text-primary stat-num">{{ $customer->displaySubscribersUsage() }}</span>
+                                <span class="no-margin text-primary stat-num">{{ $customer->local()->displaySubscribersUsage() }}</span>
                                 <div class="progress progress-xxs">
                                     <div class="progress-bar progress-bar-info" style="width: {{ $customer->local()->readCache('SubscriberUsage') }}%">
                                     </div>
