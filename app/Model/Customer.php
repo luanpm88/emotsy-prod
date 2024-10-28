@@ -1741,4 +1741,13 @@ class Customer extends Model
 
         return $list;
     }
+
+    public function getMaxUserQuota()
+    {
+        if (!$this->getCurrentActiveSubscription()) {
+            return 0;
+        }
+
+        return $this->getCurrentActiveSubscription()->plan->mapType()->getOption('user_max');
+    }
 }

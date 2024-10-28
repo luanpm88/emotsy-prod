@@ -211,7 +211,7 @@ class UserController extends Controller
         $currentPlan = $customer->getCurrentActiveSubscription()->plan->mapType();
 
         // check quota limit
-        if ($currentPlan->getOption('user_max') >= $customer->users()->count()) {
+        if ($customer->getMaxUserQuota() <= $customer->users()->count()) {
             return $this->noMoreItem();
         }
 

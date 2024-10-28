@@ -40,9 +40,7 @@ class UserPolicy
                 $usersCount = $customer->users()->count();
 
                 // check quota limit
-                if ($customer->getCurrentActiveSubscription() &&
-                    $customer->getCurrentActiveSubscription()->plan->mapType()->getOption('user_max') <= $usersCount
-                ) {
+                if ($customer->getMaxUserQuota() <= $usersCount) {
                     $permission = false;
                 }
                 
