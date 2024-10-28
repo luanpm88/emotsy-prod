@@ -14,8 +14,8 @@ class AddCustomerIdToUnsubscribeLogs extends Migration
     public function up()
     {
         Schema::table('unsubscribe_logs', function (Blueprint $table) {
-            //$table->integer('customer_id')->unsigned()->nullable();
-            //$table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->integer('customer_id')->unsigned()->nullable();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
 
         \DB::statement(sprintf("UPDATE %s AS t INNER JOIN %s AS a ON t.subscriber_id = a.id INNER JOIN %s l ON a.mail_list_id = l.id SET t.customer_id = l.customer_id", table('unsubscribe_logs'), table('subscribers'), table('mail_lists')));
