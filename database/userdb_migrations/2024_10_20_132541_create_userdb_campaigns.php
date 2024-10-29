@@ -31,7 +31,7 @@ class CreateUserdbCampaigns extends Migration
             $table->boolean('track_click')->nullable();
             $table->timestamp('run_at')->nullable();
             $table->timestamp('delivery_at')->nullable();
-            $table->text('template_source')->nullale();
+            $table->text('template_source')->nullable();
             $table->longText('last_error')->nullable();
             $table->boolean('use_default_sending_server_from_email')->default(false);
             $table->text('preheader')->nullable();
