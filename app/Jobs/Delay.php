@@ -56,6 +56,8 @@ class Delay implements ShouldQueue
         $this->campaign = $campaign;
         $this->rateTrackers = $rateTrackers;
         $this->servers = $servers;
+
+        $this->campaign->customer->setUserDbConnection();
     }
 
     /**

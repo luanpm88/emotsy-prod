@@ -67,6 +67,11 @@ class Segment extends Model
         return $this->belongsTo('Acelle\Model\MailList');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
+    }
+
     public function segmentConditions()
     {
         return $this->hasMany('Acelle\Model\SegmentCondition');

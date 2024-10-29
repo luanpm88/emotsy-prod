@@ -38,6 +38,8 @@ class RunCampaign implements ShouldQueue
     {
         $this->campaign = $campaign;
         $this->campaignQueue = $queue;
+
+        $this->campaign->customer->setUserDbConnection();
     }
 
     /**

@@ -1746,4 +1746,11 @@ class Customer extends Model
 
         return $this->getCurrentActiveSubscription()->plan->mapType()->getOption('user_max');
     }
+
+    public function setUserDbConnection()
+    {
+        if (config('custom.db_sharding') && $this->hasLocalDb()) {
+            \Acelle\Helpers\set_userdb_connection($this->db_connection);
+        }
+    }
 }

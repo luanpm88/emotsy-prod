@@ -16,6 +16,8 @@ class SendConfirmationEmailJob extends Base
     {
         $this->subscribers = $subscribers;
         $this->mailList = $mailList;
+
+        $this->mailList->customer->setUserDbConnection();
     }
 
     /**

@@ -37,6 +37,8 @@ class ImportSubscribersJob extends Base
         $this->file = $file;
         $this->map = $map;
 
+        $this->list->customer->setUserDbConnection();
+
         // Set the initial value for progress check
         $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([

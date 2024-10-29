@@ -41,6 +41,8 @@ class BulkCheck implements ShouldQueue
         $this->server = $server;
         $this->subscription = $subscription;
         $this->token = $token;
+
+        $this->mailList->customer->setUserDbConnection();
     }
 
     /**

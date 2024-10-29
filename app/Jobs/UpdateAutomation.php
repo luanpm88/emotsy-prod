@@ -23,6 +23,8 @@ class UpdateAutomation extends Base implements ShouldBeUnique
     public function __construct($automation)
     {
         $this->automation = $automation;
+
+        $this->automation->customer->setUserDbConnection();
     }
 
     /**

@@ -28,6 +28,8 @@ class ExecuteCampaignCallback implements ShouldQueue
     {
         $this->webhook = $webhook;
         $this->log = $log;
+
+        $this->webhook->customer->setUserDbConnection();
     }
 
     /**

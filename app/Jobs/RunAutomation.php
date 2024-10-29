@@ -13,6 +13,9 @@ class RunAutomation extends Base
     public function __construct($automation)
     {
         $this->automation = $automation;
+
+        $this->automation->customer->setUserDbConnection();
+
         if (!$this->automation->allowApiCall()) {
             throw new Exception(sprintf('Automation "%s" is not set up to be triggered via API. Cannot start!', $this->automation->name));
         }
