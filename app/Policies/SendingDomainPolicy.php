@@ -81,6 +81,8 @@ class SendingDomainPolicy
                 $can = true;
                 break;
         }
+
+        return $can;
     }
 
     public function update(User $user, SendingDomain $item, $role)

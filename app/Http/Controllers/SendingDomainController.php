@@ -75,7 +75,7 @@ class SendingDomainController extends Controller
         $server->fill($request->old());
 
         // authorize
-        if (!$request->user()->customer->can('create', $server)) {
+        if (!$request->user()->customer->can('create', SendingDomain::class)) {
             return $this->notAuthorized();
         }
 
