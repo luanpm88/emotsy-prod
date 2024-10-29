@@ -273,7 +273,7 @@ class BaseCampaign extends Model
 
         $campaignId = $this->uid;
         $className = get_called_class(); // Something like App\Model\Campaign (late binding, inherited class name)
-
+        $customerId = $this->customer->id;
         // Dispatch it with a batch monitor
         $monitor = $this->dispatchWithBatchMonitor(
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
@@ -318,8 +318,11 @@ class BaseCampaign extends Model
 
                 return;
             },
-            function (Batch $batch, Throwable $e) use ($campaignId, $className) {
+            function (Batch $batch, Throwable $e) use ($campaignId, $className, $customerId) {
                 // CATCH callback
+                $customer = \Acelle\Model\Customer::find($customerId);
+                $customer->setUserDbConnection();
+
                 $campaign = $className::findByUid($campaignId);
                 $errorMsg = "Campaign stopped. ".$e->getMessage()."\n".$e->getTraceAsString();
                 $campaign->logger()->info($errorMsg);
