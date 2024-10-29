@@ -15,6 +15,10 @@ return [
 
     'default' => env('QUEUE_CONNECTION', 'database'),
 
+    'batching' => [
+        'database' => 'mysql', // this is actually a connection
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Queue Connections
