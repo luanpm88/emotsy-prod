@@ -328,8 +328,11 @@ class BaseCampaign extends Model
                 $campaign->logger()->info($errorMsg);
                 $campaign->setError($errorMsg);
             },
-            function () use ($campaignId, $className) {
+            function () use ($campaignId, $className, $customerId) {
                 // FINALLY callback
+                $customer = \Acelle\Model\Customer::find($customerId);
+                $customer->setUserDbConnection();
+
                 $campaign = $className::findByUid($campaignId);
                 $campaign->logger()->info('Finally callback of batch! Updating cache');
                 $campaign->updateCache();
