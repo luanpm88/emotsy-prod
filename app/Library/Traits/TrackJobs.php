@@ -123,7 +123,7 @@ trait TrackJobs
             if (!is_null($finallyCallback)) {
                 $finallyCallback($batch);
             }
-        })->onQueue($queue)->dispatch();
+        })->onConnection('mysql')->onQueue($queue)->dispatch();
 
         $monitor->batch_id = $batch->id;
         $monitor->save();
