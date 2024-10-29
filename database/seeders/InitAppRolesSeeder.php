@@ -16,7 +16,7 @@ class InitAppRolesSeeder extends Seeder
         // 1. Default role: administrator
         $administratorRole = \Acelle\Model\Role::newDefault();
         $administratorRole->fillAttributes([
-            'name' => 'Full-access',
+            'name' => 'Full Access',
             'description' => 'The default role for new users who have full access to the customer account.',
         ]);
         $administratorRole->default = true;
@@ -30,7 +30,7 @@ class InitAppRolesSeeder extends Seeder
         // 2. Default role: administrator
         $readOnlyRole = \Acelle\Model\Role::newDefault();
         $readOnlyRole->fillAttributes([
-            'name' => 'Read-only',
+            'name' => 'Read Only',
             'description' => 'The default role for new users who can view all customer account data without the ability to edit or change it.',
         ]);
         $readOnlyRole->default = false;

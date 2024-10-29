@@ -61,7 +61,17 @@
                 </div>
             </div>
 
-            <h2>Table</h2>
+            <div class="mb-3">
+                <label for="" class="form-label">Select: Multiple Lines</label>
+                <select name="role_uid" class="form-select select3 {{ $errors->has('role_uid') ? 'is-invalid' : '' }}">
+                    <option value="">{{ trans('messages.user.select_role') }}</option>
+                    @foreach (Acelle\Model\Role::all() as $role)
+                        <option value="{{ $role->uid }}">
+                            {{ $role->name }} ||| {{ $role->description }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
     </div>
 @endsection

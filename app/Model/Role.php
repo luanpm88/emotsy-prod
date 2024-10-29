@@ -41,6 +41,33 @@ class Role extends Model
         return $role;
     }
 
+    public static function newGlobalRole()
+    {
+        $role = static::newDefault();
+        $role->is_global = true;
+
+        return $role;
+    }
+
+    public static function newAccountRole($customer)
+    {
+        $role = static::newDefault();
+        $role->is_global = false;
+        $role->customer_id = $customer->id;
+
+        return $role;
+    }
+
+    public static function scopeGlobal($query)
+    {
+        $query->whereIsGlobal(true);
+    }
+
+    public static function scopeAccountRoles($query)
+    {
+        $query->whereIsGlobal(false);
+    }
+
     public function fillAttributes($params)
     {
         $this->name = $params['name'] ?? null;
@@ -53,7 +80,7 @@ class Role extends Model
 
         // make validator
         $validator = \Validator::make($params, [
-            'name' => 'required|unique:roles,name,'.$this->id,
+            'name' => 'required',
         ]);
 
         // redirect if fails

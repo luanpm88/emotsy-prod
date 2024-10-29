@@ -78,6 +78,22 @@ function initJs(container)
             dropdownAutoWidth : true,
             width: 'auto',
             tags: true,
+            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        });
+    }
+
+    // Select3 tags
+    if (container.find('.select3').select2) {
+        container.find('.select3').select2({
+            minimumResultsForSearch: 20,
+            templateResult: formatSelect2TextOption,
+            templateSelection: formatSelect2TextSelected,
+            tokenSeparators: [','],
+            placeholder: function(){
+                $(this).attr('data-placeholder');
+            },
+            dropdownAutoWidth : true,
+            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
         });
     }
 
