@@ -1189,6 +1189,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $newListSegment->segment_id = $listSegment->segment_id;
             $newListSegment->created_at = $now;
             $newListSegment->updated_at = $now;
+            $newListSegment->customer_id = $this->customer_id;
 
             $newListSegment->save();
         }
