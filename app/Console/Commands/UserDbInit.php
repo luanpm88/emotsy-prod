@@ -51,9 +51,4 @@ class UserDbInit extends Command
 
         return 0;
     }
-
-    private function loadRawSql($filename)
-    {
-        return file_get_contents(database_path("userdb/{$filename}"));
-    }
 }

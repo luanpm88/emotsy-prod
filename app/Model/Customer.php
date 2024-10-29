@@ -1714,11 +1714,7 @@ class Customer extends Model
 
     public function local()
     {
-        if (config('custom.db_sharding')) {
-            if (!$this->hasLocalDb()) {
-                throw new Exception('Customer does not have a local DB (DB SHARDING mode enabled)');
-            }
-
+        if (config('custom.db_sharding') && $this->hasLocalDb()) {
             $local = LocalCustomer::on($this->db_connection)->where('uid', $this->uid)->first();
 
             if (is_null($local)) {

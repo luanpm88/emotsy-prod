@@ -17,6 +17,7 @@ class CreateUserdbCampaignWebhooks extends Migration
             $table->id();
             $table->timestamps();
             $table->uuid('uid')->unique();
+            $table->string('type');
 
             $table->bigInteger('campaign_link_id')->unsigned()->nullable();
             $table->bigInteger('campaign_id')->unsigned();

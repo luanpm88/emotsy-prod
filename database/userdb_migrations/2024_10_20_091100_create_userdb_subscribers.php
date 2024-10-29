@@ -36,7 +36,7 @@ class CreateUserdbSubscribers extends Migration
             $table->bigInteger('customer_id')->unsigned();
 
             // Custom field
-            for ($i = 100; $i <= 150; $i += 1) {
+            for ($i = 100; $i <= 160; $i += 1) {
                 $table->mediumText("custom_{$i}")->nullable();
             }
 
