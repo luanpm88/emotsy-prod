@@ -191,6 +191,11 @@ class AccountController extends Controller
         $domainsCount = $customer->local()->sendingDomainsCount();
         $domainsUsed = ($maxDomains == -1) ? 0 : (($maxDomains == 0) ? 1 : $domainsCount / $maxDomains);
 
+        // users
+        $usersCount = $customer->users()->count();
+        $maxUsers = $customer->getMaxUserQuota();
+        $usersUsed = ($maxUsers == -1) ? 0 : (($maxUsers == 0) ? 1 : $usersCount / $maxUsers);
+
         return view('account.quota_log', [
             'sendCreditRemaining' => $sendCreditRemaining,
             'sendingCreditsLimit' => $sendingCreditsLimit,
@@ -212,6 +217,10 @@ class AccountController extends Controller
             'maxDomains' => $maxDomains,
             'domainsCount' => $domainsCount,
             'domainsUsed' => $domainsUsed,
+
+            'maxUsers' => $maxUsers,
+            'usersCount' => $usersCount,
+            'usersUsed' => $usersUsed,
         ]);
     }
 

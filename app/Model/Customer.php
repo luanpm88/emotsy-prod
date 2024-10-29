@@ -447,7 +447,7 @@ class Customer extends Model
         }
 
         foreach ($query->limit(20)->get() as $customer) {
-            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayNameEmailOption()];
+            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->name];
         }
 
         return json_encode($data);
@@ -639,16 +639,6 @@ class Customer extends Model
     }
 
     /**
-     * Check if customer has admin account.
-     *
-     * @return bool
-     */
-    public function hasAdminAccount()
-    {
-        return $this->user && $this->user->admin;
-    }
-
-    /**
      * Get all customer active sending servers.
      *
      * @return collect
@@ -675,7 +665,7 @@ class Customer extends Model
      */
     public function totalUploadSize()
     {
-        return \Acelle\Library\Tool::getDirectorySize(base_path('public/source/'.$this->user->uid)) / 1048576;
+        return \Acelle\Library\Tool::getDirectorySize(base_path('public/source/'.$this->uid)) / 1048576;
     }
 
     /**
@@ -718,16 +708,6 @@ class Customer extends Model
     public function can($action, $item)
     {
         return \Auth::user()->can($action, [$item, 'customer']);
-    }
-
-    /*
-     * Custom name + email.
-     *
-     * @return string
-     */
-    public function displayNameEmailOption()
-    {
-        return '<span class="fe-semibold">'.$this->displayName().'</span>|||'.$this->user->email;
     }
 
     /**
@@ -906,7 +886,7 @@ class Customer extends Model
 
     public function getLockPath($path)
     {
-        return $this->user->getLockPath($path);
+        return $this->getFirstUserLegacy()->getLockPath($path);
     }
 
     public function allowUnverifiedFromEmailAddress()
@@ -1045,7 +1025,6 @@ class Customer extends Model
     public function deleteAccount()
     {
         DB::transaction(function () {
-            $user = $this->user;
             $this->delete();
         });
     }
@@ -1753,5 +1732,22 @@ class Customer extends Model
     public function createLocalInstance()
     {
         return LocalCustomer::sync($this);
+    }
+
+    public function newMailList()
+    {
+        $list = new MailList(['all_sending_servers' => true]);
+        $list->customer_id = $this->id;
+
+        return $list;
+    }
+
+    public function getMaxUserQuota()
+    {
+        if (!$this->getCurrentActiveSubscription()) {
+            return 0;
+        }
+
+        return $this->getCurrentActiveSubscription()->plan->mapType()->getOption('user_max');
     }
 }

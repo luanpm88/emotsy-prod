@@ -72,20 +72,39 @@
                                 {{ trans('messages.login_as') }}
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                @foreach ($customer->users()->where('id', '!=', Auth::user()->id)->limit(5)->get() as $index => $user)
-                                    <li>
-                                        <a class="dropdown-item" href="{{ action('Admin\UserController@loginAs', [
-                                            'customer_uid' => $customer->uid,
-                                            'uid' => $user->uid,
-                                        ]) }}">
-                                            <div class="fw-600">
-                                                {{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}
-                                            </div>
-                                            <div>
-                                                {{ $user->email }}
-                                            </div>
-                                        </a>
-                                    </li>
+                                @foreach ($customer->users()->limit(5)->get() as $index => $user)
+                                    @if (Auth::user()->id == $user->id)
+                                        <li>
+                                            <a class="dropdown-item" href="{{ action('HomeController@index') }}">
+                                                <span class="d-flex align-items-center">
+                                                    <span class="me-2">
+                                                        <img width="40" class="rounded-circle me-2" src="{{ $user->getProfileImageUrl() }}" alt="">
+                                                    </span>
+                                                    <span>
+                                                        <span class="d-block fw-semibold">{{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
+                                                        {{ trans('messages.user.logged_in.go_to_client_area') }}
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li>
+                                            <a class="dropdown-item" href="{{ action('Admin\UserController@loginAs', [
+                                                'customer_uid' => $customer->uid,
+                                                'uid' => $user->uid,
+                                            ]) }}">
+                                                <span class="d-flex align-items-center">
+                                                    <span class="me-2">
+                                                        <img width="40" class="rounded-circle me-2" src="{{ $user->getProfileImageUrl() }}" alt="">
+                                                    </span>
+                                                    <span>
+                                                        <span class="d-block fw-semibold">{{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
+                                                        {{ $user->email }}
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    @endif
                                 @endforeach
                             </ul>
                         </div>

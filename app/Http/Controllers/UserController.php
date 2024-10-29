@@ -206,7 +206,14 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $user = $request->user()->customer->newUser();
+        $customer = $request->user()->customer;
+        $user = $customer->newUser();
+        $currentPlan = $customer->getCurrentActiveSubscription()->plan->mapType();
+
+        // check quota limit
+        if ($customer->getMaxUserQuota() <= $customer->users()->count()) {
+            return $this->noMoreItem();
+        }
 
         return view('users.create', [
             'user' => $user,

@@ -34,10 +34,12 @@ use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\Hook;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Acelle\Library\Traits\HasSettingsField;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use HasSettingsField;
     use HasUid;
     protected $connection = 'mysql';
 

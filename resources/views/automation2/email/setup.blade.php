@@ -206,16 +206,16 @@
                         'rules' => $email->rules(),
                     ])
 
-                    @if ($trackingDomain)
+                    @if (true || $trackingDomain)
 
                         @include('helpers.form_control', [
                             'type' => 'checkbox3',
                             'name' => 'custom_tracking_domain',
                             'label' => trans('messages.custom_tracking_domain'),
-                            'value' => Auth::user()->customer->isCustomTrackingDomainRequired() ? true : ($email->tracking_domain_id || request()->custom_tracking_domain),
+                            'value' => Auth::user()->customer->local()->isCustomTrackingDomainRequired() ? true : ($email->tracking_domain_id || request()->custom_tracking_domain),
                             'options' => [false,true],
                             'help_class' => 'email',
-                            'readonly' => Auth::user()->customer->isCustomTrackingDomainRequired(),
+                            'readonly' => Auth::user()->customer->local()->isCustomTrackingDomainRequired(),
                             'rules' => $email->rules()
                         ])
 
@@ -225,7 +225,7 @@
                                 'name' => 'tracking_domain_uid',
                                 'label' => '',
                                 'value' => $email->trackingDomain? $email->trackingDomain->uid : null,
-                                'options' => Auth::user()->customer->getVerifiedTrackingDomainOptions(),
+                                'options' => Auth::user()->customer->local()->getVerifiedTrackingDomainOptions(),
                                 'include_blank' => trans('messages.automation.email.select_tracking_domain'),
                                 'help_class' => 'email',
                                 'rules' => $email->rules()

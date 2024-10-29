@@ -3591,4 +3591,7 @@
     you agree to our <span class="fw-600"><i>Term of Use</i> and <i>Privacy Policy</i></span>.',
   'subscription.get_started' => 'Get started',
   'subscriber.activities' => 'Activities',
+  'user.logged_in.go_to_client_area' => 'Logged in. Go to the client area.',
+  'plan.setting.max_users_per_customer' => 'Max users per customer/account',
+  'quota.user' => 'User',
 ) ?>

@@ -10,8 +10,23 @@ class MailListPolicy
 {
     use HandlesAuthorization;
 
+    public function list(User $user)
+    {
+        // RBAC check
+        if (!$user->hasPermission('list.full_access') && !$user->hasPermission('list.read_only')) {
+            return false;   
+        }
+
+        return true;
+    }
+
     public function read(User $user, MailList $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('list.full_access') && !$user->hasPermission('list.read_only')) {
+            return false;   
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }
@@ -19,7 +34,7 @@ class MailListPolicy
     public function create(User $user)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('list.full_access')) {
             return false;   
         }
 
@@ -47,7 +62,7 @@ class MailListPolicy
     public function update(User $user, MailList $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('list.full_access')) {
             return false;   
         }
 
@@ -58,7 +73,7 @@ class MailListPolicy
     public function delete(User $user, MailList $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('list.full_access')) {
             return false;   
         }
 
@@ -69,7 +84,7 @@ class MailListPolicy
     public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers = 1)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('list.full_access')) {
             return false;   
         }
 
@@ -83,7 +98,7 @@ class MailListPolicy
     public function import(User $user, MailList $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('list.full_access')) {
             return false;   
         }
 
@@ -96,7 +111,7 @@ class MailListPolicy
     public function export(User $user, MailList $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('list.full_access')) {
             return false;   
         }
         

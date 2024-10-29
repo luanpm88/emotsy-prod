@@ -149,7 +149,6 @@ class Page extends Model
     {
         /*
         // BAISC INFO
-        $subject = $this->subject;
         $subject = str_replace('{LIST_NAME}', $this->mailList->name, $subject);
         $subject = str_replace('{CONTACT_NAME}', $this->mailList->contact->company, $subject);
         $subject = str_replace('{CONTACT_STATE}', $this->mailList->contact->state, $subject);
@@ -164,6 +163,9 @@ class Page extends Model
         $subject = str_replace('{CONTACT_EMAIL}', $this->mailList->contact->email, $subject);
         $subject = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $subject);
         */
+
+        // subject
+        $subject = $this->subject;
 
         // FIELDS
         $subject = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <span class="material-symbols-rounded">east</span></button>', $subject);

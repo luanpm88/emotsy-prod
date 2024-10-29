@@ -9,6 +9,11 @@ class AudienceController extends Controller
 {
     public function overview(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', \Acelle\Model\MailList::class)) {
+            return $this->notAuthorized();
+        }
+
         // stats
         $subscriberCount = $request->user()->customer->local()->subscribers()->count();
         $subscribedCount = $request->user()->customer->local()->subscribers()->subscribed()->count();
@@ -26,6 +31,11 @@ class AudienceController extends Controller
 
     public function growthChart(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', \Acelle\Model\MailList::class)) {
+            return $this->notAuthorized();
+        }
+        
         $currentTimezone = $request->user()->customer->getTimezone();
 
         $result = [

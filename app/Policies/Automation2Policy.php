@@ -22,7 +22,7 @@ class Automation2Policy
     public function create(User $user, Automation2 $automation)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('automation.full_access')) {
             return false;   
         }
 
@@ -49,7 +49,7 @@ class Automation2Policy
     public function update(User $user, Automation2 $automation)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('automation.full_access')) {
             return false;   
         }
 
@@ -67,7 +67,7 @@ class Automation2Policy
     public function enable(User $user, Automation2 $automation)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('automation.full_access')) {
             return false;   
         }
 
@@ -82,7 +82,7 @@ class Automation2Policy
     public function disable(User $user, Automation2 $automation)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('automation.full_access')) {
             return false;   
         }
 
@@ -101,7 +101,7 @@ class Automation2Policy
     public function delete(User $user, Automation2 $automation)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('automation.full_access')) {
             return false;   
         }
 

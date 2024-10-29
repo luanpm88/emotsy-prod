@@ -328,7 +328,9 @@ class MailList extends Model
 
         foreach($defaultFields as $attributes) {
             $attributes['custom_field_name'] = $this->getAvailableField();
-            $field = $this->fields()->create($attributes);
+            $field = $this->fields()->make($attributes);
+            $field->customer_id = $this->customer_id;
+            $field->save();
             Subscriber::addCustomFieldIfNotExist($field->custom_field_name);
         }
     }

@@ -10,8 +10,23 @@ class CampaignPolicy
 {
     use HandlesAuthorization;
 
+    public function list(User $user)
+    {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access') && !$user->hasPermission('campaign.read_only')) {
+            return false;   
+        }
+
+        return true;
+    }
+
     public function read(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access') && !$item->hasPermission('campaign.read_only')) {
+            return false;   
+        }
+
         $can = $item->customer_id == $user->customer->id;
 
         return $can;
@@ -20,7 +35,7 @@ class CampaignPolicy
     public function create(User $user, Campaign $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('campaign.full_access')) {
             return false;   
         }
 
@@ -49,7 +64,7 @@ class CampaignPolicy
     public function update(User $user, Campaign $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('campaign.full_access')) {
             return false;   
         }
 
@@ -67,7 +82,7 @@ class CampaignPolicy
     public function delete(User $user, Campaign $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('campaign.full_access')) {
             return false;   
         }
 
@@ -86,7 +101,7 @@ class CampaignPolicy
     public function pause(User $user, Campaign $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('campaign.full_access')) {
             return false;   
         }
 
@@ -101,7 +116,7 @@ class CampaignPolicy
     public function run(User $user, Campaign $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('campaign.full_access')) {
             return false;   
         }
 
@@ -114,7 +129,7 @@ class CampaignPolicy
     public function resume(User $user, Campaign $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('campaign.full_access')) {
             return false;   
         }
 
@@ -135,7 +150,7 @@ class CampaignPolicy
     public function copy(User $user, Campaign $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('campaign.full_access')) {
             return false;   
         }
 
@@ -145,6 +160,11 @@ class CampaignPolicy
 
     public function preview(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access') && !$user->hasPermission('campaign.read_only')) {
+            return false;   
+        }
+        
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }
@@ -158,7 +178,7 @@ class CampaignPolicy
     public function resend(User $user, Campaign $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('campaign.full_access')) {
             return false;   
         }
 
@@ -182,7 +202,7 @@ class CampaignPolicy
     public function resendHighPriority(User $user, Campaign $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if (!$user->hasPermission('campaign.full_access')) {
             return false;   
         }
         
