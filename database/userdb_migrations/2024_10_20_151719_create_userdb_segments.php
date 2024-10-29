@@ -20,7 +20,7 @@ class CreateUserdbCampaignSegments extends Migration
 
             $table->string('name');
             $table->string('matching');
-            $table->text('cache');
+            $table->text('cache')->nullable();
             $table->bigInteger('customer_id')->unsigned();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->bigInteger('mail_list_id')->unsigned();
