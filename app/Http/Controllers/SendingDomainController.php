@@ -95,7 +95,7 @@ class SendingDomainController extends Controller
     public function store(Request $request)
     {
         // authorize
-        if (Gate::denies('create', SendingDomain::class)) {
+        if (!$request->user()->customer->can('create', SendingDomain::class)) {
             return $this->notAuthorized();
         }
 
