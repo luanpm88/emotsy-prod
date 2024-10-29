@@ -9,7 +9,7 @@
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search d-block" href="{{ action('Admin\CustomerController@edit', $user->uid) }}">{{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</a>
+                        <a class="kq_search d-block" href="{{ action('UserController@edit', $user->uid) }}">{{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</a>
                     </h5>
                     <span class="text-muted kq_search">{{ $user->email }}</span><br>
                 </td>
