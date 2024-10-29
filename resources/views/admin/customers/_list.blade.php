@@ -6,11 +6,9 @@
             <tr class="position-relative">
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search d-block" href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">{{ $customer->displayName() }}</a>
+                        <a class="kq_search d-block" href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">{{ $customer->displayName() }}{!! $customer->hasLocalDb() ? "<span style='font-weight: 300;color:orange'><sup> *$customer->db_connection</sup></span>" : '' !!}</a>
                     </h5>
                     <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($customer->local()->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>
-                    <br />
-                    <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($customer->created_at, 'datetime_full') }}</span>
                     <div class="mt-2">
                         @include('admin.customers._user_avatars', [
                             'customer' => $customer,
