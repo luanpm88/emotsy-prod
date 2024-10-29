@@ -41,7 +41,7 @@ class UserDbSync extends Command
         $customer = \Acelle\Model\Customer::find($customerId);
 
         if (!$customer->hasLocalDb()) {
-            throw new \Exception("Customer does not have a local db");
+            throw new \Exception("Customer does not have a local db. Execute the following command first: userdb:assign {customer_id} {connection}");
         }
 
         echo "Sync customer #{$customer->id} to {$customer->db_connection}...\n";
@@ -51,10 +51,5 @@ class UserDbSync extends Command
         echo "+ Done\n";
 
         return 0;
-    }
-
-    private function loadRawSql($filename)
-    {
-        return file_get_contents(database_path("userdb/{$filename}"));
     }
 }
