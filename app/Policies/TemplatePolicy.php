@@ -17,6 +17,11 @@ class TemplatePolicy
                 $can = $user->admin->getPermission('template_read') != 'no';
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 break;
         }
@@ -32,7 +37,7 @@ class TemplatePolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access')) {
                     return false;   
                 }
                 
@@ -52,6 +57,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 break;
         }
@@ -69,7 +79,7 @@ class TemplatePolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access')) {
                     return false;   
                 }
 
@@ -90,7 +100,7 @@ class TemplatePolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
                     return false;   
                 }
 
@@ -111,7 +121,7 @@ class TemplatePolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access')) {
                     return false;   
                 }
 
@@ -131,6 +141,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+                
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 break;
         }
@@ -148,7 +163,7 @@ class TemplatePolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access')) {
                     return false;   
                 }
                 

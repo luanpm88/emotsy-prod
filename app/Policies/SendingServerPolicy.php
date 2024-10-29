@@ -18,6 +18,11 @@ class SendingServerPolicy
                 $can = $user->admin->getPermission('sending_server_read') != 'no';
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer(); // non-saas safe
                 break;
         }
@@ -32,6 +37,11 @@ class SendingServerPolicy
                 $can = $user->admin->getPermission('sending_server_read') == 'all';
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+                
                 $can = false;
                 break;
         }
@@ -58,7 +68,7 @@ class SendingServerPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access')) {
                     return false;   
                 }
 
@@ -105,7 +115,7 @@ class SendingServerPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access')) {
                     return false;   
                 }
 
@@ -127,7 +137,7 @@ class SendingServerPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access')) {
                     return false;   
                 }
 
@@ -149,7 +159,7 @@ class SendingServerPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access')) {
                     return false;   
                 }
 
@@ -171,7 +181,7 @@ class SendingServerPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('account.full_access')) {
                     return false;   
                 }
                 

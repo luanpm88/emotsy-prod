@@ -31,9 +31,12 @@ class UserPolicy
                 $can = true;
                 break;
             case 'customer':
-                $can = $user->id != $item->id;
+                // RBAC check
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;
+                }
 
-                $permission = true;
+                $can = $user->id != $item->id;
 
                 // check plan
                 $customer = $user->customer;
@@ -41,15 +44,8 @@ class UserPolicy
 
                 // check quota limit
                 if ($customer->getMaxUserQuota() <= $usersCount) {
-                    $permission = false;
+                    $can = false;
                 }
-                
-                // RBAC check
-                if (!$user->hasPermission('account.full_access')) {
-                    $permission = false;    
-                }
-
-                $can = $can && $permission;
 
                 break;
         }
@@ -74,13 +70,11 @@ class UserPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if ($user->hasPermission('account.full_access')) {
-                    $permission = true;   
-                } else {
-                    $permission = false;    
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;
                 }
 
-                $can = $permission;
+                $can = true;
                 break;
         }
         return $can;
@@ -96,17 +90,12 @@ class UserPolicy
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
-                $can = $user->id != $item->id && $item->isActivated();
-                
                 // RBAC check
-                if ($user->hasPermission('account.full_access')) {
-                    $permission = true;   
-                } else {
-                    $permission = false;    
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;
                 }
 
-                $can = $can && $permission;
-
+                $can = $user->id != $item->id && $item->isActivated();
                 break;
         }
         return $can;
@@ -122,17 +111,12 @@ class UserPolicy
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
-                $can = $user->id != $item->id && !$item->isActivated();
-
                 // RBAC check
-                if ($user->hasPermission('account.full_access')) {
-                    $permission = true;   
-                } else {
-                    $permission = false;    
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;
                 }
 
-                $can = $can && $permission;
-
+                $can = $user->id != $item->id && !$item->isActivated();
                 break;
         }
         return $can;
@@ -149,17 +133,12 @@ class UserPolicy
                 $can = $can && $user->id != $item->id;
                 break;
             case 'customer':
-                $can = $user->id != $item->id;
-                
                 // RBAC check
-                if ($user->hasPermission('account.full_access')) {
-                    $permission = true;   
-                } else {
-                    $permission = false;    
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;
                 }
 
-                $can = $can && $permission;
-                
+                $can = $user->id != $item->id;
                 break;
         }
         return $can;
@@ -197,16 +176,12 @@ class UserPolicy
                 $can = $item->id != $user->customer_id && ($ability == 'all');
                 break;
             case 'customer':
-                $can = $user->id != $item->id;
-
                 // RBAC check
-                if ($user->hasPermission('account.full_access')) {
-                    $permission = true;   
-                } else {
-                    $permission = false;    
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;
                 }
 
-                $can = $can && $permission;
+                $can = $user->id != $item->id;
 
                 break;
         }

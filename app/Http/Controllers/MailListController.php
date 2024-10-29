@@ -20,6 +20,11 @@ class MailListController extends Controller
      */
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', MailList::class)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         return view('lists.index');
     }
@@ -31,6 +36,11 @@ class MailListController extends Controller
      */
     public function listing(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', MailList::class)) {
+            return $this->notAuthorized();
+        }
+        
         $customer = $request->user()->customer;
 
         $lists = $customer->local()->mailLists()
@@ -358,6 +368,11 @@ class MailListController extends Controller
     public function overview(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
 
         event(new \Acelle\Events\MailListUpdated($list));
 
