@@ -617,10 +617,11 @@ class ApiHelper
                     'example' => 'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\CustomerController@store").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d name=ACBIncotech \
 -d email=user_name@gmail.com \
 -d first_name=Luan \
 -d last_name=Pham \
--d timezone=America/Godthab \
+-d timezone=UTC \
 -d language_id=1 \
 -d password=123456',
                 ],
@@ -664,12 +665,9 @@ class ApiHelper
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
 ' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@update", '-ID-')).' \
 -d api_token=' .\Auth::user()->api_token.'  \
--d email=user_name@gmail.com \
--d first_name=Luan \
--d last_name=Pham \
--d timezone=America/Godthab \
--d language_id=1 \
--d password=123456',
+-d name=ACBIncotech \
+-d timezone=UTC \
+-d language_id=1',
                 ],
 
                 [

@@ -23,6 +23,8 @@ class ExportSubscribersJob extends Base
         $this->mailList = $mailList;
         $this->segment = $segment;
 
+        $this->mailList->customer->setUserDbConnection();
+
         // Set the initial value for progress check
         $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([

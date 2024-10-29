@@ -13,6 +13,8 @@ class RetryAllFailedActions extends Base
     public function __construct($automation)
     {
         $this->automation = $automation;
+
+        $this->automation->customer->setUserDbConnection();
     }
 
     /**

@@ -22,11 +22,6 @@ class AccountController extends Controller
         $customer = $user->customer;
         $customer->getColorScheme();
 
-        // Authorize
-        if (!$request->user()->customer->can('profile', $customer)) {
-            return $this->notAuthorized();
-        }
-
         // Save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, [
@@ -48,24 +43,27 @@ class AccountController extends Controller
 
             $user->save();
 
-            // Save current user info
-            $customer->fill($request->all());
+            // Authorize
+            if ($request->user()->customer->can('updateProfile', $customer)) {
+                // Save current user info
+                $customer->fill($request->all());
 
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $user->uploadProfileImage($request->file('image'));
+                // Upload and save image
+                if ($request->hasFile('image')) {
+                    if ($request->file('image')->isValid()) {
+                        // Remove old images
+                        $user->uploadProfileImage($request->file('image'));
+                    }
                 }
-            }
 
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeProfileImage();
-            }
+                // Remove image
+                if ($request->_remove_image == 'true') {
+                    $user->removeProfileImage();
+                }
 
-            if ($customer->save()) {
-                $request->session()->flash('alert-success', trans('messages.profile.updated'));
+                if ($customer->save()) {
+                    $request->session()->flash('alert-success', trans('messages.profile.updated'));
+                }
             }
 
             return redirect()->action('AccountController@profile');
@@ -74,7 +72,7 @@ class AccountController extends Controller
         if (!empty($request->old())) {
             $customer->fill($request->old());
             // User info
-            $customer->user->fill($request->old());
+            $user->fill($request->old());
         }
 
         return view('account.profile', [
@@ -94,7 +92,7 @@ class AccountController extends Controller
     {
         // Get current user
         $customer = $request->user()->customer;
-        $contact = $customer->getContact();
+        $contact = $customer->contact;
 
         // Create new company if null
         if (!$contact) {
@@ -175,23 +173,28 @@ class AccountController extends Controller
         $maxUpload = get_tmp_quota($customer, 'max_size_upload_total');
         $maxDomains = get_tmp_quota($customer, 'sending_domains_max');
 
-        $listsCount = $customer->listsCount();
+        $listsCount = $customer->local()->listsCount();
         $listsUsed = ($maxLists == -1) ? 0 : (($maxLists == 0) ? 1 : $listsCount / $maxLists);
 
-        $campaignsCount = $customer->campaignsCount();
+        $campaignsCount = $customer->local()->campaignsCount();
         $campaignsUsed = ($maxCampaigns == -1) ? 0 : (($maxCampaigns == 0) ? 1 : $campaignsCount / $maxCampaigns);
 
-        $subscribersCount = $customer->readCache('SubscriberCount', 0);
+        $subscribersCount = $customer->local()->readCache('SubscriberCount', 0);
         $subscribersUsed = ($maxSubscribers == -1) ? 0 : (($maxSubscribers == 0) ? 1 : $subscribersCount / $maxSubscribers);
 
-        $automationsCount = $customer->automationsCount();
+        $automationsCount = $customer->local()->automationsCount();
         $automationsUsed = ($maxAutomations == -1) ? 0 : (($maxAutomations == 0) ? 1 : $automationsCount / $maxAutomations);
 
         $uploadCount = $customer->totalUploadSize();
         $uploadUsed = ($maxUpload == -1) ? 0 : (($maxUpload == 0) ? 1 : $uploadCount / $maxUpload);
 
-        $domainsCount = $customer->sendingDomainsCount();
+        $domainsCount = $customer->local()->sendingDomainsCount();
         $domainsUsed = ($maxDomains == -1) ? 0 : (($maxDomains == 0) ? 1 : $domainsCount / $maxDomains);
+
+        // users
+        $usersCount = $customer->users()->count();
+        $maxUsers = $customer->getMaxUserQuota();
+        $usersUsed = ($maxUsers == -1) ? 0 : (($maxUsers == 0) ? 1 : $usersCount / $maxUsers);
 
         return view('account.quota_log', [
             'sendCreditRemaining' => $sendCreditRemaining,
@@ -214,6 +217,10 @@ class AccountController extends Controller
             'maxDomains' => $maxDomains,
             'domainsCount' => $domainsCount,
             'domainsUsed' => $domainsUsed,
+
+            'maxUsers' => $maxUsers,
+            'usersCount' => $usersCount,
+            'usersUsed' => $usersUsed,
         ]);
     }
 
@@ -240,22 +247,22 @@ class AccountController extends Controller
         $maxUpload = get_tmp_quota($customer, 'max_size_upload_total');
         $maxDomains = get_tmp_quota($customer, 'sending_domains_max');
 
-        $listsCount = $customer->listsCount();
+        $listsCount = $customer->local()->listsCount();
         $listsUsed = ($maxLists == -1) ? 0 : (($maxLists == 0) ? 1 : $listsCount / $maxLists);
 
-        $campaignsCount = $customer->campaignsCount();
+        $campaignsCount = $customer->local()->campaignsCount();
         $campaignsUsed = ($maxCampaigns == -1) ? 0 : (($maxCampaigns == 0) ? 1 : $campaignsCount / $maxCampaigns);
 
-        $subscribersCount = $customer->readCache('SubscriberCount', 0);
+        $subscribersCount = $customer->local()->readCache('SubscriberCount', 0);
         $subscribersUsed = ($maxSubscribers == -1) ? 0 : (($maxSubscribers == 0) ? 1 : $subscribersCount / $maxSubscribers);
 
-        $automationsCount = $customer->automationsCount();
+        $automationsCount = $customer->local()->automationsCount();
         $automationsUsed = ($maxAutomations == -1) ? 0 : (($maxAutomations == 0) ? 1 : $automationsCount / $maxAutomations);
 
         $uploadCount = $customer->totalUploadSize();
         $uploadUsed = ($maxUpload == -1) ? 0 : (($maxUpload == 0) ? 1 : $uploadCount / $maxUpload);
 
-        $domainsCount = $customer->sendingDomainsCount();
+        $domainsCount = $customer->local()->sendingDomainsCount();
         $domainsUsed = ($maxDomains == -1) ? 0 : (($maxDomains == 0) ? 1 : $domainsCount / $maxDomains);
 
         return view('account.quota_log_2', [
@@ -371,6 +378,11 @@ class AccountController extends Controller
      */
     public function editPaymentMethod(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         // Save posted data
         if ($request->isMethod('post')) {
             if (!Billing::isGatewayRegistered($request->payment_method)) {

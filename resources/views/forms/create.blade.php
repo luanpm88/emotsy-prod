@@ -43,7 +43,7 @@
                     'include_blank' => '--',
                     'label' => trans('messages.select_list'),
                     'value' => '',
-                    'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+                    'options' => Auth::user()->customer->local()->readCache('MailListSelectOptions', []),
                     'rules' =>  ['mail_list_uid' => 'required']
                 ])
             </div>

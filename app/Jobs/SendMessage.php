@@ -70,6 +70,9 @@ class SendMessage implements ShouldQueue
         $this->servers = $servers;
         $this->subscription = $subscription;
         $this->triggerId = $triggerId;
+
+        // Set default connection
+        $this->campaign->customer->setUserDbConnection();
     }
 
     public function setStopOnError($value)
@@ -127,6 +130,7 @@ class SendMessage implements ShouldQueue
     public function send($exceptionCallback = null)
     {
         try {
+
             // debug
             $startAt = Carbon::now()->getTimestampMs();
             $email = $this->subscriber->getEmail(); // important: $email must be here, in case code in Exception block needs it

@@ -44,6 +44,8 @@ class LoadCampaign implements ShouldQueue
         $this->campaign = $campaign;
         $this->page = $page;
         $this->listOfIds = $listOfIds;
+
+        $this->campaign->customer->setUserDbConnection();
     }
 
     /**

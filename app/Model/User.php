@@ -26,7 +26,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
 use Acelle\Library\ExtendedSwiftMessage;
-use Acelle\Library\Traits\HasSettingsField;
 use Acelle\Model\Setting;
 use Illuminate\Http\UploadedFile;
 use App;
@@ -34,13 +33,14 @@ use AppUrl;
 use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\Hook;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Acelle\Library\Traits\HasSettingsField;
 
 class User extends Authenticatable
 {
     use Notifiable;
-    use HasUid;
     use HasSettingsField;
-
+    use HasUid;
     protected $connection = 'mysql';
 
     /*******
@@ -61,6 +61,13 @@ class User extends Authenticatable
     public const ASSETS_THUMB_DIR = 'home/thumbs';
     public const PROFILE_IMAGE_PATH = 'home/avatar';
     public const PROFILE_THUMB_PATH = 'home/avatar-thumb';
+
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+
+    // Role
+    public const ROLE_FULL_ACCESS = 'full-access';
+    public const ROLE_READ_ONLY = 'read-only';
 
     /**
      * The attributes that are mass assignable.
@@ -90,18 +97,23 @@ class User extends Authenticatable
         return $this->belongsTo('Acelle\Model\Customer');
     }
 
-    public function getLocalCustomer()
-    {
-        $customer = $this->customer;
-        if (is_null($customer->db_connection)) {
-            throw new Exception("db_connection is missing for customer ".$customer->uid);
-        }
-        return LocalCustomer::on($customer->db_connection)->where('uid', $customer->uid)->first();
-    }
-
     public function admin()
     {
         return $this->hasOne('Acelle\Model\Admin');
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_role');
+    }
+
+    public function getRole()
+    {
+        if ($this->roles()->count() > 1) {
+            throw new \Exception('User can not have more than one role!');
+        }
+
+        return $this->roles()->first();
     }
 
     public function createUserDirectories()
@@ -175,6 +187,12 @@ class User extends Authenticatable
 
         $mailer = App::make('xmailer');
         $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (!empty(Setting::get('notification.on_user_created'))) {
+            $message->setTo( Setting::get('notification.on_user_created') );
+            $mailer->sendWithDefaultFromAddress($message);
+            echo "OK";
+        }
 
         if (array_key_exists('error', $result)) {
             throw new \Exception($result['error']);
@@ -665,6 +683,94 @@ class User extends Authenticatable
         ]);
     }
 
+    public static function scopeSearch($query, $keyword)
+    {
+        $query = $query->select('users.*');
+
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
+                });
+            }
+        }
+    }
+
+    public function displayName($lastNameFirst)
+    {
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->last_name.' '.$this->first_name));
+        } else {
+            return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
+        }
+    }
+
+    public function isActivated()
+    {
+        return $this->activated;
+    }
+
+    public static function newDefault()
+    {
+        $user = new self();
+        $user->activated = true;
+        $user->status = self::STATUS_ACTIVE;
+
+        return $user;
+    }
+
+    public function fillAttributes($params)
+    {
+        $this->fill($params);
+    }
+
+    public function enable()
+    {
+        $this->activated = 1;
+        $this->save();
+    }
+
+    public function disable()
+    {
+        $this->activated = 0;
+        $this->save();
+    }
+
+    // @todo remove this later
+    public function isReadOnly()
+    {
+        return false;
+    }
+
+    public function setRole($role)
+    {
+        // for now, one user only has one role
+        // the same role, do nothing
+        if ($this->getRole() && $this->getRole()->id == $role->id) {
+            return;
+        }
+
+        // remove current role if it exists
+        if ($this->getRole()) {
+            $this->roles()->detach($this->getRole());
+        }
+
+        // set new role
+        $this->roles()->save($role);
+    }
+
+    public function hasPermission($permission)
+    {
+        // default is access all if has not role
+        if (!$this->getRole()) {
+            return false;
+        }
+        
+        return $this->getRole()->hasPermission($permission);
+    }
     public function getOnscreenIntros()
     {
         if (!$this->onscreen_intros) {
@@ -822,5 +928,73 @@ class User extends Authenticatable
     public function is2FAGoogleAuthentictorEnabled()
     {
         return $this->enable_2fa_google_authenticator && $this->google_2fa_secret_key;
+    }
+
+    public function saveUser(
+        $email,
+        $password,
+        $passwordConfirmation,
+        $first_name,
+        $last_name,
+        $image,
+        $role_uid
+    )
+    {
+        $rules = [
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
+            'role_uid' => 'required',
+        ];
+
+        if (isset($this->id)) {
+            $rules['password'] = 'nullable|confirmed|min:5|max:255';
+        } else {
+            $rules['password'] = 'required|confirmed|min:5|max:255';
+        }
+
+        // fill
+        $this->email = $email;
+        if ($password) {
+            $this->password = $password;
+        }
+        $this->first_name = $first_name;
+        $this->last_name = $last_name;
+
+        $validator = \Validator::make([
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $passwordConfirmation,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'image' => $image,
+            'role_uid' => $role_uid,
+        ], $rules);
+
+        if ($validator->fails()) {
+            return [false, $validator->errors()];
+        }
+
+        // Update password
+        if (!empty($password)) {
+            $this->password = bcrypt($password);
+        }
+
+        // save
+        $this->save();
+
+        // Upload and save image
+        if ($image) {
+            if ($image->isValid()) {
+                // Remove old images
+                $this->uploadProfileImage($image);
+            }
+        }
+
+        // role is required
+        $this->setRole(Role::findByUid($role_uid));
+
+        return [true, $validator->errors()];
     }
 }

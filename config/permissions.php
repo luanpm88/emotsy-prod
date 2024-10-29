@@ -1,23 +1,13 @@
 <?php
 
 return [
-    'account' => [
-        'campaign.all',
-        'campaign.readonly',
-        'list.all',
-        'list.readonly',
-        'automation.all',
-        'automation.readonly',
-        'user.all',
-        'user.readonly',
-    ],
+    'campaign.full_access',
+    'campaign.read_only',
+    'list.full_access',
+    'list.read_only', 
+    'automation.full_access',
+    'automation.read_only',
 
-    'system' => [
-        'plan.all',
-        'plan.readonly',
-        'mailer.all',
-        'mailer.readonly',
-        'customer.all',
-        'customer.readonly',
-    ],
+    'account.full_access',
+    'account.read_only',
 ];

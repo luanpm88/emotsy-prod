@@ -43,7 +43,7 @@
                 <div class="text-center">
                     <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($formCount) }}</h2>
                     <div class="text-muted2 text-white">
-                        @if (Auth::user()->customer->forms()->count())
+                        @if (Auth::user()->customer->local()->forms()->count())
                             <p class="mb-0">{{ trans('messages.list.form.desc') }}</p>
                         @else
                             <p class="mb-0">{{ trans('messages.forms_not_yet') }}</p>

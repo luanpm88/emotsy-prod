@@ -17,6 +17,21 @@
         <div class="col-md-12">
             <div class="content-group-sm mt-4">
                 <div class="d-flex align-items-center">
+                    <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.quota.user') }}</h5>
+                    <div class="pull-right text-primary text-semibold">
+                        <span class="text-muted">{{ number_with_delimiter($usersCount) }}/{{ ($maxUsers == -1) ? '∞' : number_with_delimiter($maxUsers) }}</span>
+                        &nbsp;&nbsp;&nbsp;{{ number_to_percentage($usersUsed) }}
+                    </div>
+                </div>
+                <div class="progress progress-xxs">
+                    <div class="progress-bar bg-warning" style="width: {{ $usersUsed*100 }}%">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="content-group-sm mt-4">
+                <div class="d-flex align-items-center">
                     <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.list') }}</h5>
                     <div class="pull-right text-primary text-semibold">
                         <span class="text-muted">{{ number_with_delimiter($listsCount) }}/{{ ($maxLists == -1) ? '∞' : number_with_delimiter($maxLists) }}</span>

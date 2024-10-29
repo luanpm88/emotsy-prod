@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Acelle\Model\TemplateCategory;
 use Acelle\Jobs\ForceTriggerAutomation;
 use Exception;
+use Acelle\Model\Customer as MasterCustomer;
 
 class Automation2Controller extends Controller
 {
@@ -47,7 +48,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        $automations = $request->user()->customer->automation2s()
+        $automations = $request->user()->customer->local()->automation2s()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -96,8 +97,7 @@ class Automation2Controller extends Controller
                 ], 400);
             }
 
-            $customer = $request->user()->customer;
-            $automation = $customer->automation2s()->make()->newDefault();
+            $automation = $request->user()->customer->local()->automation2s()->make()->newDefault();
 
             return view('automation2.wizard', [
                 'automation' => $automation,
@@ -125,8 +125,8 @@ class Automation2Controller extends Controller
 
     public function wizard(Request $request)
     {
-        $customer = $request->user()->customer;
-        $automation = $customer->automation2s()->make()->newDefault();
+        $localCustomer = $request->user()->customer->local();
+        $automation = $localCustomer->automation2s()->make()->newDefault();
 
         // authorize
         if (\Gate::denies('create', $automation)) {
@@ -138,7 +138,7 @@ class Automation2Controller extends Controller
             $params = $request->all();
 
             if (isset($params['options'])) {
-                $params['options'] = $this->prepareOptions($params['options'], $customer);
+                $params['options'] = $this->prepareOptions($params['options'], $localCustomer->master());
             }
 
             $validator = $automation->createFromArray($params);
@@ -170,8 +170,6 @@ class Automation2Controller extends Controller
      */
     public function update(Request $request, $uid)
     {
-        $customer = $request->user()->customer;
-
         // find automation
         $automation = Automation2::findByUid($uid);
 
@@ -418,12 +416,12 @@ class Automation2Controller extends Controller
             'title' => trans('messages.automation.trigger.title', [
                 'title' => trans('messages.automation.trigger.tree.' . $request->options["key"])
             ]),
-            'options' => $this->prepareOptions($request->options, $request->user()->customer),
+            'options' => $this->prepareOptions($request->options, $request->user()->customer), // master OK
             'rules' => $this->triggerRules()[$request->options['key']],
         ]);
     }
 
-    public function prepareOptions($options, $customer)
+    public function prepareOptions($options, MasterCustomer $customer)
     {
         if (isset($options['key']) && $options['key'] == 'specific-date') {
             if (isset($options['date'])) {
@@ -1022,7 +1020,7 @@ class Automation2Controller extends Controller
 
         // from
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates()->email();
+            $templates = $request->user()->customer->templates()->email(); // master ok
         } elseif ($request->from == 'gallery') {
             $templates = Template::shared()->notPreserved()->email();
         } else {
@@ -1115,7 +1113,7 @@ class Automation2Controller extends Controller
             'list' => $automation->mailList,
             'email' => $email,
             'templates' => $request->user()->customer->getBuilderTemplates(),
-            'customer' => $automation->customer,
+            'customer' => $automation->customer, // master DB OK
         ]);
     }
 
@@ -1495,7 +1493,7 @@ class Automation2Controller extends Controller
         return view('automation2.contacts.list', [
             'automation' => $automation,
             'contacts' => $contacts,
-            'customer' => $automation->customer,
+            'customer' => $automation->customer, // Master DB OK
         ]);
     }
 

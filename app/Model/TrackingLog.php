@@ -34,7 +34,7 @@ class TrackingLog extends Model
     public const STATUS_FEEDBACK_ABUSE = 'feedback-abuse';
     public const STATUS_FEEDBACK_SPAM = 'feedback-spam';
 
-    protected $fillable = ['email_id', 'campaign_id', 'message_id', 'runtime_message_id', 'subscriber_id', 'sending_server_id', 'customer_id', 'status', 'error', 'auto_trigger_id', 'sub_account_id', 'mail_list_id'];
+    protected $fillable = ['email_id', 'campaign_id', 'message_id', 'runtime_message_id', 'subscriber_id', 'sending_server_id', 'customer_id', 'status', 'error', 'auto_trigger_id', 'mail_list_id'];
 
     /**
      * Associations.

@@ -38,6 +38,8 @@ class HandleDuplicateEmails implements ShouldQueue
     public function __construct(CampaignInterface $campaign)
     {
         $this->campaign = $campaign;
+
+        $this->campaign->customer->setUserDbConnection();
     }
 
     /**

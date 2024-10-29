@@ -77,7 +77,7 @@ class FormController extends Controller
         }
 
         // sort, pagination
-        $forms = $request->user()->customer->forms()->search($request->keyword)
+        $forms = $request->user()->customer->local()->forms()->search($request->keyword)
             ->filter($request->all())
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);

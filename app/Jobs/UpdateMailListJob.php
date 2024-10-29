@@ -19,6 +19,8 @@ class UpdateMailListJob extends Base implements ShouldBeUnique
     public function __construct(MailList $list)
     {
         $this->list = $list;
+
+        $this->list->customer->setUserDbConnection();
     }
 
     /**

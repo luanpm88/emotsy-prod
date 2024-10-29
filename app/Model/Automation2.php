@@ -447,11 +447,13 @@ class Automation2 extends Model
         $trigger = null;
         $sessionId = is_null($session) ? null : $session->id;
         DB::transaction(function () use (&$trigger, $subscriber, $sessionId) {
-            $trigger = $this->autoTriggers()->create();
+            $trigger = new AutoTrigger();
+            $trigger->customer_id = $this->customer_id;
             $trigger->trigger_session_id = $sessionId;
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
+            $this->autoTriggers()->save($trigger);
             $trigger->updateWorkflow();
-            $trigger->save();
+
             $this->logger()->info(sprintf('@TRIGGER (%s) for %s', $this->getTriggerType(), $subscriber->email));
         });
 
@@ -467,7 +469,7 @@ class Automation2 extends Model
         foreach ($customers as $customer) {
             // Only one automation process to run at one given time
 
-            $automations = $customer->activeAutomation2s;
+            $automations = $customer->local()->activeAutomation2s;
             foreach ($automations as $automation) {
                 $automationLockFile = $customer->getLockPath('automation-lock-'.$automation->uid);
                 $lock = new Lockable($automationLockFile);
@@ -606,9 +608,16 @@ class Automation2 extends Model
         $this->autoTriggers()->delete(); // Delete legacy triggers that were not bound to a session
 
         // Create new sessions
-        $session = $this->triggerSessions()->create();
+        $session = $this->createTriggerSession();
 
         $this->forceTriggerAll($session);
+    }
+
+    public function createTriggerSession()
+    {
+        $session = new TriggerSession();
+        $session->customer_id = $this->customer_id;
+        return $this->triggerSessions()->save($session);
     }
 
     public function checkForMonthlyRecurring()
@@ -803,7 +812,8 @@ class Automation2 extends Model
         $this->autoTriggers()->delete(); // Delete legacy triggers that were not bound to a session
 
         // Create new sessions
-        $session = $this->triggerSessions()->create();
+        $session = $this->createTriggerSession();
+
         $this->forceTriggerAll($session);
     }
 
@@ -1103,7 +1113,7 @@ class Automation2 extends Model
      */
     public function getSwitchAutomations($customer)
     {
-        return $customer->automation2s()->where('id', '<>', $this->id)->orderBy('updated_at', 'desc')->limit(50);
+        return $customer->local()->automation2s()->where('id', '<>', $this->id)->orderBy('updated_at', 'desc')->limit(50);
     }
 
     /**

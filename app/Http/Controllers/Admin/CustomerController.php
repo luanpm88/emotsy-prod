@@ -69,16 +69,7 @@ class CustomerController extends Controller
     public function create(Request $request)
     {
         $customer = \Acelle\Model\Customer::newCustomer();
-        $customer->status = 'active';
-        $customer->uid = '0';
-
-        if (!empty($request->old())) {
-            $customer->fill($request->old());
-        }
-
-        // User info
-        $customer->user = new \Acelle\Model\User();
-        $customer->user->fill($request->old());
+        $user = $customer->newUser();
 
         // authorize
         if (\Gate::denies('create', $customer)) {
@@ -87,6 +78,7 @@ class CustomerController extends Controller
 
         return view('admin.customers.create', [
             'customer' => $customer,
+            'user' => $user,
         ]);
     }
 
@@ -99,59 +91,34 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        // Get current user
-        $current_user = $request->user();
-        $customer = \Acelle\Model\Customer::newCustomer();
-        $contact = new \Acelle\Model\Contact();
+        // validation
+        list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+            // customer information
+            $admin = $request->user()->admin,
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id,
+            // user information
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
 
-        // authorize
-        if (\Gate::denies('create', $customer)) {
-            return $this->notAuthorized();
+        //  errors
+        if (!$validator->errors()->isEmpty()) {
+            return view('admin.customers.create', [
+                'customer' => $customer,
+                'user' => $user,
+                'errors' => $validator->errors(),
+            ]);
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $user = new \Acelle\Model\User();
-            $user->fill($request->all());
-            $user->activated = true;
-
-            $this->validate($request, $user->rules());
-
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            $user->save();
-
-            // Save current user info
-            $customer->admin_id = $request->user()->admin->id;
-            $customer->fill($request->all());
-            $customer->status = 'active';
-
-            if ($customer->save()) {
-                $user->customer_id = $customer->id;
-                $user->save();
-                // Upload and save image
-                if ($request->hasFile('image')) {
-                    if ($request->file('image')->isValid()) {
-                        // Remove old images
-                        $user->uploadProfileImage($request->file('image'));
-                    }
-                }
-
-                // Remove image
-                if ($request->_remove_image == 'true') {
-                    $user->removeProfileImage();
-                }
-
-                // Execute registered hooks
-                Hook::execute('customer_added', [$customer]);
-
-                $request->session()->flash('alert-success', trans('messages.customer.created'));
-
-                return redirect()->action('Admin\CustomerController@index');
-            }
-        }
+        return redirect()->action('Admin\CustomerController@index')
+            ->with('alert-success', trans('messages.customer.created'));
     }
 
     /**
@@ -184,8 +151,6 @@ class CustomerController extends Controller
 
         if (!empty($request->old())) {
             $customer->fill($request->old());
-            // User info
-            $customer->user->fill($request->old());
         }
 
         return view('admin.customers.edit', [
@@ -203,60 +168,31 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Get current user
-        $current_user = $request->user();
-        $customer = \Acelle\Model\Customer::findByUid($id);
-
-        // authorize
-        if (\Gate::denies('update', $customer)) {
-            return $this->notAuthorized();
-        }
-
         // Prenvent save from demo mod
         if (config('app.demo')) {
             return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
-        // save posted data
-        if ($request->isMethod('patch')) {
-            // Prenvent save from demo mod
-            if (config('app.demo')) {
-                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
-            }
+        //
+        $customer = \Acelle\Model\Customer::findByUid($id);
 
-            $user = $customer->user;
-            $user->fill($request->all());
+        // validation
+        list($validator, $customer) = $customer->updateCustomer(
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id
+        );
 
-            $this->validate($request, $user->rules());
-
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            $user->save();
-
-            // Save current user info
-            $customer->fill($request->all());
-            $customer->save();
-
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $user->uploadProfileImage($request->file('image'));
-                }
-            }
-
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeProfileImage();
-            }
-
-            if ($customer->save()) {
-                $request->session()->flash('alert-success', trans('messages.customer.updated'));
-                return redirect()->action('Admin\CustomerController@index');
-            }
+        //  errors
+        if (!$validator->errors()->isEmpty()) {
+            return view('admin.customers.edit', [
+                'customer' => $customer,
+                'errors' => $validator->errors(),
+            ]);
         }
+
+        return redirect()->action('Admin\CustomerController@index')
+            ->with('alert-success', trans('messages.customer.updated'));
     }
 
     /**
@@ -344,45 +280,6 @@ class CustomerController extends Controller
     }
 
     /**
-     * Switch user.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function loginAs(Request $request)
-    {
-        $customer = \Acelle\Model\Customer::findByUid($request->uid);
-
-        // authorize
-        if (\Gate::denies('loginAs', $customer)) {
-            return $this->notAuthorized();
-        }
-
-        $orig_id = $request->user()->uid;
-        \Auth::login($customer->user);
-        \Session::put('orig_customer_id', $orig_id);
-        return redirect()->action('HomeController@index');
-    }
-
-    /**
-     * Log in back user.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function loginBack(Request $request)
-    {
-        $id = \Session::pull('orig_customer_id');
-        $orig_user = \Acelle\Model\Customer::findByUid($id);
-
-        \Auth::login($orig_user);
-
-        return redirect()->action('Admin\UserController@index');
-    }
-
-    /**
      * Select2 customer.
      *
      * @param \Illuminate\Http\Request $request
@@ -466,11 +363,7 @@ class CustomerController extends Controller
         if ($customer->contact) {
             $contact = $customer->contact;
         } else {
-            $contact = new \Acelle\Model\Contact([
-                'first_name' => $customer->user->first_name,
-                'last_name' => $customer->user->last_name,
-                'email' => $customer->user->email,
-            ]);
+            $contact = new \Acelle\Model\Contact();
         }
 
         // Create new company if null
@@ -540,15 +433,6 @@ class CustomerController extends Controller
         return view('admin.customers.assign_plan', [
             'customer' => $customer,
             'plans' => $plans,
-        ]);
-    }
-
-    public function oneClickLogin(Request $request)
-    {
-        $customer = \Acelle\Model\Customer::findByUid($request->uid);
-
-        return view('admin.customers.oneClickLogin', [
-            'url' => $customer->user->generateOneClickLoginUrl(),
         ]);
     }
 }

@@ -20,6 +20,11 @@ class MailListController extends Controller
      */
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', MailList::class)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         return view('lists.index');
     }
@@ -31,14 +36,14 @@ class MailListController extends Controller
      */
     public function listing(Request $request)
     {
-        if (config('custom.db_sharding')) {
-            $customer = $request->user()->getLocalCustomer();
-        } else {
-            $customer = $request->user()->customer;
+        // authorize
+        if (\Gate::denies('list', MailList::class)) {
+            return $this->notAuthorized();
         }
+        
+        $customer = $request->user()->customer;
 
-
-        $lists = $customer->mailLists()
+        $lists = $customer->local()->mailLists()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -60,13 +65,14 @@ class MailListController extends Controller
     public function create(Request $request)
     {
         // Generate info
-        $customer = $request->user()->customer;
-        $list = new \Acelle\Model\MailList(['all_sending_servers' => true]);
+        $user = $request->user();
+        $customer = $user->customer;
+        $list = $customer->newMailList();
 
         if ($customer->contact) {
             $list->send_to = $customer->contact->email;
         } else {
-            $list->send_to = $customer->user->email;
+            $list->send_to = $user->email;
         }
 
         // default values
@@ -92,6 +98,7 @@ class MailListController extends Controller
                     $server = \Acelle\Model\SendingServer::findByUid($key);
                     $row = new \Acelle\Model\MailListsSendingServer();
                     $row->mail_list_id = $list->id;
+                    $row->customer_id = $list->customer_id;
                     $row->sending_server_id = $server->id;
                     $row->fitness = $param['fitness'];
                     $list->mailListsSendingServers->push($row);
@@ -118,7 +125,7 @@ class MailListController extends Controller
     {
         // Generate info
         $customer = $request->user()->customer;
-        $list = new \Acelle\Model\MailList();
+        $list = $customer->newMailList();
 
         // authorize
         if (\Gate::denies('create', $list)) {
@@ -203,6 +210,7 @@ class MailListController extends Controller
                     $server = \Acelle\Model\SendingServer::findByUid($key);
                     $row = new \Acelle\Model\MailListsSendingServer();
                     $row->mail_list_id = $list->id;
+                    $row->customer_id = $list->customer_id;
                     $row->sending_server_id = $server->id;
                     $row->fitness = $param['fitness'];
                     $list->mailListsSendingServers->push($row);
@@ -361,6 +369,11 @@ class MailListController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+
         event(new \Acelle\Events\MailListUpdated($list));
 
         // authorize
@@ -411,7 +424,7 @@ class MailListController extends Controller
         // datas
         foreach ($result['bar_names'] as $bar) {
             for ($i = 4; $i >= 0; --$i) {
-                $result['data'][] = \Acelle\Model\Customer::subscribersCountByTime(
+                $result['data'][] = \Acelle\Model\LocalCustomer::subscribersCountByTime(
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
                     $request->user()->customer->id,
@@ -473,24 +486,24 @@ class MailListController extends Controller
                 $result['data'][] = ['value' => $list->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
             }
         } else {
-            if ($customer->readCache('SubscribedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('SubscribedCount', 0), 'name' => trans('messages.subscribed')];
+            if ($customer->local()->readCache('SubscribedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->readCache('SubscribedCount', 0), 'name' => trans('messages.subscribed')];
             }
 
-            if ($customer->readCache('UnsubscribedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('UnsubscribedCount', 0), 'name' => trans('messages.unsubscribed')];
+            if ($customer->local()->readCache('UnsubscribedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->readCache('UnsubscribedCount', 0), 'name' => trans('messages.unsubscribed')];
             }
 
-            if ($customer->readCache('UnconfirmedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
+            if ($customer->local()->readCache('UnconfirmedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->local()->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
             }
 
-            if ($customer->readCache('BlacklistedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
+            if ($customer->local()->readCache('BlacklistedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
             }
 
-            if ($customer->readCache('SpamReportedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
+            if ($customer->local()->readCache('SpamReportedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
             }
         }
 

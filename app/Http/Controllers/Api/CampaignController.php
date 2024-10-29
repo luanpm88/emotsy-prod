@@ -32,7 +32,7 @@ class CampaignController extends Controller
     public function store(Request $request)
     {
         $user = \Auth::guard('api')->user();
-        $campaign = $user->customer->newDefaultCampaign();
+        $campaign = $user->customer->local()->newDefaultCampaign();
 
         // authorize
         if (!$user->can('create', $campaign)) {

@@ -328,7 +328,9 @@ class MailList extends Model
 
         foreach($defaultFields as $attributes) {
             $attributes['custom_field_name'] = $this->getAvailableField();
-            $field = $this->fields()->create($attributes);
+            $field = $this->fields()->make($attributes);
+            $field->customer_id = $this->customer_id;
+            $field->save();
             Subscriber::addCustomFieldIfNotExist($field->custom_field_name);
         }
     }
@@ -900,13 +902,15 @@ class MailList extends Model
             return $html;
         });
 
-        $message->setSubject($template->subject);
-        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
-        $mailer = App::make('xmailer');
-        $result = $mailer->sendWithDefaultFromAddress($message);
+        foreach ($this->customer->users as $user) {
+            $message->setSubject($template->subject);
+            $message->setTo([ $user->email => $this->customer->displayName()]);
+            $mailer = App::make('xmailer');
+            $result = $mailer->sendWithDefaultFromAddress($message);
 
-        if (array_key_exists('error', $result)) {
-            throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            if (array_key_exists('error', $result)) {
+                throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            }
         }
     }
 
@@ -915,27 +919,29 @@ class MailList extends Model
      */
     public function sendUnsubscriptionNotificationEmailToListOwner($subscriber)
     {
-        // Create a message
-        $message = new ExtendedSwiftMessage();
-        $message->setContentType('text/html; charset=utf-8');
-        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
+        foreach ($this->customer->users as $user) {
+            // Create a message
+            $message = new ExtendedSwiftMessage();
+            $message->setContentType('text/html; charset=utf-8');
+            $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+            $message->setTo([ $user->email => $this->customer->displayName()]);
 
-        $template = \Acelle\Model\Layout::findByAlias('unsubscribe_notification_for_list_owner');
-        $htmlContent = $template->content;
+            $template = \Acelle\Model\Layout::findByAlias('unsubscribe_notification_for_list_owner');
+            $htmlContent = $template->content;
 
-        $htmlContent = str_replace('{LIST_NAME}', $this->name, $htmlContent);
-        $htmlContent = str_replace('{EMAIL}', $subscriber->email, $htmlContent);
-        $htmlContent = str_replace('{FULL_NAME}', $subscriber->getFullName(), $htmlContent);
+            $htmlContent = str_replace('{LIST_NAME}', $this->name, $htmlContent);
+            $htmlContent = str_replace('{EMAIL}', $subscriber->email, $htmlContent);
+            $htmlContent = str_replace('{FULL_NAME}', $subscriber->getFullName(), $htmlContent);
 
-        $message->setSubject($template->subject);
-        $message->addPart($htmlContent, 'text/html');
+            $message->setSubject($template->subject);
+            $message->addPart($htmlContent, 'text/html');
 
-        $mailer = App::make('xmailer');
-        $result = $mailer->sendWithDefaultFromAddress($message);
+            $mailer = App::make('xmailer');
+            $result = $mailer->sendWithDefaultFromAddress($message);
 
-        if (array_key_exists('error', $result)) {
-            throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            if (array_key_exists('error', $result)) {
+                throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            }
         }
     }
 
@@ -1005,7 +1011,7 @@ class MailList extends Model
         $maxPerList = get_tmp_quota($this->customer, 'subscriber_per_list_max');
 
         $remainingForList = $maxPerList - $this->refresh()->subscribers->count();
-        $remaining = $max - $this->refresh()->customer->subscribersCount(); // no cache
+        $remaining = $max - $this->refresh()->customer->local()->subscribersCount(); // no cache
 
         if ($maxPerList == -1) {
             return ($max == -1) ? -1 : $remaining;
@@ -1216,12 +1222,12 @@ class MailList extends Model
                 $this->logger()->info("Processing a new batch: ".sizeof($batch));
 
                 // Throw exception if no room left
-                if (!$this->customer->user->can('addMoreSubscribers', [ $this, $more = 1 ])) {
+                if (!$this->customer->getFirstUserLegacy()->can('addMoreSubscribers', [ $this, $more = 1 ])) {
                     throw new Exception('MAX CONTACTS quota exceeded');
                 }
 
                 // The last time, only import the allowed room
-                if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
+                if ($this->customer->getFirstUserLegacy()->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {
                     $insertLimit = $this->getRemainingAddSubscribersQuota();
@@ -1557,7 +1563,7 @@ class MailList extends Model
         }
 
         // Update user's cached information
-        $this->customer->updateCache();
+        $this->customer->local()->updateCache();
     }
 
     public function mailListsSendingServers()
@@ -1585,6 +1591,7 @@ class MailList extends Model
                 $server = SendingServer::findByUid($key);
                 $row = new MailListsSendingServer();
                 $row->mail_list_id = $this->id;
+                $row->customer_id = $this->customer_id;
                 $row->sending_server_id = $server->id;
                 $row->fitness = $param['fitness'];
                 $row->save();
@@ -1757,8 +1764,6 @@ class MailList extends Model
                     return [$server->sending_server_id, $server->fitness];
                 });
             }
-            //} elseif ($subscription->useSubAccount()) {
-            //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
         }
 
         $assoc = [];
@@ -2076,6 +2081,7 @@ class MailList extends Model
             if (!$field) {
                 $field = new \Acelle\Model\Field();
                 $field->mail_list_id = $this->id;
+                $field->customer_id = $this->customer_id;
 
                 // assign avaialble field slot
                 $field->custom_field_name = $this->getAvailableField();
@@ -2093,6 +2099,7 @@ class MailList extends Model
                 if (isset($item['options'])) {
                     foreach ($item['options'] as $key2 => $item2) {
                         $option = new \Acelle\Model\FieldOption($item2);
+                        $option->customer_id = $this->customer_id;
                         $option->field_id = $field->id;
                         $option->save();
                     }
@@ -2130,6 +2137,7 @@ class MailList extends Model
                 if (!$field) {
                     $field = new \Acelle\Model\Field();
                     $field->uid = $key;
+                    $field->customer_id = $this->customer_id;
                 }
                 $field->fill($item);
 
@@ -2144,7 +2152,8 @@ class MailList extends Model
                 if (isset($item['options'])) {
                     $field->fieldOptions = collect();
                     foreach ($item['options'] as $key2 => $item2) {
-                        $option = new \Acelle\Model\FieldOption($item2);
+                        $option = new \Acelle\Model\FieldOption($item2); 
+                        $option->customer_id = $this->customer_id;
                         $option->uid = $key2;
                         $field->fieldOptions->push($option);
                     }
@@ -2299,6 +2308,7 @@ class MailList extends Model
         // Save field
         $field = new \Acelle\Model\Field();
 
+        $field->customer_id = $this->customer_id;
         $field->mail_list_id = $this->id;
         $field->type = $type;
         $field->tag = $tag;

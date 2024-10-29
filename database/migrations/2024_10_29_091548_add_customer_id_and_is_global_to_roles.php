@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserdbLogs extends Migration
+class AddCustomerIdAndIsGlobalToRoles extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,12 @@ class CreateUserdbLogs extends Migration
      */
     public function up()
     {
-        Schema::create('logs', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->uuid('uid')->unique();
-
-            $table->string('type');
-            $table->string('name');
-            $table->text('data')->nullable();
-
-            $table->bigInteger('customer_id')->unsigned();
+        Schema::table('roles', function (Blueprint $table) {
+            $table->integer('customer_id')->unsigned()->nullable();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+
+            //
+            $table->boolean('is_global')->default(true);
         });
     }
 
@@ -34,6 +29,8 @@ class CreateUserdbLogs extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('logs');
+        Schema::table('roles', function (Blueprint $table) {
+            //
+        });
     }
 }

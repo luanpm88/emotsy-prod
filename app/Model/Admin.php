@@ -372,8 +372,7 @@ class Admin extends Model
         $customer = \Acelle\Model\Customer::newCustomer();
         $customer->admin_id = $this->id;
         $customer->language_id = $this->language_id;
-        // [moved] $customer->first_name = $this->first_name;
-        // [moved] $customer->last_name = $this->last_name;
+        $customer->name = $this->user->displayName(get_localization_config('show_last_name_first', $this->getLanguageCode()));
         $customer->timezone = $this->timezone;
         $customer->status = $this->status;
         $customer->save();
@@ -404,9 +403,9 @@ class Admin extends Model
     public function can($action, $item = null)
     {
         if ($item) {
-            return $this->user->can($action, [$item, 'admin']);
+            return \Auth::user()->can($action, [$item, 'admin']);
         } else {
-            return $this->user->can($action, ['admin']);
+            return \Auth::user()->can($action, ['admin']);
         }
     }
 
@@ -560,6 +559,7 @@ class Admin extends Model
     {
         $admin = new self();
         $admin->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+        $admin->status = static::STATUS_ACTIVE;
 
         return $admin;
     }
@@ -597,5 +597,58 @@ class Admin extends Model
         } else {
             return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
         }
+    }
+
+    public function saveAdmin(
+        $user,
+        $admin_group_id,
+        $creator_id,
+        $timezone,
+        $language_id,
+        $create_customer_account=null
+    )
+    {
+        $rules = [
+            'user_id' => 'required',
+            'admin_group_id' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
+
+        // fill
+        $this->user_id = $user->id;
+        $this->admin_group_id = $admin_group_id;
+        $this->timezone = $timezone;
+        $this->language_id = $language_id;
+        if ($creator_id) {
+            $this->creator_id = $creator_id;
+        }
+
+        $validator = \Validator::make([
+            'user_id' => $user->id,
+            'admin_group_id' => $admin_group_id,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+        ], $rules);
+
+        if ($validator->fails()) {
+            return [false, $validator->errors()];
+        }
+
+        // save
+        $this->save();
+
+        // create customer account
+        if (!empty($create_customer_account) && $create_customer_account == 'yes') {
+            // create customer account
+            $customer = $this->createCustomerAccount();
+
+            // set customer_id to the user
+            $user->customer_id = $customer->id;
+            $user->save();
+        }
+
+        // success
+        return [true, $validator->errors()];
     }
 }

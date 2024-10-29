@@ -44,6 +44,8 @@ class BulkVerify implements ShouldQueue
         $this->mailList = $mailList;
         $this->server = $server;
         $this->subscription = $subscription;
+
+        $this->mailList->customer->setUserDbConnection();
     }
 
     /**

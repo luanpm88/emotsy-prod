@@ -17,7 +17,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.profile') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">domain</span> {{ $customer->getName() }}</span>
         </h1>
     </div>
 
@@ -33,7 +33,7 @@
         {{ csrf_field() }}
 
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="sub_section">
                     <h3 class="text-semibold text-primary mb-4">{{ trans('messages.profile_photo') }}</h3>
                     <div class="media profile-image">
@@ -54,7 +54,46 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-6">
+                <div class="sub_section">
+                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.account.information') }}</h3>
+
+                    <div class="form-group">
+                        <label for="">{{ trans('messages.account.name') }}</label>
+                        <input type="text" name="name" value="{{ $customer->name }}"
+                            {{ Auth::user()->can('updateProfile', $customer) ? '' : 'disabled' }} class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" />
+                    </div>
+
+                    @if (config('custom.japan'))
+                        <input type="hidden" name="timezone" value="Asia/Tokyo" />
+                    @else
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'name' => 'timezone',
+                            'value' => $customer->timezone ?? config('app.timezone'),
+                            'options' => Tool::getTimezoneSelectOptions(),
+                            'include_blank' => trans('messages.choose'),
+                            'rules' => $user->rules(),
+                            'disabled' => !Auth::user()->can('updateProfile', $customer),
+                        ])
+                    @endif
+                    
+
+                    @if (config('custom.japan'))
+                        <input type="hidden" name="language_id" value="{{ Acelle\Model\Language::getJapan()->id }}" />
+                    @else
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'name' => 'language_id',
+                            'label' => trans('messages.language'),
+                            'value' => $customer->language_id ?? \Acelle\Model\Language::getDefaultLanguage()->id,
+                            'options' => Acelle\Model\Language::getSelectOptions(),
+                            'include_blank' => trans('messages.choose'),
+                            'rules' => $user->rules(),
+                            'disabled' => !Auth::user()->can('updateProfile', $customer),
+                        ])
+                    @endif
+                </div>
                 <div class="sub_section">
                     <h3 class="text-semibold text-primary mb-4">{{ trans('messages.basic_information') }}</h3>
 
@@ -77,29 +116,15 @@
                             </div>
                         </div>
                     @endif
-                    
-                    @if (config('custom.japan'))
-                        <input type="hidden" name="timezone" value="Asia/Tokyo" />
-                    @else
-                        @include('helpers.form_control', [
-                            'type' => 'select',
-                            'name' => 'timezone',
-                            'value' => $customer->timezone ?? config('app.timezone'),
-                            'options' => Tool::getTimezoneSelectOptions(),
-                            'include_blank' => trans('messages.choose'),
-                            'rules' => $user->rules()
-                        ])
-                    @endif
-                    
-                    @include('helpers.form_control', [
-                        'type' => 'select',
-                        'name' => 'language_id',
-                        'label' => trans('messages.language'),
-                        'value' => $customer->language_id ?? \Acelle\Model\Language::getDefaultLanguage()->id,
-                        'options' => Acelle\Model\Language::getSelectOptions(),
-                        'include_blank' => trans('messages.choose'),
-                        'rules' => $user->rules()
-                    ])
+
+                    <div class="form-group">
+                        <label class="form-label">{{ trans('messages.email') }}</label>
+                        <input type="text" class="form-control disabled" disabled value="{{ Auth::user()->email }}" />
+                    </div>
+
+                    @include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $user->rules()])
+
+                    @include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => $user->rules()])
 
                     <h3 class="text-semibold text-primary mb-4 mt-5">{{ trans('messages.account.personality') }}</h3>
 
@@ -150,27 +175,15 @@
                     </div>
 
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="sub_section">
-                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.account') }}</h3>
-
-                    <div class="form-group">
-                        <label class="form-label">{{ trans('messages.email') }}</label>
-                        <input type="text" class="form-control disabled" disabled value="{{ $customer->user->email }}" />
+                @if (Auth::user()->can('updateProfile', $customer))
+                    <hr>
+                    <div class="text-start">
+                        <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
                     </div>
-
-                    @include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $user->rules()])
-
-                    @include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => $user->rules()])
-
-                </div>
+                @endif
             </div>
         </div>
-<hr>
-        <div class="text-start">
-            <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-        </div>
+
 
     <form>
 

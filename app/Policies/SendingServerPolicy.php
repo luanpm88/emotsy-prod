@@ -18,6 +18,11 @@ class SendingServerPolicy
                 $can = $user->admin->getPermission('sending_server_read') != 'no';
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer(); // non-saas safe
                 break;
         }
@@ -32,6 +37,11 @@ class SendingServerPolicy
                 $can = $user->admin->getPermission('sending_server_read') == 'all';
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+                
                 $can = false;
                 break;
         }
@@ -57,6 +67,11 @@ class SendingServerPolicy
 
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;   
+                }
+
                 // init
                 $can = true;
                 $useOwnServer = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer(); // non-saas safe
@@ -99,6 +114,11 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;   
+                }
+
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }
@@ -116,6 +136,11 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;   
+                }
+
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }
@@ -133,6 +158,11 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;   
+                }
+
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id;// non-saas safe
                 break;
         }
@@ -150,6 +180,11 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;   
+                }
+                
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }

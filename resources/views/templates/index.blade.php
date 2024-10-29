@@ -86,7 +86,7 @@
                         <span class="filter-group">
                             <select class="select" name="category_uid">
                                 <option value="">{{ trans('messages.template.all_categories') }}</option>
-                                @foreach (\Acelle\Model\TemplateCategory::all() as $category)
+                                @foreach (\Acelle\Model\TemplateCategory::getAll() as $category)
                                     <option value="{{ $category->uid }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
@@ -124,13 +124,16 @@
                 </div>
 
                 <div>
-                    <a href="{{ action('TemplateController@uploadTemplate') }}" class="btn btn-light ml-auto">
-                        <span class="material-symbols-rounded">file_upload</span> {{ trans('messages.upload') }}
-                    </a>  
-                    <a href="{{ action('TemplateController@builderCreate') }}" class="btn btn-secondary">
-                        <span class="material-symbols-rounded">add</span> {{ trans('messages.create') }}
-                    </a>
-                                      
+                    @if (Auth::user()->customer->can('create', Acelle\Model\Template::class))
+                        <div class="">
+                            <a href="{{ action('TemplateController@uploadTemplate') }}" class="btn btn-light ml-auto">
+                                <span class="material-symbols-rounded">file_upload</span> {{ trans('messages.upload') }}
+                            </a>  
+                            <a href="{{ action('TemplateController@builderCreate') }}" class="btn btn-secondary">
+                                <span class="material-symbols-rounded">add</span> {{ trans('messages.create') }}
+                            </a>
+                        </div>
+                    @endif          
                 </div>
             </div>
         </div>

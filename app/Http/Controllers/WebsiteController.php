@@ -57,7 +57,7 @@ class WebsiteController extends Controller
         }
 
         // sort, pagination
-        $websites = $request->user()->customer->websites()->search($request->keyword)
+        $websites = $request->user()->customer->local()->websites()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 

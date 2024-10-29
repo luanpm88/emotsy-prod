@@ -202,6 +202,7 @@ class Email extends Model implements HasTemplateInterface
 
             if (!$exist) {
                 $this->emailLinks()->create([
+                    'customer_id' => $this->customer_id,
                     'link' => $link,
                 ]);
             }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserdbCampaignSegments extends Migration
+class CreateUserdbSegments extends Migration
 {
     /**
      * Run the migrations.
@@ -20,7 +20,9 @@ class CreateUserdbCampaignSegments extends Migration
 
             $table->string('name');
             $table->string('matching');
-
+            $table->text('cache')->nullable();
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->bigInteger('mail_list_id')->unsigned();
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
         });

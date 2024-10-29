@@ -67,6 +67,11 @@ class Segment extends Model
         return $this->belongsTo('Acelle\Model\MailList');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
+    }
+
     public function segmentConditions()
     {
         return $this->hasMany('Acelle\Model\SegmentCondition');
@@ -465,6 +470,7 @@ class Segment extends Model
         foreach ($conditions as $key => $param) {
             $condition = new \Acelle\Model\SegmentCondition();
             $condition->fill($param);
+            $condition->customer_id = $this->customer_id;
 
             if (strpos($condition->operator, 'created_date') === 0 && $condition->operator !== 'created_date_last_x_days') {
                 $zone = $this->mailList->customer->getTimezone();

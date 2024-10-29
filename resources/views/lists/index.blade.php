@@ -21,7 +21,7 @@
     <div class="listing-form" id="ListsIndexContainer">
         <div class="d-flex top-list-controls top-sticky-content">
             <div class="me-auto">
-                @if (Auth::user()->customer->listsCount() >= 0)
+                @if (Auth::user()->customer->local()->listsCount() >= 0)
                     <div class="filter-box">
                         <div class="checkbox inline check_all_list">
                             <label>

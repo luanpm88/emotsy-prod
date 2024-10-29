@@ -1798,7 +1798,7 @@
   'login.remember_me' => 'Recordarme en este dispositivo',
   'login_as' => 'Ingresado como',
   'login_as_this_admin' => 'Ingresar como este admin',
-  'login_as_this_customer' => 'Ingresar como este cliente',
+  'login_as_this_user' => 'Ingresar como este cliente',
   'login_recaptcha' => 'Captcha',
   'logout' => 'Cerrar sesión',
   'logs' => 'Registros',

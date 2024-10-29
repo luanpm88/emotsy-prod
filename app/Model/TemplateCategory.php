@@ -27,4 +27,13 @@ class TemplateCategory extends Model
     {
         return $this->belongsToMany('Acelle\Model\Template', 'templates_categories', 'category_id', 'template_id');
     }
+
+    public static function getAll()
+    {
+        if (!config('custom.woo')) {
+            return static::where('name', '!=', 'WooCommerce')->get();
+        }
+
+        return static::all();
+    }
 }

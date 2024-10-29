@@ -1100,22 +1100,4 @@ class Subscription extends Model
     {
         return $this->hasOne(ApiKey::class);
     }
-
-    public function findOrCreateApiKeyForAcelle()
-    {
-        $apiKey = $this->apiKey;
-
-        if (!$apiKey) {
-            // create API key
-            $apiKey = $this->customer->newApiKey();
-            $apiKey->name = 'Athenaevs-Plugin-' . $this->uid;
-            $apiKey->status = ApiKey::STATUS_ACTIVE;
-            $apiKey->whitelisted = '';
-            $apiKey->key = fRand(29);
-            $apiKey->subscription_id = $this->id;
-            $apiKey->save();
-        }
-
-        return $apiKey;
-    }
 }

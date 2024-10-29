@@ -34,8 +34,13 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', Campaign::class)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
-        $campaigns = $customer->campaigns();
+        $campaigns = $customer->local()->campaigns();
 
         return view('campaigns.index', [
             'campaigns' => $campaigns,
@@ -49,9 +54,14 @@ class CampaignController extends Controller
      */
     public function listing(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', Campaign::class)) {
+            return $this->notAuthorized();
+        }
+        
         $customer = $request->user()->customer;
 
-        $campaigns = $customer->campaigns()
+        $campaigns = $customer->local()->campaigns()
             ->search($request->keyword)
             ->filter($request);
 
@@ -74,7 +84,7 @@ class CampaignController extends Controller
      */
     public function create(Request $request)
     {
-        $campaign = $request->user()->customer->newDefaultCampaign();
+        $campaign = $request->user()->customer->local()->newDefaultCampaign();
 
         // authorize
         if (\Gate::denies('create', $campaign)) {
@@ -157,12 +167,17 @@ class CampaignController extends Controller
         $campaign = Campaign::findByUid($request->uid);
         $customer = $request->user()->customer;
 
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
         // If the mail list dropdown is not populated
         // Then it is very likely a problem with the cronjob
         // Show this warning to user
         $lastExecutedTimeUtc = \Carbon\Carbon::createFromTimestamp(Setting::get('cronjob_last_execution') ?? 0);
         $lastExecutedTime = $lastExecutedTimeUtc->timezone($customer->getTimezone());
-        if (empty($customer->readCache('MailListSelectOptions'))) {
+        if (empty($customer->local()->readCache('MailListSelectOptions'))) {
             // If there is no data populated, then it is very likely that cronjob has not been set up correctly
             // Pass the last executed time to the view to show up with the warning
             $cronjobWarning = $lastExecutedTime;
@@ -731,6 +746,11 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
         event(new \Acelle\Events\CampaignUpdated($campaign));
@@ -755,6 +775,12 @@ class CampaignController extends Controller
     public function links(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
         $links = $campaign->clickLogs()
                           ->select(
                               'click_logs.url',
@@ -785,7 +811,7 @@ class CampaignController extends Controller
         $currentTimezone = $request->user()->customer->getTimezone();
         $nowInUserTimezone = Carbon::now($currentTimezone);
         $campaign = Campaign::findByUid($request->uid);
-
+        
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();

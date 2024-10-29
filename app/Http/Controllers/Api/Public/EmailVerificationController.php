@@ -76,7 +76,7 @@ class EmailVerificationController extends Controller
             'status' => $subscription->status,
             'subscription_uid' => $subscription->uid,
             'customer_uid' => $subscription->customer->uid,
-            'api_token' => $subscription->customer->user->api_token,
+            'api_token' => $subscription->customer->getFirstUserLegacy()->api_token,
             'credits' => $subscription->getVerifyEmailCreditTracker()->getRemainingCredits(),
         ]);
     }
@@ -99,7 +99,7 @@ class EmailVerificationController extends Controller
         // Return checkout url
         return response()->json([
             'checkout_url' => action('\Acelle\Http\Controllers\EmailVerificationController@redirect', [
-                'api_token' => $subscription->customer->user->api_token,
+                'api_token' => $subscription->customer->getFirstUserLegacy()->api_token,
                 'subscription_uid' => $subscription->uid,
                 'checkout_url' => $checkoutUrl,
                 'return_url' => $request->return_url,

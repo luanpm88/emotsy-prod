@@ -38,7 +38,7 @@
             </label>
             <div>
                 <select name="mail_list_uid" class="select">
-                    @foreach (Auth::user()->customer->readCache('MailListSelectOptions', []) as $option)
+                    @foreach (Auth::user()->customer->local()->readCache('MailListSelectOptions', []) as $option)
                         <option {{ $newAutomation->mailList->uid == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}">{{ $option['text'] }}</option>
                     @endforeach
                 </select>

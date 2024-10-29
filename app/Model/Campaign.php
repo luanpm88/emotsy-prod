@@ -241,6 +241,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
         if ($lists_segments->isEmpty()) {
             $lists_segment = new CampaignsListsSegment();
+            $lists_segment->customer_id = $this->customer_id;
             $lists_segment->campaign_id = $this->id;
             $lists_segment->is_default = true;
 
@@ -427,6 +428,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             // Campaign link
             if ($this->campaignLinks()->where('url', '=', $url)->count() == 0) {
                 $cl = new CampaignLink();
+                $cl->customer_id = $this->customer_id;
                 $cl->campaign_id = $this->id;
                 $cl->url = $url;
                 $cl->save();
@@ -1198,6 +1200,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $newListSegment->segment_id = $listSegment->segment_id;
             $newListSegment->created_at = $now;
             $newListSegment->updated_at = $now;
+            $newListSegment->customer_id = $this->customer_id;
 
             $newListSegment->save();
         }
@@ -1390,6 +1393,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                         $segment = Segment::findByUid($segment_uid);
 
                         $lists_segment = new CampaignsListsSegment();
+                        $lists_segment->customer_id = $this->customer_id;
                         $lists_segment->campaign_id = $this->id;
                         if ($mail_list) {
                             $lists_segment->mail_list_id = $mail_list->id;
@@ -1399,6 +1403,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                     }
                 } else {
                     $lists_segment = new CampaignsListsSegment();
+                    $lists_segment->customer_id = $this->customer_id;
                     $lists_segment->campaign_id = $this->id;
                     if ($mail_list) {
                         $lists_segment->mail_list_id = $mail_list->id;
@@ -1432,6 +1437,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                         'campaign_id' => $this->id,
                         'mail_list_id' => $lists_segments_group['list']->id,
                         'segment_id' => $segment->id,
+                        'customer_id' => $this->customer_id,
                     ];
                 }
             } else {
@@ -1439,6 +1445,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                     'campaign_id' => $this->id,
                     'mail_list_id' => $lists_segments_group['list']->id,
                     'segment_id' => null,
+                    'customer_id' => $this->customer_id,
                 ];
             }
         }
@@ -2353,7 +2360,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         $webhook = new \Acelle\Model\CampaignWebhook();
         $webhook->campaign_id = $this->id;
-
+        $webhook->customer_id = $this->customer_id;
         return $webhook;
     }
 
@@ -2612,6 +2619,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         foreach ($this->trackingLogs()->whereIn('id', $unsubscribeLogs)->get() as $r) {
             // Unsubscribe log
             $log = new \Acelle\Model\UnsubscribeLog();
+            $log->customer_id = $this->customer_id;
             $log->message_id = $r->message_id;
             $log->subscriber_id = $r->subscriber_id;
             $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
@@ -2850,6 +2858,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         $campaignHeader = campaignHeader::newDefault();
         $campaignHeader->campaign_id = $this->id;
+        $campaignHeader->customer_id = $this->customer_id;
 
         return $campaignHeader;
     }

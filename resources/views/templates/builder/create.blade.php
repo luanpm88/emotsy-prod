@@ -56,7 +56,7 @@
 				</div>
 			</div>
 
-			@foreach (Acelle\Model\TemplateCategory::all() as $category)
+			@foreach (Acelle\Model\TemplateCategory::getAll() as $category)
 				@if ($category->templates()->count())
 					<div class="subsection pb-4">
 						<h2 class="font-weight-semibold mb-0">{{ $category->name }}</h2>

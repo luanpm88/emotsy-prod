@@ -24,7 +24,7 @@ class UpdateUserJob extends Base implements ShouldBeUnique
     public function handle()
     {
         if (config('app.saas') && !is_null($this->customer->getCurrentActiveGeneralSubscription())) {
-            $this->customer->updateCache();
+            $this->customer->local()->updateCache();
         }
     }
 

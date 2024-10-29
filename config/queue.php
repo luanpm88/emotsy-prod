@@ -15,6 +15,10 @@ return [
 
     'default' => env('QUEUE_CONNECTION', 'database'),
 
+    'batching' => [
+        'database' => 'mysql', // this is actually a connection
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Queue Connections
@@ -37,8 +41,9 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
+            'connection' => 'mysql',
             'queue' => 'default',
-            'retry_after' => 9000, // 2.5 hours, resume jobs that were terminated without having a chance to reset the reserved_at field to null
+            'retry_after' => 9000,
             'after_commit' => false,
         ],
 

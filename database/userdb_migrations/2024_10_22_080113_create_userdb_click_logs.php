@@ -16,7 +16,7 @@ class CreateUserdbClickLogs extends Migration
         Schema::create('click_logs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid')->unique();
+            $table->uuid('uid');
 
             $table->string('message_id');
             $table->text('url');

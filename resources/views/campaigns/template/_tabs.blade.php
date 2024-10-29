@@ -1,5 +1,5 @@
 <ul class="nav nav-tabs nav-underline" id="pills-tab" role="tablist">
-    @foreach (Acelle\Model\TemplateCategory::all() as $cat)
+    @foreach (Acelle\Model\TemplateCategory::getAll() as $cat)
         <li class="nav-item">
             <a class="nav-link {{ request()->category_uid == $cat->uid ? 'active' : '' }} choose-template-tab"
                 href="{{ action('CampaignController@templateLayout', [

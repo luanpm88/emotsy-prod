@@ -12,6 +12,7 @@ class UpdateSegmentJob extends Base implements ShouldBeUnique
     public function __construct($segment)
     {
         $this->segment = $segment;
+        $this->segment->customer->setUserDbConnection();
     }
 
     /**

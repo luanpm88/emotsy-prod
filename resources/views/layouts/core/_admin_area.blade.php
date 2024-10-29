@@ -1,4 +1,4 @@
-@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
+@if (null !== Session::get('orig_user_uid') && Auth::user()->customer)
     <a href="{{ action('CustomerController@adminArea') }}" class="user-switch-area mc-modal-control">
         {{ trans('messages.customer.admin_area') }}
     </a>

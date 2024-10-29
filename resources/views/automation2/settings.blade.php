@@ -24,7 +24,7 @@
             <div class="mb-3 {{ $errors->has('mail_list_uid') ? 'has-error' : '' }}">
                 <label class="form-label">{{ trans('messages.automation.choose_list') }}</label>
                 <select class="form-select select" name="mail_list_uid">
-                    @foreach(Auth::user()->customer->readCache('MailListSelectOptions', []) as $option)
+                    @foreach(Auth::user()->customer->local()->readCache('MailListSelectOptions', []) as $option)
                         <option {{ $automation->mailList->uid == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}">
                             {{ $option['text'] }}
                         </option> 

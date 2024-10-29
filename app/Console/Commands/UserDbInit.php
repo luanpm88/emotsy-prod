@@ -4,14 +4,14 @@ namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class InitDbServer extends Command
+class UserDbInit extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'dbserver:init {connection}';
+    protected $signature = 'userdb:init {connection}';
 
     /**
      * The console command description.
@@ -39,10 +39,6 @@ class InitDbServer extends Command
     {
         $connection = $this->argument('connection');
 
-        if (empty($connection)) {
-            throw new \Exception('Empty connection');
-        }
-
         echo "Initizalizing connection {$connection}...\n";
 
         \Artisan::call("migrate", [
@@ -51,11 +47,8 @@ class InitDbServer extends Command
             '--force' => true
         ]);
 
-        return 0;
-    }
+        echo "+ Done\n";
 
-    private function loadRawSql($filename)
-    {
-        return file_get_contents(database_path("userdb/{$filename}"));
+        return 0;
     }
 }

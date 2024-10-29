@@ -23,6 +23,8 @@ class ExportCampaignLog extends Base
         $this->campaign = $campaign;
         $this->logtype = $logtype;
 
+        $this->campaign->customer->setUserDbConnection();
+
         // Set the initial value for progress check
         $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([

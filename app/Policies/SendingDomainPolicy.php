@@ -23,6 +23,11 @@ class SendingDomainPolicy
                 $can = $user->admin->getPermission('sending_domain_read') != 'no';
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
                 if ($subscription->planGeneral->useOwnSendingServer()) {
                     return true;
@@ -49,6 +54,11 @@ class SendingDomainPolicy
                 $can = $user->admin->getPermission('sending_domain_read') == 'all';
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                    return false;   
+                }
+                
                 $can = false;
                 break;
         }
@@ -56,9 +66,23 @@ class SendingDomainPolicy
         return $can;
     }
 
-    public function create(User $user)
+    public function create(User $user, $role)
     {
-        return true;
+        switch ($role) {
+            case 'admin':
+                $can = true;
+                break;
+            case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;   
+                }
+
+                $can = true;
+                break;
+        }
+
+        return $can;
     }
 
     public function update(User $user, SendingDomain $item, $role)
@@ -75,6 +99,11 @@ class SendingDomainPolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;   
+                }
+
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
                 if ($subscription->planGeneral->useOwnSendingServer()) {
@@ -105,6 +134,11 @@ class SendingDomainPolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('account.full_access')) {
+                    return false;   
+                }
+
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
                 if ($subscription->planGeneral->useOwnSendingServer()) {

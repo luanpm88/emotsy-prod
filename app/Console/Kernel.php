@@ -131,7 +131,7 @@ class Kernel extends ConsoleKernel
                     continue;
                 }
 
-                $lists = $customer->lists;
+                $lists = $customer->local()->lists;
 
                 foreach ($lists as $list) {
                     safe_dispatch(new \Acelle\Jobs\UpdateMailListJob($list));

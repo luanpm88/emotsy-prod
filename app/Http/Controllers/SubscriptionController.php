@@ -54,6 +54,11 @@ class SubscriptionController extends Controller
 
     public function selectPlan(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         // init
         $customer = $request->user()->customer;
         $subscription = $customer->getNewOrActiveGeneralSubscription();
@@ -67,6 +72,11 @@ class SubscriptionController extends Controller
 
     public function assignPlan(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+        
         $customer = $request->user()->customer;
         $plan = PlanGeneral::findByUid($request->plan_uid);
 
@@ -181,6 +191,11 @@ class SubscriptionController extends Controller
 
     public function payment(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         // Get current customer
         $customer = $request->user()->customer;
 
@@ -250,6 +265,11 @@ class SubscriptionController extends Controller
 
     public function checkout(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first()->mapType();
 
@@ -297,6 +317,11 @@ class SubscriptionController extends Controller
 
     public function cancelInvoice(Request $request, $uid)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $invoice = \Acelle\Model\Invoice::findByUid($uid);
 
         // return to select plan if sub is NEW
@@ -324,6 +349,11 @@ class SubscriptionController extends Controller
      **/
     public function changePlan(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         $subscription = $customer->getCurrentActiveGeneralSubscription();
         $gateway = $customer->getPreferredPaymentGateway();
@@ -379,6 +409,11 @@ class SubscriptionController extends Controller
      */
     public function disableRecurring(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
@@ -405,6 +440,11 @@ class SubscriptionController extends Controller
      */
     public function enableRecurring(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         $subscription = $customer->getNewOrActiveGeneralSubscription();
 
@@ -426,6 +466,11 @@ class SubscriptionController extends Controller
      */
     public function cancelNow(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+        
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
@@ -466,6 +511,11 @@ class SubscriptionController extends Controller
 
     public function verifyPendingTransaction(Request $request, $invoice_uid)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+        
         $invoice = \Acelle\Model\Invoice::findByUid($invoice_uid);
         $transaction = $invoice->getPendingTransaction();
 

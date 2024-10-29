@@ -29,6 +29,8 @@ class VerifyMailListJob extends Base
         $this->server = $server;
         $this->subscription = $subscription;
 
+        $this->mailList->customer->setUserDbConnection();
+
         $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
                 'percentage' => 0,

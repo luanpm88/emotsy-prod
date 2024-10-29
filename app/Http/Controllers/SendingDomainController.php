@@ -37,7 +37,7 @@ class SendingDomainController extends Controller
             return $this->notAuthorized();
         }
 
-        $domains = $customer->sendingDomains();
+        $domains = $customer->local()->sendingDomains();
 
         if (config('app.saas')) {
             $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
@@ -75,7 +75,7 @@ class SendingDomainController extends Controller
         $server->fill($request->old());
 
         // authorize
-        if (!$request->user()->customer->can('create', $server)) {
+        if (!$request->user()->customer->can('create', SendingDomain::class)) {
             return $this->notAuthorized();
         }
 
@@ -95,7 +95,7 @@ class SendingDomainController extends Controller
     public function store(Request $request)
     {
         // authorize
-        if (Gate::denies('create', SendingDomain::class)) {
+        if (!$request->user()->customer->can('create', SendingDomain::class)) {
             return $this->notAuthorized();
         }
 
@@ -103,7 +103,7 @@ class SendingDomainController extends Controller
         $customer = $request->user()->customer;
 
         // Initiate the domain instance
-        $domain = $customer->sendingDomains()->make();
+        $domain = $customer->local()->sendingDomains()->make();
 
         // Determine if app-based domain or server-based domain
         if (!config('app.saas')) {

@@ -31,12 +31,13 @@ class CreateUserdbCampaigns extends Migration
             $table->boolean('track_click')->nullable();
             $table->timestamp('run_at')->nullable();
             $table->timestamp('delivery_at')->nullable();
-            $table->text('template_source')->nullalbe();
+            $table->text('template_source')->nullable();
             $table->longText('last_error')->nullable();
             $table->boolean('use_default_sending_server_from_email')->default(false);
             $table->text('preheader')->nullable();
             $table->integer('running_pid')->default(null)->nullable();
             $table->boolean('skip_failed_message')->default(false);
+            $table->text('cache')->nullable();
 
             $table->bigInteger('default_mail_list_id')->unsigned()->nullable();
             $table->bigInteger('tracking_domain_id')->unsigned()->nullable();

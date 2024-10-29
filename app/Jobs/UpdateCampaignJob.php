@@ -12,6 +12,8 @@ class UpdateCampaignJob extends Base implements ShouldBeUnique
     public function __construct($campaign)
     {
         $this->campaign = $campaign;
+
+        $this->campaign->customer->setUserDbConnection();
     }
 
     /**

@@ -31,10 +31,12 @@ class CreateUserdbEmails extends Migration
             $table->text('preheader')->nullable();
             $table->boolean('use_default_sending_server_from_email')->default(false);
 
+            $table->bigInteger('automation2_id')->unsigned();
             $table->bigInteger('tracking_domain_id')->unsigned()->nullable();
-            $table->integer('template_id')->unsigned(); // master table
+            $table->bigInteger('template_id')->unsigned(); // master table
             $table->bigInteger('customer_id')->unsigned();
 
+            $table->foreign('automation2_id')->references('id')->on('automation2s')->onDelete('cascade');
             $table->foreign('tracking_domain_id')->references('id')->on('tracking_domains')->onDelete('set null');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
 

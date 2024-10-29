@@ -236,7 +236,7 @@
 							'type' => 'checkbox',
 							'name' => 'custom_tracking_domain',
 							'label' => trans('messages.custom_tracking_domain'),
-							'value' => Auth::user()->customer->isCustomTrackingDomainRequired() ? true : $campaign->tracking_domain_id,
+							'value' => Auth::user()->customer->local()->isCustomTrackingDomainRequired() ? true : $campaign->tracking_domain_id,
 							'options' => [false,true],
 							'help_class' => 'campaign',
 							'rules' => $rules
@@ -248,7 +248,7 @@
 								'name' => 'tracking_domain_uid',
 								'label' => '',
 								'value' => $campaign->trackingDomain? $campaign->trackingDomain->uid : null,
-								'options' => Auth::user()->customer->getVerifiedTrackingDomainOptions(),
+								'options' => Auth::user()->customer->local()->getVerifiedTrackingDomainOptions(),
 								'include_blank' => trans('messages.campaign.select_tracking_domain'),
 								'help_class' => 'campaign',
 								'rules' => $rules

@@ -251,7 +251,7 @@ class Controller extends BaseController
         $loginAsUser->set2FAAuthenticated();
 
         // login back to this admin
-        \Session::put('orig_customer_id', $orig_id);
+        \Session::put('orig_user_uid', $orig_id);
 
         // return to home
         return redirect()->action('HomeController@index');

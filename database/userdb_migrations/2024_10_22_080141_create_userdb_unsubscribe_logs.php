@@ -16,14 +16,15 @@ class CreateUserdbUnsubscribeLogs extends Migration
         Schema::create('unsubscribe_logs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid')->unique();
+            $table->uuid('uid');
 
             $table->string('message_id')->nullable();
             $table->string('ip_address')->nullable();
             $table->text('user_agent')->nullable();
 
             $table->bigInteger('subscriber_id')->unsigned()->nullalbe();
-
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('subscriber_id')->references('id')->on('subscribers')->onDelete('cascade');
 
             // Indexing

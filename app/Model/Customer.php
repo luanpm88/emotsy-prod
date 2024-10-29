@@ -31,16 +31,16 @@ use DB;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\AutoBillingData;
 use Acelle\Library\Traits\TrackJobs;
-use Acelle\Library\Traits\HasCache;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\SubscriptionFacade;
+use Acelle\Library\Facades\Hook;
 
 class Customer extends Model
 {
     use TrackJobs;
     use HasUid;
-    use HasCache;
+
     protected $connection = 'mysql';
 
     protected $quotaTracker;
@@ -102,19 +102,19 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\MailList', 'customer_id');
     }
 
-    public function user()
+    public function users()
     {
-        return $this->hasOne('Acelle\Model\User');
+        return $this->hasMany('Acelle\Model\User');
+    }
+
+    public function getFirstUserLegacy()
+    {
+        return $this->users()->first();
     }
 
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
-    }
-
-    public function lists()
-    {
-        return $this->hasMany('Acelle\Model\MailList', 'customer_id');
     }
 
     public function templates()
@@ -127,44 +127,9 @@ class Customer extends Model
         return $this->belongsTo('Acelle\Model\Language');
     }
 
-    public function campaigns()
-    {
-        return $this->hasMany('Acelle\Model\Campaign', 'customer_id');
-    }
-
-    public function sentCampaigns()
-    {
-        return $this->hasMany('Acelle\Model\Campaign', 'customer_id')->where('status', '=', 'done')->orderBy('created_at', 'desc');
-    }
-
-    public function subscribers()
-    {
-        return $this->hasManyThrough('Acelle\Model\Subscriber', 'Acelle\Model\MailList', 'customer_id');
-    }
-
     public function logs()
     {
         return $this->hasMany('Acelle\Model\Log', 'customer_id')->orderBy('created_at', 'desc');
-    }
-
-    public function trackingLogs()
-    {
-        return $this->hasMany('Acelle\Model\TrackingLog', 'customer_id')->orderBy('created_at', 'asc');
-    }
-
-    public function automation2s()
-    {
-        return $this->hasMany('Acelle\Model\Automation2', 'customer_id');
-    }
-
-    public function activeAutomation2s()
-    {
-        return $this->hasMany('Acelle\Model\Automation2', 'customer_id')->where('status', Automation2::STATUS_ACTIVE);
-    }
-
-    public function sendingDomains()
-    {
-        return $this->hasMany('Acelle\Model\SendingDomain', 'customer_id');
     }
 
     public function emailVerificationServers()
@@ -182,23 +147,6 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Blacklist', 'customer_id');
     }
 
-    // Only direct senders children
-    public function senders()
-    {
-        return $this->hasMany('Acelle\Model\Sender', 'customer_id');
-    }
-
-    // tracking domain
-    public function trackingDomains()
-    {
-        return $this->hasMany('Acelle\Model\TrackingDomain', 'customer_id');
-    }
-
-    public function products()
-    {
-        return $this->hasMany('Acelle\Model\Product', 'customer_id');
-    }
-
     public function invoices()
     {
         return $this->hasMany('Acelle\Model\Invoice', 'customer_id');
@@ -209,19 +157,50 @@ class Customer extends Model
         return $this->hasManyThrough('Acelle\Model\Transaction', 'Acelle\Model\Invoice', 'customer_id');
     }
 
-    public function forms()
+    public function roles()
     {
-        return $this->hasMany('Acelle\Model\Form', 'customer_id');
+        return $this->hasMany('Acelle\Model\Role', 'customer_id');
     }
 
-    public function websites()
+    // billing addresses
+    public function billingAddresses()
     {
-        return $this->hasMany('Acelle\Model\Website', 'customer_id');
+        return $this->hasMany('Acelle\Model\BillingAddress', 'customer_id');
     }
 
-    /**
-     * Get user sources.
-     */
+    public function newBillingAddress()
+    {
+        $address = new \Acelle\Model\BillingAddress();
+        $address->customer_id = $this->id;
+        return $address;
+    }
+
+    public function getDefaultBillingAddress()
+    {
+        return $this->billingAddresses()->first();
+    }
+
+    public function updateBillingInformationFromInvoice($invoice)
+    {
+        $billingAddress = $this->getDefaultBillingAddress();
+
+        // has no address yet
+        if (!$billingAddress) {
+            $billingAddress = $this->newBillingAddress();
+        }
+
+        $billingAddress->fill([
+            'first_name' => $invoice->billing_first_name,
+            'last_name' => $invoice->billing_last_name,
+            'address' => $invoice->billing_address,
+            'email' => $invoice->billing_email,
+            'phone' => $invoice->billing_phone,
+            'country_id' => $invoice->billing_country_id,
+        ]);
+
+        $billingAddress->save();
+    }
+
     public function sources()
     {
         return $this->hasMany('Acelle\Model\Source', 'customer_id');
@@ -230,12 +209,6 @@ class Customer extends Model
     public function signatures()
     {
         return $this->hasMany(Signature::class, 'customer_id');
-    }
-
-    // billing addresses
-    public function billingAddresses()
-    {
-        return $this->hasMany('Acelle\Model\BillingAddress', 'customer_id');
     }
 
     public function getBasePath($path = null)
@@ -326,7 +299,8 @@ class Customer extends Model
     public static function scopeSearch($query, $keyword)
     {
         $query = $query->select('customers.*')
-            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
+            ->leftJoin('users', 'users.customer_id', '=', 'customers.id')
+            ->distinct();
 
         // Keyword
         if (!empty(trim($keyword))) {
@@ -340,64 +314,12 @@ class Customer extends Model
         }
     }
 
-    /**
-     * Subscribers count by time.
-     *
-     * @return number
-     */
-    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null, $status = null)
-    {
-        $query = \Acelle\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
-                                ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id');
-
-        if (isset($list_id)) {
-            $query = $query->where('subscribers.mail_list_id', '=', $list_id);
-        }
-        if (isset($customer_id)) {
-            $query = $query->where('customers.id', '=', $customer_id);
-        }
-        if (isset($status)) {
-            $query = $query->where('subscribers.status', '=', $status);
-        }
-
-        $query = $query->where('subscribers.created_at', '>=', $begin)
-                        ->where('subscribers.created_at', '<=', $end);
-
-        return $query->count();
-    }
-
     public function getCurrentActiveSubscription()
     {
         // Keep this function alias to support plugins
         return $this->getCurrentActiveGeneralSubscription();
     }
 
-    /**
-     * Count customer lists.
-     *
-     * @return number
-     */
-    public function listsCount()
-    {
-        return $this->lists()->count();
-    }
-
-    /**
-     * Count customer's campaigns.
-     *
-     * @return number
-     */
-    public function campaignsCount()
-    {
-        return $this->campaigns()->count();
-    }
-
-
-    /**
-     * Get subscriber quota.
-     *
-     * @return number
-     */
     public function maxSubscribers()
     {
         $count = get_tmp_quota($this, 'subscriber_max');
@@ -406,60 +328,6 @@ class Customer extends Model
         } else {
             return $count;
         }
-    }
-
-    /**
-     * Count customer's subscribers.
-     *
-     * @return number
-     */
-    public function subscribersCount($cache = false)
-    {
-        if ($cache) {
-            return $this->readCache('SubscriberCount');
-        }
-
-        // return distinctCount($this->subscribers(), 'subscribers.email', 'distinct');
-        return $this->subscribers()->count();
-    }
-
-    /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function subscribersUsage($cache = false)
-    {
-        $max = $this->maxSubscribers();
-        $count = $this->subscribersCount($cache);
-
-        if ($max == '∞') {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function displaySubscribersUsage()
-    {
-        if ($this->maxSubscribers() == '∞') {
-            return trans('messages.unlimited');
-        }
-
-        // @todo: avoid using cached value in a function
-        //        cache value must be called directly from view only
-        return $this->readCache('SubscriberUsage', 0).'%';
     }
 
     /**
@@ -594,7 +462,7 @@ class Customer extends Model
         }
 
         foreach ($query->limit(20)->get() as $customer) {
-            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayNameEmailOption()];
+            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->name];
         }
 
         return json_encode($data);
@@ -607,20 +475,25 @@ class Customer extends Model
      */
     public function createAccountAndUser($request)
     {
-        $user = new User();
+        $user = $this->newUser();
 
         DB::transaction(function () use ($request, &$user) {
+            // User
+            $user->fill($request->all());
+            $user->password = bcrypt($request->password);
+            $user->save();
+
             // Customer
             $this->fill($request->all());
             $this->status = self::STATUS_ACTIVE;
+            $this->name = $user->displayName(get_localization_config('show_last_name_first', $this->getLanguageCode()));
             $this->save();
 
-            // User
-            $user = new User();
-            $user->fill($request->all());
-            $user->password = bcrypt($request->password);
-            $user->customer()->associate($this);
+            //
             $user->save();
+            
+            // default role
+            $user->setRole(Role::getDefaultRole());
         });
 
         // Important: return the newly created USER
@@ -630,11 +503,6 @@ class Customer extends Model
     public function sendingServers()
     {
         return $this->hasMany('Acelle\Model\SendingServer', 'customer_id');
-    }
-
-    public function subAccounts()
-    {
-        return $this->hasMany('Acelle\Model\SubAccount', 'customer_id');
     }
 
     /**
@@ -656,66 +524,6 @@ class Customer extends Model
         return $query->count();
     }
 
-    public function getSubscriberCountByStatus($status)
-    {
-        // @note: in this particular case, a simple count(distinct) query is much more efficient
-        $query = $this->subscribers()->where('subscribers.status', $status)->distinct('subscribers.email');
-
-        return $query->count();
-    }
-
-    /**
-     * Update Campaign cached data.
-     */
-    public function getCacheIndex()
-    {
-        // cache indexes
-        return [
-            // @note: SubscriberCount must come first as its value shall be used by the others
-            'SubscriberCount' => function () {
-                return $this->subscribersCount(false);
-            },
-            'SubscriberUsage' => function () {
-                return $this->subscribersUsage(true);
-            },
-            'SubscribedCount' => function () {
-                return $this->getSubscriberCountByStatus(Subscriber::STATUS_SUBSCRIBED);
-            },
-            'UnsubscribedCount' => function () {
-                return $this->getSubscriberCountByStatus(Subscriber::STATUS_UNSUBSCRIBED);
-            },
-            'UnconfirmedCount' => function () {
-                return $this->getSubscriberCountByStatus(Subscriber::STATUS_UNCONFIRMED);
-            },
-            'BlacklistedCount' => function () {
-                return $this->getSubscriberCountByStatus(Subscriber::STATUS_BLACKLISTED);
-            },
-            'SpamReportedCount' => function () {
-                return $this->getSubscriberCountByStatus(Subscriber::STATUS_SPAM_REPORTED);
-            },
-            'MailListSelectOptions' => function () {
-                return $this->getMailListSelectOptions([], true);
-            },
-            'Bounce/FeedbackRate' => function () {
-                return $this->getBounceFeedbackRate();
-            },
-        ];
-    }
-
-    public function getBounceFeedbackRate()
-    {
-        $delivery = $this->trackingLogs()->count();
-
-        if ($delivery == 0) {
-            return 0;
-        }
-
-        $bounce = DB::table('bounce_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')->count();
-        $feedback = DB::table('feedback_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')->count();
-
-        $percentage = ($feedback + $bounce) / $delivery;
-    }
-
     /**
      * Sending servers count.
      *
@@ -724,16 +532,6 @@ class Customer extends Model
     public function sendingServersCount()
     {
         return $this->sendingServers()->count();
-    }
-
-    /**
-     * Sending domains count.
-     *
-     * @var int
-     */
-    public function sendingDomainsCount()
-    {
-        return $this->sendingDomains()->count();
     }
 
     /**
@@ -856,49 +654,6 @@ class Customer extends Model
     }
 
     /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function sendingDomainsUsage()
-    {
-        $max = $this->maxSendingDomains();
-        $count = $this->sendingDomainsCount();
-
-        if ($max == '∞') {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Count customer automations.
-     *
-     * @return number
-     */
-    public function automationsCount()
-    {
-        return $this->automation2sCount();
-    }
-
-    /**
-     * Check if customer has admin account.
-     *
-     * @return bool
-     */
-    public function hasAdminAccount()
-    {
-        return $this->user && $this->user->admin;
-    }
-
-    /**
      * Get all customer active sending servers.
      *
      * @return collect
@@ -925,7 +680,7 @@ class Customer extends Model
      */
     public function totalUploadSize()
     {
-        return \Acelle\Library\Tool::getDirectorySize(base_path('public/source/'.$this->user->uid)) / 1048576;
+        return \Acelle\Library\Tool::getDirectorySize(base_path('public/source/'.$this->uid)) / 1048576;
     }
 
     /**
@@ -967,37 +722,7 @@ class Customer extends Model
      */
     public function can($action, $item)
     {
-        return $this->user->can($action, [$item, 'customer']);
-    }
-
-    /**
-     * Get customer contact.
-     *
-     * @return Contact
-     */
-    public function getContact()
-    {
-        if ($this->contact) {
-            $contact = $this->contact;
-        } else {
-            $contact = new \Acelle\Model\Contact([
-                'first_name' => $this->first_name,
-                'last_name' => $this->last_name,
-                'email' => $this->user->email,
-            ]);
-        }
-
-        return $contact;
-    }
-
-    /*
-     * Custom name + email.
-     *
-     * @return string
-     */
-    public function displayNameEmailOption()
-    {
-        return '<span class="fe-semibold">'.$this->displayName().'</span>|||'.$this->user->email;
+        return \Auth::user()->can($action, [$item, 'customer']);
     }
 
     /**
@@ -1030,27 +755,6 @@ class Customer extends Model
             // Get server from the plan
             return  $this->getCurrentActiveGeneralSubscription()->planGeneral->getEmailVerificationServers();
         }
-    }
-
-    /**
-     * Get the list of available mail lists, used for populating select box.
-     *
-     * @return array
-     */
-    public function getMailListSelectOptions($options = [], $cache = false)
-    {
-        $query = $this->mailLists();
-
-        # Other list
-        if (isset($options['other_list_of'])) {
-            $query->where('id', '!=', $options['other_list_of']);
-        }
-
-        $result = $query->orderBy('name')->get()->map(function ($item) use ($cache) {
-            return ['id' => $item->id, 'value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount($cache).' '.strtolower(trans('messages.subscribers')).')'];
-        });
-
-        return $result;
     }
 
     /**
@@ -1195,19 +899,9 @@ class Customer extends Model
         return $droplist;
     }
 
-    /**
-     * Count customer automation2s.
-     *
-     * @return number
-     */
-    public function automation2sCount()
-    {
-        return $this->automation2s()->count();
-    }
-
     public function getLockPath($path)
     {
-        return $this->user->getLockPath($path);
+        return $this->getFirstUserLegacy()->getLockPath($path);
     }
 
     public function allowUnverifiedFromEmailAddress()
@@ -1230,18 +924,6 @@ class Customer extends Model
         }
 
         return (is_null($server)) ? true : $server->allowUnverifiedFromEmailAddress();
-    }
-
-    /**
-     * Get list of available tracking domain options.
-     *
-     * @var bool
-     */
-    public function getVerifiedTrackingDomainOptions()
-    {
-        return $this->trackingDomains()->verified()->get()->map(function ($domain) {
-            return ['value' => $domain->uid, 'text' => $domain->name];
-        });
     }
 
     // Get the current time in Customer timezone
@@ -1280,64 +962,6 @@ class Customer extends Model
         return format_datetime($datetime->timezone($this->getTimezone()), $name, $this->getLanguageCode());
     }
 
-    /**
-     * Get customer product source.
-     *
-     * @var collect
-     */
-    public function newProductSource($type)
-    {
-        $class = '\\Acelle\\Model\\' . $type;
-        $source = new $class();
-        $source->customer_id = $this->id;
-        $source->type = $type;
-
-        return $source;
-    }
-
-    /**
-     * Get customer product source.
-     *
-     * @var collect
-     */
-    public function findProductSource($type)
-    {
-        $source = $this->sources()
-            ->where('type', '=', $type)
-            ->first();
-
-        if (!$source) {
-            $source = new Source();
-            $source->customer_id = $this->id;
-            $source->type = $type;
-        }
-
-        return $source;
-    }
-
-    /**
-     * Get source select options.
-     *
-     * @return object
-     */
-    public function getSelectOptions($type = null)
-    {
-        $query = $this->sources();
-
-        if ($type) {
-            $query = $query->where('type', '=', $type);
-        }
-
-        return $query->get()->map(function ($source) {
-            return ['text' => $source->getData()['data']['name'], 'value' => $source->uid];
-        });
-    }
-
-    /**
-     * Get payment method.
-     *
-     * @var object | collect
-     */
     public function getPreferredPaymentGateway()
     {
         // Value of "payment_method" was every time user chooses a payment method in the web UI
@@ -1395,87 +1019,6 @@ class Customer extends Model
         $this->save();
     }
 
-    /**
-     * Get default billing address.
-     *
-     * @var object
-     */
-    public function newBillingAddress()
-    {
-        $address = new \Acelle\Model\BillingAddress();
-        $address->customer_id = $this->id;
-        return $address;
-    }
-
-    /**
-     * Get default billing address.
-     *
-     * @var object
-     */
-    public function getDefaultBillingAddress()
-    {
-        return $this->billingAddresses()->first();
-    }
-
-    public function createAbandonedEmailAutomation($store)
-    {
-        $auto = $this->automation2s()->create([
-            'name' => 'Abandoned Cart Notification - Auto',
-            'mail_list_id' => $store->getList()->id,
-            'status' => 'inactive',
-        ]);
-
-        $email = new \Acelle\Model\Email([
-            'action_id' => '1000000001',
-        ]);
-        $email->customer_id = $this->id;
-        $email->automation2_id = $auto->id;
-        $email->save();
-
-        $auto->data = json_encode([
-            [
-                "title" => "Abandoned Cart Reminder",
-                "id" => "trigger",
-                "type" => "ElementTrigger",
-                "child" => "1000000001",
-                "options" => [
-                    "key" => "woo-abandoned-cart",
-                    "type" => "woo-abandoned-cart",
-                    "source_uid" => $store->uid,
-                    "wait" => "24_hour",
-                    "init"  => "true"
-                ]
-            ], [
-                "title" => "Hey, you have an item left in cart",
-                "id" => "1000000001",
-                "type" => "ElementAction",
-                "child" => null,
-                "options" => [
-                    "init" => "true",
-                    "email_uid" => $email->uid
-                ]
-            ]
-        ]);
-
-        $auto->save();
-
-        return $auto;
-    }
-
-    public function getAbandonedEmailAutomation($store)
-    {
-        $auto = $this->automation2s()->where('mail_list_id', '=', $store->mail_list_id)->first();
-        if (!$auto) {
-            $auto = $this->createAbandonedEmailAutomation($store);
-        }
-        return $auto;
-    }
-
-    /**
-     * Get auto billing data.
-     *
-     * @var object
-     */
     public function getAutoBillingData()
     {
         if ($this->auto_billing_data == null) {
@@ -1485,11 +1028,6 @@ class Customer extends Model
         return AutoBillingData::fromJson($this->auto_billing_data);
     }
 
-    /**
-     * Get auto billing data.
-     *
-     * @var object
-     */
     public function setAutoBillingData(AutoBillingData $autoBillingData)
     {
         $this->auto_billing_data = $autoBillingData->toJson();
@@ -1502,11 +1040,7 @@ class Customer extends Model
     public function deleteAccount()
     {
         DB::transaction(function () {
-            $user = $this->user;
             $this->delete();
-            if (!$user->admin()->exists()) {
-                $user->deleteAndCleanup();
-            }
         });
     }
 
@@ -1605,42 +1139,6 @@ class Customer extends Model
         }
     }
 
-    public function getConnectedWebsiteSelectOptions($long = true)
-    {
-        $query = $this->websites()->connected();
-
-        $result = $query->orderBy('title')->get()->map(function ($item) use ($long) {
-            if ($long) {
-                return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
-            } else {
-                return ['value' => $item->uid, 'text' => $item->title];
-            }
-        });
-
-        return $result;
-    }
-
-    public function updateBillingInformationFromInvoice($invoice)
-    {
-        $billingAddress = $this->getDefaultBillingAddress();
-
-        // has no address yet
-        if (!$billingAddress) {
-            $billingAddress = $this->newBillingAddress();
-        }
-
-        $billingAddress->fill([
-            'first_name' => $invoice->billing_first_name,
-            'last_name' => $invoice->billing_last_name,
-            'address' => $invoice->billing_address,
-            'email' => $invoice->billing_email,
-            'phone' => $invoice->billing_phone,
-            'country_id' => $invoice->billing_country_id,
-        ]);
-
-        $billingAddress->save();
-    }
-
     public static function newCustomer()
     {
         $customer = new self();
@@ -1648,14 +1146,6 @@ class Customer extends Model
         $customer->status = self::STATUS_ACTIVE;
 
         return $customer;
-    }
-
-    public function newProduct()
-    {
-        $product = new \Acelle\Model\Product();
-        $product->customer_id = $this->id;
-
-        return $product;
     }
 
     public static function scopeByPlan($query, $plan)
@@ -1667,13 +1157,7 @@ class Customer extends Model
 
     public function displayName()
     {
-        $lastNameFirst = get_localization_config('show_last_name_first', $this->getLanguageCode());
-
-        if ($lastNameFirst) {
-            return htmlspecialchars(trim($this->user->last_name.' '.$this->user->first_name));
-        } else {
-            return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
-        }
+        return $this->name;
     }
 
     public function newDefaultCampaign()
@@ -1689,7 +1173,6 @@ class Customer extends Model
 
         return $campaign;
     }
-
 
     /*
      *
@@ -1747,14 +1230,14 @@ class Customer extends Model
 
         // own emails
         if (!config('app.saas') || $this->getCurrentActiveGeneralSubscription()->planGeneral->allowSenderVerification()) {
-            $senders = $this->senders()->verified()->get();
+            $senders = $this->local()->senders()->verified()->get();
             foreach ($senders as $sender) {
                 $list[] = $sender->name.' <'.$sender->email.'>';
             }
         }
 
         // own domain
-        $domains = $this->sendingDomains()->active();
+        $domains = $this->local()->sendingDomains()->active();
 
         if (config('app.saas')) {
             $plan = $this->getCurrentActiveGeneralSubscription()->planGeneral;
@@ -1997,6 +1480,257 @@ class Customer extends Model
         return [$customer, $user];
     }
 
+    public function newUser()
+    {
+        $user = User::newDefault();
+        $user->customer_id = $this->id;
+        return $user;
+    }
+
+    public function saveChatgptApiKey($key)
+    {
+        $this->openai_api_key = $key;
+        $this->save();
+    }
+
+    public function getChatgptApiKey()
+    {
+        return $this->openai_api_key;
+    }
+
+    public function validateFromRequest($request)
+    {
+        // validation
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ]);
+
+        // errors
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        return $validator;
+    }
+
+    public function saveFromRequest($request)
+    {
+        // Save current user info
+        $this->admin_id = $request->user()->admin->id;
+        $this->fill($request->all());
+
+        //
+        $validator = $this->validateFromRequest($request);
+
+        // errors
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        // save
+        $this->save();
+
+        // Execute registered hooks
+        Hook::execute('customer_added', [$this]);
+
+        // return
+        return $validator->errors();
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    public function getGoogleAccessToken()
+    {
+        if (!$this->google_auth) {
+            return null;
+        }
+        return json_decode($this->google_auth, true)['access_token'];
+    }
+
+    public function checkAddingSubscribersToMailListReachLimit($mailList, $addNumber)
+    {
+        $max = get_tmp_quota($this, 'subscriber_max');
+        $maxPerList = get_tmp_quota($this, 'subscriber_per_list_max');
+        return $this->id == $mailList->customer_id &&
+            ($max >= $this->subscribersCount() + $addNumber || $max == -1) &&
+            ($maxPerList >= $mailList->subscribersCount() + $addNumber || $maxPerList == -1);
+    }
+
+    public static function createCustomer(
+        $name,
+        $timezone,
+        $language_id,
+        $admin=null
+    ) {
+        // init
+        $customer = static::newCustomer();
+
+        // fill customer data
+        $customer->name = $name;
+        $customer->timezone = $timezone;
+        $customer->language_id = $language_id;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $customer];
+        }
+
+        // SAVE CUSTOMER
+        if ($admin) {
+            $customer->admin_id = $admin->id;
+        }
+        $customer->save();
+
+        // Execute registered hooks
+        Hook::execute('customer_added', [$customer]);
+
+        // success
+        return [$validator, $customer];
+    }
+
+    public function updateCustomer(
+        $name,
+        $timezone,
+        $language_id
+    ) {
+        // fill customer data
+        $this->name = $name;
+        $this->timezone = $timezone;
+        $this->language_id = $language_id;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $this];
+        }
+
+        // SAVE CUSTOMER
+        $this->save();
+
+        // success
+        return [$validator, $this];
+    }
+
+    public static function createCustomerWithDefaultUser(
+        $admin,
+        $name,
+        $timezone,
+        $language_id,
+
+        $email,
+        $password,
+        $passwordConfirmation,
+        $first_name,
+        $last_name,
+        $image,
+        $role_uid
+    ) {
+        // init
+        $customer = static::newCustomer();
+        $user = $customer->newUser();
+
+        // fill customer data
+        $customer->name = $name;
+        $customer->timezone = $timezone;
+        $customer->language_id = $language_id;
+
+        // fill user data
+        $user->email = $email;
+        $user->password = $password;
+        $user->first_name = $first_name;
+        $user->last_name = $last_name;
+
+        // rules
+        $rules = [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed|min:5|max:255',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
+            'role_uid' => 'required',
+        ];
+
+        // validation
+        $validator = \Validator::make([
+            'name' => $name,
+            'timezone' => $timezone,
+            'language_id' => $language_id,
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $passwordConfirmation,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'image' => $image,
+            'role_uid' => $role_uid,
+        ], $rules);
+
+        // errors
+        if ($validator->fails()) {
+            return [$validator, $customer, $user];
+        }
+
+        // SAVE CUSTOMER
+        list($validator, $customer) = static::createCustomer(
+            $name,
+            $timezone,
+            $language_id,
+            $admin
+        );
+
+        // SAVE USER
+        list($result, $errors) = $user->saveUser(
+            $email,
+            $password,
+            $passwordConfirmation,
+            $first_name,
+            $last_name,
+            $image,
+            $role_uid
+        );
+
+        // set customer
+        $user->customer_id = $customer->id;
+        $user->save();
+
+        // success
+        return [$validator, $customer, $user];
+    }
+    
     public function hasLocalDb()
     {
         return !is_null($this->db_connection);
@@ -2004,11 +1738,20 @@ class Customer extends Model
 
     public function local()
     {
-        if (!$this->hasLocalDb()) {
-            throw new Exception('Customer does not have a local DB');
-        }
+        if (config('custom.db_sharding') && $this->hasLocalDb()) {
+            $local = LocalCustomer::on($this->db_connection)->where('uid', $this->uid)->first();
 
-        return LocalCustomer::on($this->db_connection)->where('uid', $this->uid)->first();
+            if (is_null($local)) {
+                throw new Exception("Cannot find a local customer with UID '{$this->uid}' in '{$this->db_connection}' connection. Execute the 'createLocalInstance()' function to create one");
+            }
+
+            return $local;
+        } else {
+
+            // In case of NO SHARDING, simply return the same customer in the same connection, typecast it to a LocalCustomer;
+            $local = LocalCustomer::on('mysql')->where('uid', $this->uid)->first();
+            return $local;
+        }
     }
 
     public function createLocalInstance()
@@ -2022,5 +1765,36 @@ class Customer extends Model
         $signature->customer_id = $this->id;
 
         return $signature;
+    }
+
+    public function newMailList()
+    {
+        $list = new MailList(['all_sending_servers' => true]);
+        $list->customer_id = $this->id;
+
+        return $list;
+    }
+
+    public function getMaxUserQuota()
+    {
+        if (!$this->getCurrentActiveSubscription()) {
+            return 0;
+        }
+
+        return $this->getCurrentActiveSubscription()->plan->mapType()->getOption('user_max');
+    }
+
+    public function setUserDbConnection()
+    {
+        if (config('custom.db_sharding') && $this->hasLocalDb()) {
+            \Acelle\Helpers\set_userdb_connection($this->db_connection);
+        }
+    }
+
+    public function getSelectableRoles()
+    {
+        return Role::whereIsGlobal(true)
+            ->orWhere('customer_id', $this->id)
+            ->get();
     }
 }

@@ -34,6 +34,8 @@ class VerifySubscriber extends Base
         $this->subscriber = $subscriber;
         $this->server = $server;
         $this->subscription = $subscription;
+
+        $this->subscriber->customer->setUserDbConnection();
     }
 
     /**
