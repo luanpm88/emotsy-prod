@@ -21,7 +21,7 @@ class RoleController extends Controller
     public function list(Request $request)
     {
         // sort, pagination
-        $roles = Role::search($request->keyword)
+        $roles = Role::global()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -37,7 +37,7 @@ class RoleController extends Controller
      */
     public function create(Request $request)
     {
-        $role = Role::newDefault();
+        $role = Role::newGlobalRole();
 
         return view('admin.roles.create', [
             'role' => $role,
@@ -52,7 +52,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $role = Role::newDefault();
+        $role = Role::newGlobalRole();
         
         $errors = $role->saveFromArray($request->all());
 

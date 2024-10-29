@@ -157,6 +157,11 @@ class Customer extends Model
         return $this->hasManyThrough('Acelle\Model\Transaction', 'Acelle\Model\Invoice', 'customer_id');
     }
 
+    public function roles()
+    {
+        return $this->hasMany('Acelle\Model\Role', 'customer_id');
+    }
+
     // billing addresses
     public function billingAddresses()
     {
@@ -1749,5 +1754,12 @@ class Customer extends Model
         }
 
         return $this->getCurrentActiveSubscription()->plan->mapType()->getOption('user_max');
+    }
+
+    public function getSelectableRoles()
+    {
+        return Role::whereIsGlobal(true)
+            ->orWhere('customer_id', $this->id)
+            ->get();
     }
 }

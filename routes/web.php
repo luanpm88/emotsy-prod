@@ -975,6 +975,14 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('account/sending-credit/invoices/list', 'SendingCreditPlanController@invoiceList');
     Route::get('account/sending-credit', 'SendingCreditPlanController@index');
 
+    // Role
+    Route::post('account/roles/delete', 'RoleController@delete');
+    Route::post('account/roles/disable', 'RoleController@disable');
+    Route::post('account/roles/enable', 'RoleController@enable');
+    Route::get('account/roles/list', 'RoleController@list');
+    Route::resource('account/roles', 'RoleController');
+    Route::post('account/roles/{uid}/update', 'RoleController@update');
+
 });
 
 // ADMIN AREA

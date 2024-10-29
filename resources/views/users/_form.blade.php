@@ -87,10 +87,12 @@
 
             <div class="mb-3">
                 <label for="" class="form-label">{{ trans('messages.user.role') }}</label>
-                <select name="role_uid" class="form-select {{ $errors->has('role_uid') ? 'is-invalid' : '' }}">
+                <select name="role_uid" class="form-select select3 {{ $errors->has('role_uid') ? 'is-invalid' : '' }}">
                     <option value="">{{ trans('messages.user.select_role') }}</option>
-                    @foreach (Acelle\Model\Role::active()->get() as $role)
-                        <option {{ $user->getRole() && $role->id == $user->getRole()->id ? 'selected' : '' }} value="{{ $role->uid }}">{{ $role->name }}</option>
+                    @foreach (Auth::user()->customer->getSelectableRoles() as $role)
+                        <option {{ $user->getRole() && $role->id == $user->getRole()->id ? 'selected' : '' }} value="{{ $role->uid }}">
+                            {{ $role->name }} ||| {{ $role->description }}
+                        </option>
                     @endforeach
                 </select>
             </div>
