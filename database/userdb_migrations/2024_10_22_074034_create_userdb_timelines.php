@@ -22,13 +22,13 @@ class CreateUserdbTimelines extends Migration
             $table->text('activity_type')->nullable();
             $table->string('type')->nullable();
 
-            $table->bigInteger('automation2_id')->unsigned();
+            $table->bigInteger('automation2_id')->unsigned()->nullable();
             $table->bigInteger('subscriber_id')->unsigned();
-            $table->bigInteger('auto_trigger_id')->unsigned();
-            $table->bigInteger('mail_list_id')->unsigned();
-            $table->bigInteger('form_id')->unsigned();
-            $table->bigInteger('campaign_id')->unsigned();
-            $table->bigInteger('customer_id')->unsigned();
+            $table->bigInteger('auto_trigger_id')->unsigned()->nullable();
+            $table->bigInteger('mail_list_id')->unsigned()->nullable();
+            $table->bigInteger('form_id')->unsigned()->nullable();
+            $table->bigInteger('campaign_id')->unsigned()->nullable();
+            $table->bigInteger('customer_id')->unsigned()->nullable();
 
             $table->foreign('automation2_id')->references('id')->on('automation2s')->onDelete('cascade');
             $table->foreign('subscriber_id')->references('id')->on('subscribers')->onDelete('cascade');
