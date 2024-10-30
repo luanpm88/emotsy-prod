@@ -1758,7 +1758,7 @@ class Automation2 extends Model
         $newAutomation = $automation->duplicate();
 
         // custom data
-        $newAutomation->name = $name;
+        $newAutomation->name = $newName;
         $newAutomation->mail_list_id = MailList::findByUid($mailListUid)->id;
         $newAutomation->save();
 
