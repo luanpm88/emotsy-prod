@@ -1739,10 +1739,10 @@ class Automation2 extends Model
         return $newAutomation;
     }
 
-    public function copyFrom($automation, $name, $mailListUid)
+    public function copyFrom($automation, $newName, $mailListUid)
     {
         $validator = \Validator::make([
-            'name' => $name,
+            'name' => $newName,
             'mail_list_uid' => $mailListUid,
         ], [
             'name' => 'required',
