@@ -83,9 +83,9 @@ class Page extends Model
      */
     public function renderContent($values = null, $subscriber = null)
     {
-        /*
-        // BAISC INFO
         $this->content = str_replace('{LIST_NAME}', $this->mailList->name, $this->content);
+        /*
+        // BAISC INFz
         $this->content = str_replace('{CONTACT_NAME}', $this->mailList->contact->company, $this->content);
         $this->content = str_replace('{CONTACT_STATE}', $this->mailList->contact->state, $this->content);
         $this->content = str_replace('{CONTACT_ADDRESS_1}', $this->mailList->contact->address_1, $this->content);
