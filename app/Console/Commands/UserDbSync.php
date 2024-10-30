@@ -47,6 +47,7 @@ class UserDbSync extends Command
         echo "Sync customer #{$customer->id} to {$customer->db_connection}...\n";
 
         $customer->createLocalInstance();
+        $customer->local()->updateCache();
 
         echo "+ Done\n";
 
