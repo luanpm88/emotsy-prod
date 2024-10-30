@@ -2799,7 +2799,7 @@ class Automation2Controller extends Controller
         }
 
         if ($request->isMethod('post')) {
-            $validator = $newAutomation->copyFrom($automation, $request->all());
+            $validator = $newAutomation->copyFrom($automation, $request->name, $request->mail_list_uid);
 
             // redirect if fails
             if ($validator->fails()) {
