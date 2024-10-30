@@ -33,7 +33,7 @@ class CreateUserdbEmails extends Migration
 
             $table->bigInteger('automation2_id')->unsigned();
             $table->bigInteger('tracking_domain_id')->unsigned()->nullable();
-            $table->bigInteger('template_id')->unsigned(); // master table
+            $table->bigInteger('template_id')->unsigned()->nullable(); // master table
             $table->bigInteger('customer_id')->unsigned();
 
             $table->foreign('automation2_id')->references('id')->on('automation2s')->onDelete('cascade');
