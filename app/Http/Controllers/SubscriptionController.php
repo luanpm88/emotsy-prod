@@ -141,7 +141,6 @@ class SubscriptionController extends Controller
 
         // always update invoice price from plan
         $invoice = $invoice->mapType();
-        $invoice->refreshPrice();
 
         // Nếu invoice cho plan mà bỏ qua payment when free thì return view confirmation
         if (
@@ -225,7 +224,6 @@ class SubscriptionController extends Controller
 
         // always update invoice price from plan
         $invoice = $invoice->mapType();
-        $invoice->refreshPrice();
 
         // nếu đang có pending transaction thì luôn show màn hình pending
         if ($invoice->getPendingTransaction()) {
@@ -568,9 +566,6 @@ class SubscriptionController extends Controller
             return redirect()->action('SubscriptionController@index')
                 ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] does not exist!");
         }
-        
-        // always update invoice price from plan
-        $invoice->refreshPrice();
 
         // 
         if (!in_array($invoice->type, [
