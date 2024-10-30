@@ -190,10 +190,12 @@ class Email extends Model implements HasTemplateInterface
             $exist = $this->emailLinks()->where('link', '=', $link)->count();
 
             if (!$exist) {
-                $this->emailLinks()->create([
-                    'customer_id' => $this->customer_id,
+                $emailLink = $this->emailLinks()->make([
                     'link' => $link,
                 ]);
+
+                $emailLink->customer_id = $this->customer_id;
+                $emailLink->save();
             }
         }
     }
