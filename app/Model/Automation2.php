@@ -1739,9 +1739,12 @@ class Automation2 extends Model
         return $newAutomation;
     }
 
-    public function copyFrom($automation, $params)
+    public function copyFrom($automation, $newName, $mailListUid)
     {
-        $validator = \Validator::make($params, [
+        $validator = \Validator::make([
+            'name' => $newName,
+            'mail_list_uid' => $mailListUid,
+        ], [
             'name' => 'required',
             'mail_list_uid' => 'required',
         ]);
@@ -1755,8 +1758,8 @@ class Automation2 extends Model
         $newAutomation = $automation->duplicate();
 
         // custom data
-        $newAutomation->name = $params['name'];
-        $newAutomation->mail_list_id = MailList::findByUid($params['mail_list_uid'])->id;
+        $newAutomation->name = $newName;
+        $newAutomation->mail_list_id = MailList::findByUid($mailListUid)->id;
         $newAutomation->save();
 
         return $validator;
