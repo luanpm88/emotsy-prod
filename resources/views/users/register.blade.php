@@ -23,7 +23,7 @@
                     'login' => url("/login"),
                 ]) !!}</p>
 
-                <div class="form-group control-text"> 
+                <div class="form-group control-text mt-4"> 
                     <label class="form-label required">{{ trans('messages.account.name') }} <span class="text-danger">*</span></label>
                     <input type="text" name="name" value="{{ $customer->name }}"
                         class="form-control form-control-sm rd-10 {{ $errors->has('name') ? 'is-invalid' : '' }}"
