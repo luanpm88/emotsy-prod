@@ -107,6 +107,12 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\User');
     }
 
+    // remove it after update cashier
+    public function user()
+    {
+        return $this->hasOne('Acelle\Model\User');
+    }
+
     public function getFirstUserLegacy()
     {
         return $this->users()->first();
