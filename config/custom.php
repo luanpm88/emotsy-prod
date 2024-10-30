@@ -50,7 +50,4 @@ return [
 
     // Default queue connection for automation delivery jobs
     'automation_queue_connection' => env('AUTOMATION_QUEUE_CONNECTION', null),
-
-    // Mode DB Sharding
-    'db_sharding' => env('DB_SHARDING', false),
 ];

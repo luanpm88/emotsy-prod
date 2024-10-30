@@ -211,7 +211,21 @@ class AppServiceProvider extends ServiceProvider
 
     private function loadShardingDbConnections()
     {
-        $connections  = config('sharding');
+        if (!config('sharding.enabled')) {
+            return;
+        }
+
+        $configFile = config('sharding.connections_config');
+        if (!file_exists($configFile)) {
+            throw new \Exception("DB SHARDING mode is on, but the config file '{$configFile}' does not exist");
+        }
+
+        $connections  = require $configFile;
+
+        if (!is_array($connections)) {
+            throw new \Exception("Invalid config file for DB SHARDING: '{$configFile}'. Expect an array of connections");
+        }
+
         foreach ($connections as $name => $settings) {
             \Config::set("database.connections.{$name}", $settings);
         }

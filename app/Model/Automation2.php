@@ -467,8 +467,11 @@ class Automation2 extends Model
     {
         $customers = Customer::all();
         foreach ($customers as $customer) {
-            // Only one automation process to run at one given time
 
+            // IMPORTANT!!!
+            $customer->setUserDbConnection();
+
+            // Only one automation process to run at one given time
             $automations = $customer->local()->activeAutomation2s;
             foreach ($automations as $automation) {
                 $automationLockFile = $customer->getLockPath('automation-lock-'.$automation->uid);
