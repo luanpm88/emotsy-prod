@@ -126,7 +126,7 @@ class UserController extends Controller
             // validation
             list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
                 $admin = null,
-                $name = trans('messages.account.default_account_name'),
+                $name = $request->name,
                 $timezone = $request->timezone,
                 $language_id = $request->language_id,
 
