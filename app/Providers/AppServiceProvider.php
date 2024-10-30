@@ -215,7 +215,8 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        $configFile = config('sharding.connections_config');
+        $configFile = base_path(config('sharding.connections_config'));
+
         if (!file_exists($configFile)) {
             throw new \Exception("DB SHARDING mode is on, but the config file '{$configFile}' does not exist");
         }
