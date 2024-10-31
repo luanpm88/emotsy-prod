@@ -1,7 +1,7 @@
 {{ csrf_field() }}
 
 <div class="row">
-	<div class="col-sm-6 col-md-6">
+	<div class="col-sm-12 col-md-12">
 		<div class="form-group {{ $errors->has('name') ? 'has-error' : '' }} control-text">
 			<label class="fw-semibold">
 				{{ trans('messages.signature.signature_name') }}
@@ -33,8 +33,29 @@
 				</div>
 
 				<div data-control="form">
-					<textarea id="name"type="text" name="content" class="form-control required template-editor" />{!! $signature->content !!}</textarea>
+					<div id="editor" class="rounded shadow-sm" style="height: 400px;width: 100%;"></div>
+						
+					<script src="/ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+					<textarea id="signatureContent" type="text" name="content" class="form-control required template-editor" style="display: none;">{!! $signature->content !!}</textarea>
 					<script>
+						var editor = ace.edit("editor");
+						editor.setTheme("ace/theme/monokai");
+						editor.getSession().setMode("ace/mode/html"); // Optional: set to HTML mode
+
+						// Set the content, using Blade to escape it for raw HTML
+						var content = `{!! addslashes($signature->content) !!}`;
+						editor.setValue(content);
+
+						// Set up a listener for changes
+						editor.getSession().on('change', function(delta) {
+							// This code will run every time the content changes
+							var content = editor.getValue();
+							document.getElementById('signatureContent').value = editor.getValue();
+							// You can perform additional actions here, like saving or validating the content
+						});
+					</script>
+					
+					{{-- <script>
 						var editor;
 						$(document).ready(function() {
 							editor = tinymce.init({
@@ -94,7 +115,7 @@
 								}
 							});
 						});
-					</script>
+					</script> --}}
 				</div>
 
 				<div data-control="preview" style="display: none;">
@@ -189,7 +210,7 @@
 		}
 
 		getContent() {
-			return tinymce.activeEditor.getBody().innerHTML;
+			return document.getElementById('signatureContent').value;
 		}
 
 		getPreviewContainer() {
