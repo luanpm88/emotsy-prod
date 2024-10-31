@@ -48,7 +48,7 @@ class Frontend
         }
 
         // DB here
-        if (config('custom.db_sharding') && $user->customer->hasLocalDb()) {
+        if (config('sharding.enabled') && $user->customer->hasLocalDb()) {
             $user->customer->setUserDbConnection();
         }
 

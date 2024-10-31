@@ -40,6 +40,7 @@ class VerifySender extends Command
     {
         $senders = Sender::pending()->get();
         foreach ($senders as $sender) {
+            $sender->customer->setUserDbConnection();
             $sender->updateVerificationStatus();
         }
         return 0;
