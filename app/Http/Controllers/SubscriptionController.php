@@ -134,9 +134,7 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if ($invoice->isPaid()) {
-            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
-            return redirect()->action('SubscriptionController@index')
-                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('InvoiceController@show', $request->invoice_uid);
         }
 
         // always update invoice price from plan
@@ -210,9 +208,7 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if ($invoice->isPaid()) {
-            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
-            return redirect()->action('SubscriptionController@index')
-                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('InvoiceController@show', $request->invoice_uid);
         }
 
         // no unpaid invoice found
@@ -279,9 +275,7 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if ($invoice->isPaid()) {
-            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
-            return redirect()->action('SubscriptionController@index')
-                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('InvoiceController@show', $request->invoice_uid);
         }
 
         // always update invoice price from plan
@@ -579,9 +573,7 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if ($invoice->isPaid()) {
-            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
-            return redirect()->action('SubscriptionController@index')
-                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('InvoiceController@show', $request->invoice_uid);
         }
 
         // check settings
