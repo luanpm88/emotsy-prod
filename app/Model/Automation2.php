@@ -1727,7 +1727,8 @@ class Automation2 extends Model
 
         // Duplicate data
         $newAutomation->customer_id = $this->customer_id;
-        $newAutomation->name = $this->name;
+        $newAutomation->name = $newName;
+        $newAutomation->mail_list_id = MailList::findByUid($mailListUid)->id;
         $newAutomation->mail_list_id = $this->mail_list_id;
         $newAutomation->time_zone = $this->time_zone;
         $newAutomation->data = $this->data;
@@ -1753,11 +1754,6 @@ class Automation2 extends Model
                 $newAutomation->save();
             }
         });
-
-        // custom data
-        $newAutomation->name = $newName;
-        $newAutomation->mail_list_id = MailList::findByUid($mailListUid)->id;
-        $newAutomation->save();
 
         return [$validator, $newAutomation];
     }
