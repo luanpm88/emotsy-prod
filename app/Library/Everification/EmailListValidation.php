@@ -41,7 +41,7 @@ class EmailListValidation implements VerifyInterface
 
         $response = json_decode($rawResponse, true);
 
-        if (array_key_exists('error', $response) && ( !array_key_exists('success', $response) || $response['success'] != true) {
+        if (array_key_exists('error', $response) && ( !array_key_exists('success', $response) || $response['success'] != true)) {
             throw new Exception('Failed connecting with emailvaliation.com server: '.$rawResponse);
         }
 
