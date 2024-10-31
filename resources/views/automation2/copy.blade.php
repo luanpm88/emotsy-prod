@@ -21,7 +21,10 @@
                 {{ trans('messages.automation.name') }}
             </label>
             <div>
-                <input value="{{ $newAutomation->name }}"
+                <input value="{{ trans('messages.automation.copy_name', [
+                        'from' => $automation->name,
+                    ]) }}"
+                    required
                     type="text"
                     name="name" class="form-control">
             </div>
@@ -37,9 +40,9 @@
                 {{ trans('messages.list') }}
             </label>
             <div>
-                <select name="mail_list_uid" class="select">
+                <select name="mail_list_uid" class="select" required>
                     @foreach (Auth::user()->customer->local()->readCache('MailListSelectOptions', []) as $option)
-                        <option {{ $newAutomation->mailList->uid == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}">{{ $option['text'] }}</option>
+                        <option value="{{ $option['value'] }}">{{ $option['text'] }}</option>
                     @endforeach
                 </select>
             </div>

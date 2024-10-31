@@ -2785,13 +2785,6 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $newAutomation = new Automation2();
-
-        // init data
-        $newAutomation->name = trans('messages.automation.copy_name', [
-            'from' => $automation->name,
-        ]);
-        $newAutomation->mailList = $automation->mailList;
 
         // authorize
         if (\Gate::denies('create', $automation)) {
@@ -2799,7 +2792,7 @@ class Automation2Controller extends Controller
         }
 
         if ($request->isMethod('post')) {
-            $validator = $newAutomation->copyFrom($automation, $request->name, $request->mail_list_uid);
+            [$validator, $newAutomation] = $automation->copy($request->name, $request->mail_list_uid);
 
             // redirect if fails
             if ($validator->fails()) {
@@ -2820,7 +2813,6 @@ class Automation2Controller extends Controller
 
         return view('automation2.copy', [
             'automation' => $automation,
-            'newAutomation' => $newAutomation,
         ]);
     }
 

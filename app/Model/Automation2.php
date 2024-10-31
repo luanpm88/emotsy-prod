@@ -1428,17 +1428,19 @@ class Automation2 extends Model
         return $types;
     }
 
-    public function newDefault($fields = [])
+    public static function newDefault($fields = [])
     {
+        $automation = new static();
+
         if (!isset($fields['name'])) {
-            $this->name = trans('messages.automation.untitled');
+            $automation->name = trans('messages.automation.untitled');
         } else {
-            $this->name = $fields['name'];
+            $automation->name = $fields['name'];
         }
 
-        $this->status = self::STATUS_INACTIVE;
+        $automation->status = self::STATUS_INACTIVE;
 
-        return $this;
+        return $automation;
     }
 
     public function createFromArray($params)
@@ -1704,20 +1706,33 @@ class Automation2 extends Model
         $this->delete();
     }
 
-    public function duplicate()
+    public function copy($newName, $mailListUid)
     {
-        $newAutomation = new self();
-        $newAutomation->newDefault();
+        // new automation
+        $newAutomation = static::newDefault();
 
-        // Get attrinutes from template
+        // validate inputs
+        $validator = \Validator::make([
+            'name' => $newName,
+            'mail_list_uid' => $mailListUid,
+        ], [
+            'name' => 'required',
+            'mail_list_uid' => 'required',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return [$validator, $newAutomation];
+        }
+
+        // Duplicate data
         $newAutomation->customer_id = $this->customer_id;
         $newAutomation->name = $this->name;
         $newAutomation->mail_list_id = $this->mail_list_id;
         $newAutomation->time_zone = $this->time_zone;
         $newAutomation->data = $this->data;
         $newAutomation->segment_id = $this->segment_id;
-        $newAutomation->status = self::STATUS_INACTIVE;
-
+        $newAutomation->status = static::STATUS_INACTIVE;
         $newAutomation->save();
 
         // clone email if exist
@@ -1739,32 +1754,11 @@ class Automation2 extends Model
             }
         });
 
-        return $newAutomation;
-    }
-
-    public function copyFrom($automation, $newName, $mailListUid)
-    {
-        $validator = \Validator::make([
-            'name' => $newName,
-            'mail_list_uid' => $mailListUid,
-        ], [
-            'name' => 'required',
-            'mail_list_uid' => 'required',
-        ]);
-
-        // redirect if fails
-        if ($validator->fails()) {
-            return $validator;
-        }
-
-        // duplicate
-        $newAutomation = $automation->duplicate();
-
         // custom data
         $newAutomation->name = $newName;
         $newAutomation->mail_list_id = MailList::findByUid($mailListUid)->id;
         $newAutomation->save();
 
-        return $validator;
+        return [$validator, $newAutomation];
     }
 }
