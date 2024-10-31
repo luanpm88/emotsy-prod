@@ -80,6 +80,8 @@ class Automation2Controller extends Controller
 
     public function wizardTriggerOption(Request $request)
     {
+        $localCustomer = $request->user()->customer->local();
+        
         // saving
         if ($request->isMethod('post')) {
             $rules = $this->triggerRules()[$request->options['key']];
@@ -96,8 +98,8 @@ class Automation2Controller extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-
-            $automation = $request->user()->customer->local()->automation2s()->make()->newDefault();
+            
+            $automation = $localCustomer->newDefaultAutomation2();
 
             return view('automation2.wizard', [
                 'automation' => $automation,
@@ -126,7 +128,7 @@ class Automation2Controller extends Controller
     public function wizard(Request $request)
     {
         $localCustomer = $request->user()->customer->local();
-        $automation = $localCustomer->automation2s()->make()->newDefault();
+        $automation = $localCustomer->newDefaultAutomation2();
 
         // authorize
         if (\Gate::denies('create', $automation)) {

@@ -431,4 +431,12 @@ class LocalCustomer extends Customer
 
         return $localCustomer->setConnection($masterCustomer->db_connection)->save();
     }
+
+    public function newDefaultAutomation2()
+    {
+        $automation = $this->automation2s()->make()->newDefault();
+        $automation->customer_id = $this->id;
+
+        return $automation;
+    }
 }
