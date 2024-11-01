@@ -82,7 +82,6 @@ class LoadCampaign implements ShouldQueue
             return $info;
         });
 
-
         $count = 0;
         $total = sizeof($this->listOfIds);
 
