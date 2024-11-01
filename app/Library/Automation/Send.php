@@ -37,12 +37,12 @@ class Send extends Action
         if ($this->options['init'] == 'false' || $this->options['init'] == false) {
             $this->setError(trans('messages.automation.email.error.not_set_up'));
             return false;
-            // throw new Exception(trans('messages.automation.email.error.not_set_up'));
         }
 
         $email = $this->getEmail();
 
         if (is_null($email)) {
+            // strange, it was supposed to throw an exception before this point, in the init=true check
             $this->setError(trans('messages.automation.email.error.not_set_up')."!");
             return false;
         }
@@ -80,10 +80,6 @@ class Send extends Action
         $email = Email::findByUid($this->options['email_uid']);
         if (is_null($email)) {
             return;
-            // $this->setOption('email_uid', null);
-            // $this->autoTrigger->automation2->updateAction($this);
-
-            // throw new \Exception(sprintf("Cannot find email with UID %s for Action ID %s, title: '%s', AutoTrigger: #%s", $this->options['email_uid'], $this->getId(), $this->getTitle(), $this->autoTrigger->id));
         }
         return $email;
     }
