@@ -140,22 +140,6 @@ abstract class Action
         return false;
     }
 
-    public function update(array $json)
-    {
-        // Keep the following attributes, do not overwrite
-        $keep = [ 'last_executed', 'evaluationResult', 'options' ];
-
-        foreach ($json as $key => $value) {
-            if (!in_array($key, $keep)) {
-                $this->{$key} = $value;
-            }
-        }
-
-        foreach($json['options'] as $key => $value) {
-            $this->setOption($key, $value);
-        }
-    }
-
     public function getProgressDescription($timezone = null, $locale = null)
     {
         return null;
