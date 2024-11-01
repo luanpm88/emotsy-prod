@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Cache;
 class UpdateAutomation extends Base implements ShouldBeUnique
 {
     protected $automation;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -23,8 +24,7 @@ class UpdateAutomation extends Base implements ShouldBeUnique
     public function __construct($automation)
     {
         $this->automation = $automation;
-
-        $this->automation->customer->setUserDbConnection();
+        $this->customer = $this->automation->customer;
     }
 
     /**
@@ -34,6 +34,8 @@ class UpdateAutomation extends Base implements ShouldBeUnique
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         if ($this->automation->mailList()->exists()) {
             $this->automation->updateCache();
         }

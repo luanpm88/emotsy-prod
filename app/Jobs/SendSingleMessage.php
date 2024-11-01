@@ -59,6 +59,9 @@ class SendSingleMessage extends SendMessage
 
     public function handle()
     {
+        // Set default connection
+        $this->customer->setUserDbConnection();
+
         try {
             $this->send();
         } catch (Throwable $ex) {
