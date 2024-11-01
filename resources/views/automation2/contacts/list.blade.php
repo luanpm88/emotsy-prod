@@ -177,13 +177,25 @@
         $.ajax({
             url: url,
             method: 'GET',
+            globalError: false,
             success: function (response) {
                 // notify
                 // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
 
                 listContact.load();
             }
-        }).always(function() {
+        }).fail((res) => {
+            // notify
+            // notify('error', '{{ trans('messages.notify.error') }}', res.responseText);
+
+            new Dialog('alert', {
+                title: LANG_ERROR,
+                message: res.responseText,
+            });
+
+            $(this).removeClass('link-disabled');
+        })
+        .always(function() {
             removeMaskLoading();
         });
     });
