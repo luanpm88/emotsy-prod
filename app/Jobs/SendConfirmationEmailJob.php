@@ -6,6 +6,7 @@ class SendConfirmationEmailJob extends Base
 {
     protected $subscribers;
     protected $mailList;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -16,8 +17,7 @@ class SendConfirmationEmailJob extends Base
     {
         $this->subscribers = $subscribers;
         $this->mailList = $mailList;
-
-        $this->mailList->customer->setUserDbConnection();
+        $this->customer = $this->mailList->customer;
     }
 
     /**
@@ -27,6 +27,8 @@ class SendConfirmationEmailJob extends Base
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         foreach ($this->subscribers as $subscriber) {
             $this->mailList->sendSubscriptionConfirmationEmail($subscriber);
         }
