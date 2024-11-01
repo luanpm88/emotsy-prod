@@ -23,6 +23,7 @@ class VerifySubscriber extends Base
     protected $server;
     protected $subscriber;
     protected $subscription;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -35,7 +36,7 @@ class VerifySubscriber extends Base
         $this->server = $server;
         $this->subscription = $subscription;
 
-        $this->subscriber->mailList->customer->setUserDbConnection();
+        $this->customer = $this->subscriber->mailList->customer;
     }
 
     /**
@@ -58,6 +59,8 @@ class VerifySubscriber extends Base
         if ($this->batch()->cancelled()) {
             return;
         }
+
+        $this->customer->setUserDbConnection();
 
         $this->doVerify();
     }
