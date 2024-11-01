@@ -16,7 +16,6 @@ class CreateUserdbTrackingLogs extends Migration
         Schema::create('tracking_logs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid');
 
             $table->string('status');
             $table->string('runtime_message_id')->nullable();

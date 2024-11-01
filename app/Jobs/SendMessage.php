@@ -313,7 +313,7 @@ class SendMessage implements ShouldQueue
                         // Reset is required
                         $this->servers->reset();
 
-                        $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers, $this->servers);
+                        $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers);
                         $this->batch()->add($delay);
 
                         $this->campaign->debug(function ($info) use ($ex) {
