@@ -41,6 +41,12 @@ class Send extends Action
         }
 
         $email = $this->getEmail();
+
+        if (is_null($email)) {
+            $this->setError(trans('messages.automation.email.error.not_set_up')."!");
+            return false;
+        }
+
         $subscriber = $this->autoTrigger->subscriber;
 
         if (config('app.demo') == 'true') {
@@ -77,7 +83,7 @@ class Send extends Action
             // $this->setOption('email_uid', null);
             // $this->autoTrigger->automation2->updateAction($this);
 
-            throw new \Exception(sprintf("Cannot find email with UID %s for Action ID %s, title: '%s', AutoTrigger: #%s", $this->options['email_uid'], $this->getId(), $this->getTitle(), $this->autoTrigger->id));
+            // throw new \Exception(sprintf("Cannot find email with UID %s for Action ID %s, title: '%s', AutoTrigger: #%s", $this->options['email_uid'], $this->getId(), $this->getTitle(), $this->autoTrigger->id));
         }
         return $email;
     }
