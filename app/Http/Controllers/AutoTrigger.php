@@ -41,9 +41,13 @@ class AutoTrigger extends Controller
     {
         $trigger = AutoTriggerModel::find($request->id);
 
-        // Execute AutoTrigger#check
-        // Notice that calling check() directly against AutoTrigger will not update automation's lastError
-        $trigger->check($manually = true);
+        try {
+            // Execute AutoTrigger#check
+            // Notice that calling check() directly against AutoTrigger will not update automation's lastError
+            $trigger->check($manually = true);
+        } catch (\Throwable $e) {
+            return response()->json($e->getMessage(), 400);
+        }
         return response()->json($trigger->toJson());
     }
 
