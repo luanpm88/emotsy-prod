@@ -35,7 +35,9 @@ class Send extends Action
         */
 
         if ($this->options['init'] == 'false' || $this->options['init'] == false) {
-            throw new Exception(trans('messages.automation.email.error.not_set_up'));
+            $this->setError(trans('messages.automation.email.error.not_set_up'));
+            return false;
+            // throw new Exception(trans('messages.automation.email.error.not_set_up'));
         }
 
         $email = $this->getEmail();
@@ -71,9 +73,9 @@ class Send extends Action
     {
         $email = Email::findByUid($this->options['email_uid']);
         if (is_null($email)) {
-
-            $this->setOption('email_uid', null);
-            $this->autoTrigger->automation2->updateAction($this);
+            return;
+            // $this->setOption('email_uid', null);
+            // $this->autoTrigger->automation2->updateAction($this);
 
             throw new \Exception(sprintf("Cannot find email with UID %s for Action ID %s, title: '%s', AutoTrigger: #%s", $this->options['email_uid'], $this->getId(), $this->getTitle(), $this->autoTrigger->id));
         }
@@ -90,7 +92,7 @@ class Send extends Action
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
 
-        return sprintf('User %s receives email entitled "%s"', $nameOrEmail, $this->getEmail()->subject);
+        return sprintf('User %s receives email entitled "%s"', $nameOrEmail, is_null($this->getEmail()) ? '#' : $this->getEmail()->subject);
     }
 
     public function getProgressDescription($timezone = null, $locale = null)
@@ -106,7 +108,7 @@ class Send extends Action
             $sentAt->timezone($timezone);
 
             return trans('messages.automation.trigger.send.progress.sent', [
-                'e' => $email->subject,
+                'e' => ($email) ? $email->subject : '[Subject]',
                 'c' => $subscriber->email,
                 'dif' => $sentAt->diffForHumans(),
                 'dt' => format_datetime($sentAt, 'datetime_full_with_timezone', $locale),
@@ -134,6 +136,8 @@ class Send extends Action
 
                 return $queueMsg;
             }
+        } elseif ($this->getOption('error')) {
+            return $this->getOption('error');
         }
     }
 
