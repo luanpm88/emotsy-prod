@@ -16,7 +16,6 @@ class CreateUserdbOpenLogs extends Migration
         Schema::create('open_logs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid');
 
             $table->string('message_id');
             $table->string('ip_address')->nullable();
