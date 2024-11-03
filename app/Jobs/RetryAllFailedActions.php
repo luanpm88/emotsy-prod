@@ -7,14 +7,14 @@ use Exception;
 class RetryAllFailedActions extends Base
 {
     protected $automation;
+    protected $customer;
 
     public $timeout = 7200;
 
     public function __construct($automation)
     {
         $this->automation = $automation;
-
-        $this->automation->customer->setUserDbConnection();
+        $this->customer = $this->automation->customer;
     }
 
     /**
@@ -24,6 +24,8 @@ class RetryAllFailedActions extends Base
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         $failedActionsQuery = $this->automation->autoTriggers()->error();
         $this->automation->logger()->info("Retrying {$failedActionsQuery->count()} failed actions");
         foreach ($failedActionsQuery->get() as $trigger) {

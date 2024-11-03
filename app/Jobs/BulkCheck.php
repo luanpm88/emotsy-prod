@@ -34,6 +34,7 @@ class BulkCheck implements ShouldQueue
     protected $mailList;
     protected $subscription;
     protected $token;
+    protected $customer;
 
     public function __construct(MailList $mailList, EmailVerificationServer $server, Subscription $subscription, $token)
     {
@@ -42,7 +43,7 @@ class BulkCheck implements ShouldQueue
         $this->subscription = $subscription;
         $this->token = $token;
 
-        $this->mailList->customer->setUserDbConnection();
+        $this->customer = $this->mailList->customer;
     }
 
     /**
@@ -61,6 +62,8 @@ class BulkCheck implements ShouldQueue
 
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         if ($this->batch()->cancelled()) {
             $this->mailList->logger()->info('- Cancelled, token: '.$this->token);
             return;

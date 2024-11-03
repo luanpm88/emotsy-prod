@@ -12,6 +12,7 @@ class ExportCampaignLog extends Base
 
     protected $campaign;
     protected $logtype;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -22,8 +23,7 @@ class ExportCampaignLog extends Base
     {
         $this->campaign = $campaign;
         $this->logtype = $logtype;
-
-        $this->campaign->customer->setUserDbConnection();
+        $this->customer = $this->campaign->customer;
 
         // Set the initial value for progress check
         $this->afterDispatched(function ($thisJob, $monitor) {
@@ -40,6 +40,7 @@ class ExportCampaignLog extends Base
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
         $this->campaign->generateTrackingLogCsv($this->logtype, function ($percentage, $path) {
             $this->monitor->updateJsonData([
                 'percentage' => $percentage,

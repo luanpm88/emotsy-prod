@@ -29,6 +29,7 @@ class HandleDuplicateEmails implements ShouldQueue
     public $maxExceptions = 1;
 
     protected CampaignInterface $campaign;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -38,8 +39,7 @@ class HandleDuplicateEmails implements ShouldQueue
     public function __construct(CampaignInterface $campaign)
     {
         $this->campaign = $campaign;
-
-        $this->campaign->customer->setUserDbConnection();
+        $this->customer = $this->campaign->customer;
     }
 
     /**
@@ -49,6 +49,8 @@ class HandleDuplicateEmails implements ShouldQueue
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         /*
         if ($this->batch()->cancelled()) {
             return;

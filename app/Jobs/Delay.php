@@ -13,7 +13,6 @@ use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
 use Exception;
 use Carbon\Carbon;
-use Acelle\Library\RouletteWheel;
 
 use function Acelle\Helpers\with_rate_limits;
 
@@ -43,21 +42,20 @@ class Delay implements ShouldQueue
     protected $wait;
     protected $campaign;
     protected $rateTrackers;
-    protected $servers;
+    protected $customer;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($wait, $campaign, array $rateTrackers, RouletteWheel $servers)
+    public function __construct($wait, $campaign, array $rateTrackers)
     {
         $this->wait = $wait;
         $this->campaign = $campaign;
         $this->rateTrackers = $rateTrackers;
-        $this->servers = $servers;
 
-        $this->campaign->customer->setUserDbConnection();
+        $this->customer = $this->campaign->customer;
     }
 
     /**
@@ -67,6 +65,8 @@ class Delay implements ShouldQueue
      */
     public function retryUntil()
     {
+        $this->customer->setUserDbConnection();
+
         // @important: remember that messages might be released over and over
         // if there is any limit setting in place
         // As a result, it is just save to have it retry virtually forever
@@ -88,7 +88,7 @@ class Delay implements ShouldQueue
             $this->campaign->logger()->info("Evaluating limit trackers to decide whether or not to resume");
 
             // Throw Exception here
-            with_rate_limits($this->rateTrackers, $this->servers, $rateExceededCallback = null, $creditCounted = [], $testMode = true);
+            with_rate_limits($this->rateTrackers, $this->campaign->getServersPool(), $rateExceededCallback = null, $creditCounted = [], $testMode = true);
 
             // if everything is okie, then just release this job, remove delay flag
             // The JOB_TYPE_DISPATCH_AND_SEND_MESSAGES batch will trigger the THEN callback and continue

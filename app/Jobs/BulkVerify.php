@@ -38,6 +38,7 @@ class BulkVerify implements ShouldQueue
     protected $server;
     protected $mailList;
     protected $subscription;
+    protected $customer;
 
     public function __construct(MailList $mailList, EmailVerificationServer $server, Subscription $subscription)
     {
@@ -45,7 +46,7 @@ class BulkVerify implements ShouldQueue
         $this->server = $server;
         $this->subscription = $subscription;
 
-        $this->mailList->customer->setUserDbConnection();
+        $this->customer = $this->mailList->customer;
     }
 
     /**
@@ -63,6 +64,8 @@ class BulkVerify implements ShouldQueue
 
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         if ($this->batch()->cancelled()) {
             $this->mailList->logger()->warning('Job cancelled');
             return;

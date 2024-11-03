@@ -298,7 +298,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         // @todo: customerneedcheck
         $params = array_merge(array(
-                'campaign_id' => $this->id,
                 'message_id' => $msgId,
                 'subscriber_id' => $subscriber->id,
                 'sending_server_id' => $server->id,
@@ -310,7 +309,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         // create tracking log for message
-        TrackingLog::create($params);
+        $result = $this->trackingLogs()->create($params);
+
     }
 
     /**

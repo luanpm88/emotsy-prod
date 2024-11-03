@@ -247,24 +247,6 @@ class Automation2 extends Model
         $this->save();
     }
 
-    public function updateAction($newAction)
-    {
-        $json = json_decode($this->data, true);
-        $newJson = [];
-
-        foreach ($json as $actionJson) {
-            $action = $this->getAction($actionJson);
-
-            if ($action->getId() == $newAction->getId()) {
-                $newJson[] = $newAction->toJson();
-            } else {
-                $newJson[] = $action->toJson();
-            }
-        }
-
-        $this->saveData(json_encode($newJson));
-    }
-
     public function retryAllFailedActions()
     {
         $connection = config('custom.automation_queue_connection');
@@ -1238,7 +1220,7 @@ class Automation2 extends Model
         return $this->getSegments()->map->uid->toArray();
     }
 
-    // for debugging only
+    // For debugging only
     public function updateActionOptions($actionId, $data = [])
     {
         $json = json_decode($this->data, true);

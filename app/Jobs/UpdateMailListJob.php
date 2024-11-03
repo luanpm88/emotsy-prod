@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 class UpdateMailListJob extends Base implements ShouldBeUnique
 {
     public $list;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -19,8 +20,7 @@ class UpdateMailListJob extends Base implements ShouldBeUnique
     public function __construct(MailList $list)
     {
         $this->list = $list;
-
-        $this->list->customer->setUserDbConnection();
+        $this->customer = $this->list->customer;
     }
 
     /**
@@ -30,13 +30,17 @@ class UpdateMailListJob extends Base implements ShouldBeUnique
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         if (config('app.saas') && is_null($this->list->customer->getCurrentActiveGeneralSubscription())) {
             return;
         }
 
         $this->list->updateCachedInfo();
+
+        // Limitation: cross-db join
         // blacklist new emails (if any)
-        Blacklist::doBlacklist($this->list->customer);
+        // Blacklist::doBlacklist($this->list->customer);
     }
 
     /**
