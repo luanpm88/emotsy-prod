@@ -3623,4 +3623,6 @@
   'quota.user' => 'User',
   'role.empty_list' => 'You have no role',
   'role.global' => 'Global',
+  'invoice.invoice_is_paid' => 'Your invoice is paid.',
+  'invoice.no_payment_needed' => 'No additional confirmation is required.',
 ) ?>

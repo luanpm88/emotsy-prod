@@ -6521,7 +6521,7 @@ h1, h1 {
     position: relative;
     padding-left: 50px;
 }
-.alert:before {
+.alert:not(.alert-center)::before {
     position: absolute;
     display: inline-block;
     height: 19px;
@@ -6534,19 +6534,19 @@ h1, h1 {
     word-wrap: initial;
 }
 
-.alert-info:before {
+.alert-info:not(.alert-center):before {
     content: "info";
 }
-.alert-success:before {
+.alert-success:not(.alert-center):before {
     content: "check_circle";
 }
-.alert-danger:before {
+.alert-danger:not(.alert-center):before {
     content: "new_releases";
 }
-.alert-warning:before {
+.alert-warning:not(.alert-center):before {
     content: "error_outline";
 }
-.alert-error:before {
+.alert-error:not(.alert-center):before {
     content: "new_releases";
 }
 .progress-bar-info {

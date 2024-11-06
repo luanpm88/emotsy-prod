@@ -128,6 +128,9 @@ class BaseCampaign extends Model
 
         $lock->getExclusiveLock(function ($f) {
             foreach (static::scheduled()->get() as $campaign) {
+                // This is called in the console, so a default db connection must be set
+                $campaign->customer->setUserDbConnection();
+
                 $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
             }
         }, $timeout, $timeoutCallback);

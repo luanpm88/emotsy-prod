@@ -16,7 +16,6 @@ class CreateUserdbFeedbackLogs extends Migration
         Schema::create('feedback_logs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid')->unique();
 
             $table->string('runtime_message_id')->nullable();
             $table->string('message_id')->nullable();

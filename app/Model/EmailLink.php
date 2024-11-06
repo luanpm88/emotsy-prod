@@ -15,7 +15,7 @@ class EmailLink extends Model
      * @var array
      */
     protected $fillable = [
-        'link',
+        'link', 'customer_id'
     ];
 
     /**

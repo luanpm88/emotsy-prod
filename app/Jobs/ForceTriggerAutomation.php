@@ -17,6 +17,7 @@ class ForceTriggerAutomation implements ShouldQueue
     use SerializesModels;
 
     protected $automation;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -26,8 +27,7 @@ class ForceTriggerAutomation implements ShouldQueue
     public function __construct($automation)
     {
         $this->automation = $automation;
-
-        $this->automation->customer->setUserDbConnection();
+        $this->customer = $this->automation->customer;
     }
 
     /**
@@ -37,6 +37,7 @@ class ForceTriggerAutomation implements ShouldQueue
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
         $this->automation->forceTrigger();
     }
 }

@@ -23,11 +23,13 @@ class RunCampaign implements ShouldQueue
 
     protected CampaignInterface $campaign;
     protected string $campaignQueue;  // Do not use the $queue name, already reserved by Illuminate\Bus\Queueable
+    protected $customer;
 
     public $timeout = 300;
     public $failOnTimeout = true;
     public $tries = 1;
     public $maxExceptions = 1;
+
 
     /**
      * Create a new job instance.
@@ -39,7 +41,10 @@ class RunCampaign implements ShouldQueue
         $this->campaign = $campaign;
         $this->campaignQueue = $queue;
 
-        $this->campaign->customer->setUserDbConnection();
+        // For the sake of DB sharding
+        // We need a customer in the master db which helps
+        // establishing a correct connection
+        $this->customer = $this->campaign->customer;
     }
 
     /**
@@ -49,6 +54,9 @@ class RunCampaign implements ShouldQueue
      */
     public function handle()
     {
+        // Since this is executed in the console, a default db must be set first
+        $this->customer->setUserDbConnection();
+
         if ($this->campaign->isPaused()) {
             return;
         }

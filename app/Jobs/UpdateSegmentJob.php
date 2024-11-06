@@ -8,11 +8,12 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 class UpdateSegmentJob extends Base implements ShouldBeUnique
 {
     protected $segment;
+    protected $customer;
 
     public function __construct($segment)
     {
         $this->segment = $segment;
-        $this->segment->customer->setUserDbConnection();
+        $this->customer = $this->segment->customer;
     }
 
     /**
@@ -22,6 +23,8 @@ class UpdateSegmentJob extends Base implements ShouldBeUnique
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         $this->segment->updateCache();
     }
 

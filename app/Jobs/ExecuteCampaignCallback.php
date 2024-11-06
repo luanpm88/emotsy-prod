@@ -18,6 +18,7 @@ class ExecuteCampaignCallback implements ShouldQueue
 
     protected $webhook;
     protected $log; # OpenLog | ClickLog | UnsubscribeLog
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -29,7 +30,7 @@ class ExecuteCampaignCallback implements ShouldQueue
         $this->webhook = $webhook;
         $this->log = $log;
 
-        $this->webhook->customer->setUserDbConnection();
+        $this->customer = $this->webhook->customer;
     }
 
     /**
@@ -39,6 +40,8 @@ class ExecuteCampaignCallback implements ShouldQueue
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         $this->webhook->execute($this->log);
     }
 }

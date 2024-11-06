@@ -107,6 +107,12 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\User');
     }
 
+    // remove it after update cashier
+    public function user()
+    {
+        return $this->hasOne('Acelle\Model\User');
+    }
+
     public function getFirstUserLegacy()
     {
         return $this->users()->first();
@@ -1738,7 +1744,7 @@ class Customer extends Model
 
     public function local()
     {
-        if (config('custom.db_sharding') && $this->hasLocalDb()) {
+        if (config('sharding.enabled') && $this->hasLocalDb()) {
             $local = LocalCustomer::on($this->db_connection)->where('uid', $this->uid)->first();
 
             if (is_null($local)) {
@@ -1786,7 +1792,7 @@ class Customer extends Model
 
     public function setUserDbConnection()
     {
-        if (config('custom.db_sharding') && $this->hasLocalDb()) {
+        if (config('sharding.enabled') && $this->hasLocalDb()) {
             \Acelle\Helpers\set_userdb_connection($this->db_connection);
         }
     }

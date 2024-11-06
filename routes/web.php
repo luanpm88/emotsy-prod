@@ -910,6 +910,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('site/sources', 'Site\SourceController');
 
     // Invoice
+    Route::get('invoices/{uid}/show', 'InvoiceController@show');
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
     Route::get('invoices/{invoice_uid}/logs', 'InvoiceController@logs');
     Route::delete('invoices/{invoice_uid}/delete', 'InvoiceController@delete');

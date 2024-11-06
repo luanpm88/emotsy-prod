@@ -64,6 +64,7 @@ class Kernel extends ConsoleKernel
 
         // Automation2
         $schedule->call(function () {
+            // Make sure connection is properly set in this method
             Automation2::run();
         })->name('automation:run')->everyFiveMinutes();
 

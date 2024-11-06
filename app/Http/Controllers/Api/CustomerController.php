@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Customer;
+use Acelle\Model\Language;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Model\SubscriptionLog;
 use Acelle\Library\TransactionResult;
@@ -34,6 +35,11 @@ class CustomerController extends Controller
     {
         // Get current user
         $current_user = \Auth::guard('api')->user();
+
+        //
+        if (!Language::where('id', $request->language_id)->exists()) {
+            return \Response::json(array('status' => 0, 'message' => 'Language with ID ['.$request->language_id.'] not found'), 404);
+        }
 
         // validation
         list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(

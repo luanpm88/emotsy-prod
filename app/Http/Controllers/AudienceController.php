@@ -24,7 +24,9 @@ class AudienceController extends Controller
             'subscribedCount' => $subscribedCount,
             'activeContactPercent' => $activeContactPercent,
             'formCount' => $request->user()->customer->local()->forms()->count(),
-            'blacklistedCount' => $request->user()->customer->local()->subscribers()
+
+            // Cross db join
+            'blacklistedCount' => config('sharding.enabled') ? 0 : $request->user()->customer->local()->subscribers()
                 ->join('blacklists', 'subscribers.email', '=', 'blacklists.email')->count(),
         ]);
     }

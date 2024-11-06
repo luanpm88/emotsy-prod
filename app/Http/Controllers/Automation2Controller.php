@@ -80,6 +80,8 @@ class Automation2Controller extends Controller
 
     public function wizardTriggerOption(Request $request)
     {
+        $localCustomer = $request->user()->customer->local();
+        
         // saving
         if ($request->isMethod('post')) {
             $rules = $this->triggerRules()[$request->options['key']];
@@ -96,8 +98,8 @@ class Automation2Controller extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-
-            $automation = $request->user()->customer->local()->automation2s()->make()->newDefault();
+            
+            $automation = $localCustomer->newDefaultAutomation2();
 
             return view('automation2.wizard', [
                 'automation' => $automation,
@@ -126,7 +128,7 @@ class Automation2Controller extends Controller
     public function wizard(Request $request)
     {
         $localCustomer = $request->user()->customer->local();
-        $automation = $localCustomer->automation2s()->make()->newDefault();
+        $automation = $localCustomer->newDefaultAutomation2();
 
         // authorize
         if (\Gate::denies('create', $automation)) {
@@ -2785,13 +2787,6 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $newAutomation = new Automation2();
-
-        // init data
-        $newAutomation->name = trans('messages.automation.copy_name', [
-            'from' => $automation->name,
-        ]);
-        $newAutomation->mailList = $automation->mailList;
 
         // authorize
         if (\Gate::denies('create', $automation)) {
@@ -2799,7 +2794,7 @@ class Automation2Controller extends Controller
         }
 
         if ($request->isMethod('post')) {
-            $validator = $newAutomation->copyFrom($automation, $request->all());
+            [$validator, $newAutomation] = $automation->copy($request->name, $request->mail_list_uid);
 
             // redirect if fails
             if ($validator->fails()) {
@@ -2820,7 +2815,6 @@ class Automation2Controller extends Controller
 
         return view('automation2.copy', [
             'automation' => $automation,
-            'newAutomation' => $newAutomation,
         ]);
     }
 

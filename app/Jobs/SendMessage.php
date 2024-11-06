@@ -57,6 +57,7 @@ class SendMessage implements ShouldQueue
 
     protected $selectedServer;
     protected $msgId;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -70,9 +71,7 @@ class SendMessage implements ShouldQueue
         $this->servers = $servers;
         $this->subscription = $subscription;
         $this->triggerId = $triggerId;
-
-        // Set default connection
-        $this->campaign->customer->setUserDbConnection();
+        $this->customer = $this->campaign->customer;
     }
 
     public function setStopOnError($value)
@@ -104,6 +103,9 @@ class SendMessage implements ShouldQueue
      */
     public function handle()
     {
+        // Set default connection
+        $this->customer->setUserDbConnection();
+
         // Remember that this job may not belong to a batch
         if ($this->batch() && $this->batch()->cancelled()) {
             return;
@@ -313,7 +315,7 @@ class SendMessage implements ShouldQueue
                         // Reset is required
                         $this->servers->reset();
 
-                        $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers, $this->servers);
+                        $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers);
                         $this->batch()->add($delay);
 
                         $this->campaign->debug(function ($info) use ($ex) {

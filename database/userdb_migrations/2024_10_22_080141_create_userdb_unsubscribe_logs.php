@@ -16,7 +16,6 @@ class CreateUserdbUnsubscribeLogs extends Migration
         Schema::create('unsubscribe_logs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->uuid('uid');
 
             $table->string('message_id')->nullable();
             $table->string('ip_address')->nullable();

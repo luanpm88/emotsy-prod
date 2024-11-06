@@ -247,24 +247,6 @@ class Automation2 extends Model
         $this->save();
     }
 
-    public function updateAction($newAction)
-    {
-        $json = json_decode($this->data, true);
-        $newJson = [];
-
-        foreach ($json as $actionJson) {
-            $action = $this->getAction($actionJson);
-
-            if ($action->getId() == $newAction->getId()) {
-                $newJson[] = $newAction->toJson();
-            } else {
-                $newJson[] = $action->toJson();
-            }
-        }
-
-        $this->saveData(json_encode($newJson));
-    }
-
     public function retryAllFailedActions()
     {
         $connection = config('custom.automation_queue_connection');
@@ -467,8 +449,11 @@ class Automation2 extends Model
     {
         $customers = Customer::all();
         foreach ($customers as $customer) {
-            // Only one automation process to run at one given time
 
+            // IMPORTANT!!!
+            $customer->setUserDbConnection();
+
+            // Only one automation process to run at one given time
             $automations = $customer->local()->activeAutomation2s;
             foreach ($automations as $automation) {
                 $automationLockFile = $customer->getLockPath('automation-lock-'.$automation->uid);
@@ -1235,7 +1220,7 @@ class Automation2 extends Model
         return $this->getSegments()->map->uid->toArray();
     }
 
-    // for debugging only
+    // For debugging only
     public function updateActionOptions($actionId, $data = [])
     {
         $json = json_decode($this->data, true);
@@ -1425,17 +1410,19 @@ class Automation2 extends Model
         return $types;
     }
 
-    public function newDefault($fields = [])
+    public static function newDefault($fields = [])
     {
+        $automation = new static();
+
         if (!isset($fields['name'])) {
-            $this->name = trans('messages.automation.untitled');
+            $automation->name = trans('messages.automation.untitled');
         } else {
-            $this->name = $fields['name'];
+            $automation->name = $fields['name'];
         }
 
-        $this->status = self::STATUS_INACTIVE;
+        $automation->status = self::STATUS_INACTIVE;
 
-        return $this;
+        return $automation;
     }
 
     public function createFromArray($params)
@@ -1701,20 +1688,34 @@ class Automation2 extends Model
         $this->delete();
     }
 
-    public function duplicate()
+    public function copy($newName, $mailListUid)
     {
-        $newAutomation = new self();
-        $newAutomation->newDefault();
+        // new automation
+        $newAutomation = static::newDefault();
 
-        // Get attrinutes from template
+        // validate inputs
+        $validator = \Validator::make([
+            'name' => $newName,
+            'mail_list_uid' => $mailListUid,
+        ], [
+            'name' => 'required',
+            'mail_list_uid' => 'required',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return [$validator, $newAutomation];
+        }
+
+        // Duplicate data
         $newAutomation->customer_id = $this->customer_id;
-        $newAutomation->name = $this->name;
+        $newAutomation->name = $newName;
+        $newAutomation->mail_list_id = MailList::findByUid($mailListUid)->id;
         $newAutomation->mail_list_id = $this->mail_list_id;
         $newAutomation->time_zone = $this->time_zone;
         $newAutomation->data = $this->data;
         $newAutomation->segment_id = $this->segment_id;
-        $newAutomation->status = self::STATUS_INACTIVE;
-
+        $newAutomation->status = static::STATUS_INACTIVE;
         $newAutomation->save();
 
         // clone email if exist
@@ -1736,29 +1737,6 @@ class Automation2 extends Model
             }
         });
 
-        return $newAutomation;
-    }
-
-    public function copyFrom($automation, $params)
-    {
-        $validator = \Validator::make($params, [
-            'name' => 'required',
-            'mail_list_uid' => 'required',
-        ]);
-
-        // redirect if fails
-        if ($validator->fails()) {
-            return $validator;
-        }
-
-        // duplicate
-        $newAutomation = $automation->duplicate();
-
-        // custom data
-        $newAutomation->name = $params['name'];
-        $newAutomation->mail_list_id = MailList::findByUid($params['mail_list_uid'])->id;
-        $newAutomation->save();
-
-        return $validator;
+        return [$validator, $newAutomation];
     }
 }

@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Cache;
 class UpdateCampaignJob extends Base implements ShouldBeUnique
 {
     protected $campaign;
+    protected $customer;
 
     public function __construct($campaign)
     {
         $this->campaign = $campaign;
-
-        $this->campaign->customer->setUserDbConnection();
+        $this->customer = $this->campaign->customer;
     }
 
     /**
@@ -23,6 +23,7 @@ class UpdateCampaignJob extends Base implements ShouldBeUnique
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
         $this->campaign->updateCache();
     }
 
