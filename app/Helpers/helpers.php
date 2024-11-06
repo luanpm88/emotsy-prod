@@ -1367,3 +1367,22 @@ function get_inner_html($node) {
 
     return $innerHTML;
 }
+
+function groupPermissionsByPrefix($permissions) {
+    $grouped = [];
+
+    foreach ($permissions as $permission) {
+        // Split the permission into prefix and access type
+        [$prefix, $access] = explode('.', $permission);
+
+        // Initialize the array for the prefix if it doesn't exist
+        if (!isset($grouped[$prefix])) {
+            $grouped[$prefix] = [];
+        }
+
+        // Add the permission to the corresponding prefix group
+        $grouped[$prefix][] = $permission;
+    }
+
+    return $grouped;
+}
