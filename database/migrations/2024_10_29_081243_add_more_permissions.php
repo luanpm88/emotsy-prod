@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddMorePermissions extends Migration
+class AddMorePermissions2nd extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddMorePermissions extends Migration
     public function up()
     {
         // add more permissions. Migrate current data
-        \Artisan::call('db:seed', ['--class' => 'AddMorePermissions']);
+        \Artisan::call('db:seed', ['--class' => 'AddMorePermissions2nd']);
     }
 
     /**
