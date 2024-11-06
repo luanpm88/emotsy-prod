@@ -90,7 +90,7 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($uid)
+    public function edit(Request $request, $uid)
     {
         if (!$request->user()->hasPermission('account.full_access')) {
             return $this->notAuthorized();
