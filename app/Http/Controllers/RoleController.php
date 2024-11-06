@@ -13,13 +13,21 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if (!$request->user()->hasPermission('account.full_access')) {
+            return $this->notAuthorized();
+        }
+
         return view('roles.index');
     }
 
     public function list(Request $request)
     {
+        if (!$request->user()->hasPermission('account.full_access')) {
+            return $this->notAuthorized();
+        }
+
         // sort, pagination
         $roles = $request->user()->customer->roles()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
@@ -37,6 +45,10 @@ class RoleController extends Controller
      */
     public function create(Request $request)
     {
+        if (!$request->user()->hasPermission('account.full_access')) {
+            return $this->notAuthorized();
+        }
+
         $role = Role::newAccountRole($request->user()->customer);
 
         return view('roles.create', [
@@ -52,6 +64,10 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        if (!$request->user()->hasPermission('account.full_access')) {
+            return $this->notAuthorized();
+        }
+
         $role = Role::newAccountRole($request->user()->customer);
         
         $errors = $role->saveFromArray($request->all());
@@ -76,6 +92,10 @@ class RoleController extends Controller
      */
     public function edit($uid)
     {
+        if (!$request->user()->hasPermission('account.full_access')) {
+            return $this->notAuthorized();
+        }
+
         $role = Role::findByUid($uid);
 
         return view('roles.edit', [
@@ -92,6 +112,10 @@ class RoleController extends Controller
      */
     public function update(Request $request, $uid)
     {
+        if (!$request->user()->hasPermission('account.full_access')) {
+            return $this->notAuthorized();
+        }
+
         $role = Role::findByUid($uid);
 
         // authorize
@@ -115,6 +139,10 @@ class RoleController extends Controller
 
     public function delete(Request $request)
     {
+        if (!$request->user()->hasPermission('account.full_access')) {
+            return $this->notAuthorized();
+        }
+
         if (isSiteDemo()) {
             return response()->json([
                 'status' => 'notice',
@@ -144,6 +172,10 @@ class RoleController extends Controller
 
     public function enable(Request $request)
     {
+        if (!$request->user()->hasPermission('account.full_access')) {
+            return $this->notAuthorized();
+        }
+
         $roles = Role::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
@@ -167,6 +199,10 @@ class RoleController extends Controller
 
     public function disable(Request $request)
     {
+        if (!$request->user()->hasPermission('account.full_access')) {
+            return $this->notAuthorized();
+        }
+
         $roles = Role::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
