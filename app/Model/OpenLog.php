@@ -66,7 +66,9 @@ class OpenLog extends Model
         $query = $query->leftJoin('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+
+        // Cross reference not supported
+        // $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
 
         // Keyword
@@ -110,10 +112,8 @@ class OpenLog extends Model
         return $query;
     }
 
-    public static function createFromRequest($request)
+    public static function createFromMessageId($messageId, $ipAddress, $userAgent)
     {
-        $ipAddress = $request->ip();
-
         /****
          * Also record Google proxy opens
          *
@@ -124,7 +124,6 @@ class OpenLog extends Model
          *
          */
 
-        $messageId = StringHelper::base64UrlDecode($request->message_id);
         $trackingLog = TrackingLog::where('message_id', $messageId)->first();
         if (is_null($trackingLog)) {
             throw new Exception(sprintf('Message ID %s not found', $messageId));
@@ -134,7 +133,7 @@ class OpenLog extends Model
         $log->tracking_log_id = $trackingLog->id;
         $log->customer_id = $trackingLog->customer_id;
         $log->message_id = $messageId;
-        $log->user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
+        $log->user_agent = $userAgent;
 
         try {
             $location = IpLocation::add($ipAddress);

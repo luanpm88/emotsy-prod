@@ -861,7 +861,9 @@ class MailList extends Model
     public function send($message, $params = [])
     {
         $server = $this->pickSendingServer();
-        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email)));
+        $customerUid = $this->customer->uid;
+
+        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email), $customerUid));
 
         return $server->send($message, $params);
     }

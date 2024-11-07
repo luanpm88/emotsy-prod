@@ -1097,19 +1097,28 @@ class CampaignController extends Controller
     public function open(Request $request)
     {
         try {
+
             // Record open log
-            $openLog = OpenLog::createFromRequest($request);
+            $ipAddress = $request->ip();
+            $userAgent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
+            $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+            $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+
+            if (!is_null($customerUid)) {
+                $customer = \Acelle\Model\Customer::findByUid($customerUid);
+                $customer->setUserDbConnection();
+            }
+
+            $openLog = OpenLog::createFromMessageId($messageId, $ipAddress, $userAgent);
 
             // Execute open callbacks registered for the campaign
             if ($openLog->trackingLog && $openLog->trackingLog->campaign) {
                 $openLog->trackingLog->campaign->queueOpenCallbacks($openLog);
-
                 // Timeline record
                 \Acelle\Model\Timeline::recordOpenedCampaignEmail($openLog->trackingLog->subscriber, $openLog->trackingLog->campaign);
-            }
-
-            else {
-                // khoi loi noi dung email
+            } else {
+                //
             }
         } catch (\Exception $ex) {
             // do nothing
