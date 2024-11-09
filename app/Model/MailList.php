@@ -1925,16 +1925,12 @@ class MailList extends Model
             return [$validator, null];
         }
 
-        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API) {
-            $subscriber->status = 'subscribed';
+        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED) {
+            $subscriber->status = Subscriber::STATUS_SUBSCRIBED;
         } elseif ($this->subscribe_confirmation) {
-            if ($subscriber->isSubscribed()) {
-                //
-            } else {
-                $subscriber->status = 'unconfirmed';
-            }
+            $subscriber->status = Subscriber::STATUS_UNCONFIRMED;
         } else {
-            $subscriber->status = 'subscribed';
+            $subscriber->status = Subscriber::STATUS_SUBSCRIBED;
         }
         $subscriber->ip = $request->ip();
         $subscriber->save();
