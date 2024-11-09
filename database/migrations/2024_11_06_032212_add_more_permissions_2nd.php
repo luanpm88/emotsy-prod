@@ -13,7 +13,8 @@ class AddMorePermissions2nd extends Migration
      */
     public function up()
     {
-        //
+        // add more permissions. Migrate current data
+        \Artisan::call('db:seed', ['--class' => 'AddMorePermissions2nd']);
     }
 
     /**
