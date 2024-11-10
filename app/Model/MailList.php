@@ -861,7 +861,9 @@ class MailList extends Model
     public function send($message, $params = [])
     {
         $server = $this->pickSendingServer();
-        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email)));
+        $customerUid = $this->customer->uid;
+
+        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email), $customerUid));
 
         return $server->send($message, $params);
     }
@@ -1923,16 +1925,12 @@ class MailList extends Model
             return [$validator, null];
         }
 
-        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API) {
-            $subscriber->status = 'subscribed';
+        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED) {
+            $subscriber->status = Subscriber::STATUS_SUBSCRIBED;
         } elseif ($this->subscribe_confirmation) {
-            if ($subscriber->isSubscribed()) {
-                //
-            } else {
-                $subscriber->status = 'unconfirmed';
-            }
+            $subscriber->status = Subscriber::STATUS_UNCONFIRMED;
         } else {
-            $subscriber->status = 'subscribed';
+            $subscriber->status = Subscriber::STATUS_SUBSCRIBED;
         }
         $subscriber->ip = $request->ip();
         $subscriber->save();

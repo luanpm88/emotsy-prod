@@ -24,7 +24,7 @@ class SendingDomainPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('sending_domain.full_access') && !$user->hasPermission('sending_domain.read_only')) {
                     return false;   
                 }
 
@@ -55,7 +55,7 @@ class SendingDomainPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
+                if (!$user->hasPermission('sending_domain.full_access') && !$user->hasPermission('sending_domain.read_only')) {
                     return false;   
                 }
                 
@@ -74,7 +74,7 @@ class SendingDomainPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if (!$user->hasPermission('account.full_access')) {
+                if (!$user->hasPermission('sending_domain.full_access')) {
                     return false;   
                 }
 
@@ -100,7 +100,7 @@ class SendingDomainPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if (!$user->hasPermission('account.full_access')) {
+                if (!$user->hasPermission('sending_domain.full_access')) {
                     return false;   
                 }
 
@@ -135,7 +135,7 @@ class SendingDomainPolicy
                 break;
             case 'customer':
                 // RBAC check
-                if (!$user->hasPermission('account.full_access')) {
+                if (!$user->hasPermission('sending_domain.full_access')) {
                     return false;   
                 }
 

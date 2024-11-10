@@ -23,25 +23,68 @@
 		</div>
 
         <h3>{{ trans('messages.permissions') }}</h3>
+
         <div class="sub_section">
-            
-            <h5>{{ trans('messages.permission.account') }}</h5>
-            @foreach (config('permissions') as $permission)
-                <div class="ps-2">
-                    <label class="form-check-label d-flex py-3 border-bottom" for="{{ $permission }}">
-                        <span class="me-3">
-                            <label class="checker">
-                                <input {{ Auth::user()->can('update', $role) ? '' : 'disabled' }} type="checkbox" name="permissions[]" value="{{ $permission }}" class="styled4" id="{{ $permission }}" {{ $role->hasPermission($permission) ? 'checked' : '' }}>
-                                <span class="checker-symbol"></span>
+            @foreach (groupPermissionsByPrefix(config('permissions')) as $group => $permissions)
+                <h5 class="mt-5 mb-0">{{ trans('permission.group.' . $group) }}</h5>
+
+                <div select-one="container">
+                    @foreach ($permissions as $permission)
+                        <div class="ps-2">
+                            <label class="form-check-label d-flex py-3 border-bottom" for="{{ $permission }}">
+                                <span class="me-3">
+                                    <label class="checker">
+                                        <input select-one="checkbox" {{ Auth::user()->can('update', $role) ? '' : 'disabled' }} type="checkbox" name="permissions[]" value="{{ $permission }}" class="styled4" id="{{ $permission }}" {{ $role->hasPermission($permission) ? 'checked' : '' }}>
+                                        <span class="checker-symbol"></span>
+                                    </label>
+                                </span>
+                                <span>
+                                    <span class="d-block fw-semibold">{{ trans('permission.' . $permission . '.title') }}</span>
+                                    <span class="d-block">{{ trans('permission.' . $permission . '.desc') }}</span>
+                                </span>
                             </label>
-                        </span>
-                        <span>
-                            <span class="d-block fw-semibold">{{ trans('permission.' . $permission . '.title') }}</span>
-                            <span class="d-block">{{ trans('permission.' . $permission . '.desc') }}</span>
-                        </span>
-                    </label>
+                        </div>
+                    @endforeach
                 </div>
             @endforeach
+
+            <script>
+                $(() => {
+                    $('[select-one="container"]').each(function() {
+                        new SelectOneOnly($(this).find('[select-one="checkbox"]'));
+                    });
+                    
+                });
+
+                var SelectOneOnly = class {
+                    constructor(checkboxes) {
+                        this.checkboxes = checkboxes;
+
+                        this.events();
+                    }
+
+                    events() {
+                        var _this = this;
+                        this.checkboxes.on('change', function() {
+                            var checkbox = $(this);
+
+                            if (checkbox.is(':checked')) {
+                                _this.select(checkbox);
+                            }
+                        });
+                    }
+
+                    select(checkbox) {
+                        this.checkboxes.each(function() {
+                            var c = $(this);
+
+                            if(checkbox.attr('value') !== c.attr('value')) {
+                                c.prop('checked', false);
+                            }
+                        });
+                    }
+                }
+            </script>
         </div>
         
         @if (Auth::user()->can('update', $role))

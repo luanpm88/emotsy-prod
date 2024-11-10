@@ -76,7 +76,9 @@ class UnsubscribeLog extends Model
         $query = $query->leftJoin('tracking_logs', 'unsubscribe_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+
+        // Cross reference not supported
+        // $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
 
         // Keyword

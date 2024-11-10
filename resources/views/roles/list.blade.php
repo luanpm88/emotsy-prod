@@ -9,7 +9,7 @@
                     <p class="mb-1">{{ $role->description }}</p>
                     <p class="mb-0">
                         <span class="text-muted">{{ trans('messages.created_at') }}:
-                            {{ Auth::user()->admin->formatDateTime($role->created_at, 'datetime_full') }}
+                            {{ Auth::user()->customer->formatDateTime($role->created_at, 'datetime_full') }}
                         </span>
                     </p>
                 </td>

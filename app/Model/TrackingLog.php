@@ -58,7 +58,12 @@ class TrackingLog extends Model
 
     public function sendingServer()
     {
-        return $this->belongsTo('Acelle\Model\SendingServer');
+        throw new \Exception("Cross DB reference: tracking log -> sending server");
+    }
+
+    public function getSendingServer()
+    {
+        return SendingServer::find($this->sending_server_id);
     }
 
     public function subscriber()
@@ -86,7 +91,8 @@ class TrackingLog extends Model
         $query = self::select('tracking_logs.*');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+        // Cross DB ref, not supported
+        // $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
 
         // Keyword
