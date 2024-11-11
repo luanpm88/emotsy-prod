@@ -17,7 +17,11 @@ class ChangeSendingDomains extends Migration
             Schema::table('sending_domains', function (Blueprint $table) {
                 $table->dropForeign(['admin_id']);
             });
+        } catch (\Exception $ex) {
 
+        }
+
+        try {
             Schema::table('sending_domains', function (Blueprint $table) {
                 $table->dropForeign(['customer_id']);
             });
@@ -29,7 +33,11 @@ class ChangeSendingDomains extends Migration
             Schema::table('sending_domains', function (Blueprint $table) {
                 $table->dropForeign('sending_domains_admin_id_foreign');
             });
+        } catch (\Exception $ex) {
 
+        }
+
+        try {
             Schema::table('sending_domains', function (Blueprint $table) {
                 $table->dropForeign('sending_domains_customer_id_foreign');
             });
