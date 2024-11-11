@@ -3,9 +3,17 @@
 		@foreach ($roles as $key => $role)
             <tr>
                 <td>
-                    <a class="kq_search fs-6 d-block mb-1 fw-600" href="{{ action('RoleController@edit', $role->uid) }}">
-                        {{ $role->name }}
-                    </a>
+                    @if (!$role->is_global)
+                        <a class="kq_search fs-6 d-block mb-1 fw-600" href="{{ action('RoleController@edit', $role->uid) }}">
+                            {{ $role->name }}
+                        </a>
+                    @else
+                        <span class="kq_search fs-6 mb-1 fw-600">{{ $role->name }}</span>
+                        @if ($role->is_global)
+                            (<span class="text-muted">{{ trans('messages.role.global') }}
+                            </span>)
+                        @endif
+                    @endif
                     <p class="mb-1">{{ $role->description }}</p>
                     <p class="mb-0">
                         <span class="text-muted">{{ trans('messages.created_at') }}:
