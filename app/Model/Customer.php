@@ -1765,10 +1765,17 @@ class Customer extends Model
         }
     }
 
+    public function ownOrGlobalRoles()
+    {
+        return $this->roles()
+            ->orWhere(function ($q) {
+                $q->global();
+            });
+    }
+
     public function getSelectableRoles()
     {
-        return Role::whereIsGlobal(true)
-            ->orWhere('customer_id', $this->id)
+        return $this->ownOrGlobalRoles()
             ->get();
     }
 }

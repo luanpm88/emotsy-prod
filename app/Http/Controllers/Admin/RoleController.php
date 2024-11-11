@@ -95,7 +95,7 @@ class RoleController extends Controller
         $role = Role::findByUid($uid);
 
         // authorize
-        if (\Gate::denies('update', $role)) {
+        if (!$request->user()->admin->can('update', $role)) {
             return $this->notAuthorized();
         }
 
@@ -131,7 +131,7 @@ class RoleController extends Controller
         $deleted = 0;
         foreach ($roles->get() as $role) {
             // authorize
-            if (\Gate::allows('delete', $role)) {
+            if ($request->user()->admin->can('delete', $role)) {
                 $role->delete();
                 $deleted += 1;
             }
@@ -153,7 +153,7 @@ class RoleController extends Controller
         $done = 0;
         foreach ($roles->get() as $role) {
             // authorize
-            if (\Gate::allows('enable', $role)) {
+            if ($request->user()->admin->can('enable', $role)) {
                 $role->enable();
                 $done += 1;
             }
@@ -176,7 +176,7 @@ class RoleController extends Controller
         $done = 0;
         foreach ($roles->get() as $role) {
             // authorize
-            if (\Gate::allows('disable', $role)) {
+            if ($request->user()->admin->can('disable', $role)) {
                 $role->disable();
                 $done += 1;
             }
