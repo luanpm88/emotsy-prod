@@ -2732,4 +2732,12 @@ class CampaignController extends Controller
             'message' => trans('messages.campaign_header.removed'),
         ]);
     }
+
+    public function saveSignature(Request $request, $uid)
+    {
+        $campaign = Campaign::findByUid($uid);
+        $signature = \Acelle\Model\Signature::findByUid($request->signature_uid);
+
+        $campaign->setSignature($signature);
+    }
 }
