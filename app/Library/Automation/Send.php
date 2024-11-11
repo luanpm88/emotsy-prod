@@ -174,6 +174,7 @@ class Send extends Action
     public function queue($queue)
     {
         $triggerName = $this->autoTrigger->getTrigger()->getOption('key');
+        $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
 
         if (is_null($queue)) {
             // Higher priority for certain types of trigger
