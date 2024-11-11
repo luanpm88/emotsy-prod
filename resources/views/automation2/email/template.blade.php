@@ -62,10 +62,12 @@
                 </div>
             </div>
 
-            @include('signatures.selectBox', [
-                'currentSignature' => $email->signature,
-                'saveUrl' => action('Automation2Controller@emailSaveSignature', $email->uid),
-            ])
+            @if (Acelle\Model\Setting::get('signature.enabled') == 'yes')
+                @include('signatures.selectBox', [
+                    'currentSignature' => $email->signature,
+                    'saveUrl' => action('Automation2Controller@emailSaveSignature', $email->uid),
+                ])
+            @endif
                 
             <div class="sub-section">   
                 <h5 class="mt-5 mb-3">{{ trans('messages.campaign.attachment') }}</h5>
