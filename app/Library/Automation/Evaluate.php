@@ -136,28 +136,39 @@ class Evaluate extends Action
 
     public function getActionDescription($timezone = null, $locale = null)
     {
-        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        $nameOrEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
         $options = $this->getOptions();
 
         if (array_key_exists('email', $options)) {
             $emailUid = $this->getOption('email');
             $email = Email::findByUid($emailUid);
+
+            if ($email) {
+                $subject = $email->subject;
+            } else {
+                $subject = '[subject]';
+            }
         } else {
             $linkUid = $this->getOption('email_link');
             $link = EmailLink::findByUid($linkUid);
+            if ($link) {
+                $url = $link->link;
+            } else {
+                $url = '[url]';
+            }
         }
 
         if ($this->getOption('type') == 'open') {
             if ($this->evaluationResult == 'true') {
-                return trans('messages.automation.timeline.open', [ 'user' => $nameOrEmail, 'email' => $email->subject ]);
+                return trans('messages.automation.timeline.open', [ 'user' => $nameOrEmail, 'email' => $subject ]);
             } else {
-                return trans('messages.automation.timeline.not_open', [ 'user' => $nameOrEmail, 'email' => $email->subject ]);
+                return trans('messages.automation.timeline.not_open', [ 'user' => $nameOrEmail, 'email' => $subject ]);
             }
         } elseif ($this->getOption('type') == 'click') {
             if ($this->evaluationResult == 'true') {
-                return trans('messages.automation.timeline.click', [ 'user' => $nameOrEmail, 'url' => $link->link ]);
+                return trans('messages.automation.timeline.click', [ 'user' => $nameOrEmail, 'url' => $url ]);
             } else {
-                return trans('messages.automation.timeline.not_click', [ 'user' => $nameOrEmail, 'url' => $link->link ]);
+                return trans('messages.automation.timeline.not_click', [ 'user' => $nameOrEmail, 'url' => $url ]);
             }
         }
     }

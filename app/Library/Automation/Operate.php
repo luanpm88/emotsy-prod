@@ -54,10 +54,14 @@ class Operate extends Action
                 $this->logger->info(sprintf('Notice: skip %s contact "%s" to list "%s". Duplicate email', $operationType, $subscriber_->email, $toList->name));
             };
 
-            // @TODO: use copy instead of move
-            $subscriber->copy($toList, $duplicateCallback);
+            if ($operationType == self::OPERATION_MOVE) {
+                $this->autoTrigger->getSubscriberCachedInfo();
+                $subscriber->move($toList, $duplicateCallback);
+            } else {
+                $subscriber->copy($toList, $duplicateCallback);
+            }
 
-            $this->logger->info(sprintf('DONE: %s contact "%s" to list "%s"', $operationType, $subscriber->email, $toList->name));
+            $this->logger->info(sprintf('DONE: %s contact "%s" to list "%s"', $operationType, $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]'), $toList->name));
         } elseif ($operationType == self::OPERATION_UPDATE) {
             $updates = $this->getOption('update');
             // $updates is a PHP array equiv. to:
@@ -74,20 +78,18 @@ class Operate extends Action
     // Overwrite
     public function getActionDescription()
     {
-        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
-
         return sprintf('Perform an operation');
     }
 
     public function getProgressDescription($timezone = null, $locale = null)
     {
-        $subscriber = $this->autoTrigger->subscriber;
+        $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
         $operationType = $this->getOption('operation_type');
 
         if ($operationType == self::OPERATION_TAG) {
             $tags = $this->getOption('tags');
 
-            return sprintf('* Tag contact "%s" with: %s', $subscriber->email, implode(', ', $tags));
+            return sprintf('* Tag contact "%s" with: %s', $subscriberEmail, implode(', ', $tags));
         } elseif ($operationType == self::OPERATION_COPY || $operationType == self::OPERATION_MOVE) {
             $toListUid = $this->getOption('target_list_uid');
 
@@ -101,9 +103,25 @@ class Operate extends Action
                 throw new Exception("Cannot get trigger information, list does not exist: {$toListUid}");
             }
 
-            return sprintf('* Action: %s contact "%s" to list "%s"', $operationType, $subscriber->email, $toList->name);
+            return sprintf('* Action: %s contact "%s" to list "%s"', $operationType, $subscriberEmail, $toList->name);
         } elseif ($operationType == self::OPERATION_UPDATE) {
-            return sprintf('* Action: Update contact value "%s"', $subscriber->email);
+            return sprintf('* Action: Update contact value "%s"', $subscriberEmail);
+        } elseif ($operationType == self::OPERATION_MOVE) {
+            $toListUid = $this->getOption('target_list_uid');
+            $toList = MailList::findByUid($toListUid);
+
+            if (is_null($toList)) {
+                $toListName = 'N/A';
+            } else {
+                $toListName = $toList->name;
+            }
+
+            if ($this->getLastExecuted()) {
+                return trans('messages.automation.action.operation.move_contact.done', ['n' => $toListName]);
+            } else {
+                return trans('messages.automation.action.operation.move_contact.new', ['n' => $toListName]);
+            }
+
         } else {
             throw new Exception("Unknown operation type: {$operationType}");
         }

@@ -30,6 +30,7 @@ use Acelle\Library\Automation\Wait;
 use Exception;
 use Acelle\Library\Traits\HasUid;
 use Closure;
+use Acelle\Model\Subscriber;
 
 class AutoTrigger extends Model
 {
@@ -110,6 +111,11 @@ class AutoTrigger extends Model
 
     public function recordToTimeline($action)
     {
+        if (is_null(Subscriber::find($this->subscriber_id))) {
+            // In case of DELETE/MOVE contact operation, no timeline needed
+            return;
+        }
+
         $this->timelines()->create([
             'automation2_id' => $this->automation2_id,
             'subscriber_id' => $this->subscriber_id,
@@ -122,6 +128,12 @@ class AutoTrigger extends Model
     // As a result, try catch is needed
     public function check($manually = false)
     {
+        // If subscriber was previouusly deleted or moved
+        if (is_null($this->subscriber)) {
+            $this->logger()->info("Subscriber is null, possibly MOVED or DELETED");
+            return;
+        }
+
         $this->withUpdateLock(function () use ($manually) {
             $this->logger()->info(sprintf('Trigger #%s (%s) of automation [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
 
@@ -395,5 +407,36 @@ class AutoTrigger extends Model
         }
 
         return $this;
+    }
+
+    public function cacheSubscriberInfo()
+    {
+        if (is_null($this->subscriber)) {
+            throw new Exception("Subscriber information not available");
+        }
+
+        $this->cached_subscriber = json_encode($this->subscriber->getAttributes());
+        return $this->save();
+    }
+
+    public function getSubscriberCachedInfo($key, $fallbackToRealSubscriber = true, $default = null)
+    {
+        if (is_null($this->cached_subscriber)) {
+            // throw new Exception("No cached information");
+
+            if ($fallbackToRealSubscriber && $this->subscriber) {
+                return $this->subscriber[$key];
+            } else {
+                return $default;
+            }
+        }
+
+        $info = json_decode($this->cached_subscriber, true);
+
+        if (!array_key_exists($key, $info)) {
+            throw new Exception("Attribute {$key} not found in cached info: ".$this->cached_subscriber);
+        }
+
+        return $info[$key];
     }
 }

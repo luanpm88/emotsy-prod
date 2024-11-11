@@ -435,6 +435,7 @@ class Automation2 extends Model
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
             $this->autoTriggers()->save($trigger);
             $trigger->updateWorkflow();
+            $trigger->cacheSubscriberInfo();
 
             $this->logger()->info(sprintf('@TRIGGER (%s) for %s', $this->getTriggerType(), $subscriber->email));
         });

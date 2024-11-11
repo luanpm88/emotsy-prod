@@ -47,7 +47,7 @@ class Wait extends Action
 
     public function getActionDescription()
     {
-        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        $nameOrEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
 
         return trans('messages.automation.action.wait.executed_description', [ 'wait' => $this->getOption('time') ]);
     }

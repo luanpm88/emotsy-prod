@@ -17,24 +17,7 @@ class AutoTrigger extends Controller
      */
     public function show(Request $request)
     {
-        $trigger = AutoTriggerModel::find($request->id);
-        $info = [];
-        $info[] = sprintf('This is an auto trigger for automation {{ %s }}', $trigger->automation2->name);
-        $info[] = sprintf('Subscriber {{ %s }}', $trigger->subscriber->email);
-
-        $actions = [];
-        $trigger->getActions(function ($a) use (&$actions, $trigger) {
-            $description = "+ [". (($a->getLastExecuted()) ? "Executed" : "Waiting") . "] " .  $a->getId() . ": " . $a->getTitle();
-            if ($a->isCondition()) {
-                $description .= " (". $a->getEvaluationResult() .")";
-            }
-
-            $actions[] = $description;
-        });
-
-        $info[] = implode('<br>', $actions);
-
-        echo implode('<br>', $info);
+        return;
     }
 
     public function check(Request $request)

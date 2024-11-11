@@ -308,12 +308,20 @@ class Email extends Model implements HasTemplateInterface
 
     public function isOpened($subscriber)
     {
+        if (is_null($subscriber)) {
+            return false;
+        }
+
         return $this->trackingLogs()->where('subscriber_id', $subscriber->id)
                             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')->exists();
     }
 
     public function isClicked($subscriber)
     {
+        if (is_null($subscriber)) {
+            return false;
+        }
+
         return $this->trackingLogs()->where('subscriber_id', $subscriber->id)
                             ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')->exists();
     }

@@ -191,7 +191,7 @@ abstract class Action
             return $result;
         } catch (Throwable $t) {
             $msg = trans('messages.automation.trigger.error.action_failed', [
-                'email' => $this->autoTrigger->subscriber->email,
+                'email' => $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]'),
                 'id' => "Trigger {$this->autoTrigger->id}=>{$this->getId()}",
                 'title' => $this->getTitle(),
                 'err' => $t->getMessage(),
@@ -218,5 +218,12 @@ abstract class Action
     public function retry()
     {
         throw new Exception("Action type {$this->getType()} does not support retry.");
+    }
+
+    public function setError($errorMsg)
+    {
+        $this->setOption('error', $errorMsg);
+        $this->autoTrigger->setError(true, $save = false);
+        $this->save();
     }
 }

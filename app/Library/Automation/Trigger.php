@@ -11,7 +11,7 @@ class Trigger extends Action
 
     public function getActionDescription()
     {
-        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        $nameOrEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
 
         return sprintf('User %s subscribes to mail list, automation triggered!', $nameOrEmail);
     }

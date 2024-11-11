@@ -47,7 +47,7 @@ class Send extends Action
             return false;
         }
 
-        $subscriber = $this->autoTrigger->subscriber;
+        $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
 
         if (config('app.demo') == 'true') {
             // do not wait
@@ -67,10 +67,10 @@ class Send extends Action
             $jobId = $this->queue($queue);
         } elseif (is_null($this->getOption('sent_at'))) {
             // Job dispatched, but not finish
-            $this->logger->info(sprintf('Wait for email entitled "%s" to "%s", dispatched at %s', $email->subject, $this->autoTrigger->subscriber->email, $this->getOption('queued_at')));
+            $this->logger->info(sprintf('Wait for email entitled "%s" to "%s", dispatched at %s', $email->subject, $subscriberEmail, $this->getOption('queued_at')));
             return false;
         } else {
-            $this->logger->info(sprintf('Sent noticed! great! "%s" to "%s"', $email->subject, $this->autoTrigger->subscriber->email));
+            $this->logger->info(sprintf('Sent noticed! great! "%s" to "%s"', $email->subject, $subscriberEmail));
             return true;
         }
     }
@@ -92,7 +92,7 @@ class Send extends Action
 
     public function getActionDescription()
     {
-        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        $nameOrEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
 
         return sprintf('User %s receives email entitled "%s"', $nameOrEmail, is_null($this->getEmail()) ? '#' : $this->getEmail()->subject);
     }
@@ -100,7 +100,7 @@ class Send extends Action
     public function getProgressDescription($timezone = null, $locale = null)
     {
         $email = $this->getEmail();
-        $subscriber = $this->autoTrigger->subscriber;
+        $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
 
         if (!is_null($this->getLastExecuted())) {
             $queuedAt = Carbon::parse($this->getOption('queued_at'));
@@ -111,7 +111,7 @@ class Send extends Action
 
             return trans('messages.automation.trigger.send.progress.sent', [
                 'e' => ($email) ? $email->subject : '[Subject]',
-                'c' => $subscriber->email,
+                'c' => $subscriberEmail,
                 'dif' => $sentAt->diffForHumans(),
                 'dt' => format_datetime($sentAt, 'datetime_full_with_timezone', $locale),
                 'sec' => $diffInSeconds
@@ -121,11 +121,11 @@ class Send extends Action
             $queuedAt = Carbon::parse($this->getOption('queued_at'))->timezone($timezone);
 
             if ($this->getOption('error')) {
-                return sprintf('Error sending email "%s" to %s. Job #%s queued %s at %s. ERROR: %s', $email->subject, $subscriber->email, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString(), $this->getOption('error'));
+                return sprintf('Error sending email "%s" to %s. Job #%s queued %s at %s. ERROR: %s', $email->subject, $subscriberEmail, $this->getOption('delivery_job_id'), $queuedAt->diffForHumans(), $queuedAt->toString(), $this->getOption('error'));
             } else {
                 $queueMsg = trans('messages.automation.trigger.send.progress.queued', [
                     'e' => $email->subject,
-                    'c' => $subscriber->email,
+                    'c' => $subscriberEmail,
                     'dif' => $queuedAt->diffForHumans(),
                     'dt' => format_datetime($queuedAt, 'datetime_full_with_timezone', $locale),
                     'id' => $this->getOption('delivery_job_id')
@@ -160,13 +160,6 @@ class Send extends Action
 
         // Execute it too
         $this->execute($manually);
-    }
-
-    public function setError($errorMsg)
-    {
-        $this->setOption('error', $errorMsg);
-        $this->autoTrigger->setError(true, $save = false);
-        $this->save();
     }
 
     public function setSent()
@@ -210,7 +203,7 @@ class Send extends Action
         // Or, if the update function is wrapped in an atomic action then it is oke
         $this->save();
 
-        $this->logger->info(sprintf('Queue email entitled "%s" to "%s" on queue "%s", job id %s', $campaign->subject, $this->autoTrigger->subscriber->email, $queue ?? '-', $jobId));
+        $this->logger->info(sprintf('Queue email entitled "%s" to "%s" on queue "%s", job id %s', $campaign->subject, $subscriberEmail, $queue ?? '-', $jobId));
 
         return $jobId;
     }
