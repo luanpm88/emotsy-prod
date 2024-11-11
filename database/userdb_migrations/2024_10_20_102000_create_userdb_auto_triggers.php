@@ -22,7 +22,7 @@ class CreateUserdbAutoTriggers extends Migration
             $table->text('executed_index')->nullable();
             $table->boolean('is_error')->default(false);
 
-            $table->bigInteger('subscriber_id')->unsigned();
+            $table->bigInteger('subscriber_id')->unsigned()->nullable();  // in case contact is moved to another list, then this field value is NULL
             $table->bigInteger('automation2_id')->unsigned();
             $table->bigInteger('trigger_session_id')->unsigned()->nullable();
             $table->bigInteger('customer_id')->unsigned();
