@@ -2530,7 +2530,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             // Pick up an available sending server
             // Throw exception in case no server available
             $server = $this->pickSendingServer($this);
-            $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+            $customerUid = $this->customer->uid;
+            $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email), $customerUid);
 
             $sent = [
                 'status' => 'sent',
