@@ -13,3 +13,7 @@
 @include('builder.js.RssWidget')
 @include('builder.js.RssControl')
 @include('builder.js.RssItem')
+@include('builder.js.SignatureElement')
+@include('builder.js.SignatureWidget')
+@include('builder.js.SignatureControl')
+@include('builder.js.SignatureItem')

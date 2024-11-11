@@ -96,6 +96,17 @@ class Email extends Model implements HasTemplateInterface
         return $this->belongsTo('Acelle\Model\TrackingDomain', 'tracking_domain_id');
     }
 
+    public function signature()
+    {
+        return $this->belongsTo('Acelle\Model\Signature', 'signature_id');
+    }
+
+    public function setSignature($signature)
+    {
+        $this->signature_id = $signature ? $signature->id : null;
+        $this->save();
+    }
+
     /**
      * Get email's default mail list.
      */

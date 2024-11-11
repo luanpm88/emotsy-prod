@@ -176,6 +176,16 @@
             editor.addWidget(new RssWidget(), {
                 index: 3
             });
+
+            @if (Acelle\Model\Setting::get('signature.enabled') == 'yes')
+                @if ($campaign->signature)
+                    // SignatureWidget
+                    window.SingatureContent = `{!! $campaign->signature->content !!}`;
+                    editor.addWidget(new SignatureWidget(), {
+                        index: 3
+                    });
+                @endif
+            @endif
           
             editor.init();
 

@@ -207,6 +207,16 @@ class Customer extends Model
         $billingAddress->save();
     }
 
+    public function sources()
+    {
+        return $this->hasMany('Acelle\Model\Source', 'customer_id');
+    }
+
+    public function signatures()
+    {
+        return $this->hasMany(Signature::class, 'customer_id');
+    }
+
     public function getBasePath($path = null)
     {
         $base = storage_path(join_paths(self::BASE_DIR, $this->uid)); // storage/app/customers/000000/
@@ -1156,6 +1166,20 @@ class Customer extends Model
         return $this->name;
     }
 
+    public function newDefaultCampaign()
+    {
+        $campaign = Campaign::newDefault();
+        $campaign->customer_id = $this->id;
+
+        // default signature
+        $defaultSignature = $this->signatures()->isDefault()->first();
+        if ($defaultSignature) {
+            $campaign->signature_id = $defaultSignature->id;
+        }
+
+        return $campaign;
+    }
+
     /*
      *
      * FUNCTIONS THAT ARE DEPENDENT ON PLAN/SUBSCRIPTIONS
@@ -1739,6 +1763,14 @@ class Customer extends Model
     public function createLocalInstance()
     {
         return LocalCustomer::sync($this);
+    }
+
+    public function newSignature()
+    {
+        $signature = Signature::newDefault();
+        $signature->customer_id = $this->id;
+
+        return $signature;
     }
 
     public function newMailList()
