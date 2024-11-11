@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Plugin;
 use Acelle\Library\Facades\Billing;
+use Exception;
 
 class Setting extends Model
 {
@@ -80,7 +81,13 @@ class Setting extends Model
      */
     public static function isYes($key)
     {
-        return strtolower(self::get($key)) == 'yes';
+        $value = self::get($key);
+
+        if (is_null($value)) {
+            throw new Exception("No such setting: {$key}");
+        }
+
+        return strtolower($value) == 'yes';
     }
 
     /**
@@ -669,6 +676,12 @@ class Setting extends Model
             'notification.on_user_created' => [
                 'cat' => 'general',
                 'value' => '',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'signature.enabled' => [
+                'cat' => 'general',
+                'value' => 'no',
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
