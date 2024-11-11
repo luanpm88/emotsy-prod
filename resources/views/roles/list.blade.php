@@ -3,9 +3,17 @@
 		@foreach ($roles as $key => $role)
             <tr>
                 <td>
-                    <a class="kq_search fs-6 d-block mb-1 fw-600" href="{{ action('RoleController@edit', $role->uid) }}">
-                        {{ $role->name }}
-                    </a>
+                    @if (!$role->is_global)
+                        <a class="kq_search fs-6 d-block mb-1 fw-600" href="{{ action('RoleController@edit', $role->uid) }}">
+                            {{ $role->name }}
+                        </a>
+                    @else
+                        <span class="kq_search fs-6 mb-1 fw-600">{{ $role->name }}</span>
+                        @if ($role->is_global)
+                            (<span class="text-muted">{{ trans('messages.role.global') }}
+                            </span>)
+                        @endif
+                    @endif
                     <p class="mb-1">{{ $role->description }}</p>
                     <p class="mb-0">
                         <span class="text-muted">{{ trans('messages.created_at') }}:
@@ -33,7 +41,7 @@
                     </div>
                 </td>
 
-                <td>
+                <td width="10%">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $role->status }}">{{ trans('messages.role.status.' . $role->status) }}</span>
                     </span>
@@ -41,21 +49,23 @@
 
                 <td class="text-end text-nowrap pe-0">
                     <div class="btn-group">
-                        <a href="{{ action('RoleController@edit', $role->uid) }}" data-popup="tooltip"
-                            title="{{ trans('messages.edit') }}" role="button"
-                            class="btn btn-secondary btn-icon me-1"
-                        >
-                            <i class="icon-stats-growth"></i> {{ trans('messages.edit') }}
-                        </a>
+                        @if (Auth::user()->customer->can('update', $role))
+                            <a href="{{ action('RoleController@edit', $role->uid) }}" data-popup="tooltip"
+                                title="{{ trans('messages.edit') }}" role="button"
+                                class="btn btn-secondary btn-icon me-1"
+                            >
+                                <i class="icon-stats-growth"></i> {{ trans('messages.edit') }}
+                            </a>
+                        @endif
                         
                         @if (
-                            Auth::user()->can('enable', $role) ||
-                            Auth::user()->can('disable', $role) ||
-                            Auth::user()->can('delete', $role)
+                            Auth::user()->customer->can('enable', $role) ||
+                            Auth::user()->customer->can('disable', $role) ||
+                            Auth::user()->customer->can('delete', $role)
                         )
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                @if (Auth::user()->can('enable', $role))
+                                @if (Auth::user()->customer->can('enable', $role))
                                     <li><a
                                         class="dropdown-item list-action-single"
                                         link-method="POST"
@@ -66,7 +76,7 @@
                                     </li>
                                 @endif
 
-                                @if (Auth::user()->can('disable', $role))
+                                @if (Auth::user()->customer->can('disable', $role))
                                     <li><a
                                         class="dropdown-item list-action-single"
                                         link-method="POST"
@@ -77,7 +87,7 @@
                                     </li>
                                 @endif
                                 
-                                @if (Auth::user()->can('delete', $role))
+                                @if (Auth::user()->customer->can('delete', $role))
                                     <li><a
                                         class="dropdown-item list-action-single"
                                         link-method="POST"

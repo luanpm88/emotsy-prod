@@ -10,44 +10,85 @@ class RolePolicy
 {
     use HandlesAuthorization;
 
-    public function create(User $user)
+    public function create(User $user, $role)
     {
-        $can = true;
+        switch ($role) {
+            case 'admin':
+                $can = true;
+                break;
+            case 'customer':
+                $can = true;
+                break;
+        }
 
         return $can;
     }
 
-    public function update(User $user, Role $role)
+    public function update(User $user, Role $item, $role)
     {
-        $can = !$role->readonly;
+        switch ($role) {
+            case 'admin':
+                $can = !$item->readonly;
+                break;
+            case 'customer':
+                $can = !$item->readonly && !$item->is_global;
+                break;
+        }
 
         return $can;
     }
 
-    public function enable(User $user, Role $role)
+    public function enable(User $user, Role $item, $role)
     {
-        $can = !$role->readonly;
+        switch ($role) {
+            case 'admin':
+                $can = !$item->readonly;
 
-        //
-        $can = $can && !$role->isActive();
+                //
+                $can = $can && !$item->isActive();
+                break;
+            case 'customer':
+                $can = !$item->readonly && !$item->is_global;
+
+                //
+                $can = $can && !$item->isActive();
+                break;
+        }
 
         return $can;
     }
 
-    public function disable(User $user, Role $role)
+    public function disable(User $user, Role $item, $role)
     {
-        $can = !$role->readonly;
+        switch ($role) {
+            case 'admin':
+                $can = !$item->readonly;
 
-        //
-        $can = $can && $role->isActive();
+                //
+                $can = $can && $item->isActive();
+                break;
+            case 'customer':
+                $can = !$item->readonly && !$item->is_global;
 
+                //
+                $can = $can && $item->isActive();
+                break;
+        }
+        
         return $can;
     }
 
-    public function delete(User $user, Role $role)
+    public function delete(User $user, Role $item, $role)
     {
-        $can = !$role->readonly;
-
+        switch ($role) {
+            case 'admin':
+                $can = !$item->readonly;
+                break;
+            case 'customer':
+                $can = !$item->readonly && !$item->is_global;
+                break;
+        }
+        
         return $can;
     }
 }

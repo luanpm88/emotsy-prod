@@ -29,7 +29,7 @@ class RoleController extends Controller
         }
 
         // sort, pagination
-        $roles = $request->user()->customer->roles()->search($request->keyword)
+        $roles = $request->user()->customer->ownOrGlobalRoles()
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -119,7 +119,7 @@ class RoleController extends Controller
         $role = Role::findByUid($uid);
 
         // authorize
-        if (\Gate::denies('update', $role)) {
+        if (!$request->user()->customer->can('update', $role)) {
             return $this->notAuthorized();
         }
 
@@ -159,7 +159,7 @@ class RoleController extends Controller
         $deleted = 0;
         foreach ($roles->get() as $role) {
             // authorize
-            if (\Gate::allows('delete', $role)) {
+            if ($request->user()->customer->can('delete', $role)) {
                 $role->delete();
                 $deleted += 1;
             }
@@ -185,7 +185,7 @@ class RoleController extends Controller
         $done = 0;
         foreach ($roles->get() as $role) {
             // authorize
-            if (\Gate::allows('enable', $role)) {
+            if ($request->user()->customer->can('enable', $role)) {
                 $role->enable();
                 $done += 1;
             }
@@ -212,7 +212,7 @@ class RoleController extends Controller
         $done = 0;
         foreach ($roles->get() as $role) {
             // authorize
-            if (\Gate::allows('disable', $role)) {
+            if ($request->user()->customer->can('disable', $role)) {
                 $role->disable();
                 $done += 1;
             }
