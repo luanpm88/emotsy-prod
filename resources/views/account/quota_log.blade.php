@@ -125,7 +125,7 @@
             </div>
         @endif
 
-        @if (Auth::user()->customer->can("create", new Acelle\Model\SendingDomain()))
+        @if (Auth::user()->customer->can("create", Acelle\Model\SendingDomain::class))
             <div class="col-md-12">
                 <div class="content-group-sm mt-4">
                     <div class="d-flex align-items-center">

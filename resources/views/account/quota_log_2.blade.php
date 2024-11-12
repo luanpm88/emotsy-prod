@@ -91,7 +91,7 @@
             </div>
         @endif
 
-        @if (Auth::user()->customer->can("create", new Acelle\Model\SendingDomain()))
+        @if (Auth::user()->customer->can("create", Acelle\Model\SendingDomain::class))
             <div class="col-md-12 mb-4">
                 <div class="content-group-sm">
                     <div class="pull-right text-primary text-semibold">
