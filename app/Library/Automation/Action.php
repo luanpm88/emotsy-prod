@@ -226,4 +226,26 @@ abstract class Action
         $this->autoTrigger->setError(true, $save = false);
         $this->save();
     }
+
+    public function update(array $json)
+    {
+        // Keep the following attributes, do not overwrite
+        $keepMain = [ 'options', 'last_executed', 'evaluationResult' ];
+
+        // Keep options
+        $keep = [ 'queued_at', 'sent_at', 'delivery_job_id', 'delay_note', 'error'];
+
+        foreach ($json as $key => $value) {
+            if (!in_array($key, $keepMain)) {
+                $this->{$key} = $value;
+            }
+        }
+
+        foreach($json['options'] as $key => $value) {
+            if (!in_array($key, $keep)) {
+                $this->setOption($key, $value);
+            }
+        }
+    }
+
 }

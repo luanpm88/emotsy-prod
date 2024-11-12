@@ -263,28 +263,17 @@ class AutoTrigger extends Model
         $origins = json_decode($this->automation2->data, true);
         $newJson = [];
 
-        $keep = [ 'queued_at', 'sent_at', 'delivery_job_id', 'delay_note', 'error', 'last_executed', 'evaluationResult'];
-
         foreach ($origins as $r) {
             $tmp = $this->getAction($r);
             $newAttrs = $tmp->toJson();
             $currentAction = $this->getActionById($tmp->getId());
 
             if (is_null($currentAction)) {
-                foreach ($keep as $key) {
-                    if (in_array($key, $newAttrs['options'])) {
-                        unset($newAttrs['options'][$key]);
-                    }
-                }
-
                 $newJson[$tmp->getId()] = $newAttrs;
             } else {
-                foreach($newAttrs['options'] as $key => $value) {
-                    if (!in_array($key, $keep)) {
-                        $currentAction->setOption($key, $value);
-                    }
-                }
 
+                // Update main attributes, except for 'options' and some other
+                $currentAction->update($newAttrs);
                 $newJson[$currentAction->getId()] = $currentAction->toJson();
             }
         }
