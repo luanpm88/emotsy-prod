@@ -3627,4 +3627,7 @@
   'role.global' => 'Global',
   'invoice.invoice_is_paid' => 'Your invoice is paid.',
   'invoice.no_payment_needed' => 'No additional confirmation is required.',
+  'automation.operation.remove_tag.desc' => 'Remove one or more assigned tags from a contact',
+  'automation.operation.remove_tag' => 'Remove contact tag(s)',
+  'automation.operation.remove_tag.will_be_removed' => 'Tag(s) will be removed',
 ) ?>
