@@ -401,6 +401,7 @@ class Subscriber extends Model
     public function getValueByField($field)
     {
         $value = $this[$field->custom_field_name];
+
         if ($field->isDate()) {
             return $value == '1900-01-01' ? '' : $value;
         } else {
@@ -770,8 +771,12 @@ class Subscriber extends Model
         return Blacklist::where('email', '=', $this->email)->exists();
     }
 
-    public function getFullName($default = null)
+    public function getFullName($default = null, $reload = true)
     {
+        if ($reload && $this->id) {
+            $this->refresh();
+        }
+
         $lastNameFirst = get_localization_config('show_last_name_first', $this->mailList->customer->getLanguageCode());
 
         if ($lastNameFirst) {

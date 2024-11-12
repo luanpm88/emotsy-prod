@@ -55,7 +55,10 @@ class Operate extends Action
             };
 
             if ($operationType == self::OPERATION_MOVE) {
-                $this->autoTrigger->getSubscriberCachedInfo();
+                // Temporarily put cacheSubscriberInfo() here, for backward compatibility
+                // In the future, there should be only 1 place where it is called
+                $this->autoTrigger->cacheSubscriberInfo();
+
                 $subscriber->move($toList, $duplicateCallback);
             } else {
                 $subscriber->copy($toList, $duplicateCallback);
@@ -90,7 +93,7 @@ class Operate extends Action
             $tags = $this->getOption('tags');
 
             return sprintf('* Tag contact "%s" with: %s', $subscriberEmail, implode(', ', $tags));
-        } elseif ($operationType == self::OPERATION_COPY || $operationType == self::OPERATION_MOVE) {
+        } elseif ($operationType == self::OPERATION_COPY) {
             $toListUid = $this->getOption('target_list_uid');
 
             if (is_null($toListUid)) {

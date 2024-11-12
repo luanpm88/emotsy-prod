@@ -12,15 +12,15 @@
     <div class="mc-table small border-top">
         @foreach ($contacts as $key => $contact)
             @php
-                $trigger = $contact->autoTriggers[0] ?? null;
+                $trigger = \Acelle\Model\AutoTrigger::find($contact->auto_trigger_id);
             @endphp
             <div class="mc-row d-flex align-items-center">
                 <div class="media trigger">
                     <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
-                        'contact_id' => $contact->id,
+                        'contact_id' => is_null($contact->id) ? '#' : $contact->id,
                     ]) }}')" class="font-weight-semibold d-block">
-                        @if(isSiteDemo())
+                        @if(isSiteDemo() || is_null($contact->id))
                             <img src="https://i.pravatar.cc/300" />
                         @else
                             <img src="{{ action('SubscriberController@avatar',  $contact->id) }}" />
@@ -28,13 +28,20 @@
                     </a>
                 </div>
                 <div class="flex-fill" style="width: 20%">
-                    <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
-                        'uid' => $automation->uid,
-                        'contact_id' => $contact->id,
-                    ]) }}')" class="font-weight-semibold d-block">
-                        {{ $contact->getFullName() }}
-                    </a>
-                    <desc>{{ $contact->email }}</desc>
+                    @if (is_null($contact->id))
+                        <a href="javascript:;" class="font-weight-semibold d-block">
+                            [moved or deleted]
+                        </a>
+                    @else
+                        <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
+                            'uid' => $automation->uid,
+                            'contact_id' => $contact->id,
+                        ]) }}')" class="font-weight-semibold d-block">
+                            {{ $contact->getFullName($default = null, $reload = true) }}
+                        </a>
+                    @endif
+
+                    <desc>{{ is_null($contact->id) ? $trigger->getSubscriberCachedInfo('email') : $contact->email }}</desc>
                 </div>
                 
                 <div class="actions-points">
@@ -82,10 +89,18 @@
                                 {{ trans('messages.automation.trigger_now') }}
                             </a>
                         </desc>
-                    @else
-                        
+                    @elseif (is_null($contact->id))
                         <desc>{{ trans('messages.automation.last_activity') }} •
-                            <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;"
+                            <a target="_blank" style="color:blue;text-decoration: underline;"
+                                href="#"
+                                class="trigger-check"
+                            >
+                                {{ trans('messages.trigger.check') }}
+                            </a>
+                        </desc>
+                    @else
+                        <desc>{{ trans('messages.automation.last_activity') }} •
+                            <a target="_blank" style="color:blue;text-decoration: underline;"
                                 href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}"
                                 class="trigger-check"
                             >
