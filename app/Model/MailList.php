@@ -2150,7 +2150,7 @@ class MailList extends Model
                 if (isset($item['options'])) {
                     $field->fieldOptions = collect();
                     foreach ($item['options'] as $key2 => $item2) {
-                        $option = new \Acelle\Model\FieldOption($item2); 
+                        $option = new \Acelle\Model\FieldOption($item2);
                         $option->customer_id = $this->customer_id;
                         $option->uid = $key2;
                         $field->fieldOptions->push($option);

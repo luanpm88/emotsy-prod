@@ -1358,17 +1358,19 @@ function safe_dispatch($job)
     return app(\Illuminate\Contracts\Bus\Dispatcher::class)->dispatch($job);
 }
 
-function get_inner_html($node) {
-    $innerHTML= '';
+function get_inner_html($node)
+{
+    $innerHTML = '';
     $children = $node->childNodes;
     foreach ($children as $child) {
-        $innerHTML .= $child->ownerDocument->saveXML( $child );
+        $innerHTML .= $child->ownerDocument->saveXML($child);
     }
 
     return $innerHTML;
 }
 
-function groupPermissionsByPrefix($permissions) {
+function groupPermissionsByPrefix($permissions)
+{
     $grouped = [];
 
     foreach ($permissions as $permission) {

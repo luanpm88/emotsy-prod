@@ -20,7 +20,7 @@ class SendingServerPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_server.full_access') && !$user->hasPermission('sending_server.read_only')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer(); // non-saas safe
@@ -39,9 +39,9 @@ class SendingServerPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_server.full_access') && !$user->hasPermission('sending_server.read_only')) {
-                    return false;   
+                    return false;
                 }
-                
+
                 $can = false;
                 break;
         }
@@ -69,7 +69,7 @@ class SendingServerPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_server.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 // init
@@ -116,7 +116,7 @@ class SendingServerPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_server.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
@@ -138,7 +138,7 @@ class SendingServerPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_server.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
@@ -160,7 +160,7 @@ class SendingServerPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_server.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id;// non-saas safe
@@ -182,9 +182,9 @@ class SendingServerPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_server.full_access')) {
-                    return false;   
+                    return false;
                 }
-                
+
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }

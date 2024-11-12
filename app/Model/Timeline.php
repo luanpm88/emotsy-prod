@@ -140,7 +140,7 @@ class Timeline extends Model
 
         return $timeline;
     }
-    
+
     // TYPE_API_ADDED
     public static function recordApiAdded($subscriber, $customer)
     {
@@ -200,7 +200,7 @@ class Timeline extends Model
 
         return $timeline;
     }
-    
+
     // TYPE_MOVED_FROM
     public static function recordMovedFrom($subscriber, $mailList)
     {
@@ -212,7 +212,7 @@ class Timeline extends Model
 
         return $timeline;
     }
-    
+
     // TYPE_UNSUBSCRIBED_FROM_LIST_UNSUBSCRIBE_FORM
     public static function recordUnsubscribedFromListUnsubscribeForm($subscriber)
     {

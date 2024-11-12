@@ -14,7 +14,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access') && !$user->hasPermission('campaign.read_only')) {
-            return false;   
+            return false;
         }
 
         return true;
@@ -24,7 +24,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access') && !$item->hasPermission('campaign.read_only')) {
-            return false;   
+            return false;
         }
 
         $can = $item->customer_id == $user->customer->id;
@@ -36,7 +36,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access')) {
-            return false;   
+            return false;
         }
 
         $max = get_tmp_quota($user->customer, 'campaign_max');
@@ -65,7 +65,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -83,7 +83,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -102,7 +102,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -117,7 +117,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -130,7 +130,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -151,7 +151,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -162,9 +162,9 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access') && !$user->hasPermission('campaign.read_only')) {
-            return false;   
+            return false;
         }
-        
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }
@@ -179,7 +179,7 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -203,9 +203,9 @@ class CampaignPolicy
     {
         // RBAC check
         if (!$user->hasPermission('campaign.full_access')) {
-            return false;   
+            return false;
         }
-        
+
         $customer = $user->customer;
 
         // is admin or log as customer from admin

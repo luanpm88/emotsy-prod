@@ -129,7 +129,6 @@ class UserController extends Controller
                 $name = $request->name,
                 $timezone = $request->timezone,
                 $language_id = $request->language_id,
-
                 $email = $request->email,
                 $password = $request->password,
                 $passwordConfirmation = $request->password,
@@ -232,7 +231,7 @@ class UserController extends Controller
         // Get current user
         $user = $request->user()->customer->newUser();
 
-        // 
+        //
         [$result, $errors] = $user->saveUser(
             $email = $request->email,
             $password = $request->password,
@@ -283,7 +282,7 @@ class UserController extends Controller
         // Get current user
         $user = \Acelle\Model\User::findByUid($id);
 
-        // 
+        //
         [$result, $errors] = $user->saveUser(
             $email = $request->email,
             $password = $request->password,
@@ -392,7 +391,7 @@ class UserController extends Controller
         // Redirect to my lists page
         echo trans('messages.user.deleted');
     }
-    
+
     public function verifySelectMethod(Request $request)
     {
         if (!$request->user()->is2FAEnabled()) {

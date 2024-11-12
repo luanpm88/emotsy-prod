@@ -58,7 +58,7 @@ class CampaignController extends Controller
         if (\Gate::denies('list', Campaign::class)) {
             return $this->notAuthorized();
         }
-        
+
         $customer = $request->user()->customer;
 
         $campaigns = $customer->local()->campaigns()
@@ -811,7 +811,7 @@ class CampaignController extends Controller
         $currentTimezone = $request->user()->customer->getTimezone();
         $nowInUserTimezone = Carbon::now($currentTimezone);
         $campaign = Campaign::findByUid($request->uid);
-        
+
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
@@ -1145,7 +1145,7 @@ class CampaignController extends Controller
             // Timeline record
             \Acelle\Model\Timeline::recordClickedCampaignEmail($log->trackingLog->subscriber, $log->trackingLog->campaign, $url);
         }
-        
+
         return redirect()->away($url);
     }
 

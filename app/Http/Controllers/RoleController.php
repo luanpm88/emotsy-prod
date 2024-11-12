@@ -69,7 +69,7 @@ class RoleController extends Controller
         }
 
         $role = Role::newAccountRole($request->user()->customer);
-        
+
         $errors = $role->saveFromArray($request->all());
 
         // redirect if fails
@@ -216,7 +216,7 @@ class RoleController extends Controller
                 $role->disable();
                 $done += 1;
             }
-            
+
         }
 
         return response()->json([

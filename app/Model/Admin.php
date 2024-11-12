@@ -605,9 +605,8 @@ class Admin extends Model
         $creator_id,
         $timezone,
         $language_id,
-        $create_customer_account=null
-    )
-    {
+        $create_customer_account = null
+    ) {
         $rules = [
             'user_id' => 'required',
             'admin_group_id' => 'required',

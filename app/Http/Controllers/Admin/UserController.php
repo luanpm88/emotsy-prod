@@ -71,7 +71,7 @@ class UserController extends Controller
         $customer = Customer::findByUid($customer_uid);
         $user = $customer->newUser();
 
-        // 
+        //
         [$result, $errors] = $user->saveUser(
             $email = $request->email,
             $password = $request->password,
@@ -127,7 +127,7 @@ class UserController extends Controller
         $customer = Customer::findByUid($customer_uid);
         $user = \Acelle\Model\User::findByUid($user_uid);
 
-        // 
+        //
         [$result, $errors] = $user->saveUser(
             $email = $request->email,
             $password = $request->password,
@@ -252,7 +252,7 @@ class UserController extends Controller
 
         \Auth::login($user);
         \Session::put('orig_user_uid', $orig_id);
-        
+
         return redirect()->action('HomeController@index');
     }
 

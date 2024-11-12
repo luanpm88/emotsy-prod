@@ -23,7 +23,7 @@ class Automation2Policy
     {
         // RBAC check
         if (!$user->hasPermission('automation.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -39,7 +39,7 @@ class Automation2Policy
         if (app_profile('automation.disable') === true) {
             return false;
         }
-        
+
         // owner check
         $can = $automation->customer_id == $user->customer->id;
 
@@ -50,7 +50,7 @@ class Automation2Policy
     {
         // RBAC check
         if (!$user->hasPermission('automation.full_access')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('automation.disable') === true) {
@@ -68,7 +68,7 @@ class Automation2Policy
     {
         // RBAC check
         if (!$user->hasPermission('automation.full_access')) {
-            return false;   
+            return false;
         }
 
         $can = $automation->customer_id == $user->customer->id &&
@@ -83,7 +83,7 @@ class Automation2Policy
     {
         // RBAC check
         if (!$user->hasPermission('automation.full_access')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('automation.disable') === true) {
@@ -102,7 +102,7 @@ class Automation2Policy
     {
         // RBAC check
         if (!$user->hasPermission('automation.full_access')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('automation.disable') === true) {

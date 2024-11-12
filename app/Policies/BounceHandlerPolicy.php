@@ -40,7 +40,7 @@ class BounceHandlerPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         // config/limit.php
@@ -57,7 +57,7 @@ class BounceHandlerPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         // config/limit.php
@@ -76,9 +76,9 @@ class BounceHandlerPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
-        
+
         // config/limit.php
         if (app_profile('bounce_handler.disable') === true) {
             return false;

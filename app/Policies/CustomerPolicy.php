@@ -24,7 +24,7 @@ class CustomerPolicy
         return $can;
     }
 
-    public function create(User $user, Customer $item, $role='admin')
+    public function create(User $user, Customer $item, $role = 'admin')
     {
         $can = $user->admin->getPermission('customer_create') == 'yes';
 
@@ -37,9 +37,9 @@ class CustomerPolicy
 
         // RBAC check
         if ($user->hasPermission('account.full_access')) {
-            $permission = true;   
+            $permission = true;
         } else {
-            $permission = false;    
+            $permission = false;
         }
 
         return $can && $permission;

@@ -81,7 +81,7 @@ class Automation2Controller extends Controller
     public function wizardTriggerOption(Request $request)
     {
         $localCustomer = $request->user()->customer->local();
-        
+
         // saving
         if ($request->isMethod('post')) {
             $rules = $this->triggerRules()[$request->options['key']];
@@ -98,7 +98,7 @@ class Automation2Controller extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
+
             $automation = $localCustomer->newDefaultAutomation2();
 
             return view('automation2.wizard', [
@@ -1481,9 +1481,9 @@ class Automation2Controller extends Controller
         // list by type
         $subscribers = $automation->getSubscribersWithTriggerInfo()
                                   ->simpleSearch($request->keyword);
-                                  //->addSelect('subscribers.created_at')
-                                  //->addSelect('auto_triggers.updated_at');
-                                  //->orderBy($sortBy, $sortOrder);
+        //->addSelect('subscribers.created_at')
+        //->addSelect('auto_triggers.updated_at');
+        //->orderBy($sortBy, $sortOrder);
 
         // Make sure $count returns the same list of $subscribers
         $count = $automation->subscribers()->simpleSearch($request->keyword)->count();

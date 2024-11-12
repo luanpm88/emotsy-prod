@@ -96,7 +96,7 @@ class EmailVerificationServer extends Model
                 $apiKey = $this->getOptions()['api_key'];
                 $this->service = new AthenaEvs($apiKey);
                 return $this->service;
-                
+
             case 'verifiedemails.io':
                 $username = $this->getOptions()['username'];
                 $apiToken = $this->getOptions()['api_token'];

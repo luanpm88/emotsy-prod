@@ -189,7 +189,7 @@ class User extends Authenticatable
         $result = $mailer->sendWithDefaultFromAddress($message);
 
         if (!empty(Setting::get('notification.on_user_created'))) {
-            $message->setTo( Setting::get('notification.on_user_created') );
+            $message->setTo(Setting::get('notification.on_user_created'));
             $mailer->sendWithDefaultFromAddress($message);
             echo "OK";
         }
@@ -768,7 +768,7 @@ class User extends Authenticatable
         if (!$this->getRole()) {
             return false;
         }
-        
+
         return $this->getRole()->hasPermission($permission);
     }
     public function getOnscreenIntros()
@@ -938,8 +938,7 @@ class User extends Authenticatable
         $last_name,
         $image,
         $role_uid
-    )
-    {
+    ) {
         $rules = [
             'email' => 'required|email|unique:users,email,'.$this->id.',id',
             'first_name' => 'required',

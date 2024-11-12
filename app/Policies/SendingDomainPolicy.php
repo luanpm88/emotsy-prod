@@ -25,7 +25,7 @@ class SendingDomainPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_domain.full_access') && !$user->hasPermission('sending_domain.read_only')) {
-                    return false;   
+                    return false;
                 }
 
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
@@ -56,9 +56,9 @@ class SendingDomainPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_domain.full_access') && !$user->hasPermission('sending_domain.read_only')) {
-                    return false;   
+                    return false;
                 }
-                
+
                 $can = false;
                 break;
         }
@@ -75,7 +75,7 @@ class SendingDomainPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_domain.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = true;
@@ -101,7 +101,7 @@ class SendingDomainPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_domain.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
@@ -136,7 +136,7 @@ class SendingDomainPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('sending_domain.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();

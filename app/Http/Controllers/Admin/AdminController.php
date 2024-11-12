@@ -123,7 +123,7 @@ class AdminController extends Controller
             ], 400);
         }
 
-        // 
+        //
         [$result, $errors] = $user->saveUser(
             $email = $request->email,
             $password = $request->password,
@@ -248,7 +248,7 @@ class AdminController extends Controller
             ], 400);
         }
 
-        // 
+        //
         [$result, $errors] = $user->saveUser(
             $email = $request->email,
             $password = $request->password,
@@ -278,8 +278,8 @@ class AdminController extends Controller
             ], 400);
         }
 
-            return redirect()->action('Admin\AdminController@index')
-                ->with('alert-success', trans('messages.admin.updated'));
+        return redirect()->action('Admin\AdminController@index')
+            ->with('alert-success', trans('messages.admin.updated'));
     }
 
     public function select2(Request $request)

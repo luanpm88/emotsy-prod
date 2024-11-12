@@ -23,7 +23,7 @@ class SegmentPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('list.disable_segment') === true) {
@@ -42,7 +42,7 @@ class SegmentPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('list.disable_segment') === true) {
@@ -57,7 +57,7 @@ class SegmentPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('list.disable_segment') === true) {
@@ -72,9 +72,9 @@ class SegmentPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
-        
+
         if (app_profile('list.disable_segment') === true) {
             return false;
         }

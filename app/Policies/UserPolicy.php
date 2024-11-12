@@ -23,7 +23,7 @@ class UserPolicy
         return $can;
     }
 
-    public function create(User $user, User $item, $role='admin')
+    public function create(User $user, User $item, $role = 'admin')
     {
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
@@ -49,7 +49,7 @@ class UserPolicy
 
                 break;
         }
-        
+
 
         return $can;
     }
@@ -59,7 +59,7 @@ class UserPolicy
         return $user->id == $item->id;
     }
 
-    public function update(User $user, User $item, $role='admin')
+    public function update(User $user, User $item, $role = 'admin')
     {
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
@@ -80,7 +80,7 @@ class UserPolicy
         return $can;
     }
 
-    public function disable(User $user, User $item, $role='admin')
+    public function disable(User $user, User $item, $role = 'admin')
     {
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
@@ -101,7 +101,7 @@ class UserPolicy
         return $can;
     }
 
-    public function enable(User $user, User $item, $role='admin')
+    public function enable(User $user, User $item, $role = 'admin')
     {
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
@@ -122,7 +122,7 @@ class UserPolicy
         return $can;
     }
 
-    public function delete(User $user, User $item, $role='admin')
+    public function delete(User $user, User $item, $role = 'admin')
     {
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
@@ -167,7 +167,7 @@ class UserPolicy
         return $can;
     }
 
-    public function loginAs(User $user, User $item, $role='admin')
+    public function loginAs(User $user, User $item, $role = 'admin')
     {
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
