@@ -136,8 +136,10 @@ class OpenLog extends Model
         $log->user_agent = $userAgent;
 
         try {
-            $location = IpLocation::add($ipAddress);
-            $log->ip_address = $location->ip_address;
+            if (!is_null($ipAddress)) {
+                $location = IpLocation::add($ipAddress);
+                $log->ip_address = $location->ip_address;
+            }
         } catch (Exception $ex) {
             // Then no GeoIP information
             // open.ip_address is NULL
