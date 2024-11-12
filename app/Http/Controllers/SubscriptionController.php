@@ -76,7 +76,7 @@ class SubscriptionController extends Controller
         if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
             return $this->notAuthorized();
         }
-        
+
         $customer = $request->user()->customer;
         $plan = PlanGeneral::findByUid($request->plan_uid);
 
@@ -462,7 +462,7 @@ class SubscriptionController extends Controller
         if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
             return $this->notAuthorized();
         }
-        
+
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
@@ -507,7 +507,7 @@ class SubscriptionController extends Controller
         if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
             return $this->notAuthorized();
         }
-        
+
         $invoice = \Acelle\Model\Invoice::findByUid($invoice_uid);
         $transaction = $invoice->getPendingTransaction();
 
@@ -561,7 +561,7 @@ class SubscriptionController extends Controller
                 ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] does not exist!");
         }
 
-        // 
+        //
         if (!in_array($invoice->type, [
             InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
             InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,

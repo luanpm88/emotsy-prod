@@ -23,7 +23,7 @@ class WebsitePolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('website.disable') === true) {
@@ -46,7 +46,7 @@ class WebsitePolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('website.disable') === true) {
@@ -60,7 +60,7 @@ class WebsitePolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('website.disable') === true) {
@@ -74,7 +74,7 @@ class WebsitePolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('website.disable') === true) {
@@ -88,9 +88,9 @@ class WebsitePolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
-        
+
         if (app_profile('website.disable') === true) {
             return false;
         }

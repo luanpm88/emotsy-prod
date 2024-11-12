@@ -24,7 +24,7 @@ class SenderPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         return true;
@@ -34,7 +34,7 @@ class SenderPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         return $user->customer->id == $sender->customer_id;
@@ -44,9 +44,9 @@ class SenderPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
-        
+
         return $user->customer->id == $sender->customer_id;
     }
 

@@ -20,7 +20,7 @@ class BlacklistPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = true;
@@ -40,9 +40,9 @@ class BlacklistPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('account.full_access') && !$user->hasPermission('account.read_only')) {
-                    return false;   
+                    return false;
                 }
-                
+
                 $can = false;
                 break;
         }
@@ -60,7 +60,7 @@ class BlacklistPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('account.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = true;
@@ -80,7 +80,7 @@ class BlacklistPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('account.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = true;
@@ -100,7 +100,7 @@ class BlacklistPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('account.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = true;
@@ -120,7 +120,7 @@ class BlacklistPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('account.full_access')) {
-                    return false;   
+                    return false;
                 }
 
                 $can = $user->customer->id == $blacklist->customer_id;
@@ -140,9 +140,9 @@ class BlacklistPolicy
             case 'customer':
                 // RBAC check
                 if (!$user->hasPermission('account.full_access')) {
-                    return false;   
+                    return false;
                 }
-                
+
                 $can = $user->customer->id == $blacklist->customer_id;
                 break;
         }

@@ -37,7 +37,7 @@ class AudienceController extends Controller
         if (\Gate::denies('list', \Acelle\Model\MailList::class)) {
             return $this->notAuthorized();
         }
-        
+
         $currentTimezone = $request->user()->customer->getTimezone();
 
         $result = [

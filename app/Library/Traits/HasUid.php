@@ -23,14 +23,14 @@ trait HasUid
                     $item->customer->getNewOrActiveGeneralSubscription()->id != $item->id
                 ) {
                     throw new \Exception(
-                        'Subscription before save check failed: Customer đang có 1 subscription đang ' . $item->customer->getNewOrActiveGeneralSubscription()->status . 
+                        'Subscription before save check failed: Customer đang có 1 subscription đang ' . $item->customer->getNewOrActiveGeneralSubscription()->status .
                         '. Saving ID ' . $item->id .
                         '. Current ID: ' . $item->customer->getNewOrActiveGeneralSubscription()->id
                     );
                 }
             }
         });
-        
+
     }
 
     public static function findByUid($uid)

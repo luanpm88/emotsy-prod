@@ -14,7 +14,7 @@ class FormPolicy
     {
         // RBAC check
         if (!$user->hasPermission('form.full_access') && !$user->hasPermission('form.read_only')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('form.disable') === true) {
@@ -28,7 +28,7 @@ class FormPolicy
     {
         // RBAC check
         if (!$user->hasPermission('form.full_access')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('form.disable') === true) {
@@ -42,9 +42,9 @@ class FormPolicy
     {
         // RBAC check
         if (!$user->hasPermission('form.full_access') && !$user->hasPermission('form.read_only')) {
-            return false;   
+            return false;
         }
-        
+
         if (app_profile('form.disable') === true) {
             return false;
         }
@@ -56,7 +56,7 @@ class FormPolicy
     {
         // RBAC check
         if (!$user->hasPermission('form.full_access')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('form.disable') === true) {
@@ -70,7 +70,7 @@ class FormPolicy
     {
         // RBAC check
         if (!$user->hasPermission('form.full_access')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('form.disable') === true) {
@@ -84,7 +84,7 @@ class FormPolicy
     {
         // RBAC check
         if (!$user->hasPermission('form.full_access')) {
-            return false;   
+            return false;
         }
 
         if (app_profile('form.disable') === true) {
@@ -98,9 +98,9 @@ class FormPolicy
     {
         // RBAC check
         if (!$user->hasPermission('form.full_access')) {
-            return false;   
+            return false;
         }
-        
+
         if (app_profile('form.disable') === true) {
             return false;
         }

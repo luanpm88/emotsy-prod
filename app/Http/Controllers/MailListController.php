@@ -40,7 +40,7 @@ class MailListController extends Controller
         if (\Gate::denies('list', MailList::class)) {
             return $this->notAuthorized();
         }
-        
+
         $customer = $request->user()->customer;
 
         $lists = $customer->local()->mailLists()

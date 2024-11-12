@@ -14,9 +14,9 @@ class ContactPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
-        
+
         return !isset($item->id) || $user->contact_id == $item->id;
     }
 }

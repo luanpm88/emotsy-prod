@@ -20,7 +20,7 @@ class SubscriberPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         // constraints are checked in MailListPolicy
@@ -31,7 +31,7 @@ class SubscriberPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -42,7 +42,7 @@ class SubscriberPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -53,7 +53,7 @@ class SubscriberPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -64,9 +64,9 @@ class SubscriberPolicy
     {
         // RBAC check
         if ($user->hasPermission('account.read_only')) {
-            return false;   
+            return false;
         }
-        
+
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }

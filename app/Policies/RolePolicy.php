@@ -74,7 +74,7 @@ class RolePolicy
                 $can = $can && $item->isActive();
                 break;
         }
-        
+
         return $can;
     }
 
@@ -88,7 +88,7 @@ class RolePolicy
                 $can = !$item->readonly && !$item->is_global;
                 break;
         }
-        
+
         return $can;
     }
 }

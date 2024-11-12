@@ -50,9 +50,11 @@ class UserDbDump extends Command
 
         // Get the list of UserDB's table, except for 'subscribers' which will be treated specially
         $tables = array_values(array_diff(config('userdb_tables'), ['subscribers']));
-        $tables = implode(' ', array_map(function($table) {
-            return \DB::getTablePrefix().$table; }
-            , $tables)
+        $tables = implode(
+            ' ',
+            array_map(function ($table) {
+                return \DB::getTablePrefix().$table;
+            }, $tables)
         );
 
         $masterDb = 'mysql';

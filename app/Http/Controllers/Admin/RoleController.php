@@ -53,7 +53,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $role = Role::newGlobalRole();
-        
+
         $errors = $role->saveFromArray($request->all());
 
         // redirect if fails
@@ -180,7 +180,7 @@ class RoleController extends Controller
                 $role->disable();
                 $done += 1;
             }
-            
+
         }
 
         return response()->json([

@@ -1262,7 +1262,7 @@ class SubscriberController extends Controller
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         $timelines = $subscriber->timelines();
-            
+
         // filter by type
         if ($request->type) {
             if ($request->type == 'automation') {

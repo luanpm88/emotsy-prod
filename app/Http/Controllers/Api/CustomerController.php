@@ -47,7 +47,6 @@ class CustomerController extends Controller
             $name = $request->name,
             $timezone = $request->timezone,
             $language_id = $request->language_id,
-
             $email = $request->email,
             $password = $request->password,
             $passwordConfirmation = $request->password,

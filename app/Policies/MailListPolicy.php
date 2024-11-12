@@ -14,7 +14,7 @@ class MailListPolicy
     {
         // RBAC check
         if (!$user->hasPermission('list.full_access') && !$user->hasPermission('list.read_only')) {
-            return false;   
+            return false;
         }
 
         return true;
@@ -24,7 +24,7 @@ class MailListPolicy
     {
         // RBAC check
         if (!$user->hasPermission('list.full_access') && !$user->hasPermission('list.read_only')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -35,7 +35,7 @@ class MailListPolicy
     {
         // RBAC check
         if (!$user->hasPermission('list.full_access')) {
-            return false;   
+            return false;
         }
 
         // init
@@ -63,7 +63,7 @@ class MailListPolicy
     {
         // RBAC check
         if (!$user->hasPermission('list.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -74,7 +74,7 @@ class MailListPolicy
     {
         // RBAC check
         if (!$user->hasPermission('list.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -85,7 +85,7 @@ class MailListPolicy
     {
         // RBAC check
         if (!$user->hasPermission('list.full_access')) {
-            return false;   
+            return false;
         }
 
         $max = get_tmp_quota($user->customer, 'subscriber_max');
@@ -99,7 +99,7 @@ class MailListPolicy
     {
         // RBAC check
         if (!$user->hasPermission('list.full_access')) {
-            return false;   
+            return false;
         }
 
         $customer = $user->customer;
@@ -112,9 +112,9 @@ class MailListPolicy
     {
         // RBAC check
         if (!$user->hasPermission('list.full_access')) {
-            return false;   
+            return false;
         }
-        
+
         $customer = $user->customer;
         $can = get_tmp_quota($customer, 'list_export');
 

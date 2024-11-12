@@ -23,7 +23,7 @@ class VerifiedEmails implements VerifyInterface
         'Unknown' => 'unknown',
     ];
 
-    const DEFAULT_ENPOINT = 'https://verifiedemails.io/api/v';
+    public const DEFAULT_ENPOINT = 'https://verifiedemails.io/api/v';
 
     public function __construct($username, $apiToken)
     {
@@ -74,7 +74,7 @@ class VerifiedEmails implements VerifyInterface
             // If the method is POST, add form_params
             if (strtoupper($method) == 'POST') {
                 $options['form_params'] = $params;
-            } else if (strtoupper($method) == 'GET') {
+            } elseif (strtoupper($method) == 'GET') {
                 $options['query'] = $params;
             }
 
@@ -115,5 +115,5 @@ class VerifiedEmails implements VerifyInterface
         return [$this->map[$data[0]["response"]['status']], (string) json_encode($data[0]["response"])];
     }
 
-    
+
 }
