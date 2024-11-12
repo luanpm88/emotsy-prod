@@ -13,7 +13,6 @@ class Operate extends Action
     public const OPERATION_UPDATE = 'update';
 
     /*****
-
         Operate action may result in the following cases:
           + Done OK
           + Exception (any type of exception...)
