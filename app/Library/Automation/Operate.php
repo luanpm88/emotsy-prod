@@ -59,6 +59,7 @@ class Operate extends Action
                 // In the future, there should be only 1 place where it is called
                 $this->autoTrigger->cacheSubscriberInfo();
 
+                // After move action, the subscriber_id of Autotrigger shall become null
                 $subscriber->move($toList, $duplicateCallback);
             } else {
                 $subscriber->copy($toList, $duplicateCallback);

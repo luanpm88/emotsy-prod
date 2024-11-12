@@ -247,5 +247,4 @@ abstract class Action
             }
         }
     }
-
 }

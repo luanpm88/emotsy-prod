@@ -251,7 +251,7 @@
   'automation.action.operation.tag_contact.title' => 'Tag contact',
   'automation.action.operation.unsubscribe_contact.desc' => 'Unsubscribe contact',
   'automation.action.operation.unsubscribe_contact.title' => 'Unsubscribe contact',
-  'automation.action.operation.move_contact.done' => 'Moved contact to list :n',
+  'automation.action.operation.move_contact.done' => 'Contact was moved to list :n',
   'automation.action.operation.move_contact.new' => 'Move contact to list :n',
   'automation.action.retry' => 'Retry',
   'automation.action.retry.confirm' => 'Do you want to retry this action?',
