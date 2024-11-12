@@ -2386,6 +2386,7 @@ class Automation2Controller extends Controller
                 'update_contact',
                 'tag_contact',
                 'copy_contact',
+                'remove_tag',
             ],
         ]);
     }
