@@ -497,7 +497,7 @@ class Customer extends Model
 
             //
             $user->save();
-            
+
             // default role
             $user->setRole(Role::getDefaultRole());
         });
@@ -1549,7 +1549,7 @@ class Customer extends Model
     {
         return $this->name;
     }
-    
+
     public function getGoogleAccessToken()
     {
         if (!$this->google_auth) {
@@ -1571,7 +1571,7 @@ class Customer extends Model
         $name,
         $timezone,
         $language_id,
-        $admin=null
+        $admin = null
     ) {
         // init
         $customer = static::newCustomer();
@@ -1654,7 +1654,6 @@ class Customer extends Model
         $name,
         $timezone,
         $language_id,
-
         $email,
         $password,
         $passwordConfirmation,
@@ -1736,7 +1735,7 @@ class Customer extends Model
         // success
         return [$validator, $customer, $user];
     }
-    
+
     public function hasLocalDb()
     {
         return !is_null($this->db_connection);

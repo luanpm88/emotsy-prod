@@ -118,7 +118,7 @@ class LocalCustomer extends Customer
         });
     }
 
-        public function subscribersCount($cache = false)
+    public function subscribersCount($cache = false)
     {
         if ($cache) {
             return $this->readCache('SubscriberCount');

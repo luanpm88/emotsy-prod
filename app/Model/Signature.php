@@ -101,7 +101,7 @@ class Signature extends Model
         $query->where('is_default', true);
     }
 
-    public function saveSignature($name, $content, $is_default=false)
+    public function saveSignature($name, $content, $is_default = false)
     {
         // fill
         $this->name = $name;

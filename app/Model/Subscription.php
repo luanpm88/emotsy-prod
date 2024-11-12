@@ -559,7 +559,7 @@ class Subscription extends Model
      */
     public function activate()
     {
-        \DB::transaction(function() {
+        \DB::transaction(function () {
             if (!$this->isNew()) {
                 throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
             }
