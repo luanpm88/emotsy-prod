@@ -5,7 +5,7 @@
 
 # Migration
 
-1. Choose a customer, specified [customer_id]
+1. Choose a customer, specified by [customer_id]
 
 2. [Optional] Dump the customer's data in the Master DB
 

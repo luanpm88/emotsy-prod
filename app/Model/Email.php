@@ -254,9 +254,10 @@ class Email extends Model implements HasTemplateInterface
 
         $connection = config('custom.automation_queue_connection');
 
-        if (is_null($queue)) {
-            $queue = $this->customer->custom_queue_name ?? ACM_QUEUE_TYPE_SINGLE;
-        } else {
+        if (!is_null($this->customer->custom_queue_name)) {
+            $queue = $this->customer->custom_queue_name;
+        } elseif (is_null($queue)) {
+            $queue = ACM_QUEUE_TYPE_SINGLE;
             // $queue is currently determined by Automation/Send action
             // in which priority is determined by trigger type
         }
