@@ -52,6 +52,15 @@ class DeliveryController extends Controller
                 $this->handleSendGrid();
             } elseif ($type == SendingServerElasticEmail::WEBHOOK) {
                 MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
+
+                $msgId = $_GET['transaction'] ?? '';
+                $customer = Customer::getCustomerFromKey('runtime_message_id', $msgId);
+                if ($customer) {
+                    $customer->setUserDbConnection();
+                } else {
+                    MailLog::warning("Cannot associate transaction id '{$msgId}' with a customer");
+                }
+
                 SendingServerElasticEmail::handleNotification($_GET);
             } elseif ($type == SendingServerSparkPost::WEBHOOK) {
                 MailLog::configure(storage_path().'/logs/handler-sparkpost.log');

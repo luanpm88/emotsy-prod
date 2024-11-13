@@ -1806,7 +1806,38 @@ class Customer extends Model
 
     public function getSelectableRoles()
     {
-        return $this->ownOrGlobalRoles()
-            ->get();
+        return $this->ownOrGlobalRoles()->get();
+    }
+
+    public static function mapKeyToCustomer($namespace, $key, $customerId)
+    {
+        $fullkey = static::getFullKey($namespace, $key);
+        cache([$fullkey => $customerId], now()->addMonths(2));
+    }
+
+    // @tricky: if cannot find a mapping in cache, then try to extract from the key itself
+    public static function getCustomerFromKey($namespace, $key)
+    {
+        $fullkey = static::getFullKey($namespace, $key);
+        $customerId = cache($fullkey);
+        $customer = static::find($customerId);
+
+        // @trick here!
+        if (is_null($customer)) {
+            $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($key);
+
+            if (!is_null($customerUid)) {
+                $customer = \Acelle\Model\Customer::findByUid($customerUid);
+            }
+        }
+
+        return $customer;
+    }
+
+    private static function getFullKey($namespace, $key)
+    {
+        $connector = '_';
+        $fullkey = "{$namespace}{$connector}{$key}";
+        return $fullkey;
     }
 }
