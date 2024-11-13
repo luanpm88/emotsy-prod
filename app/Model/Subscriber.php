@@ -767,8 +767,14 @@ class Subscriber extends Model
      */
     public function isListedInBlacklist()
     {
-        // @todo Filter by current user only
-        return Blacklist::where('email', '=', $this->email)->exists();
+        $globalCheckQuery = Blacklist::global()->where('email', '=', $this->email);
+        $localCheckQuery = Blacklist::where('email', '=', $this->email)->where('customer_id', $this->mailList->customer_id);
+
+        if (Setting::isYes('blacklist.use_global_blacklist')) {
+            return $globalCheckQuery->exists() || $localCheckQuery->exists();
+        } else {
+            return $localCheckQuery->exists();
+        }
     }
 
     public function getFullName($default = null, $reload = true)
