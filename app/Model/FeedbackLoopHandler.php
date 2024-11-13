@@ -78,6 +78,12 @@ class FeedbackLoopHandler extends DeliveryHandler
                 throw new \Exception('cannot find Message-ID, skipped');
             }
 
+            $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+            $customer = \Acelle\Model\Customer::findByUid($customerUid);
+            if (!is_null($customer)) {
+                $customer->setUserDbConnection();
+            }
+
             $this->logger()->info('Processing abuse notification for message '.$msgId);
 
             $trackingLog = TrackingLog::where('message_id', $msgId)->first();

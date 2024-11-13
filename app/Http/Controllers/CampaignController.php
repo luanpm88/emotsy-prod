@@ -1097,16 +1097,14 @@ class CampaignController extends Controller
     public function open(Request $request)
     {
         try {
-
             // Record open log
             $ipAddress = $request->ip();
             $userAgent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
             $messageId = StringHelper::base64UrlDecode($request->message_id);
 
             $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
-
-            if (!is_null($customerUid)) {
-                $customer = \Acelle\Model\Customer::findByUid($customerUid);
+            $customer = \Acelle\Model\Customer::findByUid($customerUid);
+            if (!is_null($customer)) {
                 $customer->setUserDbConnection();
             }
 
