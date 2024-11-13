@@ -15,6 +15,6 @@
     </div>
 
     <div class="text-end">
-        <a href="{{ action('Pub\CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+        <a href="{{ action('Pub\CampaignController@clickLog', [ 'uid' => $campaign->uid, 'customer_uid' => $campaign->customer->uid ]) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
     </div>
 @endif

@@ -24,6 +24,18 @@ class CampaignController extends Controller
         parent::__construct();
     }
 
+    private function setUserDbConnection($request)
+    {
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer connection');
+        } else {
+            $customer->setUserDbConnection();
+        }
+    }
+
     /**
      * Campaign overview.
      *
@@ -33,6 +45,7 @@ class CampaignController extends Controller
      */
     public function overview(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         // Trigger the CampaignUpdate event to update the campaign cache information
@@ -53,6 +66,7 @@ class CampaignController extends Controller
      */
     public function links(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
         $links = $campaign->clickLogs()
                           ->select(
@@ -76,6 +90,7 @@ class CampaignController extends Controller
      */
     public function chart24h(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
         $currentTimezone = $campaign->customer->getTimezone();
 
@@ -208,6 +223,7 @@ class CampaignController extends Controller
      */
     public function chart(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $result = [
@@ -257,6 +273,7 @@ class CampaignController extends Controller
      */
     public function chartCountry(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $result = [
@@ -294,6 +311,7 @@ class CampaignController extends Controller
      */
     public function chartClickCountry(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $result = [
@@ -331,6 +349,7 @@ class CampaignController extends Controller
      */
     public function quickView(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         return view('public.campaigns._quick_view', [
@@ -343,6 +362,7 @@ class CampaignController extends Controller
      */
     public function trackingLog(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = $campaign->trackingLogs();
@@ -358,6 +378,7 @@ class CampaignController extends Controller
      */
     public function trackingLogListing(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = TrackingLog::search($request, $campaign)->paginate($request->per_page);
@@ -373,6 +394,7 @@ class CampaignController extends Controller
      */
     public function trackingLogDownload(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $logtype = $request->input('logtype');
@@ -391,12 +413,13 @@ class CampaignController extends Controller
      */
     public function trackingLogExportProgress(Request $request)
     {
+        $this->setUserDbConnection($request);
         $job = JobMonitor::findByUid($request->uid);
 
         $progress = $job->getJsonData();
         $progress['status'] = $job->status;
         $progress['error'] = $job->error;
-        $progress['download'] = action('Pub\CampaignController@download', ['uid' => $job->uid]);
+        $progress['download'] = action('Pub\CampaignController@download', ['customer_uid' => $request->customer_uid,'uid' => $job->uid]);
 
         return response()->json($progress);
     }
@@ -406,6 +429,7 @@ class CampaignController extends Controller
      */
     public function download(Request $request)
     {
+        $this->setUserDbConnection($request);
         $job = JobMonitor::findByUid($request->uid);
         $path = $job->getJsonData()['path'];
         return response()->download($path)->deleteFileAfterSend(true);
@@ -416,6 +440,7 @@ class CampaignController extends Controller
      */
     public function bounceLog(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = $campaign->bounceLogs();
@@ -431,6 +456,7 @@ class CampaignController extends Controller
      */
     public function bounceLogListing(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = \Acelle\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
@@ -446,6 +472,7 @@ class CampaignController extends Controller
      */
     public function feedbackLog(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = $campaign->openLogs();
@@ -461,6 +488,7 @@ class CampaignController extends Controller
      */
     public function feedbackLogListing(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = \Acelle\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
@@ -476,6 +504,7 @@ class CampaignController extends Controller
      */
     public function openLog(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = $campaign->openLogs();
@@ -491,6 +520,7 @@ class CampaignController extends Controller
      */
     public function openLogListing(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = \Acelle\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
@@ -506,6 +536,7 @@ class CampaignController extends Controller
      */
     public function clickLog(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = $campaign->clickLogs();
@@ -521,6 +552,7 @@ class CampaignController extends Controller
      */
     public function clickLogListing(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = \Acelle\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
@@ -536,6 +568,7 @@ class CampaignController extends Controller
      */
     public function unsubscribeLog(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = $campaign->unsubscribeLogs();
@@ -551,6 +584,7 @@ class CampaignController extends Controller
      */
     public function unsubscribeLogListing(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
@@ -566,6 +600,7 @@ class CampaignController extends Controller
      */
     public function openMap(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         return view('public.campaigns.open_map', [
@@ -578,6 +613,7 @@ class CampaignController extends Controller
      */
     public function subscribers(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         $subscribers = $campaign->subscribers();
@@ -586,6 +622,7 @@ class CampaignController extends Controller
             'subscribers' => $subscribers,
             'campaign' => $campaign,
             'list' => $campaign->defaultMailList,
+            'columns' => $request->user()->getSetting('subscribers_columns') ?? ['created_at', 'updated_at'],
         ]);
     }
 
@@ -594,6 +631,7 @@ class CampaignController extends Controller
      */
     public function subscribersListing(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
 
         // Subscribers
@@ -656,9 +694,10 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function preview($id)
+    public function preview(Request $request)
     {
-        $campaign = Campaign::findByUid($id);
+        $this->setUserDbConnection($request);
+        $campaign = Campaign::findByUid($request->uid);
 
         return view('public.campaigns.preview', [
             'campaign' => $campaign,
@@ -674,6 +713,7 @@ class CampaignController extends Controller
      */
     public function previewContent(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaign = Campaign::findByUid($request->uid);
         $subscriber = Subscriber::find($request->subscriber_id);
 
@@ -685,6 +725,7 @@ class CampaignController extends Controller
      */
     public function webView(Request $request)
     {
+        $this->setUserDbConnection($request);
         $message_id = StringHelper::base64UrlDecode($request->message_id);
         $tracking_log = TrackingLog::where('message_id', '=', $message_id)->first();
 
@@ -715,6 +756,7 @@ class CampaignController extends Controller
      */
     public function webViewPreview(Request $request)
     {
+        $this->setUserDbConnection($request);
         $subscriber = Subscriber::find($request->subscriber_id);
         $campaign = Campaign::findByUid($request->campaign_uid);
 
@@ -738,6 +780,7 @@ class CampaignController extends Controller
      */
     public function templateReview(Request $request)
     {
+        $this->setUserDbConnection($request);
         // Get current user
         $campaign = Campaign::findByUid($request->uid);
 
@@ -755,6 +798,7 @@ class CampaignController extends Controller
      */
     public function templateReviewIframe(Request $request)
     {
+        $this->setUserDbConnection($request);
         // Get current user
         $campaign = Campaign::findByUid($request->uid);
 
@@ -765,6 +809,7 @@ class CampaignController extends Controller
 
     public function speedtest(Request $request)
     {
+        $this->setUserDbConnection($request);
         $campaigns = Campaign::latest()->paginate(10);
 
         return view('campaigns._list', [

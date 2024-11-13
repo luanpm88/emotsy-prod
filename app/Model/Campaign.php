@@ -317,6 +317,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
         if (!isset($params['runtime_message_id'])) {
             $params['runtime_message_id'] = $msgId;
+        } else {
+            Customer::mapKeyToCustomer('runtime_message_id', $params['runtime_message_id'], $this->customer->id);
         }
 
         // create tracking log for message
