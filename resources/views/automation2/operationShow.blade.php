@@ -31,7 +31,11 @@
             <tr>
                 <th width="40%" scope="col" class="ps-0">{{ trans('messages.automation.operation.remove_tag.will_be_removed') }}</th>
                 <td>
-                    @foreach($element->getOption('tags') as $tag)
+                    @php
+                        $tags = isset($element) ? ($element->getOption('tags') ?? []) : [];
+                    @endphp
+
+                    @foreach($tags as $tag)
                         <span class="label bg-error mr-1" style="text-transform:none">{{ $tag }}</span>
                     @endforeach
                 </td>
