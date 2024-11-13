@@ -11,6 +11,7 @@ class Operate extends Action
     public const OPERATION_COPY = 'copy';
     public const OPERATION_MOVE = 'move';
     public const OPERATION_UPDATE = 'update';
+    public const OPERATION_REMOVE_TAG = 'remove_tag';
 
     /*****
         Operate action may result in the following cases:
