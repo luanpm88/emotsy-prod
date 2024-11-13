@@ -82,8 +82,10 @@ class Blacklist extends Model
      */
     public static function doBlacklist($customer = null)
     {
-        $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email SET status = %s WHERE s.status = %s AND b.customer_id IS NULL', table('subscribers'), table('blacklists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED));
-        \DB::statement($sql);
+        if (Setting::isYes('blacklist.use_global_blacklist')) {
+            $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email SET status = %s WHERE s.status = %s AND b.customer_id IS NULL', table('subscribers'), table('blacklists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED));
+            \DB::statement($sql);
+        }
 
         // user wide blacklist
         if (!is_null($customer)) {

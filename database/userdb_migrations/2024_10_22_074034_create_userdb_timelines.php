@@ -20,6 +20,7 @@ class CreateUserdbTimelines extends Migration
 
             $table->text('activity')->nullable();
             $table->text('activity_type')->nullable();
+            $table->text('url')->nullable();
             $table->string('type')->nullable();
 
             $table->bigInteger('automation2_id')->unsigned()->nullable();

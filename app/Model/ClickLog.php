@@ -44,9 +44,16 @@ class ClickLog extends Model
         }
 
         $messageId = StringHelper::base64UrlDecode($request->message_id);
+
         if (is_null($messageId)) {
             // Preview email does not have message ID
             return [$url, null];
+        }
+
+        $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+        if (!is_null($customerUid)) {
+            $customer = \Acelle\Model\Customer::findByUid($customerUid);
+            $customer->setUserDbConnection();
         }
 
         $trackingLog = TrackingLog::where('message_id', $messageId)->first();
@@ -97,10 +104,10 @@ class ClickLog extends Model
 
     public function createRelatedOpenLogIfNotExist()
     {
-        $openLog = OpenLog::firstOrNew(['message_id' => $this->message_id]);
+        $openLog = OpenLog::where('message_id', $this->message_id)->exists();
 
-        if (is_null($openLog->id)) {
-            $openLog->save();
+        if (!$openLog) {
+            OpenLog::createFromMessageId($this->message_id, $this->ip_address, $this->user_agent);
         }
     }
 
@@ -146,7 +153,9 @@ class ClickLog extends Model
         $query = $query->leftJoin('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+
+        // Cross DB reference not supported
+        // $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
 
         // Keyword
