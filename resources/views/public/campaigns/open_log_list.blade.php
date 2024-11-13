@@ -40,7 +40,8 @@
                 @if ($item->trackingLog->campaign->openWebhooks()->count())
                     <td class="text-end">
                         <a href="{{ action('Pub\CampaignController@openLogExecute', [
-                            'uid' => $item->trackingLog->campaign->uid,
+                            'uid' => $campaign->uid,
+                            'customer_uid' => $campaign->customer->uid,
                             'message_id' => $item->message_id,
                         ]) }}" class="btn btn-light open_log_detail">
                             {{ trans('messages.webhook.execute_open_callback') }}

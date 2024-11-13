@@ -58,7 +58,7 @@ class QueueReport extends Command
         }
         echo "---------------------------------------------\n";
 
-        $customQueues = Customer::whereNotNull('custom_queue_name')->pluck('custom_queue_name')->toArray();
+        $customQueues = Customer::whereNotNull('custom_queue_name')->select('custom_queue_name')->distinct()->pluck('custom_queue_name')->toArray();
 
         foreach ($customQueues as $queue) {
             $print($queue);

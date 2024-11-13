@@ -19,7 +19,7 @@
 <h2 class="text-semibold text-primary">{{ trans('messages.click_log') }}</h2>
 
 <form class="listing-form"
-        data-url="{{ action('Pub\CampaignController@clickLogListing', $campaign->uid) }}"
+        data-url="{{ action('Pub\CampaignController@clickLogListing', [ 'uid' => $campaign->uid, 'customer_uid' => $campaign->customer->uid ]) }}"
         per-page="{{ Acelle\Model\ClickLog::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content">
@@ -56,7 +56,7 @@
         var CampaignLogIndex = {
             getList: function() {
                 return makeList({
-                    url: '{{ action('Pub\CampaignController@clickLogListing', $campaign->uid) }}',
+                    url: '{{ action('Pub\CampaignController@clickLogListing', [ 'uid' => $campaign->uid, 'customer_uid' => $campaign->customer->uid ]) }}',
                     container: $('.listing-form'),
                     content: $('.pml-table-container')
                 });

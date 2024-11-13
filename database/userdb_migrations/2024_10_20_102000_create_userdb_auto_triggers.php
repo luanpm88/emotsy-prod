@@ -20,6 +20,7 @@ class CreateUserdbAutoTriggers extends Migration
 
             $table->text('data')->nullable();
             $table->text('executed_index')->nullable();
+            $table->text('cached_subscriber')->nullable();
             $table->boolean('is_error')->default(false);
 
             $table->bigInteger('subscriber_id')->unsigned()->nullable();  // in case contact is moved to another list, then this field value is NULL

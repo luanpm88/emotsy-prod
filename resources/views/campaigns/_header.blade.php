@@ -13,7 +13,7 @@
             </h1>
         </div>
         <div class="ms-auto">
-            <a target="_blank" href="{{ action('Pub\CampaignController@overview', $campaign->uid) }}" class="btn btn-default">
+            <a target="_blank" href="{{ action('Pub\CampaignController@overview', ['uid' => $campaign->uid, 'customer_uid' => $campaign->customer->uid]) }}" class="btn btn-default">
                 <span class="material-symbols-rounded me-1">public</span>
                 {{ trans('messages.campaign.public_report') }}
             </a>

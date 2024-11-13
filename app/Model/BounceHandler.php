@@ -65,6 +65,14 @@ class BounceHandler extends DeliveryHandler
                 $this->logger()->info('Parsed OK, Message-ID found in email body, proceeding with '.$msgId);
             }
 
+            $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($msgId);
+            $customer = \Acelle\Model\Customer::findByUid($customerUid);
+            if (!is_null($customer)) {
+                $customer->setUserDbConnection();
+            } else {
+                // backward compatible
+            }
+
             $trackingLog = TrackingLog::where('message_id', $msgId)->first();
 
             if (empty($trackingLog)) {

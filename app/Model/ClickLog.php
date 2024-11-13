@@ -51,8 +51,8 @@ class ClickLog extends Model
         }
 
         $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
-        if (!is_null($customerUid)) {
-            $customer = \Acelle\Model\Customer::findByUid($customerUid);
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+        if (!is_null($customer)) {
             $customer->setUserDbConnection();
         }
 
