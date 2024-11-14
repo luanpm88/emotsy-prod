@@ -54,7 +54,11 @@ class RoleController extends Controller
     {
         $role = Role::newGlobalRole();
 
-        $errors = $role->saveFromArray($request->all());
+        $errors = $role->saveRole(
+            $request->name,
+            $request->description,
+            $request->permissions
+        );
 
         // redirect if fails
         if (!$errors->isEmpty()) {
@@ -99,7 +103,11 @@ class RoleController extends Controller
             return $this->notAuthorized();
         }
 
-        $errors = $role->saveFromArray($request->all());
+        $errors = $role->saveRole(
+            $request->name,
+            $request->description,
+            $request->permissions
+        );
 
         // redirect if fails
         if (!$errors->isEmpty()) {

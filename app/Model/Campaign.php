@@ -2497,6 +2497,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $template = new Template();
         $template->uid = uniqid();
         $template->fill($attributes); // Including 'uid', 'name', 'content', 'builder'
+        $template->is_private = Template::IS_PRIVATE;
         $template->content = $content;
         $template->customer_id = $this->customer_id;
         $template->name = trans('messages.campaign.template_name', ['name' => $this->name]);

@@ -26,7 +26,7 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.campaign') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ $item->sendingServer->name }}</span>
+					<span class="no-margin kq_search">{{ $item->getSendingServer() ? $item->getSendingServer()->name : '[server]' }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.sending_server') }}</span>
 				</td>
 				<td>
