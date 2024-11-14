@@ -499,7 +499,7 @@ class Customer extends Model
             $user->save();
 
             // default role
-            $user->setRole(Role::getDefaultRole());
+            $user->setRole(Role::getDefaultAdminRole());
         });
 
         // Important: return the newly created USER

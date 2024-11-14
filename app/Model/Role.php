@@ -65,6 +65,11 @@ class Role extends Model
         $query->whereIsGlobal(true);
     }
 
+    public static function scopeReadonly($query)
+    {
+        $query->whereReadonly(true);
+    }
+
     public static function scopeAccountRoles($query)
     {
         $query->whereIsGlobal(false);
@@ -155,8 +160,26 @@ class Role extends Model
             ->exists();
     }
 
-    public static function getDefaultRole()
+    public static function getDefaultAdminRole()
     {
-        return static::whereDefault(true)->first();
+        return static::whereCode('organization_admin')->first();
+    }
+
+    public function assignDefaultAdminPermissions()
+    {
+        $permissions = config('roles.organization_admin');
+
+        foreach ($permissions as $permission) {
+            $this->addPermission($permission);
+        }
+    }
+
+    public function assignDefaultReadonlyPermissions()
+    {
+        $permissions = config('roles.organization_readonly');
+
+        foreach ($permissions as $permission) {
+            $this->addPermission($permission);
+        }
     }
 }

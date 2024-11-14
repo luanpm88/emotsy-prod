@@ -19,7 +19,6 @@ class CreateRolesTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('status');
-            $table->boolean('default')->default(false);
             $table->boolean('readonly')->default(false);
             $table->timestamps();
         });

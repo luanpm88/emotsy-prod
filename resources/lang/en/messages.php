@@ -3670,4 +3670,5 @@
   'automation.outgoing_webhook.custom_value' => 'Custom Value',
   'automation.outgoing_webhook.test_output' => 'TEST OUTPUT',
   'automation.outgoing_webhook.testing_webhook' => 'Testing webhook... Please wait!',
+  'account.at_least_one_admin_user' => 'The customer must have at least one Full-access role!',
 ) ?>
