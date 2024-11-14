@@ -12,6 +12,8 @@ class Role extends Model
     use HasFactory;
     use HasUid;
 
+    protected $connection = 'mysql';
+
     // statuses
     public const STATUS_INACTIVE = 'inactive';
     public const STATUS_ACTIVE = 'active';

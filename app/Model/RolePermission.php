@@ -9,6 +9,8 @@ class RolePermission extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
+
     protected $table = 'role_permission';
 
     public static function createRolePermission($role, $permission)
