@@ -14,7 +14,16 @@ class InsertDefaultAccountRoles extends Migration
     public function up()
     {
         // import database via seeder
-        \Artisan::call('db:seed', ['--class' => 'InitAppRolesSeeder']);
+        \Artisan::call('db:seed', ['--class' => 'CreateUpdateDefaultAppRolesSeeder']);
+
+        // 3. add administrator role to all old users that upgrade to rbac version
+        $administratorRole = \Acelle\Model\Role::global()
+            ->readonly()
+            ->whereName('Full Access')
+            ->first();
+        foreach(\Acelle\Model\User::whereDoesntHave('roles')->get() as $user) {
+            $user->setRole($administratorRole);
+        }
     }
 
     /**

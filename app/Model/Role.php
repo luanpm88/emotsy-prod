@@ -65,6 +65,11 @@ class Role extends Model
         $query->whereIsGlobal(true);
     }
 
+    public static function scopeReadonly($query)
+    {
+        $query->whereReadonly(true);
+    }
+
     public static function scopeAccountRoles($query)
     {
         $query->whereIsGlobal(false);
