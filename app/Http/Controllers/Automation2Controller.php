@@ -2903,6 +2903,7 @@ class Automation2Controller extends Controller
 
     public function outgoingWebhookTest(Request $request, $uid)
     {
+        sleep(2);
         $automation = Automation2::findByUid($uid);
 
         return view('automation2.outgoing_webhook.testResult', [

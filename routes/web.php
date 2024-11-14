@@ -733,6 +733,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::post('automation/{uid}/outgoing-webhook/test', 'Automation2Controller@outgoingWebhookTest');
     Route::get('automation/{uid}/outgoing-webhook/test-popup', 'Automation2Controller@outgoingWebhookTestPopup');
     Route::get('automation/{uid}/outgoing-webhook/setup', 'Automation2Controller@outgoingWebhookSetup');
 

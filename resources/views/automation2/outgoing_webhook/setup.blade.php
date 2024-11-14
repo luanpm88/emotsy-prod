@@ -377,7 +377,7 @@
 
     <script>
         $(() => {
-            new WebhookForm({
+            window.webhookForm = new WebhookForm({
                 form: $('#{{ $formId }}'),
             });
         });
@@ -438,6 +438,10 @@
 
             testWebhook() {
                 this.testPopup.load();
+            }
+
+            getData() {
+                return this.form.serialize();
             }
         };
 
