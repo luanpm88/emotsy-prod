@@ -1,5 +1,7 @@
 <?php
 
+// Default roles and permissions
+
 return [
     'organization_admin' => [
         'campgaign.full',
