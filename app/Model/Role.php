@@ -70,18 +70,16 @@ class Role extends Model
         $query->whereIsGlobal(false);
     }
 
-    public function fillAttributes($params)
+    public function saveRole($name, $description, $permissions=[])
     {
-        $this->name = $params['name'] ?? null;
-        $this->description = $params['description'] ?? null;
-    }
-
-    public function saveFromArray($params)
-    {
-        $this->fillAttributes($params);
+        //
+        $this->name = $name;
+        $this->description = $description;
 
         // make validator
-        $validator = \Validator::make($params, [
+        $validator = \Validator::make([
+            'name' => $name,
+        ], [
             'name' => 'required',
         ]);
 
@@ -94,7 +92,7 @@ class Role extends Model
         $this->save();
 
         // update permissions from array
-        $this->updatePermissions($params['permissions'] ?? []);
+        $this->updatePermissions($permissions);
 
         return $validator->errors();
     }
