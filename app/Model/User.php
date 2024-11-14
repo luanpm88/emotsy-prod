@@ -971,9 +971,13 @@ class User extends Authenticatable
             'role_uid' => $role_uid,
         ], $rules);
 
+        // validate
         if ($validator->fails()) {
             return [false, $validator->errors()];
         }
+
+        // find role
+        $role = Role::findByUid($role_uid);
 
         // Update password
         if (!empty($password)) {
@@ -992,7 +996,7 @@ class User extends Authenticatable
         }
 
         // role is required
-        $this->setRole(Role::findByUid($role_uid));
+        $this->setRole($role);
 
         return [true, $validator->errors()];
     }

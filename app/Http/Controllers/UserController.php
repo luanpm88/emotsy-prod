@@ -242,6 +242,7 @@ class UserController extends Controller
             $role_uid = $request->role_uid
         );
 
+
         // redirect if fails
         if (!$result) {
             return response()->view('users.create', [
@@ -281,6 +282,35 @@ class UserController extends Controller
     {
         // Get current user
         $user = \Acelle\Model\User::findByUid($id);
+
+        // Make sure account has at least one role with code organization_admin
+        if ($request->role_uid) {
+            // find role
+            $role = \Acelle\Model\Role::findByUid($request->role_uid);
+
+            // if updating role is organization_admin ==> ok
+            if ($role->code == 'organization_admin') {
+
+            } else { // if updating role is not organization_admin
+                // ==> kiểm tra tiếp xem là còn user nào có role này không ngoài user đó cùng account
+                $exists = $user->customer->users()
+                    ->where('id', '!=', $user->id)
+                    ->whereHas('roles', function ($q) {
+                        $q->whereCode('organization_admin');
+                    })
+                    ->exists();
+                
+                // check
+                if (!$exists) {
+                    return response()->view('users.edit', [
+                        'user' => $user,
+                        'errors' => new \Illuminate\Support\MessageBag([
+                            'error' => trans('messages.account.at_least_one_admin_user')
+                        ]),
+                    ], 400);
+                }
+            }
+        }
 
         //
         [$result, $errors] = $user->saveUser(

@@ -3630,4 +3630,5 @@
   'automation.operation.remove_tag.desc' => 'Remove one or more assigned tags from a contact',
   'automation.operation.remove_tag' => 'Remove contact tag(s)',
   'automation.operation.remove_tag.will_be_removed' => 'Tag(s) will be removed',
+  'account.at_least_one_admin_user' => 'The customer must have at least one Full-access role!',
 ) ?>
