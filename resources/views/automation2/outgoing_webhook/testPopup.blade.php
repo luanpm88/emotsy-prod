@@ -1,4 +1,4 @@
-@extends('layouts.popup.large')
+@extends('layouts.popup.small')
 
 @section('content')
     <style>
