@@ -1,3 +1,26 @@
+4.0.26-p87 / 2024-11-14
+==========================
+
+ * Added: Custom listing view for users
+ * Added: Updated GDPR compliance
+ * Added: Automation workflows with support for additional activities
+ * Added: Delivery tracking for each automated message
+ * Added: Contact activity tracking over time
+ * Added: List duplication handling support during campaign delivery
+ * Added: More email base templates
+ * Fixed: General improvement in delivery performance
+ * Fixed: Deleted contacts excluded from campaign reports
+ * Fixed: Full delivery report not displayed in campaign public view in some cases
+ * Fixed: Timezone preference inconsistencies in certain cases
+ * Fixed: Date/time picker widget issues in older versions of Internet Explorer
+ * Fixed: Reduced MySQL overhead during campaign charge
+ * Fixed: Reduced MySQL overhead during import/export processes
+ * Fixed: Enhanced URL compatibility across various browsers
+ * Fixed: Improved compatibility with Outlook and Gmail
+ * Fixed: Certain webhooks not executed during plugin bootstrap
+ * Fixed: race condition in certain cases
+ * Fixed: Reduced network overhead in general
+
 4.0.26-p68 / 2024-05-14
 ==========================
 
