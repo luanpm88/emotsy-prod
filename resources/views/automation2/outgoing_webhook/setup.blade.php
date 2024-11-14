@@ -176,7 +176,7 @@
                                                 <ul class="dropdown-menu">
                                                     @foreach ($automation->getAvailableOutgoingWebhookTags() as $tag)
                                                         <li>
-                                                            <a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item" href="#">
+                                                            <a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item border-bottom" href="#">
                                                                 <span class="fw-semibold">{{ $tag['label'] }}</span><br>
                                                                 <span>{{ $tag['tag'] }}</span>
                                                             </a>
@@ -207,7 +207,7 @@
                                     <ul class="dropdown-menu">
                                         @foreach ($automation->getAvailableOutgoingWebhookTags() as $tag)
                                             <li>
-                                                <a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item" href="#">
+                                                <a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item border-bottom" href="#">
                                                     <span class="fw-semibold">{{ $tag['label'] }}</span><br>
                                                     <span>{{ $tag['tag'] }}</span>
                                                 </a>
@@ -542,7 +542,7 @@
                                     <ul class="dropdown-menu">
                                         @foreach ($automation->getAvailableOutgoingWebhookTags() as $tag)
                                             <li>
-                                                <a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item" href="#">
+                                                <a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item border-bottom" href="#">
                                                     <span class="fw-semibold">{{ $tag['label'] }}</span><br>
                                                     <span>{{ $tag['tag'] }}</span>
                                                 </a>
@@ -668,7 +668,7 @@
                                     <ul class="dropdown-menu">
                                         @foreach ($automation->getAvailableOutgoingWebhookTags() as $tag)
                                             <li>
-                                                <a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item" href="#">
+                                                <a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item border-bottom" href="#">
                                                     <span class="fw-semibold">{{ $tag['label'] }}</span><br>
                                                     <span>{{ $tag['tag'] }}</span>
                                                 </a>
