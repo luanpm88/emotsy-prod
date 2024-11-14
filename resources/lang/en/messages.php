@@ -3671,4 +3671,5 @@
   'automation.outgoing_webhook.test_output' => 'TEST OUTPUT',
   'automation.outgoing_webhook.testing_webhook' => 'Testing webhook... Please wait!',
   'account.at_least_one_admin_user' => 'The customer must have at least one Full-access role!',
+  'automation.intro.remove-tag' => 'Trigger the automation for your contacts when a specified tag is removed',
 ) ?>

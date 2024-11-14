@@ -1754,4 +1754,19 @@ class Automation2 extends Model
 
         return [$validator, $newAutomation];
     }
+
+    public function getAvailableOutgoingWebhookTags()
+    {
+        $tags = [];
+
+        // List field tags
+        foreach ($this->mailList->fields as $field) {
+            $tags[] = [
+                'label' => $field->label,
+                'tag' => '{{' . $field->tag . '}}',
+            ];
+        }
+
+        return $tags;
+    }
 }
