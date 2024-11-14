@@ -222,46 +222,32 @@
                             </div>
 
                             <div data-option-box="key_value_pair" class="">
-                                <label for="" class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.body_parameters') }}</label>
-                                <table class="table table-bordered m-0">
-                                    <thead>
-                                        <tr>
-                                            <th width="50%" class="small" style="font-weight:normal;">{{ trans('messages.automation.outgoing_webhook.key') }}</th>
-                                            <th width="50%" class="small" style="font-weight:normal;">{{ trans('messages.automation.outgoing_webhook.value') }}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="bg-light">
-                                                <input type="text" name="webhook[headers][0][key]" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.key') }}" />
-                                            </td>
-                                            <td class="bg-light">
-                                                <input type="text" name="webhook[headers][0][value]" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.value') }}" />
-                                            </td>
-                                            <td width="1%" class="text-center">
-                                                <button type="button" class="btn btn-danger px-2">
-                                                    <span class="d-flex align-items-center">
-                                                        <span class="material-symbols-rounded">
-                                                            delete
-                                                        </span>
-                                                    </span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div class="text-end mt-2">
-                                    <button type="button" class="btn btn-primary btn-sm">
-                                        <span class="d-flex align-items-center">
-                                            <span class="material-symbols-rounded me-1">
-                                                add
+                                <div data-control="body-parameters-container">
+                                    <label for="" class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.body_parameters') }}</label>
+                                    <table class="table table-bordered m-0">
+                                        <thead>
+                                            <tr>
+                                                <th width="50%" class="small" style="font-weight:normal;">{{ trans('messages.automation.outgoing_webhook.key') }}</th>
+                                                <th width="50%" class="small" style="font-weight:normal;">{{ trans('messages.automation.outgoing_webhook.value') }}</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody list-control="content">
+                                            
+                                        </tbody>
+                                    </table>
+                                    <div class="text-end mt-2">
+                                        <button list-control="add" type="button" class="btn btn-primary btn-sm">
+                                            <span class="d-flex align-items-center">
+                                                <span class="material-symbols-rounded me-1">
+                                                    add
+                                                </span>
+                                                <span>
+                                                    {{ trans('messages.automation.outgoing_webhook.add_more_header') }}
+                                                </span>
                                             </span>
-                                            <span>
-                                                {{ trans('messages.automation.outgoing_webhook.add_more_header') }}
-                                            </span>
-                                        </span>
-                                    </button>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -343,8 +329,115 @@
                     elements: [],
                 });
 
+                // BodyParametersManager
+                this.bodyParametersManager = new BodyParametersManager({
+                    container: this.form.find('[data-control="body-parameters-container"]'),
+                    elements: [],
+                });
+
             }
         };
+
+        // BodyParametersManager
+        var BodyParametersManager = class {
+            constructor(options) {
+                this.container = options.container;
+                this.elements = [];
+
+                // init items
+                if (!options.elements) {
+                    this.elements = options.elements;
+                }
+
+                // first empty element if list is empty
+                if (this.elements.length == 0) {
+                    this.addElement({
+                        key: '',
+                        value: '',
+                    });
+                }
+
+                // render
+                this.render();
+
+                // global events
+                this.events()
+            }
+
+            getContent() {
+                return this.container.find('[list-control="content"]');
+            }
+
+            getAddButton() {
+                return this.container.find('[list-control="add"]');
+            }
+
+            addElement(element) {
+                this.elements.push(element);
+            }
+
+            removeElement(index) {
+                this.elements.splice(index, 1);
+            }
+
+            render() {
+                this.getContent().html('');
+
+                this.elements.forEach((element, index) => {
+                    var e = $(`
+                        <tr>
+                            <td class="bg-light">
+                                <input list-control="input-key" type="text" name="webhook[body_parameters][`+index+`][key]" value="`+element.key+`" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.key') }}" />
+                            </td>
+                            <td class="bg-light">
+                                <input list-control="input-value" type="text" name="webhook[body_parameters][`+index+`][value]" value="`+element.value+`" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.value') }}" />
+                            </td>
+                            <td width="1%" class="text-center" style="min-width: 52px;">
+                                <button list-control="remove" type="button" class="btn btn-danger px-2 `+(index == 0 ? 'd-none' : '')+`">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-rounded">
+                                            delete
+                                        </span>
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+
+                    this.getContent().append(e);
+
+                    // element events
+                    e.find('[list-control="remove"]').on('click', () => {
+                        this.removeElement(index);
+
+                        // 
+                        this.render();
+                    })
+
+                    // update key
+                    e.find('[list-control="input-key"]').on('change', () => {
+                        this.elements[index].key = e.find('[list-control="input-key"]').val();
+                    })
+
+                    // update value
+                    e.find('[list-control="input-value"]').on('change', () => {
+                        this.elements[index].value = e.find('[list-control="input-value"]').val();
+                    })
+                });
+            }
+
+            events() {
+                this.getAddButton().on('click', () => {
+                    this.addElement({
+                        key: '',
+                        value: '',
+                    });
+
+                    //
+                    this.render();
+                })
+            }
+        }
 
         // HeaderListManager
         var HeaderListManager = class {
@@ -365,33 +458,43 @@
                     });
                 }
 
+                // render
                 this.render();
+
+                // global events
+                this.events()
             }
 
             getContent() {
                 return this.container.find('[list-control="content"]');
             }
 
-            addElement(element) {
-                element.id = 'id-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+            getAddButton() {
+                return this.container.find('[list-control="add"]');
+            }
 
+            addElement(element) {
                 this.elements.push(element);
+            }
+
+            removeElement(index) {
+                this.elements.splice(index, 1);
             }
 
             render() {
                 this.getContent().html('');
 
-                this.elements.forEach(element => {
+                this.elements.forEach((element, index) => {
                     var e = $(`
                         <tr>
                             <td class="bg-light">
-                                <input type="text" name="webhook[headers][0][key]" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_key') }}" />
+                                <input list-control="input-key" type="text" name="webhook[headers][`+index+`][key]" value="`+element.key+`" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_key') }}" />
                             </td>
                             <td class="bg-light">
-                                <input type="text" name="webhook[headers][0][value]" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_value') }}" />
+                                <input list-control="input-value" type="text" name="webhook[headers][`+index+`][value]" value="`+element.value+`" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_value') }}" />
                             </td>
-                            <td width="1%" class="text-center">
-                                <button type="button" class="btn btn-danger px-2">
+                            <td width="1%" class="text-center" style="min-width: 52px;">
+                                <button list-control="remove" type="button" class="btn btn-danger px-2 `+(index == 0 ? 'd-none' : '')+`">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-rounded">
                                             delete
@@ -403,7 +506,37 @@
                     `);
 
                     this.getContent().append(e);
+
+                    // element events
+                    e.find('[list-control="remove"]').on('click', () => {
+                        this.removeElement(index);
+
+                        // 
+                        this.render();
+                    })
+
+                    // update key
+                    e.find('[list-control="input-key"]').on('change', () => {
+                        this.elements[index].key = e.find('[list-control="input-key"]').val();
+                    })
+
+                    // update value
+                    e.find('[list-control="input-value"]').on('change', () => {
+                        this.elements[index].value = e.find('[list-control="input-value"]').val();
+                    })
                 });
+            }
+
+            events() {
+                this.getAddButton().on('click', () => {
+                    this.addElement({
+                        key: '',
+                        value: '',
+                    });
+
+                    //
+                    this.render();
+                })
             }
         }
 
