@@ -457,6 +457,7 @@ class Automation2Controller extends Controller
             'wait',
             'condition',
             'operation',
+            'outgoing-webhook'
         ];
 
         return view('automation2.actionSelectPupop', [
@@ -2880,5 +2881,14 @@ class Automation2Controller extends Controller
         $signature = \Acelle\Model\Signature::findByUid($request->signature_uid);
 
         $email->setSignature($signature);
+    }
+
+    public function outgoingWebhookSetup(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        return view('automation2.outgoing_webhook.setup', [
+            'automation' => $automation,
+        ]);
     }
 }

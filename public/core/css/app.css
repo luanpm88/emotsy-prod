@@ -6073,7 +6073,7 @@ a {
     text-decoration: none;
 }
 .small, small {
-    font-size: 0.84rem;
+    font-size: 0.84rem!important;
 }
 body {
     padding-top: 53px;
@@ -8514,4 +8514,10 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
 }
 .avatar-layer .avatar-img:hover {
     border: solid 2px #efefef;
+}
+label.check-symbol {
+    margin: 0;
+}
+.styled[type="radio"]:checked ~ label.check-symbol:after {
+    top: 5px;
 }

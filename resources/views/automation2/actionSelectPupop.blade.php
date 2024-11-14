@@ -21,6 +21,8 @@
                                 <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/condition.svg') }}" />
                             @elseif ($type == 'operation')
                                 <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/operation.svg') }}" />
+                            @elseif ($type == 'outgoing-webhook')
+                                <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/webhook.svg') }}" />
                             @endif
                         </div>
                         <div class="line-body">
@@ -44,6 +46,15 @@
             e.stopImmediatePropagation();
 
             var url = '{!! action('Automation2Controller@operationSelect', $automation->uid) !!}';
+            automationPopup.load(url);
+        });
+
+        $('.action-select-outgoing-webhook').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            var url = '{!! action('Automation2Controller@outgoingWebhookSetup', $automation->uid) !!}';
             automationPopup.load(url);
         });
     </script>
