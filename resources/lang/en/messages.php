@@ -3668,4 +3668,6 @@
   'automation.outgoing_webhook.no_auth.desc' => 'Option to send the request without any authorization headers.',
   'automation.outgoing_webhook.custom_key' => 'Custom Key',
   'automation.outgoing_webhook.custom_value' => 'Custom Value',
+  'automation.outgoing_webhook.test_output' => 'TEST OUTPUT',
+  'automation.outgoing_webhook.testing_webhook' => 'Testing webhook... Please wait!',
 ) ?>

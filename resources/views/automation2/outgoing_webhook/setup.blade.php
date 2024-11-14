@@ -278,7 +278,7 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-center mt-3">
-                        <button class="btn btn-info">
+                        <button data-control="test-webhook" type="button" class="btn btn-info">
                             <span class="d-flex align-items-center">
                                 <span class="material-symbols-rounded me-1">
                                     science
@@ -307,6 +307,9 @@
         var WebhookForm = class {
             constructor(options) {
                 this.form = options.form;
+                this.testPopup = new Popup({
+                    url: '{{ action('Automation2Controller@outgoingWebhookTestPopup', $automation->uid) }}',
+                });
 
                 // AuthorizationOptionSelector
                 this.authorizationOptionSelector = new AuthorizationOptionSelector({
@@ -335,6 +338,24 @@
                     elements: [],
                 });
 
+                //
+                this.events();
+
+            }
+
+            getTestWebhookButton() {
+                return this.form.find('[data-control="test-webhook"]');
+            }
+
+            events() {
+                // test webhook click
+                this.getTestWebhookButton().on('click', () => {
+                    this.testWebhook();
+                });
+            }
+
+            testWebhook() {
+                this.testPopup.load();
             }
         };
 

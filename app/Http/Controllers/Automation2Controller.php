@@ -2891,4 +2891,22 @@ class Automation2Controller extends Controller
             'automation' => $automation,
         ]);
     }
+    
+    public function outgoingWebhookTestPopup(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        return view('automation2.outgoing_webhook.testPopup', [
+            'automation' => $automation,
+        ]);
+    }
+
+    public function outgoingWebhookTest(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        return view('automation2.outgoing_webhook.testResult', [
+            'automation' => $automation,
+        ]);
+    }
 }
