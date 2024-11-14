@@ -89,7 +89,7 @@
 
                             <div data-option-box="bearer_token">
                                 <hr>
-                                <p class="small mb-2">{{ trans('messages.automation.outgoing_webhook.no_auth.desc') }}</p>
+                                <p class="small mb-2">{{ trans('messages.automation.outgoing_webhook.bearer_token.desc') }}</p>
                                 <table class="table table-bordered m-0">
                                     <tr>
                                         <th width="10%" valign="middle" class="small bg-light text-nowrap px-3" style="font-weight:normal;">
@@ -104,7 +104,7 @@
 
                             <div data-option-box="basic_auth">
                                 <hr>
-                                <p class="small mb-2">{{ trans('messages.automation.outgoing_webhook.no_auth.desc') }}</p>
+                                <p class="small mb-2">{{ trans('messages.automation.outgoing_webhook.basic_auth.desc') }}</p>
                                 <table class="table table-bordered m-0">
                                     <tr>
                                         <th width="10%" valign="middle" class="small bg-light text-nowrap px-3" style="font-weight:normal;">
@@ -122,6 +122,32 @@
                                     </tr>
                                 </table>
                             </div>
+
+                            <div data-option-box="custom">
+                                <hr>
+                                <p class="small mb-2">{{ trans('messages.automation.outgoing_webhook.custom.desc') }}</p>
+                                <table class="table table-bordered m-0">
+                                    <tr>
+                                        <th width="10%" valign="middle" class="small bg-light text-nowrap px-3" style="font-weight:normal;">
+                                            {{ trans('messages.automation.outgoing_webhook.custom_key') }}
+                                        </th>
+                                        <td>
+                                            <input type="text" name="webhook[authorization][custom_key]" class="form-control" />
+                                        </td>
+                                        <th width="10%" valign="middle" class="small bg-light text-nowrap px-3" style="font-weight:normal;">
+                                            {{ trans('messages.automation.outgoing_webhook.custom_value') }}
+                                        </th>
+                                        <td>
+                                            <input type="text" name="webhook[authorization][custom_value]" class="form-control" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div data-option-box="no_auth">
+                                <hr>
+                                <p class="small mb-0">{{ trans('messages.automation.outgoing_webhook.no_auth.desc') }}</p>
+                            </div>
                         </div>
 
                         <div class="mb-4 p-3 border rounded shadow-sm bg-white">
@@ -131,12 +157,12 @@
                             </div>
                         </div>
 
-                        <div class="mb-4 p-3 border rounded shadow-sm bg-white">
+                        <div data-control="headers" class="mb-4 p-3 border rounded shadow-sm bg-white">
                             <label for="" class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.headers') }}</label>
-                            <div class="d-flex align-items-center mb-3">
+                            <div class="d-flex align-items-center">
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input type="radio" name="webhook[header]" value="no_headers" id="header-no_headers" class="styled" />
+                                        <input data-control="checker" type="radio" name="webhook[header]" value="no_headers" id="header-no_headers" class="styled" />
                                         <label class="check-symbol" for="header-no_headers"></label>
                                     </div>
                                     <div>
@@ -145,7 +171,7 @@
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input checked type="radio" name="webhook[header]" value="no_headers" id="header-with_headers" class="styled" />
+                                        <input data-control="checker" checked type="radio" name="webhook[header]" value="with_headers" id="header-with_headers" class="styled" />
                                         <label class="check-symbol" for="header-with_headers"></label>
                                     </div>
                                     <div>
@@ -153,61 +179,49 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="">
-                                <table class="table table-bordered m-0">
-                                    <thead>
-                                        <tr>
-                                            <th width="50%" class="small" style="font-weight:normal;">{{ trans('messages.automation.outgoing_webhook.header_key') }}</th>
-                                            <th width="50%" class="small" style="font-weight:normal;">{{ trans('messages.automation.outgoing_webhook.header_value') }}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="bg-light">
-                                                <input type="text" name="webhook[headers][0][key]" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_key') }}" />
-                                            </td>
-                                            <td class="bg-light">
-                                                <input type="text" name="webhook[headers][0][value]" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_value') }}" />
-                                            </td>
-                                            <td width="1%" class="text-center">
-                                                <button type="button" class="btn btn-danger px-2">
-                                                    <span class="d-flex align-items-center">
-                                                        <span class="material-symbols-rounded">
-                                                            delete
-                                                        </span>
-                                                    </span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div class="text-end mt-2">
-                                    <button type="button" class="btn btn-primary btn-sm">
-                                        <span class="d-flex align-items-center">
-                                            <span class="material-symbols-rounded me-1">
-                                                add
+
+                            <div data-option-box="with_headers" class="mt-3">
+                                <div data-control="header-list-container">
+                                    <table class="table table-bordered m-0">
+                                        <thead>
+                                            <tr>
+                                                <th width="50%" class="small" style="font-weight:normal;">{{ trans('messages.automation.outgoing_webhook.header_key') }}</th>
+                                                <th width="50%" class="small" style="font-weight:normal;">{{ trans('messages.automation.outgoing_webhook.header_value') }}</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody list-control="content">
+                                            
+                                        </tbody>
+                                    </table>
+                                    <div list-control="add" class="text-end mt-2">
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            <span class="d-flex align-items-center">
+                                                <span class="material-symbols-rounded me-1">
+                                                    add
+                                                </span>
+                                                <span>
+                                                    {{ trans('messages.automation.outgoing_webhook.add_more_header') }}
+                                                </span>
                                             </span>
-                                            <span>
-                                                {{ trans('messages.automation.outgoing_webhook.add_more_header') }}
-                                            </span>
-                                        </span>
-                                    </button>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group mb-0 p-3 border rounded shadow-sm bg-white">
+                        <div data-control="body-config" class="form-group mb-0 p-3 border rounded shadow-sm bg-white">
                             <label for="" class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.unified_body_configuration') }}</label>
                             <div class="row mb-2">
                                 <div class="col-md-6">
-                                    <select name="" id="" class="select">
+                                    <select data-control="selector" name="webhook[body-type]" id="" class="select">
                                         <option value="key_value_pair">{{ trans('messages.automation.outgoing_webhook.key_value_pair') }}</option>
                                         <option value="plain_text">{{ trans('messages.automation.outgoing_webhook.plain_text') }}</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="">
+
+                            <div data-option-box="key_value_pair" class="">
                                 <label for="" class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.body_parameters') }}</label>
                                 <table class="table table-bordered m-0">
                                     <thead>
@@ -251,7 +265,7 @@
                                 </div>
                             </div>
 
-                            <div>
+                            <div data-option-box="plain_text">
                                 <label for="" class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.json_xml') }}</label>
                                 <div id="editor" class="rounded shadow-sm" style="height: 200px;width: 100%;"></div>
                             
@@ -308,15 +322,93 @@
             constructor(options) {
                 this.form = options.form;
 
-                // AuthorizationOptionManager
-                this.authorizationOptionManager = new AuthorizationOptionManager({
+                // AuthorizationOptionSelector
+                this.authorizationOptionSelector = new AuthorizationOptionSelector({
                     container: this.form.find('[data-control="authorization-options"]'),
                 });
+
+                // HeaderSelector
+                this.headerSelector = new HeaderSelector({
+                    container: this.form.find('[data-control="headers"]'),
+                });
+                
+                // BodyConfigurationSelector
+                this.bodyConfigurationSelector = new BodyConfigurationSelector({
+                    container: this.form.find('[data-control="body-config"]'),
+                });
+
+                // HeaderListManager
+                this.headerListManager = new HeaderListManager({
+                    container: this.form.find('[data-control="header-list-container"]'),
+                    elements: [],
+                });
+
             }
         };
 
-        // AuthorizationOptionManager
-        var AuthorizationOptionManager = class {
+        // HeaderListManager
+        var HeaderListManager = class {
+            constructor(options) {
+                this.container = options.container;
+                this.elements = [];
+
+                // init items
+                if (!options.elements) {
+                    this.elements = options.elements;
+                }
+
+                // first empty element if list is empty
+                if (this.elements.length == 0) {
+                    this.addElement({
+                        key: '',
+                        value: '',
+                    });
+                }
+
+                this.render();
+            }
+
+            getContent() {
+                return this.container.find('[list-control="content"]');
+            }
+
+            addElement(element) {
+                element.id = 'id-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+
+                this.elements.push(element);
+            }
+
+            render() {
+                this.getContent().html('');
+
+                this.elements.forEach(element => {
+                    var e = $(`
+                        <tr>
+                            <td class="bg-light">
+                                <input type="text" name="webhook[headers][0][key]" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_key') }}" />
+                            </td>
+                            <td class="bg-light">
+                                <input type="text" name="webhook[headers][0][value]" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_value') }}" />
+                            </td>
+                            <td width="1%" class="text-center">
+                                <button type="button" class="btn btn-danger px-2">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-rounded">
+                                            delete
+                                        </span>
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+
+                    this.getContent().append(e);
+                });
+            }
+        }
+
+        // AuthorizationOptionSelector
+        var AuthorizationOptionSelector = class {
             constructor(options) {
                 this.container = options.container;
 
@@ -363,7 +455,102 @@
                 this.getOptionBoxes().hide();
 
                 // show selected box
-                this.getOptionBoxByValue(value).show();
+                this.getOptionBoxByValue(value).fadeIn();
+            }
+        };
+
+        // HeaderSelector
+        var HeaderSelector = class {
+            constructor(options) {
+                this.container = options.container;
+
+                // current checked
+                if (this.getCheckedChecker()) {
+                    this.select(this.getCheckedChecker().val());
+                }
+
+                this.events();
+            }
+
+            getCheckers() {
+                return this.container.find('[data-control="checker"]');
+            }
+
+            getCheckedChecker() {
+                return this.getCheckers().filter(':checked');
+            }
+
+            getOptionBoxes() {
+                return this.container.find('[data-option-box]');
+            }
+
+            getOptionBoxByValue(value) {
+                return this.container.find('[data-option-box="'+value+'"]');
+            }
+
+            events() {
+                var _this = this;
+
+                this.getCheckers().on('change', function(e) {
+                    var checker = $(this);
+                    var value = checker.val();
+
+                    // if checked
+                    if (checker.is(':checked')) {
+                        _this.select(value);
+                    }
+                });
+            }
+
+            select(value) {
+                // hide all option boxes
+                this.getOptionBoxes().hide();
+
+                // show selected box
+                this.getOptionBoxByValue(value).fadeIn();
+            }
+        };
+
+        // BodyConfigurationSelector
+        var BodyConfigurationSelector = class {
+            constructor(options) {
+                this.container = options.container;
+
+                // current checked
+                this.select(this.getSelector().val());
+
+                this.events();
+            }
+
+            getSelector() {
+                return this.container.find('[data-control="selector"]');
+            }
+
+            getOptionBoxes() {
+                return this.container.find('[data-option-box]');
+            }
+
+            getOptionBoxByValue(value) {
+                return this.container.find('[data-option-box="'+value+'"]');
+            }
+
+            events() {
+                var _this = this;
+
+                this.getSelector().on('change', function(e) {
+                    var value = $(this).val();
+
+                    // if checked
+                    _this.select(value);
+                });
+            }
+
+            select(value) {
+                // hide all option boxes
+                this.getOptionBoxes().hide();
+
+                // show selected box
+                this.getOptionBoxByValue(value).fadeIn();
             }
         };
     </script>

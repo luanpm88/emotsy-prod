@@ -3662,8 +3662,10 @@
   'automation.outgoing_webhook.test_webhook' => 'Test Webhook',
   'automation.outgoing_webhook.username' => 'Username',
   'automation.outgoing_webhook.password' => 'Password',
-  'automation.outgoing_webhook.no_auth.desc' => 'Users can enter a token that will be added to the Authorization header as a Bearer token.',
-  'automation.outgoing_webhook.no_auth.desc' => 'Fields for entering a username and password, which will be base64 encoded and added to the Authorization header.',
-  'automation.outgoing_webhook.no_auth.desc' => 'A custom key-value pair for any other header-based authentication method.',
+  'automation.outgoing_webhook.bearer_token.desc' => 'Users can enter a token that will be added to the Authorization header as a Bearer token.',
+  'automation.outgoing_webhook.basic_auth.desc' => 'Fields for entering a username and password, which will be base64 encoded and added to the Authorization header.',
+  'automation.outgoing_webhook.custom.desc' => 'A custom key-value pair for any other header-based authentication method.',
   'automation.outgoing_webhook.no_auth.desc' => 'Option to send the request without any authorization headers.',
+  'automation.outgoing_webhook.custom_key' => 'Custom Key',
+  'automation.outgoing_webhook.custom_value' => 'Custom Value',
 ) ?>
