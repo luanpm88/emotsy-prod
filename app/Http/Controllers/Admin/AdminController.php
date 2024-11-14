@@ -131,7 +131,7 @@ class AdminController extends Controller
             $first_name = $request->first_name,
             $last_name = $request->last_name,
             $image = $request->image,
-            $role_uid = \Acelle\Model\Role::getDefaultRole()->uid
+            $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
         );
 
         // save admin
@@ -256,7 +256,7 @@ class AdminController extends Controller
             $first_name = $request->first_name,
             $last_name = $request->last_name,
             $image = $request->image,
-            $role_uid = \Acelle\Model\Role::getDefaultRole()->uid
+            $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
         );
 
         // save admin

@@ -303,7 +303,7 @@ class InstallController extends Controller
             $first_name = $site_info['first_name'],
             $last_name = $site_info['last_name'],
             $image = null,
-            $role_uid = \Acelle\Model\Role::getDefaultRole()->uid
+            $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
         );
 
         if (!$result) {
