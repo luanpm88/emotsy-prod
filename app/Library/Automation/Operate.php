@@ -71,6 +71,9 @@ class Operate extends Action
             // $updates is a PHP array equiv. to:
             // [{"field_uid":"668a855841b1d","value":"Field Value"},{"field_uid":"668a855843d3b","value":"Field Value"}]
             $subscriber->bulkUpdate($updates);
+        } elseif (self::OPERATION_REMOVE_TAG == $operationType) {
+            $tags = $this->getOption('tags');
+            $subscriber->removeTags($tags);
         } else {
             throw new Exception("Unknown operation type: {$operationType}");
         }
@@ -125,7 +128,14 @@ class Operate extends Action
             } else {
                 return trans('messages.automation.action.operation.move_contact.new', ['n' => $toListName]);
             }
-
+        } elseif ($operationType == self::OPERATION_REMOVE_TAG) {
+            $tags = $tags = $this->getOption('tags');
+            $tagsStr = implode(", ", $tags);
+            if ($this->getLastExecuted()) {
+                return trans('messages.automation.action.operation.remove_tag.done', ['t' => $tagsStr]);
+            } else {
+                return trans('messages.automation.action.operation.remove_tag.new', ['t' => $tagsStr]);
+            }
         } else {
             throw new Exception("Unknown operation type: {$operationType}");
         }
