@@ -21,6 +21,10 @@ class AddNameToCustomers extends Migration
         foreach(\Acelle\Model\Customer::all() as $customer) {
             $user = $customer->users()->first();
 
+            if (!$user) {
+                continue;
+            }
+
             $customer->name = substr($user->displayName(get_localization_config('show_last_name_first', $customer->getLanguageCode())), 0, 100);
             $customer->save();
         }
