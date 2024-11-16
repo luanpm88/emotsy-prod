@@ -1378,17 +1378,20 @@ class Automation2 extends Model
             })->with(['autoTriggers' => function ($query) {
                 $query->where('automation2_id', '=', $this->id);
             }])
-            ->select('subscribers.id AS id', 'subscribers.uid AS uid', 'subscribers.email AS email')
-            ->addSelect('auto_triggers.id as auto_trigger_id')
-            ->addSelect('auto_triggers.created_at as triggered_at')
+            ->select('subscribers.id AS id', 'subscribers.uid AS uid', 'subscribers.email AS email', 'subscribers.created_at AS subscriber_created_at')
+            ->addSelect('auto_triggers.id AS auto_trigger_id')
+            ->addSelect('auto_triggers.created_at AS triggered_at')
+            ->addSelect('auto_triggers.updated_at AS last_activity_at')
             ->addSelect('mail_list_id');
+
 
         $noSubscribers = $this->autoTriggers()
             ->join('automation2s', 'automation2_id', '=', 'automation2s.id')
             ->whereNull('subscriber_id')
-            ->select(DB::raw('NULL AS id, NULL AS uid, NULL AS email'))
-            ->addSelect('auto_triggers.id as auto_trigger_id')
-            ->addSelect('auto_triggers.created_at as triggered_at')
+            ->select(DB::raw('NULL AS id, NULL AS uid, NULL AS email, NULL AS subscriber_created_at'))
+            ->addSelect('auto_triggers.id AS auto_trigger_id')
+            ->addSelect('auto_triggers.created_at AS triggered_at')
+            ->addSelect('auto_triggers.updated_at AS last_activity_at')
             ->addSelect('mail_list_id');
 
         //return $withSubscribers;

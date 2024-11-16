@@ -61,17 +61,17 @@
             <div class="mr-1" role="group" aria-label="Button group with nested dropdown">
                 <div class="btn-group btn-group-sm" role="group">
                     <button id="btnGroupDrop1" role="button" class="btn btn-secondary dropdown-toggle contacts-sort-title"
-                        data-value="{{ request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at' }}"
+                        data-value="{{ request()->sortBy ? request()->sortBy : 'last_activity_at' }}"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ trans('messages.timeline.sort.' . (request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at')) }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
                         <a class="dropdown-item contacts-sort" href="#"
-                            data-sort="auto_triggers.updated_at">{{ trans('messages.timeline.sort.auto_triggers.updated_at') }}</a>
+                            data-sort="last_activity_at">{{ trans('messages.timeline.sort.auto_triggers.updated_at') }}</a>
                         <a class="dropdown-item contacts-sort" href="#"
-                            data-sort="auto_triggers.created_at">{{ trans('messages.timeline.sort.auto_triggers.created_at') }}</a>
+                            data-sort="triggered_at">{{ trans('messages.timeline.sort.auto_triggers.created_at') }}</a>
                         <a class="dropdown-item contacts-sort" href="#"
-                            data-sort="subscribers.created_at">{{ trans('messages.timeline.sort.subscribers.created_at') }}</a>
+                            data-sort="subscriber_created_at">{{ trans('messages.timeline.sort.subscribers.created_at') }}</a>
                     </div>
                 </div>
             </div>
