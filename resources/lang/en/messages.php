@@ -600,6 +600,8 @@
   'automation.trigger.tree.attribute-update.select_field_value' => 'Select the list field and the value that matches. Wildcards such as * and ? are also supported',
   'automation.trigger.tree.monthly-recurring' => 'Monthly recurring',
   'automation.trigger.tree.remove-tag' => 'Remove Tag',
+  'automation.action.operation.remove_tag.done' => 'Removed tags :t',
+  'automation.action.operation.remove_tag.new' => 'Remove tags :t',
   'automation.trigger.tree.say-goodbye-subscriber' => 'Contact unsubscribes from mail list',
   'automation.trigger.tree.say-happy-birthday' => 'Trigger on contacts\' date of birth',
   'automation.trigger.tree.specific-date' => 'Autostart on a scheduled date/time',

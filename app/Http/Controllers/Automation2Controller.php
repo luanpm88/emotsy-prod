@@ -1481,10 +1481,8 @@ class Automation2Controller extends Controller
 
         // list by type
         $subscribers = $automation->getSubscribersWithTriggerInfo()
-                                  ->simpleSearch($request->keyword);
-        //->addSelect('subscribers.created_at')
-        //->addSelect('auto_triggers.updated_at');
-        //->orderBy($sortBy, $sortOrder);
+                                  ->simpleSearch($request->keyword)
+                                  ->orderBy($sortBy, $sortOrder);
 
         // Make sure $count returns the same list of $subscribers
         $count = $automation->subscribers()->simpleSearch($request->keyword)->count();
