@@ -100,7 +100,7 @@ class UserController extends Controller
 
         // Initiate customer object for filling the form
         $customer = Customer::newCustomer();
-        $user = new User();
+        $user = $customer->newUser();
 
         // save posted data
         if ($request->isMethod('post')) {

@@ -1472,7 +1472,7 @@ class Customer extends Model
             $customer->language_id = Language::getDefaultLanguage()->id;
             $customer->save();
 
-            $user = new User();
+            $user = $customer->newUser();
             $user->email = $email;
             $user->activated = true;
             $user->customer_id = $customer->id;

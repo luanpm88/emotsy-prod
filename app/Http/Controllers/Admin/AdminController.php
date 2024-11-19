@@ -186,14 +186,6 @@ class AdminController extends Controller
             return $this->notAuthorized();
         }
 
-        if (!empty($request->old())) {
-            $admin->fill($request->old());
-            $admin->admin_group_id = $request->old()["admin_group_id"];
-            // User info
-            $admin->user = new \Acelle\Model\User();
-            $admin->user->fill($request->old());
-        }
-
         return view('admin.admins.edit', [
             'admin' => $admin,
             'user' => $user,
@@ -271,7 +263,7 @@ class AdminController extends Controller
 
         // redirect if fails
         if (!$result) {
-            return response()->view('admin.admins.create', [
+            return response()->view('admin.admins.edit', [
                 'admin' => $admin,
                 'user' => $user,
                 'errors' => $errors,
