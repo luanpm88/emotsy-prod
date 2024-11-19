@@ -425,6 +425,15 @@ class PageController extends Controller
      */
     public function profileUpdateForm(Request $request)
     {
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('profile_update_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -475,7 +484,7 @@ class PageController extends Controller
                 // Update field
                 $subscriber->updateFields($request->all());
 
-                return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id]);
+                return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
             }
         }
 
@@ -495,6 +504,15 @@ class PageController extends Controller
      */
     public function profileUpdateSuccessPage(Request $request)
     {
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('profile_update_success_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -529,6 +547,15 @@ class PageController extends Controller
      */
     public function profileUpdateEmailSent(Request $request)
     {
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('profile_update_email_sent');
         $page = \Acelle\Model\Page::findPage($list, $layout);
