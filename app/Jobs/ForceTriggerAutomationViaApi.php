@@ -4,7 +4,7 @@ namespace Acelle\Jobs;
 
 use Exception;
 
-class RunAutomation extends Base
+class ForceTriggerAutomationViaApi extends Base
 {
     protected $automation;
     protected $customer;
