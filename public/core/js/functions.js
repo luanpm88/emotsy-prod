@@ -682,8 +682,16 @@ function makeList(options) {
     options.container.find('.filter-box input[type=text]').on('keyup', function() {
         resetPage();
         if ($(this).val().length > 2 || $(this).val().length == 0) {
-            _list.load();
+            if (_list.lastTyping && _list.lastTyping > Date.now() - 1000) {
+                // Cancel the timeout
+                clearTimeout(_list.loadTimeoutId);
+                console.log('kill');
+            }
+            _list.loadTimeoutId = setTimeout(() => {
+                _list.load();
+            }, 1000);
         }
+        _list.lastTyping = Date.now();
     });
 
     // sort direction click

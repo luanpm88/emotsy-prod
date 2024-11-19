@@ -1340,6 +1340,15 @@ class Automation2Controller extends Controller
         );
 
         foreach ($automations->get() as $automation) {
+            // validation
+            $trigger = $automation->getTrigger();
+            if ($trigger->get('options')->key == 'say-happy-birthday' && (!$trigger->get('options')->field || $trigger->get('options')->field == 'date_of_birth')) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => trans('messages.automation.please_fix_automation'),
+                ], 400);
+            }
+
             // authorize
             if (\Gate::allows('enable', $automation)) {
                 $automation->enable();
