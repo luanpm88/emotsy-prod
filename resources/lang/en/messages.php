@@ -3854,4 +3854,5 @@
   'automation.brief-intro.tag-based' => 'Automate actions based on tag assignments',
   'automation.no_more_step' => 'Cannot add more steps to the automation. The current step limit for your plan is :limit',
   'automation.please_fix_automation' => 'Please correct any automation that is required or not valid to run.',
+  'field.reach_limit' => 'Unable to add more fields to the list. Your plan’s current custom field limit is :limit.',
 ) ?>
