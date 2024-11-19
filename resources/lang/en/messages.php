@@ -3852,4 +3852,5 @@
   'automation.trigger.tag-based.desc' => 'Trigger the automation for your contacts if a specified tag is assigned to them',
   'automation.trigger.tag-based.intro' => 'Specify the TAGS that shall trigger the automation',
   'automation.brief-intro.tag-based' => 'Automate actions based on tag assignments',
+  'automation.no_more_step' => 'Cannot add more steps to the automation. The current step limit for your plan is :limit',
 ) ?>

@@ -1667,4 +1667,9 @@ class Automation2 extends Model
 
         return $validator;
     }
+
+    public function stepsCount()
+    {
+        return count(json_decode($this->data, true));
+    }
 }

@@ -452,6 +452,10 @@ class Automation2Controller extends Controller
             'operation',
         ];
 
+        if ($automation->stepsCount() >= \Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_step')) {
+            return view('automation2.noMoreStep');
+        }
+
         return view('automation2.actionSelectPupop', [
             'types' => $types,
             'automation' => $automation,
