@@ -203,12 +203,12 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView')->name('webViewerUrl');
 
     Route::post('lists/{uid}/{customer_uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
-    Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormSubscribe');
+    Route::post('lists/{uid}/{customer_uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormSubscribe');
     Route::get('lists/{uid}/check-email', 'MailListController@checkEmail');
-    Route::get('lists/{list_uid}/sign-up', 'PageController@signUpForm');
-    Route::post('lists/{list_uid}/sign-up', 'PageController@signUpForm');
-    Route::get('lists/{list_uid}/sign-up/{subscriber_id}/thank-you', 'PageController@signUpThankyouPage');
-    Route::get('lists/{list_uid}/subscribe-confirm/{id}/{code}', 'PageController@signUpConfirmationThankyou');
+    Route::get('lists/{list_uid}/{customer_uid}/sign-up', 'PageController@signUpForm');
+    Route::post('lists/{list_uid}/{customer_uid}/sign-up', 'PageController@signUpForm');
+    Route::get('lists/{list_uid}/sign-up/{subscriber_id}/{customer_uid}/thank-you', 'PageController@signUpThankyouPage');
+    Route::get('lists/{list_uid}/subscribe-confirm/{id}/{customer_uid}', 'PageController@signUpConfirmationThankyou');
     Route::match(['get', 'post'], 'lists/unsubscribe/{id}/{message_id}/form', 'PageController@unsubscribeForm')->name('unsubscribeForm');
     Route::get('lists/{list_uid}/unsubscribe-success/{id}', 'PageController@unsubscribeSuccessPage');
     Route::get('lists/{list_uid}/update-profile/{id}/{code}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
