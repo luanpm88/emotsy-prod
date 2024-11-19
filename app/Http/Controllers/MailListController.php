@@ -664,6 +664,15 @@ class MailListController extends Controller
      */
     public function embeddedFormSubscribe(Request $request)
     {
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
