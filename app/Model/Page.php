@@ -185,9 +185,6 @@ class Page extends Model
             $summary = view('subscribers._summary', ['list' => $this->mailList, 'subscriber' => $subscriber])->render();
             $subject = str_replace('{SUBSCRIBER_SUMMARY}', $summary, $subject);
 
-            // UBSUBSCRIBE URL
-            $subject = str_replace('{UNSUBSCRIBE_URL}', config('app.url').action('PageController@unsubscribeForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('unsubscribe')), false), $subject);
-
             $subject = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('update-profile')), false), $subject);
 
             // LIST FIELDS
