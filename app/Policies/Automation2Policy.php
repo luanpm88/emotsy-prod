@@ -16,6 +16,10 @@ class Automation2Policy
             return false;
         }
 
+        if (!\Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
+            return false;
+        }
+
         // RBAC check
         if ($user->hasPermission('automation.all')) {
             $permission = true; 
@@ -57,6 +61,10 @@ class Automation2Policy
             return false;
         }
 
+        if (!\Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
+            return false;
+        }
+
         $can = $automation->customer_id == $user->customer->id;
 
         // RBAC check
@@ -77,6 +85,10 @@ class Automation2Policy
             return false;
         }
 
+        if (!\Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
+            return false;
+        }
+
         $can = $automation->customer_id == $user->customer->id && !$user->isReadOnly();
 
         // RBAC check
@@ -93,6 +105,10 @@ class Automation2Policy
     public function enable(User $user, Automation2 $automation)
     {
         if (app_profile('automation.disable') === true) {
+            return false;
+        }
+
+        if (!\Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
             return false;
         }
 
@@ -117,6 +133,10 @@ class Automation2Policy
             return false;
         }
 
+        if (!\Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
+            return false;
+        }
+
         $can = $automation->customer_id == $user->customer->id &&
             in_array($automation->status, [
                 Automation2::STATUS_ACTIVE
@@ -135,6 +155,10 @@ class Automation2Policy
     public function delete(User $user, Automation2 $automation)
     {
         if (app_profile('automation.disable') === true) {
+            return false;
+        }
+
+        if (!\Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
             return false;
         }
 
