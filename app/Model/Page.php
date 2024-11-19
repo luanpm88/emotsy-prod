@@ -128,7 +128,7 @@ class Page extends Model
                 $this->content = str_replace('{UNSUBSCRIBE_URL}', config('app.url').action('PageController@unsubscribeForm', array('message_id' => $messageId, 'id' => $subscriber->id), false), $this->content);
             }
 
-            $this->content = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('update-profile')), false), $this->content);
+            $this->content = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'customer_uid' => $this->mailList->customer->uid), false), $this->content);
 
             // LIST FIELDS
             foreach ($this->mailList->fields as $field) {
@@ -184,7 +184,7 @@ class Page extends Model
             $summary = view('subscribers._summary', ['list' => $this->mailList, 'subscriber' => $subscriber])->render();
             $subject = str_replace('{SUBSCRIBER_SUMMARY}', $summary, $subject);
 
-            $subject = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('update-profile')), false), $subject);
+            $subject = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'customer_uid' => $this->mailList->customer->uid), false), $subject);
 
             // LIST FIELDS
             foreach ($this->mailList->fields as $field) {

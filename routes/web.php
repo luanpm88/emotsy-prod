@@ -210,9 +210,9 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('lists/{list_uid}/sign-up/{subscriber_id}/{customer_uid}/thank-you', 'PageController@signUpThankyouPage');
     Route::get('lists/{list_uid}/subscribe-confirm/{id}/{customer_uid}', 'PageController@signUpConfirmationThankyou');
     Route::match(['get', 'post'], 'lists/unsubscribe/{id}/{message_id}/form', 'PageController@unsubscribeForm')->name('unsubscribeForm');
-    Route::get('lists/{list_uid}/unsubscribe-success/{id}', 'PageController@unsubscribeSuccessPage');
-    Route::get('lists/{list_uid}/update-profile/{id}/{code}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
-    Route::post('lists/{list_uid}/update-profile/{id}/{code}', 'PageController@profileUpdateForm');
+    Route::get('lists/{list_uid}/unsubscribe-success/{id}/{customer_uid}', 'PageController@unsubscribeSuccessPage');
+    Route::get('lists/{list_uid}/update-profile/{id}/{customer_uid}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
+    Route::post('lists/{list_uid}/update-profile/{id}/{customer_uid}', 'PageController@profileUpdateForm');
     Route::get('lists/{list_uid}/update-profile-success/{id}', 'PageController@profileUpdateSuccessPage');
     Route::get('lists/{list_uid}/profile-update-email-sent/{id}', 'PageController@profileUpdateEmailSent');
 

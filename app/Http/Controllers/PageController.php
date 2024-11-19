@@ -333,7 +333,6 @@ class PageController extends Controller
         }
 
         // IMPORTANT: it does not create TrackingLog!!!
-        $user = $request->user();
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
         $list = $subscriber->mailList;
         $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_form');
@@ -365,7 +364,7 @@ class PageController extends Controller
             // Timeline record
             \Acelle\Model\Timeline::recordUnsubscribedFromListUnsubscribeForm($subscriber);
 
-            return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id]);
+            return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
         }
 
         return view('pages.form', [
@@ -383,7 +382,15 @@ class PageController extends Controller
      */
     public function unsubscribeSuccessPage(Request $request)
     {
-        $user = $request->user();
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_success_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -418,7 +425,6 @@ class PageController extends Controller
      */
     public function profileUpdateForm(Request $request)
     {
-        $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('profile_update_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -489,7 +495,6 @@ class PageController extends Controller
      */
     public function profileUpdateSuccessPage(Request $request)
     {
-        $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('profile_update_success_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -524,7 +529,6 @@ class PageController extends Controller
      */
     public function profileUpdateEmailSent(Request $request)
     {
-        $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('profile_update_email_sent');
         $page = \Acelle\Model\Page::findPage($list, $layout);
