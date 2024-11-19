@@ -3857,4 +3857,5 @@
   'subscriber.add_tag.wording' => 'Your are about to add tag(s) to <span class="font-weight-semibold">:count</span> contacts',
   'subscriber.add_tag.choose_tags' => 'Choose one or many tags',
   'subscriber.add_tag.loading' => 'Adding tag(s). Please wait...',
+  'automation.no_more_step' => 'Cannot add more steps to the automation. The current step limit for your plan is :limit',
 ) ?>
