@@ -405,7 +405,7 @@ class PlanGroup extends Model {
                 'rss_campaigns' => 0,
                 'api_documentation' => 1,
                 'template_integration' => 0,
-                'custom_variables' => 1,
+                'custom_variables' => 3,
                 'ab_testing' => 1,
                 'preview_test_email' => 1,
                 'dynamic_email_content' => 0,

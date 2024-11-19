@@ -278,6 +278,12 @@ class PageController extends Controller
             $subscriber->confirm();
         }
 
+        // subscribe if not
+        if ($subscriber->getSecurityToken('subscribe-confirm') == $request->code && $subscriber->status == 'unsubscribed') {
+            $subscriber->status = \Acelle\Model\Subscriber::STATUS_SUBSCRIBED;
+            $subscriber->save();
+        }
+
         // redirect if use outside url
         if ($page->use_outside_url) {
             return redirect($page->getOutsideUrlWithUid($subscriber));

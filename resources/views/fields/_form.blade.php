@@ -142,6 +142,15 @@
             var type_name = $(this).attr("type_name");
             var sample = $("."+type_name+"_sample ");
             var sample_url = $(this).attr("sample-url");
+            var max = {{ Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('custom_variables') }};
+            var limit_message = "{{ trans('messages.field.reach_limit', ['limit' => Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('custom_variables')]) }}";
+            
+            if (max <= $('[data-control="fields-form"] tr:not(.child)').length-2) {
+                new Dialog('alert', {
+                    message: limit_message
+                });
+                return;
+            }
 
             // ajax update custom sort
             $.ajax({

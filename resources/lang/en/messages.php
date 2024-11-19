@@ -3859,4 +3859,5 @@
   'subscriber.add_tag.loading' => 'Adding tag(s). Please wait...',
   'automation.no_more_step' => 'Cannot add more steps to the automation. The current step limit for your plan is :limit',
   'automation.please_fix_automation' => 'Please correct any automation that is required or not valid to run.',
+  'field.reach_limit' => 'Unable to add more fields to the list. Your plan’s current custom field limit is :limit.',
 ) ?>
