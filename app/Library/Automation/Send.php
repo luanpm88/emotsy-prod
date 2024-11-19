@@ -56,6 +56,13 @@ class Send extends Action
             sleep(1);
         }
 
+        // @todo @important This is a VERY VERY TEMPORARY fix, to clean up old data
+        // For some reason, the data is [ 'error' => true, 'queued_at' => 'some date'] which is not valid
+        if (!is_null($this->getOption('error')) && $this->getOption('queued_at')) {
+            // If statusu is queued by error flag is there, reset it
+            return $this->retry(true);
+        }
+
         if (is_null($this->getOption('queued_at'))) {
             if ($manually) {
                 $queue = ACM_QUEUE_TYPE_HIGH;
