@@ -302,13 +302,19 @@ class PageController extends Controller
      */
     public function unsubscribeForm(Request $request)
     {
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+        $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+        if (!is_null($customer)) {
+            $customer->setUserDbConnection();
+        }
+
         // IMPORTANT: it does not create TrackingLog!!!
         $user = $request->user();
         $subscriber = \Acelle\Model\Subscriber::find($request->id);
         $list = $subscriber->mailList;
         $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         // Language
         if ($list->customer && $list->customer->language) {

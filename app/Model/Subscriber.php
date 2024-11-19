@@ -1150,7 +1150,7 @@ class Subscriber extends Model
     }
 
     // ONE CLICK UNSUBSCRIBE
-    public function generateUnsubscribeUrl($messageId = null, $absoluteUrl = true)
+    public function generateUnsubscribeUrl($messageId, $absoluteUrl = true)
     {
         $url = route('unsubscribeUrl', [
             'message_id' => StringHelper::base64UrlEncode($messageId),
@@ -1161,7 +1161,7 @@ class Subscriber extends Model
     }
 
     // Load a form, click Submit to actually opt out
-    public function generateUnsubscribeForm($messageId = null, $absoluteUrl = true)
+    public function generateUnsubscribeForm($messageId, $absoluteUrl = true)
     {
         $url = route('unsubscribeForm', [
             'message_id' => StringHelper::base64UrlEncode($messageId),
