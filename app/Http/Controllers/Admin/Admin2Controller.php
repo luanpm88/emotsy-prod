@@ -186,14 +186,6 @@ class Admin2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        if (!empty($request->old())) {
-            $admin->fill($request->old());
-            $admin->admin_group_id = $request->old()["admin_group_id"];
-            // User info
-            $admin->user = new \Acelle\Model\User();
-            $admin->user->fill($request->old());
-        }
-
         return view('admin.admins2.edit', [
             'admin' => $admin,
             'user' => $user,

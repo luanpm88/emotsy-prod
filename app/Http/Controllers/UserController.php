@@ -207,7 +207,6 @@ class UserController extends Controller
     {
         $customer = $request->user()->customer;
         $user = $customer->newUser();
-        $currentPlan = $customer->getCurrentActiveSubscription()->plan->mapType();
 
         // check quota limit
         if ($customer->getMaxUserQuota() <= $customer->users()->count()) {
