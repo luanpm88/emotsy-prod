@@ -1472,7 +1472,7 @@ class Customer extends Model
             $customer->language_id = Language::getDefaultLanguage()->id;
             $customer->save();
 
-            $user = new User();
+            $user = $customer->newUser();
             $user->email = $email;
             $user->activated = true;
             $user->customer_id = $customer->id;
@@ -1519,30 +1519,6 @@ class Customer extends Model
         }
 
         return $validator;
-    }
-
-    public function saveFromRequest($request)
-    {
-        // Save current user info
-        $this->admin_id = $request->user()->admin->id;
-        $this->fill($request->all());
-
-        //
-        $validator = $this->validateFromRequest($request);
-
-        // errors
-        if ($validator->fails()) {
-            return $validator->errors();
-        }
-
-        // save
-        $this->save();
-
-        // Execute registered hooks
-        Hook::execute('customer_added', [$this]);
-
-        // return
-        return $validator->errors();
     }
 
     public function getName()
@@ -1709,14 +1685,6 @@ class Customer extends Model
             return [$validator, $customer, $user];
         }
 
-        // SAVE CUSTOMER
-        list($validator, $customer) = static::createCustomer(
-            $name,
-            $timezone,
-            $language_id,
-            $admin
-        );
-
         // SAVE USER
         list($result, $errors) = $user->saveUser(
             $email,
@@ -1726,6 +1694,14 @@ class Customer extends Model
             $last_name,
             $image,
             $role_uid
+        );
+
+        // SAVE CUSTOMER
+        list($validator, $customer) = static::createCustomer(
+            $name,
+            $timezone,
+            $language_id,
+            $admin
         );
 
         // set customer
