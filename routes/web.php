@@ -209,8 +209,7 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::post('lists/{list_uid}/sign-up', 'PageController@signUpForm');
     Route::get('lists/{list_uid}/sign-up/{subscriber_id}/thank-you', 'PageController@signUpThankyouPage');
     Route::get('lists/{list_uid}/subscribe-confirm/{id}/{code}', 'PageController@signUpConfirmationThankyou');
-    Route::get('lists/{list_uid}/unsubscribe/{id}/{code}', 'PageController@unsubscribeForm')->name('unsubscribeForm');
-    Route::post('lists/{list_uid}/unsubscribe/{id}/{code}', 'PageController@unsubscribeForm');
+    Route::match(['get', 'post'], 'lists/unsubscribe/{id}/{message_id}/form', 'PageController@unsubscribeForm')->name('unsubscribeForm');
     Route::get('lists/{list_uid}/unsubscribe-success/{id}', 'PageController@unsubscribeSuccessPage');
     Route::get('lists/{list_uid}/update-profile/{id}/{code}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
     Route::post('lists/{list_uid}/update-profile/{id}/{code}', 'PageController@profileUpdateForm');

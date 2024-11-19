@@ -81,7 +81,7 @@ class Page extends Model
      *
      * @var html
      */
-    public function renderContent($values = null, $subscriber = null)
+    public function renderContent($values = null, $subscriber = null, $messageId = null)
     {
         $this->content = str_replace('{LIST_NAME}', $this->mailList->name, $this->content);
         /*
@@ -124,7 +124,9 @@ class Page extends Model
             $this->content = str_replace('{SUBSCRIBER_SUMMARY}', $summary, $this->content);
 
             // UBSUBSCRIBE URL
-            $this->content = str_replace('{UNSUBSCRIBE_URL}', config('app.url').action('PageController@unsubscribeForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('unsubscribe')), false), $this->content);
+            if ($messageId) {
+                $this->content = str_replace('{UNSUBSCRIBE_URL}', config('app.url').action('PageController@unsubscribeForm', array('message_id' => $messageId, 'id' => $subscriber->id), false), $this->content);
+            }
 
             $this->content = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('update-profile')), false), $this->content);
 

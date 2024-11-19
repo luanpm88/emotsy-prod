@@ -8,6 +8,7 @@ use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Model\MailList;
 use Acelle\Model\IpLocation;
+use Acelle\Library\StringHelper;
 
 class PageController extends Controller
 {
@@ -303,10 +304,11 @@ class PageController extends Controller
     {
         // IMPORTANT: it does not create TrackingLog!!!
         $user = $request->user();
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
+        $list = $subscriber->mailList;
         $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $subscriber = \Acelle\Model\Subscriber::find($request->id);
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         // Language
         if ($list->customer && $list->customer->language) {
@@ -314,27 +316,25 @@ class PageController extends Controller
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
 
-        $page->renderContent(null, $subscriber);
+        $page->renderContent(null, $subscriber, $messageId);
 
         if ($request->isMethod('post')) {
-            if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-                // User Tracking Information
-                $trackingInfo = [
-                    'message_id' => null,
-                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-                ];
+            // User Tracking Information
+            $trackingInfo = [
+                'message_id' => $messageId,
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            ];
 
-                // GeoIP information
-                $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
-                if (!is_null($location)) {
-                    $trackingInfo['ip_address'] = $location->ip_address;
-                }
-
-                $subscriber->unsubscribe($trackingInfo);
-
-                // Timeline record
-                \Acelle\Model\Timeline::recordUnsubscribedFromListUnsubscribeForm($subscriber);
+            // GeoIP information
+            $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+            if (!is_null($location)) {
+                $trackingInfo['ip_address'] = $location->ip_address;
             }
+
+            $subscriber->unsubscribe($trackingInfo);
+
+            // Timeline record
+            \Acelle\Model\Timeline::recordUnsubscribedFromListUnsubscribeForm($subscriber);
 
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id]);
         }

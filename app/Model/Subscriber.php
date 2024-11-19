@@ -1149,11 +1149,23 @@ class Subscriber extends Model
         return $query->where('status', '=', self::STATUS_UNSUBSCRIBED);
     }
 
+    // ONE CLICK UNSUBSCRIBE
     public function generateUnsubscribeUrl($messageId = null, $absoluteUrl = true)
     {
         $url = route('unsubscribeUrl', [
             'message_id' => StringHelper::base64UrlEncode($messageId),
             'subscriber' => $this->id
+        ], $absoluteUrl);
+
+        return $url;
+    }
+
+    // Load a form, click Submit to actually opt out
+    public function generateUnsubscribeForm($messageId = null, $absoluteUrl = true)
+    {
+        $url = route('unsubscribeForm', [
+            'message_id' => StringHelper::base64UrlEncode($messageId),
+            'id' => $this->id
         ], $absoluteUrl);
 
         return $url;
