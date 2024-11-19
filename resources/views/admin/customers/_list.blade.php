@@ -79,7 +79,7 @@
                                                         <img width="40" class="rounded-circle me-2" src="{{ $user->getProfileImageUrl() }}" alt="">
                                                     </span>
                                                     <span>
-                                                        <span class="d-block fw-semibold">{{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
+                                                        <span class="d-block fw-semibold">{{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->admin->getLanguageCode())) }}</span>
                                                         {{ trans('messages.user.logged_in.go_to_client_area') }}
                                                     </span>
                                                 </span>
@@ -96,7 +96,7 @@
                                                         <img width="40" class="rounded-circle me-2" src="{{ $user->getProfileImageUrl() }}" alt="">
                                                     </span>
                                                     <span>
-                                                        <span class="d-block fw-semibold">{{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
+                                                        <span class="d-block fw-semibold">{{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->admin->getLanguageCode())) }}</span>
                                                         {{ $user->email }}
                                                     </span>
                                                 </span>
