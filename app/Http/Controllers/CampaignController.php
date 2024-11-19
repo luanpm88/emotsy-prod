@@ -444,6 +444,10 @@ class CampaignController extends Controller
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
+        if (!\Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('newsletter_templates')) {
+            $templates = $request->user()->customer->templates()->email();
+        }
+
         $templates = $templates->notPreserved()->search($request->keyword);
 
         // category id

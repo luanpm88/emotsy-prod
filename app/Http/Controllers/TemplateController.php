@@ -80,6 +80,7 @@ class TemplateController extends Controller
 
         return view('templates.create', [
             'template' => $template,
+            'templates' => $templates,
         ]);
     }
 
@@ -407,8 +408,16 @@ class TemplateController extends Controller
             $template = new Template();
             $template->name = trans('messages.untitled_template');
 
+            if ($request->user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('newsletter_templates')) {
+                $templateCategories = \Acelle\Model\TemplateCategory::all();
+            } else {
+                $templateCategories = \Acelle\Model\TemplateCategory::limit(1)->get();
+            }
+            
+
             return view('templates.builder.create', [
                 'template' => $template,
+                'templateCategories' => $templateCategories,
             ]);
         }
     }
@@ -424,8 +433,13 @@ class TemplateController extends Controller
         $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
 
         // sort, pagination
-        $templates = $category->templates()->shared()->notPreserved()->email()->search($request->keyword)
-            ->orderBy($request->sort_order, $request->sort_direction)
+        $templates = $category->templates()->shared()->notPreserved()->email()->search($request->keyword);
+
+        if (!$request->user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('newsletter_templates')) {
+            $templates = $templates->whereName('Blank');
+        }
+        
+        $templates = $templates->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
         // authorize
