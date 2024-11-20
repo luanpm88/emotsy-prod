@@ -270,7 +270,7 @@ class Email extends Model implements HasTemplateInterface
             $job->onQueue($queue);
         }
 
-        $jobId = safe_dispatch($job);
+        $jobId = dispatch($job);
 
         return $jobId;
     }

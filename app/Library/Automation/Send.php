@@ -205,6 +205,7 @@ class Send extends Action
         $jobId = $campaign->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id, $this->getId(), $queue);
         $this->setOption('queued_at', now()->toString()); // Store UTC value
         $this->setOption('error', null); // Store UTC value
+        $this->autoTrigger->setError(false, $save = false); // wait for the save() method below to save
         $this->setOption('delivery_job_id', $jobId); // Store UTC value
 
         // IMPORTANT: update action BEFORE dispatching job. In case job executes so fast! it even write to sent_at field before writing to queue_at
