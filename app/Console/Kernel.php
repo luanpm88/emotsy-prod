@@ -135,9 +135,9 @@ class Kernel extends ConsoleKernel
                 $lists = $customer->local()->lists;
 
                 foreach ($lists as $list) {
-                    safe_dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
+                    dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
                 }
-                safe_dispatch(new \Acelle\Jobs\UpdateUserJob($customer));
+                dispatch(new \Acelle\Jobs\UpdateUserJob($customer));
             }
         })->name('update_list_stats')->daily();
         */

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Model\RolePermission;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Role extends Model
 {
@@ -21,6 +22,11 @@ class Role extends Model
     public function rolePermissions()
     {
         return $this->hasMany(RolePermission::class);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_role');
     }
 
     public static function scopeSearch($query, $keyword)
