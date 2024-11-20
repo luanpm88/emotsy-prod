@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'], function () {
+Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => ['auth:api', 'setdb']], function () {
     //
     Route::get('', function () {
         return \Response::json(\Auth::guard('api')->user());

@@ -112,12 +112,12 @@ class Page extends Model
         $this->content = str_replace('{EMAIL_FIELD}', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $this->content);
         $this->content = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <span class="material-symbols-rounded">east</span></button>', $this->content);
         $this->content = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <span class="material-symbols-rounded">east</span></button>', $this->content);
-        $this->content = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', $this->mailList->uid, false), $this->content);
+        $this->content = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', ['list_uid' => $this->mailList->uid, 'customer_uid' => $this->mailList->customer->uid], false), $this->content);
 
         // SUBSCRIBE CONFIRM URL
         if (isset($subscriber)) {
             // [SUBSCRIBE_CONFIRM_URL]
-            $this->content = str_replace('{SUBSCRIBE_CONFIRM_URL}', config('app.url').action('PageController@signUpConfirmationThankyou', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('subscribe-confirm')), false), $this->content);
+            $this->content = str_replace('{SUBSCRIBE_CONFIRM_URL}', config('app.url').action('PageController@signUpConfirmationThankyou', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'customer_uid' => $this->mailList->customer->uid), false), $this->content);
 
             // Summary
             $summary = view('subscribers._summary', ['list' => $this->mailList, 'subscriber' => $subscriber])->render();
@@ -128,14 +128,13 @@ class Page extends Model
                 $this->content = str_replace('{UNSUBSCRIBE_URL}', config('app.url').action('PageController@unsubscribeForm', array('message_id' => $messageId, 'id' => $subscriber->id), false), $this->content);
             }
 
-            $this->content = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('update-profile')), false), $this->content);
+            $this->content = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'customer_uid' => $this->mailList->customer->uid), false), $this->content);
 
             // LIST FIELDS
             foreach ($this->mailList->fields as $field) {
                 $this->content = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $this->content);
             }
         } else {
-            $this->content = str_replace('{SUBSCRIBE_CONFIRM_URL}', "<a href='http://domain.example/secure_token'>http://domain.example/secure_token</a>", $this->content);
             $this->content = str_replace('{UPDATE_PROFILE_URL}', 'http://domain.example/secure_token', $this->content);
             $this->content = str_replace('{UNSUBSCRIBE_URL}', 'http://domain.example/secure_token', $this->content);
             $this->content = str_replace('{SUBSCRIBER_SUMMARY}', '<p><strong>'.trans('messages.email').':</strong></p><p><strong>'.trans('messages.first_name').':</strong></p><p><strong>'.trans('messages.last_name').':</strong></p>', $this->content);
@@ -174,21 +173,18 @@ class Page extends Model
         $subject = str_replace('{EMAIL_FIELD}', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $subject);
         $subject = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <span class="material-symbols-rounded">east</span></button>', $subject);
         $subject = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <span class="material-symbols-rounded">east</span></button>', $subject);
-        $subject = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', $this->mailList->uid, false), $subject);
+        $subject = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', ['list_uid' => $this->mailList->uid, 'customer_uid' => $this->mailList->customer->uid], false), $subject);
 
         // SUBSCRIBE CONFIRM URL
         if (isset($subscriber)) {
             // [SUBSCRIBE_CONFIRM_URL]
-            $subject = str_replace('{SUBSCRIBE_CONFIRM_URL}', config('app.url').action('PageController@signUpConfirmationThankyou', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('subscribe-confirm')), false), $subject);
+            $subject = str_replace('{SUBSCRIBE_CONFIRM_URL}', config('app.url').action('PageController@signUpConfirmationThankyou', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'customer_uid' => $this->mailList->customer->uid), false), $subject);
 
             // Summary
             $summary = view('subscribers._summary', ['list' => $this->mailList, 'subscriber' => $subscriber])->render();
             $subject = str_replace('{SUBSCRIBER_SUMMARY}', $summary, $subject);
 
-            // UBSUBSCRIBE URL
-            $subject = str_replace('{UNSUBSCRIBE_URL}', config('app.url').action('PageController@unsubscribeForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('unsubscribe')), false), $subject);
-
-            $subject = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'code' => $subscriber->getSecurityToken('update-profile')), false), $subject);
+            $subject = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'id' => $subscriber->id, 'customer_uid' => $this->mailList->customer->uid), false), $subject);
 
             // LIST FIELDS
             foreach ($this->mailList->fields as $field) {

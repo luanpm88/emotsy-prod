@@ -396,7 +396,7 @@ class SettingController extends Controller
             action('PageController@profileUpdateForm', array(
             'list_uid' => 'LIST_UID',
             'id' => 'SUBSCRIBER_ID',
-            'code' => 'SECURE_CODE', ))
+            'customer_uid' => 'CUSTOMER_UID'))
         );
         Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
 

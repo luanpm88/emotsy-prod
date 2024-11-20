@@ -40,4 +40,16 @@ class ForceTriggerAutomation implements ShouldQueue
         $this->customer->setUserDbConnection();
         $this->automation->forceTrigger();
     }
+
+    /**
+     * The unique ID of the job.
+     *
+     * @return string
+     */
+    public $uniqueFor = 60 * 60 * 24 * 30; // 30 days
+    public function uniqueId()
+    {
+        // a fixed id, making sure only one job in queue at any given time
+        return $this->automation->id;
+    }
 }
