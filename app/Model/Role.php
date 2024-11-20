@@ -81,7 +81,7 @@ class Role extends Model
         $query->whereIsGlobal(false);
     }
 
-    public function saveRole($name, $description, $permissions=[])
+    public function saveRole($name, $description, $permissions = [])
     {
         //
         $this->name = $name;

@@ -298,7 +298,7 @@ class UserController extends Controller
                         $q->whereCode('organization_admin');
                     })
                     ->exists();
-                
+
                 // check
                 if (!$exists) {
                     return response()->view('users.edit', [
