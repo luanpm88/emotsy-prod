@@ -77,20 +77,22 @@
                     'type' => 'text',
                     'class' => '',
                     'name' => 'smtp_port',
-                    'value' => $server->smtp_port,
+                    'value' => $server->smtp_port ?? 587,
                     'help_class' => 'sending_server',
                     'rules' => $server->getRules(),
                     'disabled' =>($server->id && $errors->isEmpty()),
+                    'readonly' => true,
                 ])
 
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
                     'name' => 'smtp_protocol',
-                    'value' => $server->smtp_protocol,
+                    'value' => $server->smtp_protocol ?? 'tls',
                     'help_class' => 'sending_server',
                     'rules' => $server->getRules(),
                     'disabled' =>($server->id && $errors->isEmpty()),
+                    'readonly' => true,
                 ])
             </div>
         </div>

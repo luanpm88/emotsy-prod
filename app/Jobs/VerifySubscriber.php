@@ -6,6 +6,7 @@ use Illuminate\Bus\Batchable;
 use Acelle\Library\Exception\NoCreditsLeft;
 use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\VerificationTakesLongerThanNormal;
+use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
 use Exception;
 use Closure;
 
@@ -15,13 +16,14 @@ class VerifySubscriber extends Base
 {
     use Batchable;
 
-    public $timeout = 120;
+    public $timeout = 300;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
 
     protected $server;
     protected $subscriber;
     protected $subscription;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -33,6 +35,8 @@ class VerifySubscriber extends Base
         $this->subscriber = $subscriber;
         $this->server = $server;
         $this->subscription = $subscription;
+
+        $this->customer = $this->subscriber->mailList->customer;
     }
 
     /**
@@ -56,6 +60,8 @@ class VerifySubscriber extends Base
             return;
         }
 
+        $this->customer->setUserDbConnection();
+
         $this->doVerify();
     }
 
@@ -76,9 +82,11 @@ class VerifySubscriber extends Base
                 ];
             }
 
-            execute_with_limits($rateTrackers, $creditTrackers, function () {
+            execute_with_limits($rateTrackers, $pool = null, $creditTrackers, function () {
                 $this->subscriber->verify($this->server);
             });
+        } catch (RateLimitReservedByAnotherFileSystem $ex) {
+            $this->release(1);
         } catch (VerificationTakesLongerThanNormal $ex) {
             // Just ignore and return
             // Warn user that there are certain subscribers that are skipped

@@ -2,9 +2,9 @@
     <div class="col-md-12">
         <div class="sub_section">
             <h2 class="text-semibold text-primary">{{ trans('messages.customer.general') }}</h2>
-            <div class="mb-3">
+            <div class="mb-3 {{ $errors->has('name') ? 'has-error' : '' }}">
                 <label for="" class="form-label">{{ trans('messages.customer.name') }}</label>
-                <input type="text" name="name" value="{{ $customer->name }}" class="form-control" />
+                <input type="text" name="name" value="{{ $customer->name }}" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" />
                 @if ($errors->has('name'))
                     <span class="help-block">
                         {{ $errors->first('name') }}

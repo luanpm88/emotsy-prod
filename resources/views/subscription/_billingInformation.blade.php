@@ -9,7 +9,7 @@
                     <h5 class="fw-600 mb-0 fs-6 text-start">
                         {{ trans('messages.subscription.billing_information.title') }}
                     </h5>
-                    <p class="m-0 text-muted">{{ trans('messages.subscription.billing_information.subtitle') }}</p>
+                    <p class="m-0 text-muted">{!! trans('messages.subscription.billing_information.subtitle') !!}</p>
                 </div>
                 <div class="ms-auto">
                     <span class="material-symbols-rounded fs-4 text-success">task_alt</span>
@@ -24,7 +24,7 @@
                     <h5 class="fw-600 mb-0 fs-6 text-start">
                         {{ trans('messages.subscription.billing_information.title') }}
                     </h5>
-                    <p class="m-0 text-muted">{{ trans('messages.subscription.billing_information.subtitle') }}</p>
+                    <p class="m-0 text-muted">{!! trans('messages.subscription.billing_information.subtitle') !!}</p>
                 </div>
             </div>
         </div>

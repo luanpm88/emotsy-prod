@@ -23,9 +23,9 @@
                     <p>{!! trans('messages.subscribers_' . request()->action . '_message', ['number' => $subscribers->count()]) !!}</p>
 
                     <input type="hidden" name="action" value="{{ request()->action }}" />
-                    <input type="hidden" name="uids" value="{{ request()->uids }}" />
+                    <input type="hidden" name="ids" value="{{ request()->ids }}" />
                     <?php
-                        $lists = collect(Auth::user()->customer->readCache('MailListSelectOptions', []));
+                        $lists = collect(Auth::user()->customer->local()->readCache('MailListSelectOptions', []));
                     $lists = $lists->filter(function ($record, $key) use ($from_list) {
                         return $record['id'] != $from_list->id;
                     });

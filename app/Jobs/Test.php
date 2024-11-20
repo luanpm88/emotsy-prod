@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class Test implements ShouldQueue
+class Test implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -17,15 +17,18 @@ class Test implements ShouldQueue
     use SerializesModels;
 
     public $timeout = 5;
+    protected $object = null;
+    protected $objectId = null;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($object, $objectId)
     {
-        //
+        $this->object = $object;
+        $this->objectId = $objectId;
     }
 
     /**
@@ -35,10 +38,17 @@ class Test implements ShouldQueue
      */
     public function handle()
     {
-        echo "Hey, I'm a hello job\n";
-
-        sleep(1);
+        echo "Vardump object passed: ";
+        var_dump($this->object);
 
         return;
+    }
+
+
+    public $uniqueFor = 10;
+    public function uniqueId(): string
+    {
+        echo "Checking uniqe id\n";
+        return 1;
     }
 }

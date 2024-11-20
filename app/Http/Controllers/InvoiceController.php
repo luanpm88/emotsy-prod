@@ -38,4 +38,15 @@ class InvoiceController extends Controller
 
         echo trans('messages.invoice.deleted');
     }
+
+    public function show(Request $request)
+    {
+        // init
+        $invoice = Invoice::findByUid($request->uid);
+
+        return view('invoices.show', [
+            'invoice' => $invoice,
+            'bill' => $invoice->getBillingInfo(),
+        ]);
+    }
 }

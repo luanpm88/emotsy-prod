@@ -12,11 +12,11 @@
             <ul class="subscriber-list">
                 @foreach($subscribers as $subscriber)
                     <li class="d-flex align-items-center">
-                        <input type='hidden' name="uids[]" value="{{ $subscriber->uid }}" />
+                        <input type='hidden' name="uids[]" value="{{ $subscriber->id }}" />
                         <a
                             image-popup="link"
-                            href="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatarOrigin',  $subscriber->uid)) }}">
-                                <img class="avatar" src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->uid)) }}" />
+                            href="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatarOrigin',  $subscriber->id)) }}">
+                                <img class="avatar" src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->id)) }}" />
                         </a>
                         <div>
                             <label>{{ $subscriber->email }}</label>

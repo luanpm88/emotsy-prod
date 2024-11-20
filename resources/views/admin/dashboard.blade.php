@@ -106,11 +106,14 @@
                             <div class="col-sm-8 col-md-8">
                                 <div class="d-flex">
                                     <div>
-                                        <h6 class="mt-0 mb-0 text-semibold">
+                                        <h6 class="mt-0 mb-1 text-semibold">
                                             <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
                                                 {{ $customer->getName() }}
                                             </a>
                                         </h6>
+                                        @include('admin.customers._user_avatars', [
+                                            'customer' => $customer,
+                                        ])
                                     </div>
                                 </div>
                                 

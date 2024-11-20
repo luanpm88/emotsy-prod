@@ -35,6 +35,9 @@ use Closure;
 use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Schema;
+use Acelle\Library\LaravelExtension\EloquentBuilder as ExtendedEloquentBuilder;
+use Acelle\Events\SubscribersTagsUpdate;
+use Acelle\Events\SubscribersAttributesUpdate;
 
 class Subscriber extends Model
 {
@@ -87,6 +90,11 @@ class Subscriber extends Model
     public function trackingLogs()
     {
         return $this->hasMany('Acelle\Model\TrackingLog');
+    }
+
+    public function autoTriggers()
+    {
+        return $this->hasMany('Acelle\Model\AutoTrigger');
     }
 
     public function unsubscribeLogs()
@@ -209,7 +217,10 @@ class Subscriber extends Model
             MailListUnsubscription::dispatch($this);
 
             // Create log
-            $this->unsubscribeLogs()->create($trackingInfo);
+            $unsubscribeLog = new UnsubscribeLog();
+            $unsubscribeLog->fill($trackingInfo);
+            $unsubscribeLog->customer_id = $this->mailList->customer_id;
+            $this->unsubscribeLogs()->save($unsubscribeLog);
         });
     }
 
@@ -218,6 +229,8 @@ class Subscriber extends Model
      */
     public function updateFields($params)
     {
+        $before = $this->getCustomAttributes();
+
         foreach ($this->mailList->getFields as $field) {
             // Thank you John Wigley and acorna.com team for pointing this out
             if (!isset($params[$field->tag])) {
@@ -242,10 +255,14 @@ class Subscriber extends Model
         }
 
         $this->save();
+
+        $changes = $this->findDifferentCustomAttributes($before);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     public function updateFields2($attributes)
     {
+        $before = $this->getCustomAttributes();
         foreach ($attributes as $tag => $value) {
             $field = $this->mailList->getFieldByTag($tag);
 
@@ -255,6 +272,9 @@ class Subscriber extends Model
         }
 
         $this->save();
+
+        $changes = $this->findDifferentCustomAttributes($before);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     /**
@@ -381,6 +401,7 @@ class Subscriber extends Model
     public function getValueByField($field)
     {
         $value = $this[$field->custom_field_name];
+
         if ($field->isDate()) {
             return $value == '1900-01-01' ? '' : $value;
         } else {
@@ -388,11 +409,6 @@ class Subscriber extends Model
         }
     }
 
-    /**
-     * Get field value by list field.
-     *
-     * @return value
-     */
     public function getValueByTag($tag)
     {
         $field = $this->mailList->fields()->where('tag', $tag)->first();
@@ -402,6 +418,32 @@ class Subscriber extends Model
         } else {
             return $this->getValueByField($field);
         }
+    }
+
+    public function getCustomAttributes()
+    {
+        $attributes = [];
+        $fields = $this->mailList->fields;
+        foreach ($fields as $field) {
+            $attributes[$field->uid] = $this->getValueByField($field);
+        }
+
+        $attributes['tags'] = $this->getTags();
+
+        return $attributes;
+    }
+
+    public function findDifferentCustomAttributes(array $attributes)
+    {
+        $diffs = [];
+        $myAttributes = $this->getCustomAttributes();
+        foreach ($myAttributes as $key => $value) {
+            if (array_key_exists($key, $attributes) && $attributes[$key] != $value) {
+                $diffs[$key] = $value;
+            }
+        }
+
+        return $diffs;
     }
 
     /**
@@ -467,7 +509,7 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function copy(MailList $list, Closure $duplicateCallback = null)
+    public function doCopy(MailList $list, Closure $duplicateCallback = null)
     {
         // find exists
         $copy = $list->subscribers()->where('email', '=', $this->email)->first();
@@ -481,7 +523,8 @@ class Subscriber extends Model
         }
 
         // Actually copy
-        $copy = self::find($this->id)->replicate();
+        $subscriber = self::find($this->id);
+        $copy = $subscriber->replicate();
         $copy->uid = uniqid();
         $copy->mail_list_id = $list->id;
         $copy->save();
@@ -494,6 +537,18 @@ class Subscriber extends Model
         return $copy;
     }
 
+    public function copy(MailList $list, Closure $duplicateCallback = null)
+    {
+        $copy = $this->doCopy($list, $duplicateCallback);
+
+        // has copy action
+        if ($copy) {
+            // Timeline record
+            \Acelle\Model\Timeline::recordCopiedTo($this, $list);
+            \Acelle\Model\Timeline::recordCopiedFrom($copy, $this->mailList);
+        }
+    }
+
     /**
      * Move to list.
      *
@@ -501,7 +556,15 @@ class Subscriber extends Model
      */
     public function move($list)
     {
-        $this->copy($list);
+        $copy = $this->doCopy($list);
+
+        // has move action
+        if ($copy) {
+            // Timeline record
+            \Acelle\Model\Timeline::recordMovedFrom($copy, $this->mailList);
+        }
+
+        // delete current one
         $this->delete();
     }
 
@@ -704,12 +767,22 @@ class Subscriber extends Model
      */
     public function isListedInBlacklist()
     {
-        // @todo Filter by current user only
-        return Blacklist::where('email', '=', $this->email)->exists();
+        $globalCheckQuery = Blacklist::global()->where('email', '=', $this->email);
+        $localCheckQuery = Blacklist::where('email', '=', $this->email)->where('customer_id', $this->mailList->customer_id);
+
+        if (Setting::isYes('blacklist.use_global_blacklist')) {
+            return $globalCheckQuery->exists() || $localCheckQuery->exists();
+        } else {
+            return $localCheckQuery->exists();
+        }
     }
 
-    public function getFullName($default = null)
+    public function getFullName($default = null, $reload = true)
     {
+        if ($reload && $this->id) {
+            $this->refresh();
+        }
+
         $lastNameFirst = get_localization_config('show_last_name_first', $this->mailList->customer->getLanguageCode());
 
         if ($lastNameFirst) {
@@ -750,6 +823,11 @@ class Subscriber extends Model
     public function getTags(): array
     {
         // Notice: json_decode() returns null if input is null or empty
+
+        if (is_null($this->tags)) {
+            return [];
+        }
+
         return json_decode($this->tags, true) ?: [];
     }
 
@@ -777,6 +855,8 @@ class Subscriber extends Model
 
         $this->tags = json_encode($nTags);
         $this->save();
+
+        SubscribersTagsUpdate::dispatch($this);
     }
 
     public function removeTags($arr)
@@ -816,8 +896,15 @@ class Subscriber extends Model
         //
         // which cannot be searched for
         //
+
+        $before = $this->getCustomAttributes();
+
         $this->tags = json_encode($newTags, JSON_UNESCAPED_UNICODE);
         $this->save();
+
+        SubscribersTagsUpdate::dispatch($this);
+        $changes = $this->findDifferentCustomAttributes($before);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     /**
@@ -831,8 +918,13 @@ class Subscriber extends Model
             unset($tags[$key]);
         }
 
+        $before = $this->getCustomAttributes();
+
         $this->tags = json_encode($tags);
         $this->save();
+
+        $changes = $this->findDifferentCustomAttributes($before);
+        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
     }
 
     /**
@@ -924,7 +1016,8 @@ class Subscriber extends Model
                     $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
 
                     foreach ($listFields as $f) {
-                        $q->orwhere("subscribers.{$f->custom_field_name}", 'LIKE', '%'.$keyword.'%');;
+                        $q->orwhere("subscribers.{$f->custom_field_name}", 'LIKE', '%'.$keyword.'%');
+                        ;
                     }
 
                 });
@@ -1056,11 +1149,23 @@ class Subscriber extends Model
         return $query->where('status', '=', self::STATUS_UNSUBSCRIBED);
     }
 
-    public function generateUnsubscribeUrl($messageId = null, $absoluteUrl = true)
+    // ONE CLICK UNSUBSCRIBE
+    public function generateUnsubscribeUrl($messageId, $absoluteUrl = true)
     {
         $url = route('unsubscribeUrl', [
             'message_id' => StringHelper::base64UrlEncode($messageId),
-            'subscriber' => $this->uid
+            'subscriber' => $this->id
+        ], $absoluteUrl);
+
+        return $url;
+    }
+
+    // Load a form, click Submit to actually opt out
+    public function generateUnsubscribeForm($messageId, $absoluteUrl = true)
+    {
+        $url = route('unsubscribeForm', [
+            'message_id' => StringHelper::base64UrlEncode($messageId),
+            'id' => $this->id
         ], $absoluteUrl);
 
         return $url;
@@ -1068,7 +1173,7 @@ class Subscriber extends Model
 
     public function generateUpdateProfileUrl()
     {
-        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'uid' => $this->uid, 'code' => $this->getSecurityToken('update-profile')]);
+        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'id' => $this->id, 'code' => $this->getSecurityToken('update-profile')]);
     }
 
     // Change status to SUBSCRIBED
@@ -1203,7 +1308,7 @@ class Subscriber extends Model
 
     public static function addCustomFieldIfNotExist($fieldName)
     {
-        $tableName = 'subscribers';
+        $tableName = (new static())->getTable();
         if (!Schema::hasColumn($tableName, $fieldName)) {
 
             Schema::table($tableName, function (Blueprint $table) use ($fieldName) {
@@ -1211,5 +1316,69 @@ class Subscriber extends Model
             });
 
         }
+    }
+
+    /**
+     * assgin tags.
+     */
+    public static function addSubscribersTags($subscribers, $tags)
+    {
+        // make validator
+        $validator = \Validator::make([
+            'tags' => $tags,
+        ], [
+            'tags' => 'required|array',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // add tags
+        foreach ($subscribers->get() as $subscriber) {
+            $subscriber->addTags($tags);
+        }
+
+        return $validator;
+    }
+
+    // $updates is a PHP array equiv. to:
+    // [{"field_uid":"668a855841b1d","value":"Field Value"},{"field_uid":"668a855843d3b","value":"Field Value"}]
+    public function bulkUpdate($updates)
+    {
+        foreach ($updates as $attr) {
+            $fieldUid = $attr['field_uid'];
+            $field = Field::findByUid($fieldUid);
+            $fieldValue = $attr['value'];
+
+            // for example: $this->custom_101 = 'New First Name';
+            $this[$field->custom_field_name] = $fieldValue;
+        }
+
+        $this->save();
+    }
+
+    // @OVERWRITE the parent method
+    public function newEloquentBuilder($query)
+    {
+        return new ExtendedEloquentBuilder($query);
+    }
+
+    //
+    public function hasTags(array $tags)
+    {
+        $intersected = array_intersect(array_map('strtolower', $this->getTags()), array_map('strtolower', $tags));
+        return (!empty($intersected));
+    }
+
+    public function timelines()
+    {
+        return $this->hasMany(Timeline::class);
+    }
+
+    public function readTimelines()
+    {
+        return $this->timelines()->orderBy('created_at', 'desc')->limit(100)->get();
     }
 }

@@ -17,6 +17,11 @@ class TemplatePolicy
                 $can = $user->admin->getPermission('template_read') != 'no';
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('template.full_access') && !$user->hasPermission('template.read_only')) {
+                    return false;
+                }
+
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 break;
         }
@@ -31,12 +36,12 @@ class TemplatePolicy
                 $can = $user->admin->getPermission('template_create') == 'yes';
                 break;
             case 'customer':
-                $can = true && !$user->isReadOnly();
-
-                if (!$user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('create_own_template')) {
-                    $can = $can && false;
+                // RBAC check
+                if (!$user->hasPermission('template.full_access')) {
+                    return false;
                 }
-                
+
+                $can = true;
                 break;
         }
 
@@ -52,6 +57,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('template.full_access') && !$user->hasPermission('template.read_only')) {
+                    return false;
+                }
+
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 break;
         }
@@ -68,7 +78,12 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
-                $can = $user->customer->id == $item->customer_id && !$user->isReadOnly();
+                // RBAC check
+                if (!$user->hasPermission('template.full_access')) {
+                    return false;
+                }
+
+                $can = $user->customer->id == $item->customer_id;
                 break;
         }
 
@@ -84,6 +99,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('template.full_access') && !$user->hasPermission('template.read_only')) {
+                    return false;
+                }
+
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 break;
         }
@@ -100,7 +120,12 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
-                $can = $user->customer->id == $item->customer_id && !$user->isReadOnly();
+                // RBAC check
+                if (!$user->hasPermission('template.full_access')) {
+                    return false;
+                }
+
+                $can = $user->customer->id == $item->customer_id;
                 break;
         }
 
@@ -116,6 +141,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('template.full_access') && !$user->hasPermission('template.read_only')) {
+                    return false;
+                }
+
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 break;
         }
@@ -132,6 +162,11 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
+                // RBAC check
+                if (!$user->hasPermission('template.full_access')) {
+                    return false;
+                }
+
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
                 $can = $can && !$user->isReadOnly();
                 break;

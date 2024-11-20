@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <form class="tag-contact" action="{{ action("SubscriberController@updateTags", [
                     'list_uid' => $subscriber->mailList->uid,
-                    'uid' => $subscriber->uid,
+                    'id' => $subscriber->id,
                 ]) }}"
                 method="POST" class="form-validate-jqueryz"
             >

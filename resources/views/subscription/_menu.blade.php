@@ -40,7 +40,12 @@
                     </a>
                 </li>
 
-                @if (\Acelle\Helpers\isSendingCreditPluginActive() && Auth::user()->customer->getCurrentActiveSubscription())
+                @if (Auth::user()->customer->getCurrentActiveSubscription())
+                    @php
+                        $sub = Auth::user()->customer->getCurrentActiveSubscription();
+                        $sendCredits = $sub->getSendEmailCreditTracker()->getRemainingCredits();
+                        $verifyCredits = $sub->getVerifyEmailCreditTracker()->getRemainingCredits();
+                    @endphp
                     <li class="nav-item {{ $menu == 'sending_credit_plan' ? 'active' : '' }}">
                         <a href="{{ action("SendingCreditPlanController@index") }}" class="nav-link px-0 boxrder me-5 mb-4 py-1
                             {{ $menu == 'sending_credit_plan' ? '' : 'bg-lightx text-mutedx' }}"
@@ -50,7 +55,7 @@
                                 <span>
                                     <span class="d-block">
                                         <span class=" fw-bold">
-                                            {{ number_with_delimiter(Auth::user()->customer->getCurrentActiveSubscription()->getSendEmailCreditTracker()->getRemainingCredits()) }}
+                                            {{ ($sendCredits == -1 ) ? '∞' : number_with_delimiter($sendCredits) }}
                                         </span>
                                     </span>
                                     <span class="d-block fw-normal small text-muted">
@@ -69,7 +74,7 @@
                                 <span>
                                     <span class="d-block">
                                         <span class=" fw-bold">
-                                            {{ number_with_delimiter(Auth::user()->customer->getCurrentActiveSubscription()->getVerifyEmailCreditTracker()->getRemainingCredits()) }}
+                                            {{ ($verifyCredits == -1) ? '∞' : number_with_delimiter($verifyCredits) }}
                                         </span>
                                     </span>
                                     <span class="d-block fw-normal small text-muted">

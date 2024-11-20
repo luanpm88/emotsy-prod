@@ -32,10 +32,7 @@
     <h2 class="text-semibold text-primary">{{ trans('messages.bounce_log') }}</h2>
 
     <form class="listing-form"
-        data-url="{{ action('Pub\CampaignController@bounceLogListing', [
-            'uid' => $campaign->uid,
-            'version_b' => request()->version_b,
-        ]) }}"
+        data-url="{{ action('Pub\CampaignController@bounceLogListing', [ 'uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid ]) }}"
         per-page="{{ Acelle\Model\BounceLog::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content">
@@ -72,10 +69,7 @@
         var CampaignLogIndex = {
             getList: function() {
                 return makeList({
-                    url: '{{ action('Pub\CampaignController@bounceLogListing', [
-                        'uid' => $campaign->uid,
-                        'version_b' => request()->version_b,
-                    ]) }}',
+                    url: '{{ action('Pub\CampaignController@bounceLogListing', [ 'uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid ]) }}',
                     container: $('.listing-form'),
                     content: $('.pml-table-container')
                 });

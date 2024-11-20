@@ -8,10 +8,7 @@
                 <div class="chart-container">
                     <div id="campaignChart"
                         class="border shadow-sm rounded"
-                        data-url="{{ action('Pub\CampaignController@chart', [
-                'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
-            ]) }}"
+                        data-url="{{ action('Pub\CampaignController@chart', [ 'uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid ]) }}"
                         style="width:100%; height:350px;"
                     ></div>
                 </div>
@@ -25,14 +22,10 @@
             <span class="fw-600">
                 {{ trans('messages.open_uniq_per_total', [
                     'count' => $campaign->readCache('UniqOpenCount'),
-                    'total' => $campaign->uniqueOpenCount(),
                     'delivered' => $campaign->deliveredCount(),
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@openLog', [
-                'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
-            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@openLog', [ 'uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
         <div class="badge-row">
@@ -44,7 +37,7 @@
                     'total' => $campaign->readCache('SubscriberCount', 0),
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@subscribers', ['uid' => $campaign->uid, 'open' => 'not_opened']) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@subscribers', ['customer_uid' => $campaign->customer->uid, 'uid' => $campaign->uid, 'open' => 'not_opened']) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
         <div class="badge-row">
@@ -56,10 +49,7 @@
                     'total' => $campaign->openUniqCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@clickLog', [
-                'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
-            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@clickLog', [ 'uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
         <div class="badge-row">
@@ -70,10 +60,7 @@
                     'count' => $campaign->unsubscribeCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@unsubscribeLog', [
-                'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
-            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@unsubscribeLog', [ 'uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
         <div class="badge-row">
@@ -84,10 +71,7 @@
                     'count' => $campaign->bounceCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@bounceLog', [
-                'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
-            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@bounceLog', [ 'uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
         <div class="badge-row">
@@ -98,10 +82,7 @@
                     'count' => $campaign->feedbackCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@feedbackLog', [
-                'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
-            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@feedbackLog', [ 'uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
     </div>

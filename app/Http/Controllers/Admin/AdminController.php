@@ -63,16 +63,7 @@ class AdminController extends Controller
     public function create(Request $request)
     {
         $admin = \Acelle\Model\Admin::newAdmin();
-        $admin->status = 'active';
-        $admin->uid = '0';
-        // User info
-        $admin->user = new \Acelle\Model\User();
-
-        if (!empty($request->old())) {
-            $admin->fill($request->old());
-            $admin->admin_group_id = $request->old()["admin_group_id"];
-            $admin->user->fill($request->old());
-        }
+        $user = \Acelle\Model\User::newDefault();
 
         // authorize
         if (\Gate::denies('create', $admin)) {
@@ -81,6 +72,7 @@ class AdminController extends Controller
 
         return view('admin.admins.create', [
             'admin' => $admin,
+            'user' => $user,
         ]);
     }
 
@@ -94,67 +86,76 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         // Get current user
-        $current_user = $request->user();
         $admin = \Acelle\Model\Admin::newAdmin();
-        $contact = new \Acelle\Model\Contact();
+        $user = \Acelle\Model\User::newDefault();
 
         // authorize
         if (\Gate::denies('create', $admin)) {
             return $this->notAuthorized();
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $user = new \Acelle\Model\User();
-            $user->fill($request->all());
-            $user->activated = true;
+        // fill
+        $admin->fill($request->all());
+        $user->fill($request->all());
 
-            $rules = $user->rules();
-            $rules = array_merge($rules, [
-                'admin_group_id' => 'required',
-            ]);
+        // validate all
+        $rules = [
+            // user
+            'email' => 'required|email|unique:users,email,'.$user->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
 
-            $this->validate($request, $rules);
+            // admin
+            'admin_group_id' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
 
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            $user->save();
+        $validator = \Validator::make($request->all(), $rules);
 
-            // Save current user info
-            $admin->user_id = $user->id;
-            $admin->creator_id = $request->user()->id;
-            $admin->fill($request->all());
-            $admin->admin_group_id = $request->admin_group_id;
-            $admin->status = 'active';
-
-            if ($admin->save()) {
-                // Upload and save image
-                if ($request->hasFile('image')) {
-                    if ($request->file('image')->isValid()) {
-                        // Remove old images
-                        $user->uploadProfileImage($request->file('image'));
-                    }
-                }
-
-                // Remove image
-                if ($request->_remove_image == 'true') {
-                    $user->removeProfileImage();
-                }
-
-                // create customer account
-                if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
-                    $customer = $admin->createCustomerAccount();
-                    $user->customer_id = $customer->id;
-                    $user->save();
-                }
-
-                $request->session()->flash('alert-success', trans('messages.admin.created'));
-
-                return redirect()->action('Admin\AdminController@index');
-            }
+        // redirect if fails
+        if ($validator->fails()) {
+            return response()->view('admin.admins.create', [
+                'admin' => $admin,
+                'user' => $user,
+                'errors' => $validator->errors(),
+            ], 400);
         }
+
+        //
+        [$result, $errors] = $user->saveUser(
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
+        );
+
+        // save admin
+        [$result, $errors] = $admin->saveAdmin(
+            $user = $user,
+            $admin_group_id = $request->admin_group_id,
+            $creator_id = $request->user()->id,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id,
+            $create_customer_account = $request->create_customer_account
+        );
+
+        // redirect if fails
+        if (!$result) {
+            return response()->view('admin.admins.create', [
+                'admin' => $admin,
+                'user' => $user,
+                'errors' => $errors,
+            ], 400);
+        }
+
+        // success
+        return redirect()->action('Admin\AdminController@index')
+            ->with('alert-success', trans('messages.admin.created'));
     }
 
     /**
@@ -178,22 +179,16 @@ class AdminController extends Controller
     public function edit(Request $request, $id)
     {
         $admin = \Acelle\Model\Admin::findByUid($id);
+        $user = $admin->user;
 
         // authorize
         if (\Gate::denies('update', $admin)) {
             return $this->notAuthorized();
         }
 
-        if (!empty($request->old())) {
-            $admin->fill($request->old());
-            $admin->admin_group_id = $request->old()["admin_group_id"];
-            // User info
-            $admin->user = new \Acelle\Model\User();
-            $admin->user->fill($request->old());
-        }
-
         return view('admin.admins.edit', [
             'admin' => $admin,
+            'user' => $user,
         ]);
     }
 
@@ -208,65 +203,75 @@ class AdminController extends Controller
     public function update(Request $request, $id)
     {
         // Get current user
-        $current_user = $request->user();
         $admin = \Acelle\Model\Admin::findByUid($id);
+        $user = $admin->user;
 
         // authorize
         if (\Gate::denies('update', $admin)) {
             return $this->notAuthorized();
         }
 
-        // save posted data
-        if ($request->isMethod('patch')) {
-            $user = $admin->user;
-            $user->fill($request->all());
+        // fill
+        $admin->fill($request->all());
+        $user->fill($request->all());
 
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
+        // validate all
+        $rules = [
+            // user
+            'email' => 'required|email|unique:users,email,'.$user->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
 
-            $rules = $user->rules();
-            $rules = array_merge($rules, [
-                'admin_group_id' => 'required',
-            ]);
-            $this->validate($request, $rules);
+            // admin
+            'admin_group_id' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ];
 
-            // Update user account for admin
+        $validator = \Validator::make($request->all(), $rules);
 
-            $user->save();
-
-            // Save current user info
-            $admin->fill($request->all());
-
-            // Change group
-            $admin->admin_group_id = $request->admin_group_id;
-
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $user->uploadProfileImage($request->file('image'));
-                }
-            }
-
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeProfileImage();
-            }
-
-            // create customer account
-            if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
-                $customer = $admin->createCustomerAccount();
-                $user->customer_id = $customer->id;
-                $user->save();
-            }
-
-            if ($admin->save()) {
-                $request->session()->flash('alert-success', trans('messages.admin.updated'));
-                return redirect()->action('Admin\AdminController@index');
-            }
+        // redirect if fails
+        if ($validator->fails()) {
+            return response()->view('admin.admins.create', [
+                'admin' => $admin,
+                'user' => $user,
+                'errors' => $validator->errors(),
+            ], 400);
         }
+
+        //
+        [$result, $errors] = $user->saveUser(
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
+        );
+
+        // save admin
+        [$result, $errors] = $admin->saveAdmin(
+            $user = $user,
+            $admin_group_id = $request->admin_group_id,
+            $creator_id = $request->user()->id,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id,
+            $create_customer_account = $request->create_customer_account
+        );
+
+        // redirect if fails
+        if (!$result) {
+            return response()->view('admin.admins.edit', [
+                'admin' => $admin,
+                'user' => $user,
+                'errors' => $errors,
+            ], 400);
+        }
+
+        return redirect()->action('Admin\AdminController@index')
+            ->with('alert-success', trans('messages.admin.updated'));
     }
 
     public function select2(Request $request)

@@ -8,6 +8,8 @@ use Exception;
 
 class InvoiceNewSubscription extends Invoice
 {
+    protected $connection = 'mysql';
+
     protected $table = 'invoices';
 
     public const TYPE_NEW_SUBSCRIPTION = 'new_subscription';

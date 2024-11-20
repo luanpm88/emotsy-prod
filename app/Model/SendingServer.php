@@ -35,10 +35,14 @@ use Acelle\Library\InMemoryRateTracker;
 use Acelle\Library\DynamicRateTracker;
 use Exception;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasCache;
 
 class SendingServer extends Model
 {
     use HasUid;
+    use HasCache;
+
+    protected $connection = 'mysql';
 
     public const DELIVERY_STATUS_SENT = 'sent';
     public const DELIVERY_STATUS_FAILED = 'failed';
@@ -63,7 +67,6 @@ class SendingServer extends Model
     public const TYPE_BLASTENGINE_SMTP = 'blastengine-smtp';
 
     protected $quotaTracker;
-    protected $subAccount;
 
     /**
      * The attributes that are mass assignable.
@@ -916,24 +919,6 @@ class SendingServer extends Model
     }
 
     /**
-     * Get all sub-account supported sending server types.
-     *
-     * @return array
-     */
-    public static function getSubAccountTypes()
-    {
-        return [
-            'sendgrid-api',
-            'sendgrid-smtp',
-        ];
-    }
-
-    public function setSubAccount($subAccount)
-    {
-        $this->subAccount = $subAccount;
-    }
-
-    /**
      * Get sending server select2 select options.
      *
      * @return array
@@ -1620,9 +1605,23 @@ class SendingServer extends Model
 
     public function dryrun($message)
     {
-        // $output = '/tmp/dryrun';
-        // $lineSeparator = PHP_EOL.'*********************************************'.PHP_EOL;
-        // file_put_contents($output, $message->toString().$lineSeparator, FILE_APPEND | LOCK_EX);
+        $toEmail = array_keys($message->getTo())[0];
+        $filename = "dryrun-{$toEmail}";
+        $output = "/tmp/dryrun/{$filename}";
+        file_put_contents($output, $message->toString(), FILE_APPEND | LOCK_EX);
         return [ 'status' => self::DELIVERY_STATUS_SENT ];
     }
+
+    public function getCacheIndex()
+    {
+        // cache indexes
+        return [
+            // @note: SubscriberCount must come first as its value shall be used by the others
+            'SentCount' => function () {
+                return $this->trackingLogs()->count();
+            }
+        ];
+    }
+
+
 }

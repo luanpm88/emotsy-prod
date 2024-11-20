@@ -19,12 +19,13 @@ class ImportSubscribersJob extends Base
      *
      */
 
-    public $timeout = 7200;
+    public $timeout = 259200; // 3 days
 
     // @todo this should better be a constant
     protected $list;
     protected $file; // Example: /home/acelle/storage/app/tmp/import-000000.csv
     protected $map;  // { "First Name" => 5, "LAST_NAME" => 6, "email" => 4, "city" => 16 }
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -36,6 +37,7 @@ class ImportSubscribersJob extends Base
         $this->list = $list;
         $this->file = $file;
         $this->map = $map;
+        $this->customer = $this->list->customer;
 
         // Set the initial value for progress check
         $this->afterDispatched(function ($thisJob, $monitor) {
@@ -57,6 +59,8 @@ class ImportSubscribersJob extends Base
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         \App::setLocale($this->list->customer->language->code);
         \Carbon\Carbon::setLocale($this->list->customer->language->code);
 
@@ -81,6 +85,7 @@ class ImportSubscribersJob extends Base
         $this->list->import(
             $this->file,
             $this->map,
+            $update = true,
             function ($processed, $total, $failed, $message) use ($logger) {
                 $percentage = ($total && $processed) ? (int)($processed * 100 / $total) : 0;
 

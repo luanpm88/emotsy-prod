@@ -9,5 +9,5 @@ class UserRole extends Model
 {
     use HasFactory;
 
-    protected $table = 'user_role';
+    protected $connection = 'mysql';
 }

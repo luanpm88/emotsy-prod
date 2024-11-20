@@ -80,7 +80,8 @@ class Website extends Model
         $tags = $document->getElementsByTagName('title');
 
         if (count($tags) == 0) {
-            throw new \Exception(trans('messages.website.title.not_found'));
+            // throw new \Exception(trans('messages.website.title.not_found'));
+            return $url;
         }
 
         return $tags[0]->textContent ?: $emptyTitle;

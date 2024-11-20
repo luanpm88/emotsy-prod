@@ -77,7 +77,7 @@ class FormController extends Controller
         }
 
         // sort, pagination
-        $forms = $request->user()->customer->forms()->search($request->keyword)
+        $forms = $request->user()->customer->local()->forms()->search($request->keyword)
             ->filter($request->all())
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -384,6 +384,9 @@ class FormController extends Controller
 
             // Trigger updating related campaigns cache
             event(new \Acelle\Events\MailListUpdated($list));
+
+            // Timeline record
+            \Acelle\Model\Timeline::recordPopupFormOptIn($subscriber, $form);
         } catch (\Exception $ex) {
             return response()->json([
                 'message' => $ex->getMessage()

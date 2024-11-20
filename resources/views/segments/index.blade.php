@@ -87,8 +87,17 @@
             }
         };
 
+		var CopySegment = class {
+            constructor() {
+                this.popup = new Popup();
+            }
+        }
+
         $(document).ready(function() {
             SegmentsIndex.getList().load();
+
+			//
+			window.copySegment = new CopySegment();
         });
     </script>
 

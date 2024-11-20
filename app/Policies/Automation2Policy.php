@@ -36,14 +36,15 @@ class Automation2Policy
 
     public function create(User $user, Automation2 $automation)
     {
-        if (!$user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
+        // RBAC check
+        if (!$user->hasPermission('automation.full_access')) {
             return false;
         }
 
         $customer = $user->customer;
         $max = get_tmp_quota($customer, 'automation_max');
 
-        $can = $max > $customer->automationsCount() || $max == -1;
+        $can = $max > $customer->local()->automationsCount() || $max == -1;
 
         // RBAC check
         if ($user->hasPermission('automation.all')) {
@@ -65,22 +66,19 @@ class Automation2Policy
             return false;
         }
 
+        // owner check
         $can = $automation->customer_id == $user->customer->id;
 
-        // RBAC check
-        if ($user->hasPermission('automation.all')) {
-            $permission = true;  
-        } elseif ($user->hasPermission('automation.read')) {
-            $permission = true;    
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 
     public function update(User $user, Automation2 $automation)
     {
+        // RBAC check
+        if (!$user->hasPermission('automation.full_access')) {
+            return false;
+        }
+
         if (app_profile('automation.disable') === true) {
             return false;
         }
@@ -89,22 +87,17 @@ class Automation2Policy
             return false;
         }
 
+        // owner check
         $can = $automation->customer_id == $user->customer->id && !$user->isReadOnly();
 
-        // RBAC check
-        if ($user->hasPermission('automation.all')) {
-            $permission = true;
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 
 
     public function enable(User $user, Automation2 $automation)
     {
-        if (app_profile('automation.disable') === true) {
+        // RBAC check
+        if (!$user->hasPermission('automation.full_access')) {
             return false;
         }
 
@@ -117,18 +110,16 @@ class Automation2Policy
                 Automation2::STATUS_INACTIVE
             ]) && !$user->isReadOnly();
 
-        // RBAC check
-        if ($user->hasPermission('automation.all')) {
-            $permission = true;
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 
     public function disable(User $user, Automation2 $automation)
     {
+        // RBAC check
+        if (!$user->hasPermission('automation.full_access')) {
+            return false;
+        }
+
         if (app_profile('automation.disable') === true) {
             return false;
         }
@@ -142,18 +133,16 @@ class Automation2Policy
                 Automation2::STATUS_ACTIVE
             ]) && !$user->isReadOnly();
 
-        // RBAC check
-        if ($user->hasPermission('automation.all')) {
-            $permission = true;
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 
     public function delete(User $user, Automation2 $automation)
     {
+        // RBAC check
+        if (!$user->hasPermission('automation.full_access')) {
+            return false;
+        }
+
         if (app_profile('automation.disable') === true) {
             return false;
         }
@@ -168,13 +157,6 @@ class Automation2Policy
                 Automation2::STATUS_INACTIVE
             ]) && !$user->isReadOnly();
 
-        // RBAC check
-        if ($user->hasPermission('automation.all')) {
-            $permission = true;
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 }

@@ -10,8 +10,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Campaign;
 use Acelle\Library\Exception\RateLimitExceeded;
+use Acelle\Library\Exception\RateLimitReservedByAnotherFileSystem;
 use Exception;
 use Carbon\Carbon;
+
+use function Acelle\Helpers\with_rate_limits;
 
 class Delay implements ShouldQueue
 {
@@ -39,17 +42,20 @@ class Delay implements ShouldQueue
     protected $wait;
     protected $campaign;
     protected $rateTrackers;
+    protected $customer;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($wait, $campaign, $rateTrackers)
+    public function __construct($wait, $campaign, array $rateTrackers)
     {
         $this->wait = $wait;
         $this->campaign = $campaign;
         $this->rateTrackers = $rateTrackers;
+
+        $this->customer = $this->campaign->customer;
     }
 
     /**
@@ -59,6 +65,8 @@ class Delay implements ShouldQueue
      */
     public function retryUntil()
     {
+        $this->customer->setUserDbConnection();
+
         // @important: remember that messages might be released over and over
         // if there is any limit setting in place
         // As a result, it is just save to have it retry virtually forever
@@ -77,16 +85,15 @@ class Delay implements ShouldQueue
         }
 
         try {
-            foreach ($this->rateTrackers as $rateTracker) {
-                $now = now();
-                $rateTracker->test($now);
-            }
+            $this->campaign->logger()->info("Evaluating limit trackers to decide whether or not to resume");
+
+            // Throw Exception here
+            with_rate_limits($this->rateTrackers, $this->campaign->getServersPool(), $rateExceededCallback = null, $creditCounted = [], $testMode = true);
 
             // if everything is okie, then just release this job, remove delay flag
             // The JOB_TYPE_DISPATCH_AND_SEND_MESSAGES batch will trigger the THEN callback and continue
-
             $this->campaign->setDelayFlag(null);
-            $this->campaign->logger()->warning('RESUME Campaign');
+            $this->campaign->logger()->warning('Evaluation ok, RESUMING Campaign...');
 
             return;
 
@@ -104,8 +111,7 @@ class Delay implements ShouldQueue
                 return $info;
             });
 
-            $this->campaign->logger()->warning(sprintf("Delay for [ANOTHER] %s seconds! %s", $this->wait, $ex->getMessage()));
-
+            $this->campaign->logger()->warning(sprintf("Resume evaludation failed! Delay for another %s seconds! %s", $this->wait, $ex->getMessage()));
             $this->release($this->wait);
 
         } catch (Throwable $ex) {

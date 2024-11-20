@@ -26,6 +26,6 @@ class AddCustomFieldsToSubscribers extends Migration
      */
     public function down()
     {
-	//
+        //
     }
 }

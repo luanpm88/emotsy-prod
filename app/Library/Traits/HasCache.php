@@ -53,12 +53,30 @@ trait HasCache
     }
 
     // Helper functions
-    public function updateCache()
+    public function updateCache($cacheKey = null)
     {
         $cacheIndex = $this->getCacheIndex();
-        foreach ($cacheIndex as $key => $callback) {
-            $this->putCache($key, $callback());
+
+        if (!is_null($cacheKey)) {
+            $allKeys = array_keys($cacheIndex);
+
+            if (!in_array($cacheKey, $allKeys)) {
+                throw new \Exception(sprintf("Invalid cache key: %s", $cacheKey));
+            }
         }
+
+        foreach ($cacheIndex as $key => $callback) {
+            if (is_null($cacheKey)) {
+                $this->putCache($key, $callback());
+            } else {
+                if ($cacheKey == $key) {
+                    $this->putCache($key, $callback());
+                }
+            }
+        }
+
+        $this->updated_at = now();
+        $this->save();
     }
 
     public function clearCache()

@@ -100,19 +100,30 @@
 
     <script>
         $(function() {
-            $('.form-popup-preview').on('click', function(e) {
-                e.preventDefault();
-
-                var url = $(this).attr('href');
-                var overlay = $(this).attr('data-overlay');
-
-                popup = new AFormPopup({
-                    url: url
-                });
-
-                popup.load();
-            });
+            new PopupManager($('.form-popup-preview'));
         });
+
+        var PopupManager = class {
+            constructor(buttons) {
+                this.buttons = buttons;
+
+                this.buttons.each(function() {
+                    var url = $(this).attr('href');
+
+                    var popup = new AFormPopup({
+                        url: url
+                    });
+                    popup.init();
+
+                    $(this).on('click', function(e) {
+                        e.preventDefault();
+
+                        popup.show();
+                    });
+
+                });
+            }
+        }
     </script>
     
     <script>

@@ -14,11 +14,18 @@
                         <span class="material-symbols-rounded">maps_home_work</span> {{ trans('messages.contact_information') }}
                     </a>
                 </li>
-                <li class="nav-item {{ $menu == 'users' ? 'active' : '' }}">
-                    <a href="{{ action("UserController@index") }}" class="nav-link">
-                        <span class="material-symbols-rounded">group</span> {{ trans('messages.users') }}
-                    </a>
-                </li>
+                @if (Auth::user()->hasPermission('account.full_access'))
+                    <li class="nav-item {{ $menu == 'users' ? 'active' : '' }}">
+                        <a href="{{ action("UserController@index") }}" class="nav-link">
+                            <span class="material-symbols-rounded">group</span> {{ trans('messages.users') }}
+                        </a>
+                    </li>
+                    <li class="nav-item {{ $menu == 'role' ? 'active' : '' }}">
+                        <a href="{{ action("RoleController@index") }}" class="nav-link">
+                            <span class="material-symbols-rounded">admin_panel_settings</span> {{ trans('messages.roles') }}
+                        </a>
+                    </li>
+                @endif
                 @if (config('app.saas'))
                     <li class="nav-item {{ $menu == 'subscription' ? 'active' : '' }}">
                         <a href="{{ action("SubscriptionController@index") }}" class="nav-link position-relative {{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}">

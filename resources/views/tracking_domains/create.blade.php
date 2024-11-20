@@ -26,7 +26,12 @@
     </div>
 
     <form action="{{ action('TrackingDomainController@store') }}" method="POST" class="form-validate-jqueryz">
-        @include('tracking_domains._form')
+
+        @if (config('caddy.autossl') == true)
+            @include('tracking_domains._form_autossl')
+        @else
+            @include('tracking_domains._form')
+        @endif
 	</form>
 
 @endsection

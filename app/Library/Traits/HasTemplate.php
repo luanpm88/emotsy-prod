@@ -28,8 +28,9 @@ use Acelle\Library\Lockable;
 use Cache;
 use Soundasleep\Html2Text;
 use Acelle\Library\Domain;
-use function \Acelle\Helpers\dkim_sign;
-use function \Acelle\Helpers\dkim_sign_with_default_domain;
+
+use function Acelle\Helpers\dkim_sign;
+use function Acelle\Helpers\dkim_sign_with_default_domain;
 
 trait HasTemplate
 {
@@ -151,34 +152,37 @@ trait HasTemplate
      */
     public function getCustomHeaders($subscriber, $server)
     {
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
-
-        if ($this->isStdClassSubscriber($subscriber)) {
-            $unsubscribeUrl = null;
-        } else {
-            $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
-            if ($this->trackingDomain) {
-                $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
-            }
-        }
+        $customerUid = $this->customer->uid;
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($subscriber->email), $customerUid);
 
         $headers = array(
             'X-Acelle-Campaign-Id' => $this->uid,
-            'X-Acelle-Subscriber-Id' => $subscriber->uid,
+            'X-Acelle-Subscriber-Id' => $subscriber->id,
             'X-Acelle-Customer-Id' => $this->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid,
             'Precedence' => 'bulk',
         );
 
-        // One-click unsubscribe header
-        // Reference: https://aws.amazon.com/fr/blogs/messaging-and-targeting/using-one-click-unsubscribe-with-amazon-ses
-        if ($unsubscribeUrl) {
-            $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
-            $headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
-        } else {
-            $sampleUnsubscribeUrl = route('campaign_message', ['message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
-            $headers['List-Unsubscribe'] = "<{$sampleUnsubscribeUrl}>";
+        if (Setting::isYes('email.enable_one_click_unsubscribe_headers')) {
+            if ($this->isStdClassSubscriber($subscriber)) {
+                $unsubscribeUrl = null;
+            } else {
+                $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
+                if ($this->trackingDomain) {
+                    $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+                }
+            }
+
+            // One-click unsubscribe header
+            // Reference: https://aws.amazon.com/fr/blogs/messaging-and-targeting/using-one-click-unsubscribe-with-amazon-ses
+            if ($unsubscribeUrl) {
+                $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+                $headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+            } else {
+                $sampleUnsubscribeUrl = route('campaign_message', ['message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
+                $headers['List-Unsubscribe'] = "<{$sampleUnsubscribeUrl}>";
+            }
         }
 
         return $headers;
@@ -203,7 +207,7 @@ trait HasTemplate
      *
      * @return MIME text message
      */
-    public function prepareEmail($subscriber, $server = null, $fromCache = false, $expiresInSeconds = 600)
+    public function prepareEmail($subscriber, $server, $fromCache = false, $expiresInSeconds = 600)
     {
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
@@ -223,14 +227,24 @@ trait HasTemplate
         }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
-        if (!is_null($server) && $server->allowCustomReturnPath()) {
+        if ($server->allowCustomReturnPath()) {
             $returnPath = $server->getVerp($subscriber->email);
             if ($returnPath) {
                 $message->setReturnPath($returnPath);
             }
         }
         $message->setSubject($this->getSubject($subscriber, $msgId));
-        $message->setFrom(array($this->from_email => $this->from_name));
+
+        if ($this->useSendingServerDefaultFromEmailAddress()) {
+            if (is_null($server->default_from_email)) {
+                throw new Exception("Your campaign was set up to use sending servers' default FROM EMAIL address. However, server `{$server->name}` does not have a DEFAULT FROM EMAIL value");
+            }
+
+            $message->setFrom($server->default_from_email);
+        } else {
+            $message->setFrom(array($this->from_email => $this->from_name));
+        }
+
         $message->setTo($subscriber->email);
 
         if (!empty(Setting::get('campaign.bcc'))) {
@@ -363,7 +377,7 @@ trait HasTemplate
             return;
         }
 
-        $domain = $this->customer->sendingDomains()->where('name', $domainName)->first();
+        $domain = $this->customer->local()->sendingDomains()->where('name', $domainName)->first();
 
         return $domain;
     }
@@ -525,7 +539,7 @@ trait HasTemplate
     {
         // default attributes that are required
         $jsonObj = [
-            'uid' => uniqid(),
+            'id' => uniqid(),
         ];
 
         // append the customer specified attributes and build a stdClass object

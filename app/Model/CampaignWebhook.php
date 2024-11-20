@@ -26,6 +26,11 @@ class CampaignWebhook extends Model
         return $this->belongsTo('Acelle\Model\Campaign');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
+    }
+
     public function createFromArray($params)
     {
         // init rule

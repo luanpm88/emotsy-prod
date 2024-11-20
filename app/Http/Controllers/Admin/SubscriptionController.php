@@ -303,7 +303,7 @@ class SubscriptionController extends Controller
                     'status' => 'success',
                     'message' => trans('messages.subscription.replenish_sending_credits.success'),
                 ]);
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 return response()->json([
                     'status' => 'error',
                     'message' => $ex->getMessage(),
@@ -314,6 +314,38 @@ class SubscriptionController extends Controller
         return view('admin.subscriptions.replenishSendingCredits', [
             'subscription' => $subscription,
             'remaining' => $subscription->getRemainingEmailCredits(),
+        ]);
+    }
+
+    public function replenishVerificationCredits(Request $request, $id)
+    {
+        $subscription = Subscription::findByUid($request->id);
+
+        // authorize
+        if (!$request->user()->admin->can('replenishVerificationCredits', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        $tracker = $subscription->getVerifyEmailCreditTracker();
+
+        if ($request->isMethod('post')) {
+            try {
+                $tracker->setCredits((int)$request->credits);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.subscription.replenish_verification_credits.success'),
+                ]);
+            } catch (\Exception $ex) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $ex->getMessage(),
+                ], 400);
+            }
+        }
+
+        return view('admin.subscriptions.replenishVerificationCredits', [
+            'subscription' => $subscription,
+            'remaining' => $tracker->getRemainingCredits(),
         ]);
     }
 }

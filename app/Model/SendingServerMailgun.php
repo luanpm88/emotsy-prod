@@ -175,10 +175,19 @@ class SendingServerMailgun extends SendingServer
         $inputJSON = file_get_contents('php://input');
         $input = json_decode($inputJSON, true);
 
-        if (isset($input['signature'])) {
+        if (isset($input['signature']) && $input['event-data'] && $input['event-data']['message']) {
+            $msgId = StringHelper::cleanupMessageId($input['event-data']['message']['headers']['message-id']);
+
+            $customer = \Acelle\Model\Customer::getCustomerFromKey('runtime_message_id', $msgId);
+            if ($customer) {
+                $customer->setUserDbConnection();
+            } else {
+                MailLog::warning("Cannot associate transaction id '{$msgId}' with a customer");
+            }
+
             if ($input['event-data']['event'] == 'complained') {
                 $feedbackLog = new FeedbackLog();
-                $feedbackLog->runtime_message_id = StringHelper::cleanupMessageId($input['event-data']['message']['headers']['message-id']);
+                $feedbackLog->runtime_message_id = $msgId;
                 // For Mailgun, runtime_message_id EQUIV. message_id
                 $feedbackLog->message_id = $feedbackLog->runtime_message_id;
                 $feedbackLog->feedback_type = 'spam';
@@ -191,7 +200,7 @@ class SendingServerMailgun extends SendingServer
                 }
             } elseif ($input['event-data']['event'] == 'failed') {
                 $bounceLog = new BounceLog();
-                $bounceLog->runtime_message_id = StringHelper::cleanupMessageId($input['event-data']['message']['headers']['message-id']);
+                $bounceLog->runtime_message_id = $msgId;
                 // For Mailgun, runtime_message_id EQUIV. message_id
                 $bounceLog->message_id = $bounceLog->runtime_message_id;
                 $bounceLog->bounce_type = BounceLog::HARD;

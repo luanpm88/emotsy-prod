@@ -79,7 +79,7 @@
     @if ($campaign->type != 'plain-text')
         <div id="plain" class="tabcontent"  style="padding: 10px">
     @endif
-        {!! ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB->getPlainContent() : $campaign->getPlainContent() !!}
+        <pre style="padding-left:20px">{!! $campaign->getPlainContent() !!}</pre>
     @if ($campaign->type != 'plain-text')
         </div>
     @endif

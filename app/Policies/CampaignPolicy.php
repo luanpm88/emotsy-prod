@@ -10,8 +10,23 @@ class CampaignPolicy
 {
     use HandlesAuthorization;
 
+    public function list(User $user)
+    {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access') && !$user->hasPermission('campaign.read_only')) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function read(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access') && !$item->hasPermission('campaign.read_only')) {
+            return false;
+        }
+
         $can = $item->customer_id == $user->customer->id;
 
         return $can;
@@ -19,14 +34,19 @@ class CampaignPolicy
 
     public function create(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access')) {
+            return false;
+        }
+
         $max = get_tmp_quota($user->customer, 'campaign_max');
 
-        $can = $max > $user->customer->campaigns()->count() || $max == -1;
+        $can = $max > $user->customer->local()->campaigns()->count() || $max == -1;
 
         // config/limit.php
         $limit = app_profile('campaign.limit');
         if (!is_null($limit)) {
-            $campaignsCount = $user->customer->campaignsCount();
+            $campaignsCount = $user->customer->local()->campaignsCount();
             $can = $can && ($campaignsCount < $limit);
         } else {
             // ignore limit because it is null
@@ -106,6 +126,11 @@ class CampaignPolicy
 
     public function update(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access')) {
+            return false;
+        }
+
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id
             && (in_array($item->status, [
@@ -113,8 +138,7 @@ class CampaignPolicy
                 Campaign::STATUS_ERROR,
                 Campaign::STATUS_PAUSED,
                 Campaign::STATUS_SCHEDULED,
-                Campaign::STATUS_REJECTED,
-                Campaign::STATUS_QUEUED,
+                Campaign::STATUS_DONE,
             ]));
 
         // RBAC check
@@ -129,6 +153,11 @@ class CampaignPolicy
 
     public function delete(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access')) {
+            return false;
+        }
+
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_NEW,
@@ -152,6 +181,11 @@ class CampaignPolicy
 
     public function pause(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access')) {
+            return false;
+        }
+
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_QUEUED,
@@ -171,6 +205,11 @@ class CampaignPolicy
 
     public function run(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access')) {
+            return false;
+        }
+
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_NEW,
@@ -187,8 +226,13 @@ class CampaignPolicy
         return $can && $permission;
     }
 
-    public function restart(User $user, Campaign $item)
+    public function resume(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access')) {
+            return false;
+        }
+
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_PAUSED,
@@ -214,6 +258,11 @@ class CampaignPolicy
 
     public function copy(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access')) {
+            return false;
+        }
+
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id;
 
@@ -229,6 +278,11 @@ class CampaignPolicy
 
     public function preview(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access') && !$user->hasPermission('campaign.read_only')) {
+            return false;
+        }
+
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id;
 
@@ -263,6 +317,11 @@ class CampaignPolicy
 
     public function resend(User $user, Campaign $item)
     {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access')) {
+            return false;
+        }
+
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused());
 
@@ -301,5 +360,27 @@ class CampaignPolicy
         }
 
         return $can && $permission;
+    }
+
+    public function resendHighPriority(User $user, Campaign $item)
+    {
+        // RBAC check
+        if (!$user->hasPermission('campaign.full_access')) {
+            return false;
+        }
+
+        $customer = $user->customer;
+
+        // is admin or log as customer from admin
+        $can = ((null !== \Session::get('orig_user_uid') && \Auth::user()->customer) || $user->admin);
+
+        // same as resume policy
+        $can = $can && $item->customer_id == $customer->id && in_array($item->status, [
+            Campaign::STATUS_PAUSED,
+            Campaign::STATUS_ERROR,
+            Campaign::STATUS_SCHEDULED,
+        ]);
+
+        return $can;
     }
 }

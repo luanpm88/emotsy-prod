@@ -98,7 +98,8 @@ class MailListFieldMapping
     public function createTmpTableFromMapping()
     {
         // create a temporary table containing the input subscribers
-        $tmpTable = table('__tmp_subscribers');
+        $tmpTableWithoutPrefix = '__tmp_subscribers_'.$this->list->uid;
+        $tmpTable = table($tmpTableWithoutPrefix);
         $emailField = $this->list->getEmailField();
 
         // @todo: hard-coded charset and COLLATE
@@ -123,6 +124,6 @@ class MailListFieldMapping
         DB::statement("CREATE TABLE {$tmpTable}({$tmpFields}) ENGINE=InnoDB;");
         DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`{$emailField->custom_field_name}`);");
 
-        return [$tmpTable, $emailField->custom_field_name];
+        return [$tmpTable, $tmpTableWithoutPrefix, $emailField->custom_field_name];
     }
 }

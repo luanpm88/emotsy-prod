@@ -85,7 +85,7 @@ abstract class Action
 
     public function getOption($key)
     {
-        return $this->options[$key];
+        return $this->options[$key] ?? null;
     }
 
     public function setOption($name, $value)
@@ -140,19 +140,7 @@ abstract class Action
         return false;
     }
 
-    public function update(array $json)
-    {
-        // Keep the following attributes, do not overwrite
-        $keep = [ 'last_executed', 'evaluationResult' ];
-
-        foreach ($json as $key => $value) {
-            if (!in_array($key, $keep)) {
-                $this->{$key} = $value;
-            }
-        }
-    }
-
-    public function getProgressDescription()
+    public function getProgressDescription($timezone = null, $locale = null)
     {
         return null;
     }
@@ -168,7 +156,7 @@ abstract class Action
 
     // Template Pattern, execute will in turn call doExecute of inherited classes
     // Just to record the current action information in case of any error
-    public function execute($callback)
+    public function execute($manually = false)
     {
         // IMPORTANT: this should be placed outside of the try/catch
         // Otherwise, error again in catch block (no trigger information to log)
@@ -183,7 +171,7 @@ abstract class Action
             }
 
             // Actually execute, implemented by child classes
-            $result = $this->doExecute();
+            $result = $this->doExecute($manually);
 
             if ($result) {
                 // Only record last_executed and execute callback if success
@@ -194,14 +182,17 @@ abstract class Action
                 //            and evaluation result may CHANGE over time (email gets clicked/opened)
 
                 $this->recordLastExecutedTime();
-                $callback($this);
+                $this->save();
+                $this->autoTrigger->recordToTimeline($this);
+            } else {
+                // it is up to the action to determine what to do in case of false
             }
 
             return $result;
         } catch (Throwable $t) {
             $msg = trans('messages.automation.trigger.error.action_failed', [
-                'email' => $this->autoTrigger->subscriber->email,
-                'id' => $this->getId(),
+                'email' => $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]'),
+                'id' => "Trigger {$this->autoTrigger->id}=>{$this->getId()}",
                 'title' => $this->getTitle(),
                 'err' => $t->getMessage(),
             ]);
@@ -215,7 +206,45 @@ abstract class Action
     public function isDelayAction()
     {
         // Whether or not this action type can delay the workflow
-        // Only return true in case of CONDITION and WAIT
+        // Only return true in case of CONDITION and WAIT and SEND and TRIGGER
         return false;
+    }
+
+    public function save()
+    {
+        $this->autoTrigger->updateAction($this);
+    }
+
+    public function retry()
+    {
+        throw new Exception("Action type {$this->getType()} does not support retry.");
+    }
+
+    public function setError($errorMsg)
+    {
+        $this->setOption('error', $errorMsg);
+        $this->autoTrigger->setError(true, $save = false);
+        $this->save();
+    }
+
+    public function update(array $json)
+    {
+        // Keep the following attributes, do not overwrite
+        $keepMain = [ 'options', 'last_executed', 'evaluationResult' ];
+
+        // Keep options
+        $keep = [ 'queued_at', 'sent_at', 'delivery_job_id', 'delay_note', 'error'];
+
+        foreach ($json as $key => $value) {
+            if (!in_array($key, $keepMain)) {
+                $this->{$key} = $value;
+            }
+        }
+
+        foreach($json['options'] as $key => $value) {
+            if (!in_array($key, $keep)) {
+                $this->setOption($key, $value);
+            }
+        }
     }
 }

@@ -21,6 +21,11 @@ class WebsitePolicy
 
     public function create(User $user)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
         if (app_profile('website.disable') === true) {
             return false;
         }
@@ -39,6 +44,11 @@ class WebsitePolicy
 
     public function update(User $user, Website $website)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
         if (app_profile('website.disable') === true) {
             return false;
         }
@@ -48,6 +58,11 @@ class WebsitePolicy
 
     public function delete(User $user, Website $website)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
         if (app_profile('website.disable') === true) {
             return false;
         }
@@ -57,6 +72,11 @@ class WebsitePolicy
 
     public function connect(User $user, Website $website)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
         if (app_profile('website.disable') === true) {
             return false;
         }
@@ -66,6 +86,11 @@ class WebsitePolicy
 
     public function disconnect(User $user, Website $website)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
         if (app_profile('website.disable') === true) {
             return false;
         }

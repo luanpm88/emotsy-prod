@@ -52,7 +52,14 @@ class EmailVerificationServerController extends Controller
         // exlude customer seding servers
         $request->merge(array("no_customer" => true));
 
-        $servers = \Acelle\Model\EmailVerificationServer::search($request)->paginate($request->per_page);
+        $servers = \Acelle\Model\EmailVerificationServer::search($request);
+
+        // // hide athena server
+        // if (\Acelle\Model\Plugin::isInstalled('acelle/athena') && \Acelle\Model\Plugin::getByName('acelle/athena')->isActive()) {
+        //     $servers = $servers->where('type', '!=', 'athenaevs.com');
+        // }
+
+        $servers = $servers->paginate($request->per_page);
 
         return view('admin.email_verification_servers._list', [
             'servers' => $servers,

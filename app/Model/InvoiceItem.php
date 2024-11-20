@@ -8,6 +8,7 @@ use Acelle\Library\Traits\HasUid;
 class InvoiceItem extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     /**
      * The attributes that are mass assignable.

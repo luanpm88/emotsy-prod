@@ -10,7 +10,7 @@
                 <div class="me-4">
                     <img width="50px" height="50px"
                         class="rounded-circle border shadow-sm"
-                        src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->uid)) }}"
+                        src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->id)) }}"
                     />
                 </div>
                 <div class="">

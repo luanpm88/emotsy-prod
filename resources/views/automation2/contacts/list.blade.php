@@ -1,4 +1,10 @@
 @if ($contacts->count() > 0)
+    <style type="text/css">
+        .action-error {
+            background: #e77070;
+        }
+    </style>
+
     <p class="insight-intro mb-2 small">
         {{ trans('messages.automation.contact.all_count', ['count' => number_with_delimiter($contacts->total(), $precision = 0)]) }}
     </p>
@@ -6,29 +12,36 @@
     <div class="mc-table small border-top">
         @foreach ($contacts as $key => $contact)
             @php
-                $trigger = $automation->getAutoTriggerFor($contact);
+                $trigger = \Acelle\Model\AutoTrigger::find($contact->auto_trigger_id);
             @endphp
             <div class="mc-row d-flex align-items-center">
                 <div class="media trigger">
                     <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
-                        'contact_uid' => $contact->uid,
+                        'contact_id' => is_null($contact->id) ? '#' : $contact->id,
                     ]) }}')" class="font-weight-semibold d-block">
-                        @if(isSiteDemo())
+                        @if(isSiteDemo() || is_null($contact->id))
                             <img src="https://i.pravatar.cc/300" />
                         @else
-                            <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
+                            <img src="{{ action('SubscriberController@avatar',  $contact->id) }}" />
                         @endif
                     </a>
                 </div>
                 <div class="flex-fill" style="width: 20%">
-                    <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
-                        'uid' => $automation->uid,
-                        'contact_uid' => $contact->uid,
-                    ]) }}')" class="font-weight-semibold d-block">
-                        {{ $contact->getFullName() }}
-                    </a>
-                    <desc>{{ $contact->email }}</desc>
+                    @if (is_null($contact->id))
+                        <a href="javascript:;" class="font-weight-semibold d-block">
+                            [moved or deleted]
+                        </a>
+                    @else
+                        <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
+                            'uid' => $automation->uid,
+                            'contact_id' => $contact->id,
+                        ]) }}')" class="font-weight-semibold d-block">
+                            {{ $contact->getFullName($default = null, $reload = true) }}
+                        </a>
+                    @endif
+
+                    <desc>{{ is_null($contact->id) ? $trigger->getSubscriberCachedInfo('email') : $contact->email }}</desc>
                 </div>
                 
                 <div class="actions-points">
@@ -43,18 +56,21 @@
 
                         @foreach ($points as $action)
                             @php
-                                if ($action->getLastExecuted()) {
-                                    $executedAt = $action->getLastExecutedCarbon($customer->timezone);
-                                    $notes = sprintf(', %s (%s)',
-                                        $executedAt->diffForHumans(),
-                                        $customer->formatDatetime($executedAt, 'datetime_full'),
-                                        $customer->timezone,
-                                    );
+                                if ($action->getOption('error')) {
+                                    $style = 'action-error';
                                 } else {
-                                    $notes = '';
+                                    $style = "action-{$action->getType()}";
                                 }
                             @endphp
-                            <span class="xtooltip round-action-point action-{{ $action->getType() }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
+                            <span
+                                @if($action->getOption('error'))
+                                    data-action="retry"
+                                    data-url="{{ action('AutoTrigger@retry', [
+                                        'action_id' => $action->getId(),
+                                        'auto_trigger_id' => $trigger->id,
+                                    ]) }}"
+                                @endif
+                                class="xtooltip round-action-point {{ $style }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }}">
                             </span>
                         @endforeach
                     @endif
@@ -68,28 +84,23 @@
                         </label>
                         <desc>
                             <a target="_blank" style="color:blue;text-decoration: underline;"
-                                href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $contact->uid ]) }}"
+                                href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $contact->id ]) }}"
                                 class="timeline-trigger-now">
                                 {{ trans('messages.automation.trigger_now') }}
                             </a>
                         </desc>
-                    @else
-                        <label title="" class="text-end">
-                            <span class="text-truncate" style="max-width: 100px;margin-right:0px">
-                                @php
-                                    $latestAction = $trigger->getLatestAction() ?: $trigger->getTrigger();
-                                    $lastUpdate = $latestAction->getLastExecutedHumanReadable();
-
-                                    if (is_null($lastUpdate)) {
-                                        $lastUpdate = $trigger->created_at->diffForHumans(); // Triggered but not yet executed
-                                    }
-                                @endphp
-
-                                {{ $lastUpdate }}
-                            </span>
-                        </label>
+                    @elseif (is_null($contact->id))
                         <desc>{{ trans('messages.automation.last_activity') }} •
-                            <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;"
+                            <a target="_blank" style="color:blue;text-decoration: underline;"
+                                href="#"
+                                class="trigger-check"
+                            >
+                                {{ trans('messages.trigger.check') }}
+                            </a>
+                        </desc>
+                    @else
+                        <desc>{{ trans('messages.automation.last_activity') }} •
+                            <a target="_blank" style="color:blue;text-decoration: underline;"
                                 href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}"
                                 class="trigger-check"
                             >
@@ -113,6 +124,38 @@
 @endif
 
 <script>
+    $(function() {
+        $('[data-action="retry"]').each(function() {
+            new ActionRetry({
+                button: $(this),
+            });
+        });
+
+    });
+
+    var ActionRetry = class {
+        constructor(options) {
+            var _this = this;
+            this.button = options.button;
+            this.url = this.button.attr('data-url');
+            this.popup = new Popup({
+                url: this.url,
+            });
+
+            // event
+            this.button.on('click', function() {
+                _this.load();
+            });
+        }
+
+        load() {
+            window.currentRetry = this;
+            this.popup.load();
+        }
+    }
+</script>
+
+<script>
     $('.timeline-trigger-now').on('click', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
@@ -125,7 +168,7 @@
 
                 $.ajax({
                     url: url,
-                    method: 'GET',
+                    method: 'POST',
                     success: function (response) {
                         // notify
                         // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
@@ -149,16 +192,25 @@
         $.ajax({
             url: url,
             method: 'GET',
+            globalError: false,
             success: function (response) {
                 // notify
                 // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
 
                 listContact.load();
-
-                removeMaskLoading();
             }
-        }).always(function() {
-            listContact.load();
+        }).fail((res) => {
+            // notify
+            // notify('error', '{{ trans('messages.notify.error') }}', res.responseText);
+
+            new Dialog('alert', {
+                title: LANG_ERROR,
+                message: res.responseText,
+            });
+
+            $(this).removeClass('link-disabled');
+        })
+        .always(function() {
             removeMaskLoading();
         });
     });

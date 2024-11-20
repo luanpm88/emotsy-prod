@@ -64,6 +64,9 @@ class Automation2 extends Model
     public const TRIGGER_WEEKLY_RECURRING = 'weekly-recurring';
     public const TRIGGER_MONTHLY_RECURRING = 'monthly-recurring';
     public const TRIGGER_TAG_BASED = 'tag-based';
+    public const TRIGGER_WOO_ABANDONED_CART = 'woo-abandoned-cart';
+    public const TRIGGER_REMOVE_TAG = 'remove-tag';
+    public const TRIGGER_ATTRIBUTE_UPDATE = 'attribute-update';
 
     /**
      * Items per page.
@@ -95,6 +98,11 @@ class Automation2 extends Model
     public function emailLinks()
     {
         return $this->hasManyThrough('Acelle\Model\EmailLink', 'Acelle\Model\Email');
+    }
+
+    public function triggerSessions()
+    {
+        return $this->hasMany('Acelle\Model\TriggerSession');
     }
 
     /**
@@ -226,7 +234,6 @@ class Automation2 extends Model
     {
         DB::transaction(function () use ($data) {
             $this->resetListRelatedData();
-            $this->autoTriggers()->delete();
             $this->saveData($data);
         });
     }
@@ -240,22 +247,24 @@ class Automation2 extends Model
         $this->save();
     }
 
-    public function updateAction($newAction)
+    public function retryAllFailedActions()
     {
-        $json = json_decode($this->data, true);
-        $newJson = [];
+        $connection = config('custom.automation_queue_connection');
+        $queue = ACM_QUEUE_TYPE_HIGH;
 
-        foreach ($json as $actionJson) {
-            $action = $this->getAction($actionJson);
+        $job = new \Acelle\Jobs\RetryAllFailedActions($this);
 
-            if ($action->getId() == $newAction->getId()) {
-                $newJson[] = $newAction->toJson();
-            } else {
-                $newJson[] = $action->toJson();
-            }
+        if ($connection) {
+            // By default, this value is null, meaning that automation should use the default queue connection
+            // specified in the .env file (QUEUE_CONNECTION)
+            $job->onConnection($connection)->onQueue($queue);
+        } else {
+            $job->onQueue($queue);
         }
 
-        $this->saveData(json_encode($newJson));
+        $jobId = safe_dispatch($job);
+
+        return $jobId;
     }
 
     public function validateData($data)
@@ -410,7 +419,7 @@ class Automation2 extends Model
     /**
      * Initiate a trigger with a given subscriber.
      */
-    public function initTrigger($subscriber, $force = false)
+    public function initTrigger($subscriber, $force = false, $session = null)
     {
         if (!$subscriber->isSubscribed() && $force == false) {
             $this->logger()->warning(sprintf('Cannot trigger contact %s, current status is: %s', $subscriber->email, $subscriber->status));
@@ -418,12 +427,17 @@ class Automation2 extends Model
         }
 
         $trigger = null;
-        DB::transaction(function () use (&$trigger, $subscriber) {
-            $trigger = $this->autoTriggers()->create();
+        $sessionId = is_null($session) ? null : $session->id;
+        DB::transaction(function () use (&$trigger, $subscriber, $sessionId) {
+            $trigger = new AutoTrigger();
+            $trigger->customer_id = $this->customer_id;
+            $trigger->trigger_session_id = $sessionId;
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
+            $this->autoTriggers()->save($trigger);
             $trigger->updateWorkflow();
-            $trigger->save();
-            $this->logger()->info(sprintf('[%s] NEW TRIGGER for %s', $this->getTriggerType(), $subscriber->email));
+            $trigger->cacheSubscriberInfo();
+
+            $this->logger()->info(sprintf('@TRIGGER (%s) for %s', $this->getTriggerType(), $subscriber->email));
         });
 
         return $trigger;
@@ -436,9 +450,12 @@ class Automation2 extends Model
     {
         $customers = Customer::all();
         foreach ($customers as $customer) {
-            // Only one automation process to run at one given time
 
-            $automations = $customer->activeAutomation2s;
+            // IMPORTANT!!!
+            $customer->setUserDbConnection();
+
+            // Only one automation process to run at one given time
+            $automations = $customer->local()->activeAutomation2s;
             foreach ($automations as $automation) {
                 $automationLockFile = $customer->getLockPath('automation-lock-'.$automation->uid);
                 $lock = new Lockable($automationLockFile);
@@ -523,10 +540,14 @@ class Automation2 extends Model
             case self::TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE:
                 // In progress
                 break;
-            case 'woo-abandoned-cart':
+            case self::TRIGGER_WOO_ABANDONED_CART:
                 $this->checkForAbandonedCart();
                 // no break
             case self::TRIGGER_TAG_BASED:
+                break;
+            case self::TRIGGER_REMOVE_TAG:
+                break;
+            case self::TRIGGER_ATTRIBUTE_UPDATE:
                 break;
             case 'others':
                 // others
@@ -540,42 +561,49 @@ class Automation2 extends Model
 
     public function checkForWeeklyRecurring()
     {
-        $thisId = $this->id;
+        $selectedWeekDays = $this->getTriggerAction()->getOptions()['days_of_week'];
+        $today = Carbon::now($this->customer->timezone);
+        if (!in_array($today->dayOfWeek, $selectedWeekDays)) {
+            $this->logger()->info(sprintf('Not the right week day: CURRENT %s (%s) != %s', $today->dayOfWeek, $today->toString(), implode(' ', $selectedWeekDays)));
+            return;
+        }
+
         // TODAY + CURRENT TIME
         $currentTime = new DateTime('now', new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
         if ($currentTime < $triggerTime) {
-            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s', $currentTime->format('Y-m-d H:i:s'), $triggerTime->format('Y-m-d H:i:s')));
-            return;
-        }
-
-        $selectedWeekDays = $this->getTriggerAction()->getOptions()['days_of_week'];
-
-        $today = Carbon::now($this->customer->timezone);
-
-        if (!in_array($today->dayOfWeek, $selectedWeekDays)) {
-            $this->logger()->info(sprintf('Not the right week day: CURRENT %s (%s) != %s', $today->dayOfWeek, $today->toString(), implode(' ', $selectedWeekDays)));
+            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s, wait for %s minutes', $currentTime->format('H:i:s'), $triggerTime->format('H:i:s'), (new Carbon($triggerTime))->diffInMinutes($currentTime)));
             return;
         }
 
         // Only trigger once a day
-        // Counting by user timezone
-        $startOfDayUtc = $today->startOfDay()->timezone(config('app.timezone'));
+        $startOfDayUtc = $today->copy()->startOfDay()->timezone(config('app.timezone'));
+        $endOfDayUtc = $today->copy()->endOfDay()->timezone(config('app.timezone'));
 
-        $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
-            $join->on('auto_triggers.subscriber_id', 'subscribers.id');
-            $join->where('auto_triggers.automation2_id', $thisId);
-            $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
-        })
-        ->whereNull('auto_triggers.subscriber_id')->get();
+        $session = $this->triggerSessions()->where('created_at', '>=', $startOfDayUtc)->where('created_at', '<=', $endOfDayUtc)->first();
 
-        // init trigger
-        foreach ($subscribers as $subscriber) {
-            $this->initTrigger($subscriber);
-            $this->logger()->info(sprintf('NEW > ??? > Weekly recurring for %s, at %s', $subscriber->email, $startOfDayUtc->toString()));
+        if ($session) {
+            $this->logger()->info(sprintf('A session already exists: TriggerSession#%s, triggered same day %s at %s', $session->id, $session->created_at->diffForHumans(), $this->customer->formatDateTime($session->created_at, 'datetime_short')));
+            return;
         }
+
+        // Delete old sessions' triggers
+        $this->triggerSessions()->delete();
+        $this->autoTriggers()->delete(); // Delete legacy triggers that were not bound to a session
+
+        // Create new sessions
+        $session = $this->createTriggerSession();
+
+        $this->forceTriggerAll($session);
+    }
+
+    public function createTriggerSession()
+    {
+        $session = new TriggerSession();
+        $session->customer_id = $this->customer_id;
+        return $this->triggerSessions()->save($session);
     }
 
     public function checkForMonthlyRecurring()
@@ -587,7 +615,7 @@ class Automation2 extends Model
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
         if ($currentTime < $triggerTime) {
-            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s', $currentTime->format('Y-m-d H:i:s'), $triggerTime->format('Y-m-d H:i:s')));
+            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s (%s), wait for %s minutes', $currentTime->format('H:i:s'), $triggerTime->format('H:i:s'), $this->customer->timezone, (new Carbon($triggerTime))->diffInMinutes($currentTime)));
             return;
         }
 
@@ -734,43 +762,45 @@ class Automation2 extends Model
     {
         $this->logger()->info(sprintf('NEW > Check for Specific Date/Time'));
 
-        // this is a one-time triggered automation event
-        // just abort if it is already triggered
-        //if ($this->autoTriggers()->exists()) {
-        //    $this->logger()->info(sprintf('NEW > Already triggered'));
-        //    return;
-        //}
-
         $trigger = $this->getTriggerAction();
         $now = $this->customer->getCurrentTime();
         $eventDate = Carbon::parse(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')))->timezone($this->customer->timezone);
 
-        // Condition same date but after the specified time
-        $format = 'Y-m-d';
-        $checked = $now->gte($eventDate) && $now->format($format) == $eventDate->format($format);
+        echo $now->toString()."\n";
+        echo $eventDate->toString();
 
+
+        // Condition same date but after the specified time
+        // So, two conditions are required:
+        // + After the specified time
+        // + But trigger on same day only
+        $format = 'Y-m-d';
+
+        if ($now->format($format) != $eventDate->format($format)) {
+            $this->logger()->info(sprintf("Not triggering today, the scheduled date/time is %s, i.e. %s.", $eventDate->format('Y-m-d G:i:s P'), $eventDate->diffForHumans()));
+            return;
+        }
+
+        $checked = $now->gte($eventDate);
         if (!$checked) {
             $this->logger()->info(sprintf("It is now %s, the scheduled time is: %s, i.e. %s.", $now->format('Y-m-d G:i:s P'), $eventDate->format('Y-m-d G:i:s P'), $eventDate->diffForHumans()));
             return;
         }
 
-        $this->logger()->info(sprintf('NEW > It is %s hours due! triggering!', $now->diffInHours($eventDate)));
-
-        $this->forceTrigger();
-    }
-
-    // Trigger all contacts that are not yet triggered
-    public function forceTrigger()
-    {
-        $notTriggered = $this->notTriggeredSubscribers()->get();
-        $total = $notTriggered->count();
-        $i = 0;
-
-        foreach ($notTriggered as $subscriber) {
-            $i += 1;
-            $this->initTrigger($subscriber);
-            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
+        $session = $this->triggerSessions()->latest()->first();
+        if ($session && $now->gte($session->created_at) && $now->format($format) == $session->created_at->format($format)) {
+            $this->logger()->info(sprintf('A session already exists: TriggerSession#%s, triggered same day %s at %s', $session->id, $session->created_at->diffForHumans(), $this->customer->formatDateTime($session->created_at, 'datetime_short')));
+            return;
         }
+
+        // Delete old sessions' triggers
+        $this->triggerSessions()->delete();
+        $this->autoTriggers()->delete(); // Delete legacy triggers that were not bound to a session
+
+        // Create new sessions
+        $session = $this->createTriggerSession();
+
+        $this->forceTriggerAll($session);
     }
 
     public function logger()
@@ -1069,7 +1099,7 @@ class Automation2 extends Model
      */
     public function getSwitchAutomations($customer)
     {
-        return $customer->automation2s()->where('id', '<>', $this->id)->orderBy('updated_at', 'desc')->limit(50);
+        return $customer->local()->automation2s()->where('id', '<>', $this->id)->orderBy('updated_at', 'desc')->limit(50);
     }
 
     /**
@@ -1127,6 +1157,7 @@ class Automation2 extends Model
         // + open logs
         // + click logs
         // + timelines
+        $this->triggerSessions()->delete();
         $this->autoTriggers()->delete();
         $this->updateCache();
         $this->setLastError(null);
@@ -1190,7 +1221,7 @@ class Automation2 extends Model
         return $this->getSegments()->map->uid->toArray();
     }
 
-    // for debugging only
+    // For debugging only
     public function updateActionOptions($actionId, $data = [])
     {
         $json = json_decode($this->data, true);
@@ -1209,15 +1240,29 @@ class Automation2 extends Model
         }
     }
 
-    /**
-     * Get segments uids.
-     */
-    public function execute()
+    // Trigger all contacts that are not yet triggered
+    public function forceTrigger()
     {
-        $subscribers = $this->notTriggeredSubscribers()->get();
-        foreach ($subscribers as $subscriber) {
+        $notTriggered = $this->notTriggeredSubscribers()->get();
+        $total = $notTriggered->count();
+        $i = 0;
+
+        foreach ($notTriggered as $subscriber) {
+            $i += 1;
             $this->initTrigger($subscriber);
+            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
         }
+    }
+
+    public function forceTriggerAll($session)
+    {
+        // Triggers active contacts
+        $subscribers = $this->subscribersToSend()->get();
+        $this->logger()->info(sprintf('Triggering %s contacts', sizeof($subscribers)));
+        foreach ($subscribers as $subscriber) {
+            $this->initTrigger($subscriber, $force = false, $session);
+        }
+        $this->logger()->info(sprintf('Finish Triggering %s contacts', sizeof($subscribers)));
     }
 
     public function notTriggeredSubscribers()
@@ -1252,7 +1297,7 @@ class Automation2 extends Model
 
     public function updateCacheInBackground()
     {
-        safe_dispatch(new \Acelle\Jobs\UpdateAutomation($this));
+        dispatch(new \Acelle\Jobs\UpdateAutomation($this));
     }
 
     public function setLastError($message)
@@ -1326,13 +1371,32 @@ class Automation2 extends Model
     public function getSubscribersWithTriggerInfo()
     {
         $thisId = $this->id;
-        return $this->subscribers()
-                ->leftJoin('auto_triggers', function ($join) use ($thisId) {
-                    $join->on('auto_triggers.subscriber_id', 'subscribers.id');
-                    $join->where('auto_triggers.automation2_id', $thisId);
-                })
-                ->addSelect('auto_triggers.id as auto_trigger_id')
-                ->addSelect('auto_triggers.created_at as triggered_at');
+        $withSubscribers = $this->subscribers()
+            ->leftJoin('auto_triggers', function ($join) use ($thisId) {
+                $join->on('auto_triggers.subscriber_id', 'subscribers.id');
+                $join->where('auto_triggers.automation2_id', $thisId);
+            })->with(['autoTriggers' => function ($query) {
+                $query->where('automation2_id', '=', $this->id);
+            }])
+            ->select('subscribers.id AS id', 'subscribers.uid AS uid', 'subscribers.email AS email', 'subscribers.created_at AS subscriber_created_at')
+            ->addSelect('auto_triggers.id AS auto_trigger_id')
+            ->addSelect('auto_triggers.created_at AS triggered_at')
+            ->addSelect('auto_triggers.updated_at AS last_activity_at')
+            ->addSelect('mail_list_id');
+
+
+        $noSubscribers = $this->autoTriggers()
+            ->join('automation2s', 'automation2_id', '=', 'automation2s.id')
+            ->whereNull('subscriber_id')
+            ->select(DB::raw('NULL AS id, NULL AS uid, NULL AS email, NULL AS subscriber_created_at'))
+            ->addSelect('auto_triggers.id AS auto_trigger_id')
+            ->addSelect('auto_triggers.created_at AS triggered_at')
+            ->addSelect('auto_triggers.updated_at AS last_activity_at')
+            ->addSelect('mail_list_id');
+
+        //return $withSubscribers;
+        //return $noSubscribers;
+        return $withSubscribers->union($noSubscribers);//->union($noSubscribers);
     }
 
     public function getAutoTriggerFor($subscriber)
@@ -1352,7 +1416,9 @@ class Automation2 extends Model
             'api-3-0',
             'weekly-recurring',
             'monthly-recurring',
-            // Automation2::TRIGGER_TAG_BASED,
+            self::TRIGGER_TAG_BASED,
+            self::TRIGGER_REMOVE_TAG,
+            self::TRIGGER_ATTRIBUTE_UPDATE,
         ];
 
         if (config('custom.woo')) {
@@ -1362,17 +1428,19 @@ class Automation2 extends Model
         return $types;
     }
 
-    public function newDefault($fields = [])
+    public static function newDefault($fields = [])
     {
+        $automation = new static();
+
         if (!isset($fields['name'])) {
-            $this->name = trans('messages.automation.untitled');
+            $automation->name = trans('messages.automation.untitled');
         } else {
-            $this->name = $fields['name'];
+            $automation->name = $fields['name'];
         }
 
-        $this->status = self::STATUS_INACTIVE;
+        $automation->status = self::STATUS_INACTIVE;
 
-        return $this;
+        return $automation;
     }
 
     public function createFromArray($params)
@@ -1559,6 +1627,37 @@ class Automation2 extends Model
                 'last_executed' => null,
                 'evaluationResult' => null,
             ];
+        } elseif ($type == self::TRIGGER_REMOVE_TAG) {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.remove-tag'),
+                'type' => 'ElementTrigger',
+                'child' => null,
+                'options' => [
+                    'key' => self::TRIGGER_REMOVE_TAG,
+                    'type' => self::TRIGGER_REMOVE_TAG,
+                    'tags' => $params['options']['tags'],
+                    'init' => 'true',
+                ],
+                'last_executed' => null,
+                'evaluationResult' => null,
+            ];
+        } elseif ($type == self::TRIGGER_ATTRIBUTE_UPDATE) {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.attribute-update'),
+                'type' => 'ElementTrigger',
+                'child' => null,
+                'options' => [
+                    'key' => self::TRIGGER_ATTRIBUTE_UPDATE,
+                    'type' => self::TRIGGER_ATTRIBUTE_UPDATE,
+                    'field_uid' => $params['options']['field_uid'],
+                    'value' => $params['options']['value'],
+                    'init' => 'true',
+                ],
+                'last_executed' => null,
+                'evaluationResult' => null,
+            ];
         }
 
         throw new Exception("Invalid trigger type: ".$type);
@@ -1607,20 +1706,34 @@ class Automation2 extends Model
         $this->delete();
     }
 
-    public function duplicate()
+    public function copy($newName, $mailListUid)
     {
-        $newAutomation = new self();
-        $newAutomation->newDefault();
+        // new automation
+        $newAutomation = static::newDefault();
 
-        // Get attrinutes from template
+        // validate inputs
+        $validator = \Validator::make([
+            'name' => $newName,
+            'mail_list_uid' => $mailListUid,
+        ], [
+            'name' => 'required',
+            'mail_list_uid' => 'required',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return [$validator, $newAutomation];
+        }
+
+        // Duplicate data
         $newAutomation->customer_id = $this->customer_id;
-        $newAutomation->name = $this->name;
+        $newAutomation->name = $newName;
+        $newAutomation->mail_list_id = MailList::findByUid($mailListUid)->id;
         $newAutomation->mail_list_id = $this->mail_list_id;
         $newAutomation->time_zone = $this->time_zone;
         $newAutomation->data = $this->data;
         $newAutomation->segment_id = $this->segment_id;
-        $newAutomation->status = self::STATUS_INACTIVE;
-
+        $newAutomation->status = static::STATUS_INACTIVE;
         $newAutomation->save();
 
         // clone email if exist
@@ -1642,30 +1755,7 @@ class Automation2 extends Model
             }
         });
 
-        return $newAutomation;
-    }
-
-    public function copyFrom($automation, $params)
-    {
-        $validator = \Validator::make($params, [
-            'name' => 'required',
-            'mail_list_uid' => 'required',
-        ]);
-
-        // redirect if fails
-        if ($validator->fails()) {
-            return $validator;
-        }
-
-        // duplicate
-        $newAutomation = $automation->duplicate();
-
-        // custom data
-        $newAutomation->name = $params['name'];
-        $newAutomation->mail_list_id = MailList::findByUid($params['mail_list_uid'])->id;
-        $newAutomation->save();
-
-        return $validator;
+        return [$validator, $newAutomation];
     }
 
     public function stepsCount()

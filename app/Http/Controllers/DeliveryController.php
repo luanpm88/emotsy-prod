@@ -8,6 +8,7 @@ use Acelle\Library\StringHelper;
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 use GuzzleHttp\Client;
+use Acelle\Model\Customer;
 use Acelle\Model\TrackingLog;
 use Acelle\Model\BounceLog;
 use Acelle\Model\SendingServer;
@@ -51,6 +52,15 @@ class DeliveryController extends Controller
                 $this->handleSendGrid();
             } elseif ($type == SendingServerElasticEmail::WEBHOOK) {
                 MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
+
+                $msgId = $_GET['transaction'] ?? '';
+                $customer = Customer::getCustomerFromKey('runtime_message_id', $msgId);
+                if ($customer) {
+                    $customer->setUserDbConnection();
+                } else {
+                    MailLog::warning("Cannot associate transaction id '{$msgId}' with a customer");
+                }
+
                 SendingServerElasticEmail::handleNotification($_GET);
             } elseif ($type == SendingServerSparkPost::WEBHOOK) {
                 MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
@@ -85,6 +95,17 @@ class DeliveryController extends Controller
         MailLog::info(file_get_contents('php://input'));
 
         foreach ($messages as $message) {
+            if (array_key_exists("runtime_message_id", $message)) {
+                $customer = Customer::getCustomerFromKey('runtime_message_id', $message["runtime_message_id"]);
+                if ($customer) {
+                    $customer->setUserDbConnection();
+                } else {
+                    continue;
+                }
+            } else {
+                continue;
+            }
+
             switch ($message['event']) {
                 case 'dropped':
                 case 'bounce':
@@ -92,9 +113,7 @@ class DeliveryController extends Controller
 
                     // runtime-message_id is set by SendGrid SMTP API
                     // in case of SendGrid Web API, use sg_message_id instead
-                    if (array_key_exists("runtime_message_id", $message)) {
-                        $bounceLog->runtime_message_id = $message["runtime_message_id"];
-                    }
+                    $bounceLog->runtime_message_id = $message["runtime_message_id"];
 
                     // retrieve the associated tracking log in Acelle
                     $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
@@ -122,9 +141,7 @@ class DeliveryController extends Controller
 
                     // runtime-message_id is set by SendGrid SMTP API
                     // in case of SendGrid Web API, use sg_message_id instead
-                    if (array_key_exists("runtime_message_id", $message)) {
-                        $feedbackLog->runtime_message_id = $message["runtime_message_id"];
-                    }
+                    $feedbackLog->runtime_message_id = $message["runtime_message_id"];
 
                     // retrieve the associated tracking log in Acelle
                     $trackingLog = TrackingLog::where('runtime_message_id', $feedbackLog->runtime_message_id)->first();
@@ -204,6 +221,15 @@ class DeliveryController extends Controller
             return;
         }
         */
+
+        $customer = Customer::getCustomerFromKey('runtime_message_id', $responseMessage['mail']['messageId']);
+        if ($customer) {
+            MailLog::info('Belongs to customer: '.$customer->id);
+            $customer->setUserDbConnection();
+        } else {
+            MailLog::info('Cannot find customer for message id: '.$responseMessage['mail']['messageId']);
+            return;
+        }
 
         if ($responseMessage['notificationType'] == 'Bounce') {
             MailLog::info('Bounce reported');
@@ -308,10 +334,18 @@ class DeliveryController extends Controller
             return response()->json(['error' => $validation->errors()->toArray()], 400);
         }
 
+        $msgId = StringHelper::cleanupMessageId($params['message_id']);
+        $customer = Customer::getCustomerFromKey('runtime_message_id', $msgId);
+        if ($customer) {
+            $customer->setUserDbConnection();
+        } else {
+            return response()->json(['status' => 'failed', 'error' => 'Cannot find customer for message ID '.$msgId], 400);
+        }
+
         // Proceed with blacklisting
         if ($params['event'] == 'feedback') {
             $feedbackLog = new FeedbackLog();
-            $feedbackLog->runtime_message_id = StringHelper::cleanupMessageId($params['message_id']);
+            $feedbackLog->runtime_message_id = $msgId;
             // For Mailgun, runtime_message_id EQUIV. message_id
             $feedbackLog->message_id = $feedbackLog->runtime_message_id;
             $feedbackLog->feedback_type = $params['feedback_type'];
@@ -328,7 +362,7 @@ class DeliveryController extends Controller
             }
         } elseif ($params['event'] == 'bounce') {
             $bounceLog = new BounceLog();
-            $bounceLog->runtime_message_id = StringHelper::cleanupMessageId($params['message_id']);
+            $bounceLog->runtime_message_id = $msgId;
             // For Mailgun, runtime_message_id EQUIV. message_id
             $bounceLog->message_id = $bounceLog->runtime_message_id;
             $bounceLog->bounce_type = $params['bounce_type'];

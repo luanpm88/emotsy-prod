@@ -81,10 +81,12 @@ class BounceLog extends Model
         }
 
         $bounceLog = new static();
+        $bounceLog->tracking_log_id = $trackingLog->id;
+        $bounceLog->customer_id = $trackingLog->customer_id;
         $bounceLog->message_id = $params['message_id'];
         $bounceLog->runtime_message_id = $trackingLog->runtime_message_id;
         $bounceLog->bounce_type = array_key_exists('bounce_type', $params) ? $params['bounce_type'] : static::HARD; // @TODO fill in the NULL value here
-        $bounceLog->raw = array_key_exists('description', $params) ? $params['description'] : null;
+        $bounceLog->raw = $params['description'] ?? 'N/A';
         $bounceLog->save();
 
         return [$bounceLog, $validator];
@@ -154,7 +156,8 @@ class BounceLog extends Model
         $query = $query->leftJoin('tracking_logs', 'bounce_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+        // Cross DB reference not supported
+        // $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
         $query = $query->where('tracking_logs.id', '!=', null);
 

@@ -32,6 +32,10 @@
 
         @include('helpers._builder_form')
 
+        <script src="{{ AppUrl::asset('core/js/Base64.js') }}"></script>
+        @include('builder.js.PhoneFieldWidget')
+        @include('builder.js.PhoneFieldElement')
+
         <script>
             var CSRF_TOKEN = "{{ csrf_token() }}";
             var editor;
@@ -158,7 +162,7 @@
                             <div class="d-flex align-items-center justify-content-center px-5" style="width: 100%">
                                 <div class="browser-address rounded d-flex align-items-center shadow-sm" value="" style="">
                                     <div class="d-flex align-items-center" style="width: 100%">
-                                        @if($form->getMetadata('website_uid'))
+                                        @if ($form->getMetadata('website_uid') && $form->getWebsite())
                                             <div class="mr-4" style="width:1%">
                                                 <span class="material-symbols-rounded text-success" style="font-size: 20px;transform: translateY(3px)">link_on</span>
                                             </div>

@@ -68,8 +68,8 @@
                                             @include('helpers.form_control', [
                                                 'type' => 'text',
                                                 'class' => 'numeric',
-                                                'name' => 'plan[options][verification_credits_limit]',
-                                                'value' => $plan->getOption('verification_credits_limit'),
+                                                'name' => 'email_verification_credits',
+                                                'value' => $plan->email_verification_credits,
                                                 'label' => trans('messages.verification_credits_limit'),
                                                 'help_class' => 'plan',
                                                 'options' => ['true', 'false'],
@@ -79,7 +79,7 @@
                                         <div class="col-md-4 pt-4">
                                             <div class="checkbox inline text-semibold">
                                                 <label>
-                                                    <input{{ $plan->getOption('verification_credits_limit')  == -1 ? " checked=checked" : "" }} type="checkbox" class="unlimit-check styled">
+                                                    <input{{ $plan->email_verification_credits  == -1 ? " checked=checked" : "" }} type="checkbox" class="unlimit-check styled">
                                                     <span class="ms-1">{{ trans('messages.unlimited') }}</span>
                                                 </label>
                                             </div>

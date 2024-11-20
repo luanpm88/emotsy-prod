@@ -1,6 +1,31 @@
-4.0.26 / 2024-01-05
-==================
+4.0.26-p87 / 2024-11-14
+==========================
 
+ * Added: Custom listing view for users
+ * Added: Updated GDPR compliance
+ * Added: Automation workflows with support for additional activities
+ * Added: Delivery tracking for each automated message
+ * Added: Contact activity tracking over time
+ * Added: List duplication handling support during campaign delivery
+ * Added: More email base templates
+ * Fixed: General improvement in delivery performance
+ * Fixed: Deleted contacts excluded from campaign reports
+ * Fixed: Full delivery report not displayed in campaign public view in some cases
+ * Fixed: Timezone preference inconsistencies in certain cases
+ * Fixed: Date/time picker widget issues in older versions of Internet Explorer
+ * Fixed: Reduced MySQL overhead during campaign charge
+ * Fixed: Reduced MySQL overhead during import/export processes
+ * Fixed: Enhanced URL compatibility across various browsers
+ * Fixed: Improved compatibility with Outlook and Gmail
+ * Fixed: Certain webhooks not executed during plugin bootstrap
+ * Fixed: race condition in certain cases
+ * Fixed: Reduced network overhead in general
+
+4.0.26-p68 / 2024-05-14
+==========================
+
+ * Added: distributed deployment support: worker processes can run on a separate server
+ * Added: concurrency support for running under Supervisor
  * Added: Spintax support for plain text email
  * Added: YouTube widget for PRO builder, with thumbnail option
  * Added: webhooks support for campaign's events
@@ -8,14 +33,15 @@
  * Added: Postal integration
  * Added: audio widget support for PRO builder
  * Added: easier license management & upgrade
+ * Fixed: Safari drag & drop issue
  * Fixed: payment flow leading to pending status
  * Fixed: encoding issue for Japanese characters
  * Fixed: scheduling issue for Automation
  * Fixed: issues related to single/simple mode for development
  * Fixed: RFC 2822 compliance
 
-4.0.25-p550 / 2023-07-22
-==================
+4.0.25-p550 / 2023-11-22
+==========================
 
  * Added: Spintax support for PRO builder
  * Added: improved email content for a better SpamAssassin score
@@ -30,7 +56,7 @@
 
 
 4.0.25-p516 / 2023-04-06
-==================
+==========================
 
  * Added: OpenAI framework support
  * Added: allow users to delete a node in the middle of the automation workflow
@@ -48,7 +74,7 @@
  * Fixed: better handle large attachments
 
 4.0.24-p497 / 2023-02-02
-==================
+==========================
 
  * Added: Italian language pack is now available by default.
  * Added: fields mapping web UI for contacts import
@@ -60,7 +86,7 @@
  * Fixed: autobilling not working well with certain types of credit card.
 
 4.0.24-p430 / 2022-12-08
-==================
+==========================
 
  * Fixed: sending performance issue on CentOS.
  * Fixed: MySQL 8x compatibility issues.
@@ -74,7 +100,7 @@
  * Fixed: better detection of file encoding.
 
 4.0.24-p415 / 2022-11-02
-==================
+==========================
 
  * Fixed: GeoIP issues with certain IP ranges.
  * Fixed: PHP 8.1 compatibility issue.
@@ -87,7 +113,7 @@
  * Fixed: downgrade YAML to 4.4 to make it compatible with PHP 7.4.
 
 4.0.24-p412 / 2022-10-04
-==================
+==========================
 
  * Added: more email and form templates added
  * Added: security fixes for popup forms
@@ -104,7 +130,7 @@
  * Fixed: numbers are not correctly formatted accordingly to user's preference
 
 4.0.24 / 2022-09-19
-==================
+==========================
 
  * Added: upgrade to Laravel 8.83.24
  * Added: upgrade to Carbon 2
@@ -132,7 +158,7 @@
  * Changed: allow admins to modify base templates
 
 4.0.23 / 2022-03-17
-==================
+==========================
 
  * Added: plugin mechanism 1.0 is now available, embracing plugin development
  * Added: more widgets for PRO builder
@@ -154,7 +180,7 @@
  * Fixed: better compatibility with older versions of Thunderbird
 
 4.0.22 / 2022-02-11
-==================
+==========================
 
  * Added: tracking domain support
  * Added: tracking domain with HTTPS support

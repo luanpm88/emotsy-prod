@@ -28,6 +28,7 @@ use Acelle\Library\Traits\HasUid;
 class Currency extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     /**
      * The attributes that are mass assignable.

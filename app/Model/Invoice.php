@@ -19,6 +19,7 @@ use function Acelle\Helpers\getAppHost;
 class Invoice extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     // statuses
     public const STATUS_NEW = 'new';               // unpaid
@@ -899,5 +900,33 @@ class Invoice extends Model
     public function formattedTotal()
     {
         return format_price($this->total(), $this->currency->format);
+    }
+
+    public function getAmountInCurrencyCode($currencyCode)
+    {
+        if ($currencyCode == $this->currency->code) {
+            return $this->total();
+        }
+
+        // convert amount
+        return \Acelle\Helpers\convertPrice($this->total(), $this->currency->code, $currencyCode);
+    }
+
+    public function bypassPayment()
+    {
+        // check settings
+        if (!$this->no_payment_required_when_free) {
+            throw new \Exception("Invoice only bypass by when no_payment_required_when_free = true!");
+        }
+
+        // check settings
+        if (!$this->isFree()) {
+            throw new \Exception("Invoice only bypass when it is free!");
+        }
+
+        // just finish checking out invoice without payment service
+        $this->checkout(null, function () {
+            return new \Acelle\Library\TransactionResult(\Acelle\Library\TransactionResult::RESULT_DONE);
+        });
     }
 }

@@ -3,23 +3,25 @@
 namespace Acelle\Library\Everification;
 
 use Exception;
+use Acelle\Library\Contracts\VerifyInterface;
 
-class EmailListValidation
+class EmailListValidation implements VerifyInterface
 {
-    protected $options;
-    protected $logger;
+    protected $apiKey;
 
-    public function __construct($options, $logger = null)
+    public function __construct($apiKey)
     {
-        $this->options = $options;
-        $this->logger = $logger;
+        $this->apiKey = $apiKey;
+    }
+
+    public function isBulkVerifySupported(): bool
+    {
+        return false;
     }
 
     public function verify($email)
     {
-        $key = $this->options['api_key'];
-
-        $url = "https://app.emaillistvalidation.com/api/verifEmailv2?secret=".$key."&email=".$email;
+        $url = "https://app.emaillistvalidation.com/api/verifEmailv2?secret={$this->apiKey}&email={$email}";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -39,7 +41,7 @@ class EmailListValidation
 
         $response = json_decode($rawResponse, true);
 
-        if (array_key_exists('error', $response)) {
+        if (array_key_exists('error', $response) && (!array_key_exists('success', $response) || $response['success'] != true)) {
             throw new Exception('Failed connecting with emailvaliation.com server: '.$rawResponse);
         }
 
@@ -59,14 +61,15 @@ class EmailListValidation
             'unknown_email' => 'undeliverable',
             'email_disabled' => 'undeliverable',
             'domain_error' => 'undeliverable',
-            'Spam Traps' => 'deliverable',
-            'Disposable' => 'deliverable',
-            'Accept all or Ok for all' => 'deliverable',
-            'Accept all' => 'deliverable',
-            'Ok for all' => 'deliverable',
+            'spam traps' => 'risky',
+            'spamtrap' => 'risky',
+            'disposable' => 'deliverable',
+            'accept all or Ok for all' => 'deliverable',
+            'accept all' => 'deliverable',
+            'ok for all' => 'deliverable',
             'syntax_error' => 'undeliverable',
-            'Invalid vendor response' => 'unknown',
-            'dead_server' => 'unknown',
+            'invalid vendor response' => 'unknown',
+            'dead_server' => 'undeliverable',
             'antispam_system' => 'unknown',
             'relay_error' => 'unknown',
             'attempt_rejected' => 'unknown',
@@ -76,10 +79,16 @@ class EmailListValidation
             'ok or valid' => 'deliverable',
         ];
 
-        $result = strtolower($response['Result']);
+        if (array_key_exists('Result', $response)) {
+            $result = strtolower($response['Result']);
+        } elseif (array_key_exists('error', $response)) {
+            $result = strtolower($response['error']);
+        } else {
+            throw new Exception('Unknown status code returned from EmailListValidation service: '.$rawResponse);
+        }
 
         if (!array_key_exists($result, $statusMap)) {
-            throw new Exception('Unknown status code returned from ZeroBounce: '.$result);
+            throw new Exception('Unexpected response from EmailListValidation service: '.$rawResponse);
         }
 
         $verificationStatus = $statusMap[$result];

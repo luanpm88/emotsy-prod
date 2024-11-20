@@ -24,7 +24,7 @@ class MigrateDataFromSubscriberFieldsToSubscribersTable extends Migration
             $rawSql = implode(' ', $raw);
 
             DB::statement($rawSql);
-        } 
+        }
 
     }
 

@@ -206,11 +206,6 @@ class SearchController extends Controller
                 ],
             ],
             [
-                'names' => [trans('messages.sending'), trans('messages.sub_accounts')],
-                'url' => action('Admin\SubAccountController@index'),
-                'keywords' => [],
-            ],
-            [
                 'names' => [trans('messages.sending'), trans('messages.bounce_handlers')],
                 'url' => action('Admin\BounceHandlerController@index'),
                 'keywords' => [],

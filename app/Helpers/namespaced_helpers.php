@@ -10,6 +10,8 @@ use SimpleXMLElement;
 use Mika56\SPFCheck\SPFCheck;
 use Mika56\SPFCheck\DNSRecordGetterDirect;
 use Mika56\SPFCheck\DNSRecordGetter;
+use DB;
+use Illuminate\Support\Facades\File;
 
 function generatePublicPath($absPath, $withHost = false)
 {
@@ -217,17 +219,6 @@ function spfcheck($ipOrHostname, $domain)
     return $result;
 }
 
-function forceAddCustomerToUnlimitedPlan($customer)
-{
-    // Default subscription
-    $subscription = new \Acelle\Model\Subscription();
-    $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
-    $subscription->current_period_ends_at = \Carbon\Carbon::now()->addYears(1000);
-    $subscription->plan_id = \Acelle\Model\PlanGeneral::UNLIMITED_PLAN_ID;
-    $subscription->customer_id = $customer->id;
-    $subscription->save();
-}
-
 function isValidPublicHostnameOrIpAddress($host)
 {
     if ($host == '127.0.0.1' || $host == 'localhost') {
@@ -377,13 +368,14 @@ function load_env_from_file($path)
  * Roll back credits if failure
  * @important: only rollback credits count. Do not rollback rate count because
  *             even a failed operation attempt is counted
- * Parameter 1: \Acelle\Library\RateTracker[]
+ *
+ * Parameter 1: \Acelle\Library\RateTracker[]       : all trackers in this array must be available (AND condition)
+ * Parameter 2: \Acelle\Library\RateTrackersPool[]  : at least one of the tracker in this array is available
  * Parameter 2: \Acelle\Library\CreditTracker[]
  */
-function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure $task = null)
+function execute_with_limits(array $rateTrackers, $rateTrackersPool, array $creditTrackers, Closure $task = null, $rateExceedingCallback = null)
 {
     // Remove null tracker from array
-    $rateTrackers = array_values(array_filter($rateTrackers));
     $creditTrackers = array_values(array_filter($creditTrackers));
 
     // Check credits first, because credits can be rolled back
@@ -407,31 +399,8 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         throw $exception;
     }
 
-    $rateCounted = [];
-    try {
-        // Might throw \Acelle\Library\Exception\RateLimitExceeded
-        foreach ($rateTrackers as $rateTracker) {
-            $rateTracker->count();
-            $rateCounted[] = $rateTracker;
-        }
-    } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {
-        // Credits must not be counted
-        foreach ($creditCounted as $creditTracker) {
-            $creditTracker->rollback();
-        }
-
-        // In case of more than one rate trackers
-        // + Tracker A works just fine
-        // + Tracker B works just fine
-        // + Tracker C fails
-        // Rollback tracker A and B
-        foreach ($rateCounted as $rateTracker) {
-            $rateTracker->rollback();
-        }
-
-        // This exception is safely handled in SendMessage ( i.e. catch (RateLimitExceeded $ex) )
-        throw $exception;
-    }
+    // Evaluate Rate
+    $selectedServer = \Acelle\Helpers\with_rate_limits($rateTrackers, $rateTrackersPool, $rateExceedingCallback, $creditCounted, $testMode = false);
 
     try {
         // Return null if task is null, i.e. count credits but do not actually do anything
@@ -440,7 +409,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         }
 
         // Execute task
-        $task();
+        return $task($selectedServer);
     } catch (\Throwable $exception) {
         // Rollback 2: when task error
         // @important: rate is counted even for a failed operation attempt
@@ -494,6 +463,85 @@ function generateUtmLink($currentURL, $parameters)
     return $mergedURL;
 }
 
+function with_rate_limits(array $rateTrackers, $rateTrackersPool, $rateExceedingCallback, $creditCounted = [], $testMode = false)
+{
+    $rateTrackers = array_values(array_filter($rateTrackers));
+    $rateCounted = [];
+    $selectedServer = null;
+
+    try {
+        foreach ($rateTrackers as $t) {
+            if ($testMode == true) {
+                $t->test(now(), $rateExceedingCallback);
+            } else {
+                $t->count(now(), $rateExceedingCallback);
+            }
+
+            $rateCounted[] = $t;
+        }
+
+        // pool
+        do {
+            if (is_null($rateTrackersPool)) {
+                // Okay, don't care about it, just move forward
+                break;
+            }
+
+            $selectedServer = $rateTrackersPool->select($removeFromList = true);
+
+            if (is_null($selectedServer)) {
+                throw new \Acelle\Library\Exception\RateLimitExceeded('No server available to pickup in pool!');
+            }
+
+            $serverRateLimitTracker = $selectedServer->getRateLimitTracker();
+
+            try {
+                if ($testMode == true) {
+                    $serverRateLimitTracker->test(now());
+                } else {
+                    $serverRateLimitTracker->count(now());
+                }
+
+                $passed = true;
+            } catch(\Acelle\Library\Exception\RateLimitExceeded $rateException) {
+                $passed = false;
+            }
+        } while(false == $passed);
+
+        // MUST return
+        return $selectedServer;
+
+    } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {
+        if (!$testMode) {
+            // Credits must not be counted
+            foreach ($creditCounted as $creditTracker) {
+                $creditTracker->rollback();
+            }
+
+            // In case of more than one rate trackers
+            // + Tracker A works just fine
+            // + Tracker B works just fine
+            // + Tracker C fails
+            // Rollback tracker A and B
+            foreach ($rateCounted as $rateTracker) {
+                $rateTracker->rollback();
+            }
+        }
+
+        // This exception is safely handled in SendMessage ( i.e. catch (RateLimitExceeded $ex) )
+        throw $exception;
+    }
+}
+
+
+// Load the list of connection settings from config/sharding.php and set default Laravel database connection
+function set_userdb_connection($name)
+{
+    \Config::set('database.default', $name);
+    \DB::purge($name);
+    \DB::reconnect($name);
+}
+
 function maskEmail($email)
 {
     // Split the email address into parts
@@ -514,7 +562,7 @@ function maskEmail($email)
     return $maskedEmail;
 }
 
-function read_csv($file, $headerLine = false)
+function read_csv($file, $headerLine = false, $ignoreEmptyHeader = false)
 {
     if (!file_exists($file)) {
         throw new \Exception("File {$file} not found");
@@ -553,9 +601,11 @@ function read_csv($file, $headerLine = false)
 
             // Make sure the headers are present
             // In case of duplicate column headers, an exception shall be thrown by League
-            foreach ($headers as $index => $header) {
-                if (is_null($header) || empty(trim($header))) {
-                    throw new \Exception(trans('messages.list.import.error.header_empty', ['index' => $index]));
+            if (!$ignoreEmptyHeader) {
+                foreach ($headers as $index => $header) {
+                    if (is_null($header) || empty(trim($header))) {
+                        throw new \Exception(trans('messages.list.import.error.header_empty', ['index' => $index]));
+                    }
                 }
             }
 
@@ -578,12 +628,6 @@ function read_csv($file, $headerLine = false)
         // Common errors that will be catched: duplicate column, empty column
         throw new \Exception('Invalid headers. Original error message is: '.$ex->getMessage());
     }
-}
-
-function isSendingCreditPluginActive()
-{
-    return \Acelle\Model\Plugin::isInstalled('acelle/sending-credit') &&
-        \Acelle\Model\Plugin::getByName('acelle/sending-credit')->isActive();
 }
 
 function plogger($name = null)
@@ -626,4 +670,106 @@ function dkim_sign_with_default_domain(\Swift_Message $message)
 
     $domain = new \Acelle\Library\Domain($name, $selector, $publicKey, $privateKey);
     return \Acelle\Helpers\dkim_sign($message, $domain);
+}
+
+function generate_supervisor_config($templateFile)
+{
+    // Replace the templates with actual plugin names
+    $loader = new \Twig\Loader\FilesystemLoader(resource_path('documents/'));
+    // $file = 'supervisor_master_config.tmpl';
+    $twig = new \Twig\Environment($loader);
+
+    $phpBinPath = \Acelle\Model\Setting::get('php_bin_path');
+    $artisanPath = join_paths(base_path(), 'artisan');
+    $cronjob  = "{$phpBinPath} -q {$artisanPath}";
+
+    $params = [
+        'php_artisan' => $cronjob, // The only parameter
+    ];
+
+    echo $twig->render($templateFile, $params);
+}
+
+function curl_download($url, $filepath)
+{
+    set_time_limit(0);
+
+    // File to save the contents to
+    $fp = fopen($filepath, 'w+');
+
+    // Here is the file we are downloading, replace spaces with %20
+    $ch = curl_init(str_replace(" ", "%20", $url));
+
+    // give curl the file pointer so that it can write to it
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+    $data = curl_exec($ch);// get curl response
+
+    if (curl_errno($ch)) {
+        // Something went wrong
+        throw new Exception(curl_error($ch));
+    }
+
+    //done
+    curl_close($ch);
+}
+
+function create_temp_db_table($fields, $data, Closure $callback)
+{
+    $name = "__tmp_from_array_".uniqid();
+    $nameWithPrefix = table($name);
+    $fieldsString = implode(', ', $fields);
+
+    try {
+        DB::statement("DROP TABLE IF EXISTS `{$nameWithPrefix}`;");
+        DB::statement("CREATE TABLE `{$nameWithPrefix}` ({$fieldsString}) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        DB::table($name)->insert($data);
+
+        // For example, execute an SQL with the newly created table
+        $callback($name);
+    } finally {
+        DB::statement("DROP TABLE IF EXISTS `{$nameWithPrefix}`;");
+    }
+
+
+    // DB::statement("CREATE INDEX `_index_email_{$nameWithPrefix}` ON `{$name}`(`email`);");
+    // DB::statement("UPDATE `{$nameWithPrefix}` AS dup INNER JOIN `subscribers` s ON dup.email = s.email SET dup.selected_id = s.id WHERE s.mail_list_id = {$this->defaultMailList->id}");
+}
+
+function loadAppTemplate($name)
+{
+    $filePath = database_path('app_templates/' . $name . '.html');
+
+    if (File::exists($filePath)) {
+        return File::get($filePath);
+        // Do something with the $content
+    } else {
+        // Handle file not found scenario
+        abort(404, 'File not found');
+    }
+}
+
+
+function convertPrice($amount, $fromCurrency, $toCurrency)
+{
+    $exchangeRates = config('exchange');
+
+    // Check if the currencies exist in the exchange rates array
+    if (!isset($exchangeRates[$fromCurrency])) {
+        throw new Exception('From currency code ['.$fromCurrency.'] is not in exchange rates array. Update the exchange rates.');
+    }
+
+    // Check if the currencies exist in the exchange rates array
+    if (!isset($exchangeRates[$toCurrency])) {
+        throw new Exception('To currency code ['.$toCurrency.'] is not in exchange rates array. Update the exchange rates.');
+    }
+
+    // Convert the amount to the base currency (USD in this case)
+    $amountInUSD = $amount / $exchangeRates[$fromCurrency];
+
+    // Convert from USD to the target currency
+    $convertedAmount = $amountInUSD * $exchangeRates[$toCurrency];
+
+    return $convertedAmount;
 }

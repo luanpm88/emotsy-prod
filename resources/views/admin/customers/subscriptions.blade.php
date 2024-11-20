@@ -10,11 +10,11 @@
 		<ul class="breadcrumb breadcrumb-caret position-right">
 			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 			<li class="breadcrumb-item"><a href="{{ action("Admin\CustomerController@index") }}">{{ trans('messages.customers') }}</a></li>
-			<li class="breadcrumb-item active">{{ trans('messages.update') }}</li>
+			<li class="breadcrumb-item active">{{ trans('messages.subscriptions') }}</li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->getName() }}</span>
-		</h1>
+            <span class="text-semibold"><span class="material-symbols-rounded">apartment</span> {{ $customer->displayName() }}</span>
+        </h1>
 	</div>
 
 @endsection

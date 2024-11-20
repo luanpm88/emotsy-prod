@@ -324,7 +324,7 @@ class SenderController extends Controller
      */
     public function dropbox(Request $request)
     {
-        $droplist = $request->user()->customer->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
+        $droplist = $request->user()->customer->local()->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
     }
 }

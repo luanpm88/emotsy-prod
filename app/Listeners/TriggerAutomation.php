@@ -2,10 +2,15 @@
 
 namespace Acelle\Listeners;
 
-use Acelle\Events\MailListSubscription;
-use Acelle\Events\MailListUnsubscription;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Exception;
+
+use Acelle\Events\MailListSubscription;
+use Acelle\Events\MailListUnsubscription;
+use Acelle\Events\SubscribersTagsUpdate;
+use Acelle\Events\SubscribersAttributesUpdate;
+use Acelle\Model\Field;
 
 use Acelle\Model\Automation2;
 
@@ -42,8 +47,10 @@ class TriggerAutomation
 
                 // If there is no segment condition, trigger the contact
                 if ($segments->isEmpty()) {
-                    $auto->initTrigger($event->subscriber);
-                    return;
+                    $trigger = $auto->initTrigger($event->subscriber);
+                    $trigger->check($manually = true); // manually here means "by individual users"
+
+                    continue;
                 }
 
                 $matched = false;
@@ -55,7 +62,8 @@ class TriggerAutomation
                 }
 
                 if ($matched) {
-                    $auto->initTrigger($event->subscriber);
+                    $trigger = $auto->initTrigger($event->subscriber);
+                    $trigger->check($manually = true);
                 }
             }
         }
@@ -79,7 +87,120 @@ class TriggerAutomation
         foreach ($automations as $auto) {
             if (is_null($auto->getAutoTriggerFor($event->subscriber))) {
                 $forceTriggerUnsubscribedContact = true;
-                $auto->initTrigger($event->subscriber, $forceTriggerUnsubscribedContact);
+                $trigger = $auto->initTrigger($event->subscriber, $forceTriggerUnsubscribedContact);
+                $trigger->check($manually = true);
+            }
+        }
+    }
+
+    public function handleSubscribersTagsUpdate(SubscribersTagsUpdate $event)
+    {
+        $automations = $event->subscriber->mailList->automations;
+        $automations = $automations->filter(function ($auto, $key) {
+            return $auto->isActive() && (
+                $auto->getTriggerType() == Automation2::TRIGGER_TAG_BASED
+            );
+        });
+
+        foreach ($automations as $auto) {
+            $tags = $auto->getTriggerAction()->getOption('tags');
+            if ($event->subscriber->hasTags($tags)) {
+                $existingTrigger = $auto->getAutoTriggerFor($event->subscriber);
+
+                if (is_null($existingTrigger)) {
+                    $trigger = $auto->initTrigger($event->subscriber);
+                    $trigger->check($manually = true);
+                } else {
+                    $auto->logger()->info('Tag matched but already triggered');
+                }
+            }
+        }
+    }
+
+    public function handleSubscribersAttributesUpdate(SubscribersAttributesUpdate $event)
+    {
+        $automations = $event->subscriber->mailList->automations;
+        $automations = $automations->filter(function ($auto, $key) {
+            return $auto->isActive() && (
+                $auto->getTriggerType() == Automation2::TRIGGER_ATTRIBUTE_UPDATE
+            );
+        });
+
+        foreach ($automations as $auto) {
+            $fieldUid = $auto->getTriggerAction()->getOption('field_uid');
+            $field = Field::findByUid($fieldUid);
+
+            if (is_null($field)) {
+                throw new Exception("Field UID does not exist", 1);
+            }
+
+            $isFieldChanged = in_array($field->uid, array_keys($event->changes));
+
+            if (!$isFieldChanged) {
+                $auto->logger()->info("Automation '{$auto->name}' is set up to trigger on {$field->tag} change of {$event->subscriber->email}. However, this field's value does not change");
+                continue;
+            } else {
+                $auto->logger()->info("Automation '{$auto->name}' is set up to trigger on {$field->tag} change of {$event->subscriber->email}");
+            }
+
+            $fieldNewValue = $event->subscriber->getValueByField($field);
+            $requiredValue = $auto->getTriggerAction()->getOption('value');
+
+            if ($isFieldChanged && $fieldNewValue == $requiredValue) {
+                $existingTrigger = $auto->getAutoTriggerFor($event->subscriber);
+
+                if (is_null($existingTrigger)) {
+                    $auto->logger()->info("Field {$field->tag} changes to '{$fieldNewValue}', okay, triggering...");
+                    $trigger = $auto->initTrigger($event->subscriber);
+                    $trigger->check($manually = true);
+                } else {
+                    $auto->logger()->info("Field {$field->tag} changes to '{$fieldNewValue}', HOWEVER, an auto trigger already exists");
+                }
+            } else {
+                $auto->logger()->info("Condition to trigger automation '{$auto->name}': field {$field->tag} = '{$requiredValue}', however, the new value of {$event->subscriber->email} it is actually {$field->tag} = '{$fieldNewValue}'");
+            }
+        }
+
+
+        // Now check for tag
+        $automations = $event->subscriber->mailList->automations;
+        $automations = $automations->filter(function ($auto, $key) {
+            return $auto->isActive() && (
+                $auto->getTriggerType() == Automation2::TRIGGER_REMOVE_TAG
+            );
+        });
+
+        foreach ($automations as $auto) {
+            $tagsToCheck = $auto->getTriggerAction()->getOption('tags');
+            $tagsChange = $event->changes['tags'] ?? [];
+
+            if (empty($tagsChange)) {
+                continue;
+            }
+
+            foreach ($tagsToCheck as $tag) {
+                $existsBefore = in_array($tag, $event->oldAttributes['tags']);
+                if ($existsBefore) {
+                    $auto->logger()->info("Tag '{$tag}' was once available for this contact {$event->subscriber->email}, checking if it is dropped or not...");
+                } else {
+                    $auto->logger()->info("Tag '{$tag}' never exists for this contact {$event->subscriber->email}");
+                    continue;
+                }
+
+                $isDroppedNow = in_array($tag, $event->subscriber->getTags());
+                if (!$isDroppedNow) {
+                    $existingTrigger = $auto->getAutoTriggerFor($event->subscriber);
+
+                    if (is_null($existingTrigger)) {
+                        $auto->logger()->info("Hey, tag '{$tag}' was recently dropped for this contact {$event->subscriber->email}, triggering");
+                        $trigger = $auto->initTrigger($event->subscriber);
+                        $trigger->check($manually = true);
+                    } else {
+                        $auto->logger()->info("Tag '{$tag}' was recently dropped for this contact {$event->subscriber->email}, but a trigger already exists");
+                    }
+                } else {
+                    // echo "It is still there";
+                }
             }
         }
     }
@@ -95,6 +216,16 @@ class TriggerAutomation
         $events->listen(
             'Acelle\Events\MailListUnsubscription',
             [TriggerAutomation::class, 'handleMailListUnsubscription']
+        );
+
+        $events->listen(
+            SubscribersTagsUpdate::class,
+            [TriggerAutomation::class, 'handleSubscribersTagsUpdate']
+        );
+
+        $events->listen(
+            SubscribersAttributesUpdate::class,
+            [TriggerAutomation::class, 'handleSubscribersAttributesUpdate']
         );
     }
 }

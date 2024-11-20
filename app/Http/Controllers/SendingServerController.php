@@ -11,7 +11,7 @@ use Acelle\Model\SendingDomain;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Library\StringHelper;
 
-use function \Acelle\Helpers\dkim_sign_with_default_domain;
+use function Acelle\Helpers\dkim_sign_with_default_domain;
 
 class SendingServerController extends Controller
 {
@@ -164,6 +164,8 @@ class SendingServerController extends Controller
         if (!$request->user()->customer->can('update', $server)) {
             return $this->notAuthorized();
         }
+
+        dispatch(new \Acelle\Jobs\UpdateSendingServerJob($server));
 
         // bounce / feedback hanlder nullable
         if ($request->old() && empty($request->old()["bounce_handler_id"])) {
@@ -684,5 +686,12 @@ class SendingServerController extends Controller
 
         $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
+    }
+
+    public function fromEmails(Request $request)
+    {
+        return view('sending_servers.fromEmails', [
+            'sendingServers' => $request->user()->customer->sendingServers,
+        ]);
     }
 }

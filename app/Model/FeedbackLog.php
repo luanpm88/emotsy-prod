@@ -58,7 +58,8 @@ class FeedbackLog extends Model
         $query = $query->join('tracking_logs', 'feedback_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+        // Cross DB reference not supported
+        // $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
 
         // Keyword
@@ -109,12 +110,14 @@ class FeedbackLog extends Model
         $trackingLog = TrackingLog::where('runtime_message_id', $feedbackLog->runtime_message_id)->first();
         if ($trackingLog) {
             $feedbackLog->message_id = $trackingLog->message_id;
+            $feedbackLog->customer_id = $trackingLog->customer_id;
+            $feedbackLog->tracking_log_id = $trackingLog->id;
         } else {
             $logCallback("Cannot find a tracking log record with runtime_message_id of #{$runtimeMessageId}. Record it anyway without runtime_message_id");
         }
 
         $feedbackLog->feedback_type = self::FEEDBACK_TYPE_ABUSE;
-        $feedbackLog->raw_feedback_content = $raw; // notice that {$raw} might contain more than one events
+        $feedbackLog->raw_feedback_content = $raw ?? 'N/A'; // notice that {$raw} might contain more than one events
         $feedbackLog->save();
 
         // add subscriber's email to blacklist

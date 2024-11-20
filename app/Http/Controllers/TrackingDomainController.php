@@ -96,7 +96,7 @@ class TrackingDomainController extends Controller
         }
 
         $request->session()->flash('alert-success', trans('messages.tracking_domain.created'));
-        return redirect()->action('TrackingDomainController@index');
+        return redirect()->action('TrackingDomainController@show', $domain->uid);
     }
 
     /**
@@ -108,6 +108,10 @@ class TrackingDomainController extends Controller
      */
     public function show(Request $request, $id)
     {
+        if (config('caddy.autossl') == true) {
+            return redirect()->action('TrackingDomainController@autossl', $id);
+        }
+
         $debug = is_null($request->input('tracking_domain_debug')) ? false : true;
 
         if ($debug) {
@@ -246,5 +250,32 @@ class TrackingDomainController extends Controller
     {
         $domain = TrackingDomain::findByUid($request->uid);
         echo 123;
+    }
+
+    public function autossl(Request $request, $id)
+    {
+        $debug = is_null($request->input('tracking_domain_debug')) ? false : true;
+
+        if ($debug) {
+            session()->put('tracking_domain_debug', $debug);
+        } else {
+            session()->forget('tracking_domain_debug', $debug);
+        }
+
+        $domain = TrackingDomain::findByUid($id);
+
+        if ($request->isMethod('post')) {
+            if ($domain->verify()) {
+                return redirect()->action('TrackingDomainController@showCname', [ 'uid' => $domain->uid ]);
+            }
+        }
+
+        $caddyConfig = config('caddy');
+        $caddyServerHostname = config('caddy.server_hostname');
+
+        return view('tracking_domains.autossl', [
+            'domain' => $domain,
+            'caddyServerHostname' => $caddyServerHostname
+        ]);
     }
 }

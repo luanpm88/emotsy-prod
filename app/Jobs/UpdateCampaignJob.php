@@ -3,15 +3,17 @@
 namespace Acelle\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Support\Facades\Cache;
 
 class UpdateCampaignJob extends Base implements ShouldBeUnique
 {
     protected $campaign;
-    public $uniqueFor = 3600;
+    protected $customer;
 
     public function __construct($campaign)
     {
         $this->campaign = $campaign;
+        $this->customer = $this->campaign->customer;
     }
 
     /**
@@ -21,11 +23,18 @@ class UpdateCampaignJob extends Base implements ShouldBeUnique
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
         $this->campaign->updateCache();
     }
 
+    public $uniqueFor = 1200; // 20 minutes
     public function uniqueId()
     {
         return $this->campaign->id;
+    }
+
+    public function uniqueVia()
+    {
+        return Cache::driver('file');
     }
 }

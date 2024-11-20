@@ -7,10 +7,10 @@ use Closure;
 interface CampaignInterface
 {
     // Operation
-    public function execute();
-    public function run();
+    public function resume(string $queue);
+    public function execute($force = false, string $queue = ACM_QUEUE_TYPE_BATCH);
+    public function run($check = true, string $queue = ACM_QUEUE_TYPE_BATCH);
     public function pause();
-    public function resume();
 
     public function loadDeliveryJobsByIds(Closure $callback, int $page, array $listOfIds);
 

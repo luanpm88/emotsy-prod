@@ -9,21 +9,30 @@
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search d-block" href="{{ action('Admin\Admin2Controller@edit', $item->uid) }}">{{ $item->displayName() }}</a>
+                        <a class="kq_search d-block" href="{{ action('Admin\AdminController@edit', $item->uid) }}">{{ $item->displayName() }}</a>
                     </h5>
                     <span class="text-muted kq_search">{{ $item->user->email }}</span>
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">
                         @if (Auth::user()->admin->getPermission("admin_group_update") != 'no')
-                            <a class="kq_search" href="{{ action('Admin\AdminGroup2Controller@edit', $item->adminGroup->id) }}">
+                            <a class="kq_search" href="{{ action('Admin\AdminGroupController@edit', $item->adminGroup->id) }}">
                                 {{ $item->adminGroup->name }}
                             </a>
                         @else
                             {{ $item->adminGroup->name }}
                         @endif
                     </h5>
-                    <span class="text-muted">{{ trans('messages.user_group') }}</span>
+                    <span class="text-muted">{{ trans('messages.admin_group') }}</span>
+                </td>
+                <td class="stat-fix-size-sm">
+                    <div class="single-stat-box pull-left">
+                        <a href="{{ action('Admin\CustomerController@index') }}">
+                            <span class="no-margin stat-num">{{ $item->customers()->count() }}</span>
+                        </a>
+                        <br />
+                        <span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('customer', $item->customers()->count())) }}</span>
+                    </div>
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">
@@ -38,10 +47,10 @@
                 </td>
                 <td class="text-end">
                     @can('loginAs', $item)
-                        <a href="{{ action('Admin\Admin2Controller@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_admin') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">login</span></a>
+                        <a href="{{ action('Admin\AdminController@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_admin') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">login</span></a>
                     @endcan
                     @can('update', $item)
-                        <a href="{{ action('Admin\Admin2Controller@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span></a>
+                        <a href="{{ action('Admin\AdminController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span></a>
                     @endcan
                     @if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('delete', $item))
                         <div class="btn-group">
@@ -49,21 +58,26 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @can('enable', $item)
                                     <li>
-                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_admins_confirm') }}" href="{{ action('Admin\Admin2Controller@enable', ["uids" => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_admins_confirm') }}" href="{{ action('Admin\AdminController@enable', ["uids" => $item->uid]) }}">
                                             <span class="material-symbols-rounded">play_arrow</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('disable', $item)
                                     <li>
-                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_admins_confirm') }}" href="{{ action('Admin\Admin2Controller@disable', ["uids" => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_admins_confirm') }}" href="{{ action('Admin\AdminController@disable', ["uids" => $item->uid]) }}">
                                             <span class="material-symbols-rounded">hide_source</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endcan
-                                @can('forceDelete', $item)
+                                <li>
+                                    <a list-action="one-click-login" class="dropdown-item" href="{{ action('Admin\AdminController@oneClickLogin', $item->uid) }}">
+                                        <span class="material-symbols-rounded">link</span> {{ trans('messages.admin.generate_one_click_login') }}
+                                    </a>
+                                </li>
+                                @can('delete', $item)
                                     <li>
-                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_admins_confirm') }}" href="{{ action('Admin\Admin2Controller@delete', ['uids' => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_admins_confirm') }}" href="{{ action('Admin\AdminController@delete', ['uids' => $item->uid]) }}">
                                             <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
@@ -76,6 +90,27 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $admins])
+
+    <script>
+        var AdminAdminsList = {
+            oneClickPopup: null,
+
+            init: function() {
+                this.oneClickPopup = new Popup();
+            }
+        }
+
+        $(function() {
+            AdminAdminsList.init();
+
+            $('[list-action="one-click-login"]').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                AdminAdminsList.oneClickPopup.load(url);
+            })
+        })
+    </script>
     
 @elseif (!empty(request()->filters))
     <div class="empty-list">

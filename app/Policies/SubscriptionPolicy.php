@@ -187,4 +187,19 @@ class SubscriptionPolicy
 
         return $can;
     }
+
+    public function replenishVerificationCredits(User $user, Subscription $subscription, $role)
+    {
+        $can = $subscription->isActive();
+
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
+    }
 }

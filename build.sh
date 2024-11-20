@@ -115,7 +115,7 @@ cd ..
 chmod 755 -R "$APPDIR"
 chmod 775 -R "$APPDIR/storage"
 chmod 775 -R "$APPDIR/bootstrap/cache"
-zip -r "$APPZIP" "$APPDIR" > /dev/null
+zip -q -T -m -r "$APPZIP" "$APPDIR"
 rm -fr "$APPDIR"
 
 echo "File exported [$APPZIP]"

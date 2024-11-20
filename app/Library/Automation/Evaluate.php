@@ -44,7 +44,7 @@ class Evaluate extends Action
         return $json;
     }
 
-    protected function doExecute()
+    protected function doExecute($manually)
     {
         // IMPORTANT
         // If this is the latest also the last action of the workflow
@@ -126,11 +126,6 @@ class Evaluate extends Action
         $linkObj = EmailLink::findByUid($linkUid);
 
         if (is_null($linkObj)) {
-            // @important mark the whole Automation as failed
-            // Also, update automation
-            $this->setOption('email_link', null);
-            $this->autoTrigger->automation2->updateAction($this);
-
             throw new Exception(trans('messages.automation.trigger.error.link_gone'));
         }
 
@@ -139,30 +134,41 @@ class Evaluate extends Action
         return $email->isClicked($this->autoTrigger->subscriber);
     }
 
-    public function getActionDescription()
+    public function getActionDescription($timezone = null, $locale = null)
     {
-        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        $nameOrEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
         $options = $this->getOptions();
 
         if (array_key_exists('email', $options)) {
             $emailUid = $this->getOption('email');
             $email = Email::findByUid($emailUid);
+
+            if ($email) {
+                $subject = $email->subject;
+            } else {
+                $subject = '[subject]';
+            }
         } else {
             $linkUid = $this->getOption('email_link');
             $link = EmailLink::findByUid($linkUid);
+            if ($link) {
+                $url = $link->link;
+            } else {
+                $url = '[url]';
+            }
         }
 
         if ($this->getOption('type') == 'open') {
             if ($this->evaluationResult == 'true') {
-                return trans('messages.automation.timeline.open', [ 'user' => $nameOrEmail, 'email' => $email->subject ]);
+                return trans('messages.automation.timeline.open', [ 'user' => $nameOrEmail, 'email' => $subject ]);
             } else {
-                return trans('messages.automation.timeline.not_open', [ 'user' => $nameOrEmail, 'email' => $email->subject ]);
+                return trans('messages.automation.timeline.not_open', [ 'user' => $nameOrEmail, 'email' => $subject ]);
             }
         } elseif ($this->getOption('type') == 'click') {
             if ($this->evaluationResult == 'true') {
-                return trans('messages.automation.timeline.click', [ 'user' => $nameOrEmail, 'url' => $link->link ]);
+                return trans('messages.automation.timeline.click', [ 'user' => $nameOrEmail, 'url' => $url ]);
             } else {
-                return trans('messages.automation.timeline.not_click', [ 'user' => $nameOrEmail, 'url' => $link->link ]);
+                return trans('messages.automation.timeline.not_click', [ 'user' => $nameOrEmail, 'url' => $url ]);
             }
         }
     }

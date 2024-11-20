@@ -98,7 +98,7 @@
                                     <select name="role_uid" class="form-select {{ $errors->has('role_uid') ? 'is-invalid' : '' }}">
                                         <option value="">{{ trans('messages.user.select_role') }}</option>
                                         @foreach (Acelle\Model\Role::active()->get() as $role)
-                                            <option {{ $user->getRole() && $role->id == $user->getRole()->id ? 'selected' : '' }} value="{{ $role->uid }}">{{ $role->name }}</option>
+                                            <option {{ $user->getRole() && $role->id == $user->getRole()->id || request()->role_uid == $role->uid  ? 'selected' : '' }} value="{{ $role->uid }}">{{ $role->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

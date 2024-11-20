@@ -7,6 +7,8 @@ use Acelle\Library\Facades\SubscriptionFacade;
 
 class InvoiceRenewSubscription extends Invoice
 {
+    protected $connection = 'mysql';
+
     protected $table = 'invoices';
 
     public const TYPE_RENEW_SUBSCRIPTION = 'renew_subscription';

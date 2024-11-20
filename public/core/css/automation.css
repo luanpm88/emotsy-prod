@@ -583,7 +583,7 @@ label.switchery-double.checkbox-switchery {
 .input-with-icon i {
     position: absolute;
     left: 10px;
-    top: 10px;
+    top: 5px;
     color: #666;
 }
 .btn-group-sm>.btn, .btn-sm {

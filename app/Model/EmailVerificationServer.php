@@ -20,16 +20,22 @@ use Acelle\Library\RateLimit;
 use Acelle\Library\Everification\Emailable;
 use Acelle\Library\Everification\ZeroBounce;
 use Acelle\Library\Everification\EmailListValidation;
+use Acelle\Library\Everification\MyEmailVerifier;
+use Acelle\Library\Everification\Bouncify;
+use Acelle\Library\Everification\AthenaEvs;
+use Acelle\Library\Everification\VerifiedEmails;
 
 class EmailVerificationServer extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     // set the table name
     protected $table = 'email_verification_servers';
 
     // Logger
     protected $logger;
+    protected $service;
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
@@ -54,23 +60,51 @@ class EmailVerificationServer extends Model
         return $this->belongsTo('Acelle\Model\Admin');
     }
 
-    public function initEverificationService()
+    public function getServiceClient()
     {
+        if (!is_null($this->service)) {
+            return $this->service;
+        }
+
         switch ($this->type) {
             case 'emailable.com':
-                $service = new Emailable($this->getOptions(), $this->logger());
-                return $service;
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new Emailable($apiKey);
+                return $this->service;
 
             case 'zerobounce.net':
-                $service = new ZeroBounce($this->getOptions(), $this->logger());
-                return $service;
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new ZeroBounce($apiKey);
+                return $this->service;
 
             case 'emaillistvalidation.com':
-                $service = new EmailListValidation($this->getOptions(), $this->logger());
-                return $service;
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new EmailListValidation($apiKey);
+                return $this->service;
+
+            case 'myemailverifier.com':
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new MyEmailVerifier($apiKey);
+                return $this->service;
+
+            case 'bouncify.io':
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new Bouncify($apiKey);
+                return $this->service;
+
+            case 'athenaevs.com':
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new AthenaEvs($apiKey);
+                return $this->service;
+
+            case 'verifiedemails.io':
+                $username = $this->getOptions()['username'];
+                $apiToken = $this->getOptions()['api_token'];
+                $this->service = new VerifiedEmails($username, $apiToken);
+                return $this->service;
 
             default:
-                return null;
+                $this->service = null;
         }
     }
 
@@ -82,7 +116,7 @@ class EmailVerificationServer extends Model
     public function verify($email)
     {
         // Retrieve the email verification service
-        $service = $this->initEverificationService();
+        $service = $this->getServiceClient();
 
         if ($service) {
             return $service->verify($email);
@@ -421,7 +455,7 @@ class EmailVerificationServer extends Model
     {
         $options = $this->getOptions();
 
-        return "{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}";
+        return number_format($options['limit_value']) . " / {$options['limit_base']} {$options['limit_unit']}";
     }
 
     public function getTypeName()
@@ -493,5 +527,18 @@ class EmailVerificationServer extends Model
         }
 
         return $this->logger;
+    }
+
+    public static function newDefault()
+    {
+        $server =  new self();
+        $server->status = self::STATUS_ACTIVE;
+
+        return $server;
+    }
+
+    public function setOptions($options)
+    {
+        $this->options = json_encode($options);
     }
 }

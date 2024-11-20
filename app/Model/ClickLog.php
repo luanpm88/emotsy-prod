@@ -50,11 +50,20 @@ class ClickLog extends Model
             return [$url, null];
         }
 
-        if (!TrackingLog::where('message_id', $messageId)->exists()) {
+        $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+        if (!is_null($customer)) {
+            $customer->setUserDbConnection();
+        }
+
+        $trackingLog = TrackingLog::where('message_id', $messageId)->first();
+        if (is_null($trackingLog)) {
             return [$url, null];
         }
 
         $log = new self();
+        $log->tracking_log_id = $trackingLog->id;
+        $log->customer_id = $trackingLog->customer_id;
         $log->message_id = $messageId;
         $log->url = $url;
         $log->user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
@@ -84,12 +93,21 @@ class ClickLog extends Model
         return [$url, $log];
     }
 
+
+    public static function isUrlBlacklisted($url)
+    {
+        $path = base_path('blacklisted_click_url');
+        $blacklist = preg_split('/[\r\n]+/', trim(file_get_contents($path)));
+
+        return in_array($url, $blacklist);
+    }
+
     public function createRelatedOpenLogIfNotExist()
     {
-        $openLog = OpenLog::firstOrNew(['message_id' => $this->message_id]);
+        $openLog = OpenLog::where('message_id', $this->message_id)->exists();
 
-        if (is_null($openLog->id)) {
-            $openLog->save();
+        if (!$openLog) {
+            OpenLog::createFromMessageId($this->message_id, $this->ip_address, $this->user_agent);
         }
     }
 
@@ -135,7 +153,9 @@ class ClickLog extends Model
         $query = $query->leftJoin('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+
+        // Cross DB reference not supported
+        // $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
 
         // Keyword

@@ -26,9 +26,12 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Plugin;
 use Acelle\Library\Facades\Billing;
+use Exception;
 
 class Setting extends Model
 {
+    protected $connection = 'mysql';
+
     public const UPLOAD_PATH = 'app/setting/';
 
     /**
@@ -82,7 +85,13 @@ class Setting extends Model
      */
     public static function isYes($key)
     {
-        return strtolower(self::get($key)) == 'yes';
+        $value = self::get($key);
+
+        if (is_null($value)) {
+            throw new Exception("No such setting: {$key}");
+        }
+
+        return strtolower($value) == 'yes';
     }
 
     /**
@@ -635,6 +644,54 @@ class Setting extends Model
             '2fa_enable' => [
                 'cat' => 'general',
                 'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'tracking_domain.enable_https' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'email.enable_one_click_unsubscribe_headers' => [
+                'cat' => 'general',
+                'value' => 'yes',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'campaign.duplicate' => [
+                'cat' => 'general',
+                'value' => 'yes',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'list.default.double_optin' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'email.default.skip_failed_message' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'notification.on_user_created' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'signature.enabled' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'blacklist.use_global_blacklist' => [
+                'cat' => 'general',
+                'value' => 'yes',
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],

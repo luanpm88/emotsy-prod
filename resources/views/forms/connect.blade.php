@@ -18,12 +18,12 @@
             'include_blank' => '-' . trans('messages.form.choose_site') . '-',
             'label' => '',
             'value' => $form->getMetadata('website_uid'),
-            'options' => Auth::user()->customer->getConnectedWebsiteSelectOptions(),
+            'options' => Auth::user()->customer->local()->getConnectedWebsiteSelectOptions(),
             'rules' => [],
         ])
 
         
-        @if ($form->getMetadata('website_uid'))
+        @if ($form->getMetadata('website_uid') && $form->getWebsite())
             <button type="button" class="btn btn-secondary connect-site">{{ trans('messages.form.connect') }}</button>
             <button type="button" class="btn btn-default remove-site">{{ trans('messages.form.remove_site') }}</button>
         @else

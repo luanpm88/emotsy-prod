@@ -155,6 +155,14 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
                 $logger->info('Great, got Event Type and Delivery ID');
                 $logger->info("=> TYPE: {$type}, DELIVERY ID: {$deliveryId}");
 
+                $customer = \Acelle\Model\Customer::getCustomerFromKey('runtime_message_id', $deliveryId);
+                if ($customer) {
+                    $customer->setUserDbConnection();
+                } else {
+                    $logger->info("Cannot find a customer for message id: {$deliveryId}");
+                    continue;
+                }
+
                 if (in_array($type, [self::EVENT_TYPE_HARDERROR, self::EVENT_TYPE_DROP])) {
                     BounceLog::recordHardBounce($deliveryId, $raw, function ($message) use ($logger) {
                         $logger->info($message);

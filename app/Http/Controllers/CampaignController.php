@@ -34,7 +34,17 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
-        return view('campaigns.index');
+        // authorize
+        if (\Gate::denies('list', Campaign::class)) {
+            return $this->notAuthorized();
+        }
+
+        $customer = $request->user()->customer;
+        $campaigns = $customer->local()->campaigns();
+
+        return view('campaigns.index', [
+            'campaigns' => $campaigns,
+        ]);
     }
 
     /**
@@ -44,11 +54,16 @@ class CampaignController extends Controller
      */
     public function listing(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', Campaign::class)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
 
-        $campaigns = $customer->campaigns()
-            ->notInlcludeBVersion()
+        $campaigns = $customer->local()->campaigns()
             ->search($request->keyword)
+            ->notInlcludeBVersion()
             ->filter($request);
 
         if ($request->status) {
@@ -70,8 +85,8 @@ class CampaignController extends Controller
      */
     public function create(Request $request)
     {
-        $campaign = $request->user()->customer->newDefaultCampaign();
-        
+        $campaign = $request->user()->customer->local()->newDefaultCampaign();
+
         // authorize
         if (\Gate::denies('create', $campaign)) {
             return $this->noMoreItem();
@@ -170,12 +185,17 @@ class CampaignController extends Controller
         $campaign = Campaign::findByUid($request->uid);
         $customer = $request->user()->customer;
 
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
         // If the mail list dropdown is not populated
         // Then it is very likely a problem with the cronjob
         // Show this warning to user
         $lastExecutedTimeUtc = \Carbon\Carbon::createFromTimestamp(Setting::get('cronjob_last_execution') ?? 0);
         $lastExecutedTime = $lastExecutedTimeUtc->timezone($customer->getTimezone());
-        if (empty($customer->readCache('MailListSelectOptions'))) {
+        if (empty($customer->local()->readCache('MailListSelectOptions'))) {
             // If there is no data populated, then it is very likely that cronjob has not been set up correctly
             // Pass the last executed time to the view to show up with the warning
             $cronjobWarning = $lastExecutedTime;
@@ -788,13 +808,7 @@ class CampaignController extends Controller
 
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
-            
-            if ($customer->can('approve', $campaign)) {
-                $campaign->execute(); // @emotsy comment this
-            } else {
-                // @emotsy set status to wait for approval
-                $campaign->setWaitForApproval();
-            }
+            $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
 
             // Log
             $campaign->log('started', $customer);
@@ -855,6 +869,11 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
         event(new \Acelle\Events\CampaignUpdated($campaign));
@@ -880,22 +899,17 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
 
-        if ($campaign->isABTest() && request()->version_b) {
-            $links = $campaign->campaignB->clickLogs()
-                ->select(
-                    'click_logs.url',
-                    DB::raw('count(*) AS clickCount'),
-                    DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
-                )->groupBy('click_logs.url')->get();
-        } else {
-            $links = $campaign->clickLogs()
-                ->select(
-                    'click_logs.url',
-                    DB::raw('count(*) AS clickCount'),
-                    DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
-                )->groupBy('click_logs.url')->get();
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
         }
-            
+
+        $links = $campaign->clickLogs()
+                          ->select(
+                              'click_logs.url',
+                              DB::raw('count(*) AS clickCount'),
+                              DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
+                          )->groupBy('click_logs.url')->get();
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1553,11 +1567,25 @@ class CampaignController extends Controller
     {
         try {
             // Record open log
-            $openLog = OpenLog::createFromRequest($request);
+            $ipAddress = $request->ip();
+            $userAgent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
+            $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+            $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+            $customer = \Acelle\Model\Customer::findByUid($customerUid);
+            if (!is_null($customer)) {
+                $customer->setUserDbConnection();
+            }
+
+            $openLog = OpenLog::createFromMessageId($messageId, $ipAddress, $userAgent);
 
             // Execute open callbacks registered for the campaign
             if ($openLog->trackingLog && $openLog->trackingLog->campaign) {
                 $openLog->trackingLog->campaign->queueOpenCallbacks($openLog);
+                // Timeline record
+                \Acelle\Model\Timeline::recordOpenedCampaignEmail($openLog->trackingLog->subscriber, $openLog->trackingLog->campaign);
+            } else {
+                //
             }
         } catch (\Exception $ex) {
             // do nothing
@@ -1571,10 +1599,18 @@ class CampaignController extends Controller
      */
     public function click(Request $request)
     {
+        if (ClickLog::isUrlBlacklisted($request->url)) {
+            return response('SendMails has detected that this URL is malicious and has dropped it.', 403)
+                  ->header('Content-Type', 'text/plain');
+        }
+
         list($url, $log) = ClickLog::createFromRequest($request);
 
         if ($log && $log->trackingLog && $log->trackingLog->campaign) {
             $log->trackingLog->campaign->queueClickCallbacks($log);
+
+            // Timeline record
+            \Acelle\Model\Timeline::recordClickedCampaignEmail($log->trackingLog->subscriber, $log->trackingLog->campaign, $url);
         }
 
         return redirect()->away($url);
@@ -1585,8 +1621,16 @@ class CampaignController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        $subscriber = Subscriber::findByUid($request->subscriber);
-        $message_id = StringHelper::base64UrlDecode($request->message_id);
+
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+        $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+        if (!is_null($customer)) {
+            $customer->setUserDbConnection();
+        }
+
+        $subscriber = Subscriber::find($request->subscriber);
 
         if (is_null($subscriber)) {
             LaravelLog::error('Subscriber does not exist');
@@ -1599,7 +1643,7 @@ class CampaignController extends Controller
 
         // User Tracking Information
         $trackingInfo = [
-            'message_id' => $message_id,
+            'message_id' => $messageId,
             'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null,
         ];
 
@@ -1614,7 +1658,7 @@ class CampaignController extends Controller
 
         // Page content
         $list = $subscriber->mailList;
-        $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_success_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
 
         $page->renderContent(null, $subscriber);
@@ -2024,6 +2068,7 @@ class CampaignController extends Controller
         foreach ($campaigns->get() as $campaign) {
             if (\Gate::allows('pause', $campaign)) {
                 $campaign->pause();
+                $campaign->logger()->warning('Campaign was manually paused'); // write to Apahe log, not cli log
 
                 // Log
                 $campaign->log('paused', $customer);
@@ -2044,14 +2089,14 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function restart(Request $request)
+    public function resume(Request $request)
     {
         $customer = $request->user()->customer;
         if (!is_array($request->uids)) {
             $request->uids = explode(',', $request->uids);
         }
 
-        $items = Campaign::whereIn('uid', $request->uids);
+        $campaigns = Campaign::whereIn('uid', $request->uids)->get();
 
         // Japan + not license
         if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
@@ -2061,12 +2106,17 @@ class CampaignController extends Controller
             ], 400);
         }
 
-        foreach ($items->get() as $item) {
-            if (\Gate::allows('restart', $item)) {
-                $item->resume();
+        foreach ($campaigns as $campaign) {
+            if (\Gate::allows('resume', $campaign)) {
+
+                if ($request->input('queue') == ACM_QUEUE_TYPE_HIGH) {
+                    $campaign->resume(ACM_QUEUE_TYPE_HIGH);
+                } else {
+                    $campaign->resume(ACM_QUEUE_TYPE_BATCH);
+                }
 
                 // Log
-                $item->log('restarted', $customer);
+                $campaign->log('Resumed!', $customer);
             }
         }
 
@@ -2092,6 +2142,7 @@ class CampaignController extends Controller
             'subscribers' => $subscribers,
             'campaign' => $campaign,
             'list' => $campaign->defaultMailList,
+            'columns' => $request->user()->getSetting('subscribers_columns') ?? ['created_at', 'updated_at'],
         ]);
     }
 
@@ -2348,7 +2399,7 @@ class CampaignController extends Controller
     public function previewContent(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
-        $subscriber = Subscriber::findByUid($request->subscriber_uid);
+        $subscriber = Subscriber::find($request->subscriber_id);
 
         // authorize
         if (\Gate::denies('preview', $campaign)) {
@@ -2411,8 +2462,15 @@ class CampaignController extends Controller
      */
     public function webView(Request $request)
     {
-        $message_id = StringHelper::base64UrlDecode($request->message_id);
-        $tracking_log = TrackingLog::where('message_id', '=', $message_id)->first();
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+        $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+        if (!is_null($customer)) {
+            $customer->setUserDbConnection();
+        }
+
+        $tracking_log = TrackingLog::where('message_id', '=', $messageId)->first();
 
         try {
             if (!$tracking_log) {
@@ -2429,7 +2487,7 @@ class CampaignController extends Controller
             return view('campaigns.web_view', [
                 'campaign' => $campaign,
                 'subscriber' => $subscriber,
-                'message_id' => $message_id,
+                'message_id' => $messageId,
             ]);
         } catch (\Exception $e) {
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
@@ -2441,7 +2499,7 @@ class CampaignController extends Controller
      */
     public function webViewPreview(Request $request)
     {
-        $subscriber = Subscriber::findByUid($request->subscriber_uid);
+        $subscriber = Subscriber::find($request->subscriber_id);
         $campaign = Campaign::findByUid($request->campaign_uid);
 
         if (is_null($subscriber) || is_null($campaign)) {
@@ -2468,6 +2526,11 @@ class CampaignController extends Controller
         if (\Gate::denies('create', new Campaign())) {
             return $this->notAuthorized();
         }
+
+        // Hack: update users cache before going to campaign setting page (where there is list cache data)
+        $job = new \Acelle\Jobs\UpdateUserJob($request->user()->customer);
+        $job->onqueue('high');
+        safe_dispatch($job);
 
         return view('campaigns.select_type');
     }
@@ -3420,5 +3483,13 @@ class CampaignController extends Controller
             'status' => 'success',
             'message' => trans('messages.campaign_header.removed'),
         ]);
+    }
+
+    public function saveSignature(Request $request, $uid)
+    {
+        $campaign = Campaign::findByUid($uid);
+        $signature = \Acelle\Model\Signature::findByUid($request->signature_uid);
+
+        $campaign->setSignature($signature);
     }
 }

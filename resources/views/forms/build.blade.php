@@ -212,7 +212,7 @@
                                     'name' => 'mail_list_uid',
                                     'label' => trans('messages.list'),
                                     'value' => $form->mailList->uid,
-                                    'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+                                    'options' => Auth::user()->customer->local()->readCache('MailListSelectOptions', []),
                                     'rules' => [],
                                 ])
                             </div>
@@ -247,6 +247,7 @@
                                         ["value" => "first_visit", "text" => trans('messages.form.display.first_visit')],
                                         ["value" => "wait", "text" => trans('messages.form.display.wait')],
                                         ["value" => "click", "text" => trans('messages.form.display.click')],
+                                        ["value" => "on_exit_intent", "text" => trans('messages.form.display.on_exit_intent')],
                                     ],
                                 ])
                             </div>
@@ -260,6 +261,12 @@
                             <div class="display-select-first_visit mb-3">
                                 <div class="">
                                     <p class="small text-muted mb-1">{{ trans('messages.form.display.first_visit.desc') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="display-select-on_exit_intent mb-3">
+                                <div class="">
+                                    <p class="small text-muted mb-1">{{ trans('messages.form.display.on_exit_intent.desc') }}</p>
                                 </div>
                             </div>
                             
@@ -325,6 +332,29 @@
             styleManager: null,
             displayOption: null,
             settings: null,
+            popup: null,
+            previewPopup: null,
+
+            init: function() {
+                var _this = this;
+
+                this.popup = new AFormPopup({
+                    url: '{{ action('FormController@frontendContent', [
+                        'uid' => $form->uid,
+                    ]) }}',
+                    overlayOpacity: this.settings.overlay_opacity/100
+                });
+                this.popup.init();
+
+                this.previewPopup = new AFormPopup({
+                    url: '{{ action('FormController@frontendContent', [
+                        'uid' => $form->uid,
+                        'preview' => true,
+                    ]) }}',
+                    overlayOpacity: _this.settings.overlay_opacity/100
+                });
+                this.previewPopup.init();
+            },
 
             // STYLE MANAGER
             getSettingsManager: function() {
@@ -394,6 +424,14 @@
                     _this.displayManager.add({
                         box: $('.display-select-first_visit'),
                         value: 'first_visit',
+                        selectedValue: function() {
+                            return $('[name="display"]').val();
+                        }
+                    });
+
+                    _this.displayManager.add({
+                        box: $('.display-select-on_exit_intent'),
+                        value: 'on_exit_intent',
                         selectedValue: function() {
                             return $('[name="display"]').val();
                         }
@@ -504,14 +542,7 @@
             },
 
             openPopup: function() {
-                popup = new AFormPopup({
-                    url: '{{ action('FormController@frontendContent', [
-                        'uid' => $form->uid,
-                    ]) }}',
-                    overlayOpacity: this.settings.overlay_opacity/100
-                });
-
-                popup.load();
+                this.popup.load();
             },
 
             preview: function() {
@@ -528,15 +559,7 @@
                     }
                 })
                 .done(function(res) {
-                    popup = new AFormPopup({
-                        url: '{{ action('FormController@frontendContent', [
-                            'uid' => $form->uid,
-                            'preview' => true,
-                        ]) }}',
-                        overlayOpacity: _this.settings.overlay_opacity/100
-                    });
-
-                    popup.load();
+                    _this.previewPopup.load();
                 });
                 
             },
@@ -622,6 +645,7 @@
         }
         
         $(function() {
+            FormsEdit.init();
             FormsEdit.getSettingsManager();
             FormsEdit.getDisplayManager();
             

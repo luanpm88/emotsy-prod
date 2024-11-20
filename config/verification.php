@@ -91,26 +91,18 @@ return [
             'uri' => 'https://api.bouncify.io/v1/verify?apikey={API_KEY}&email={EMAIL}',
             'request_type' => 'GET',
             'fields' => [ 'api_key' ],
-            'result_xpath' => '$.result',
-            'result_map' => [
-                'deliverable' => 'deliverable',
-                'unknown' => 'unknown',
-                'accept-all' => 'unknown', // Acelle-All means the domain's email addresses cannot be verified.
-                'accept all' => 'unknown', // Acelle-All means the domain's email addresses cannot be verified.
-                'undeliverable' => 'undeliverable',
-            ]
         ], [
             'id' => 'myemailverifier.com',
             'name' => 'myEmailVerifier',
-            'uri' => 'https://client.myemailverifier.com/verifier/validate_single/{EMAIL}/{API_KEY}',
-            'request_type' => 'GET',
             'fields' => [ 'api_key' ],
-            'result_xpath' => '$.Status',
-            'result_map' => [
-                'Valid' => 'deliverable',
-                'Unknown' => 'unknown',
-                'Invalid' => 'undeliverable',
-            ]
+        ], [
+            'id' => 'athenaevs.com',
+            'name' => 'AthenaEVS',
+            'fields' => [ 'api_key' ],
+        ], [
+            'id' => 'verifiedemails.io',
+            'name' => 'VerifiedEmails.io',
+            'fields' => [ 'username', 'api_token' ],
         ]
 
     ]

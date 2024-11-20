@@ -93,7 +93,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         // Pipe
         $pipeline = new PipelineBuilder();
@@ -154,7 +154,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -193,7 +193,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -238,7 +238,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
-        $subscriber->uid = '000000';
+        $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -307,6 +307,7 @@ class HtmlHandlersTest extends TestCase
         $subscriber = Mockery::mock(new Subscriber());
         $subscriber->mailList = $list;
         $subscriber->uid = '000000';
+        $subscriber->id = '999999';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -326,12 +327,16 @@ class HtmlHandlersTest extends TestCase
         $dom = new DOMDocument();
         $dom->loadHTML($html);
 
+
+
         // Other assertinos
         $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
         $this->assertTrue(strpos($html, '<title>') === false);
         $this->assertTrue(strpos($html, "\n") === false);
         $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
         $this->assertTrue(strpos($html, "'000000'") !== false);
+
+
 
         // Special tags
         //$this->assertTrue(strpos($html, 'c/000000/unsubscribe/TVNHSUQ') !== false);
@@ -361,6 +366,7 @@ class HtmlHandlersTest extends TestCase
         $subscriber = Mockery::mock(new Subscriber());
         $subscriber->mailList = $list;
         $subscriber->uid = '000000';
+        $subscriber->id = '999999';
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -384,7 +390,7 @@ class HtmlHandlersTest extends TestCase
         $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
 
         // Special tags
-        $this->assertTrue(strpos($html, 'c/000000/unsubscribe/TVNHSUQ') !== false);
+        $this->assertTrue(strpos($html, 'c/999999/unsubscribe/TVNHSUQ') !== false);
         $this->assertTrue(strpos($html, 'update-profile') !== false);
         $this->assertTrue(strpos($html, 'campaigns/TVNHSUQ/web-view') !== false);
     }

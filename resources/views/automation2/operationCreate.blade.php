@@ -74,6 +74,9 @@
                         // save tree
                         saveData(function() {
                             automationPopup.hide();
+
+                            // fix reload bug
+                            sidebar.url = sidebar.url.replace(/operation=[a-zA-Z_-]+/, "operation=" + response.options.operation_type);
                             
                             // reload sidebar
                             sidebar.load();

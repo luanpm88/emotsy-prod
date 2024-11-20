@@ -34,7 +34,7 @@
                 <td>
                     <span class="no-margin kq_search">
                         @if (is_null($subscriber->auto_trigger_id))
-                            <a href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $subscriber->uid ]) }}">Trigger Now</a>
+                            <a href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $subscriber->id ]) }}">Trigger Now</a>
                         @else
                             <a href="{{ action('AutoTrigger@show', [ 'id' => $subscriber->auto_trigger_id ]) }}">{{ $subscriber->triggered_at }}</a>
                         @endif

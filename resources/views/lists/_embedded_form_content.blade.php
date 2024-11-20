@@ -14,7 +14,7 @@
 
     <p class="text-sm text-end"><span class="text-danger">*</span> {{ trans('messages.indicates_required') }}</p>
         @if (!isset($preview))
-            <form action="{{ action('MailListController@embeddedFormSubscribe', $list->uid) }}" method="POST" class="form-validate-jqueryz">
+            <form action="{{ action('MailListController@embeddedFormSubscribe', ['uid' => $list->uid, 'customer_uid' => $list->customer->uid ]) }}" method="POST" class="form-validate-jqueryz">
         @endif
 
             @foreach ($list->getFields as $field)

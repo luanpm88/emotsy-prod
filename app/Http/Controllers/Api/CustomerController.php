@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Customer;
+use Acelle\Model\Language;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Model\SubscriptionLog;
 use Acelle\Library\TransactionResult;
@@ -16,8 +17,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = \Acelle\Model\Customer::select('customers.*')
-            ->get();
+        $customers = \Acelle\Model\Customer::select('customers.*')->get();
 
         return \Response::json($customers, 200);
     }
@@ -35,63 +35,38 @@ class CustomerController extends Controller
     {
         // Get current user
         $current_user = \Auth::guard('api')->user();
-        $customer = \Acelle\Model\Customer::newCustomer();
-        $user = new \Acelle\Model\User();
 
-        // authorize
-        if (!$current_user->can('create', $customer)) {
-            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+        //
+        if (!Language::where('id', $request->language_id)->exists()) {
+            return \Response::json(array('status' => 0, 'message' => 'Language with ID ['.$request->language_id.'] not found'), 404);
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $rules = $user->apiRules();
+        // validation
+        list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+            $admin = $current_user->admin,
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id,
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid,
+        );
 
-            $validator = \Validator::make($request->all(), $rules);
-            if ($validator->fails()) {
-                return response()->json($validator->messages(), 403);
-            }
-
-            // Create user account for customer
-            $user = new \Acelle\Model\User();
-            $user->fill($request->all());
-            $user->email = $request->email;
-            $user->activated = true;
-
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            $user->save();
-
-            // Save current user info
-            $customer->admin_id = $current_user->admin->id;
-            $customer->fill($request->all());
-            $customer->status = 'active';
-
-            if ($customer->save()) {
-                $user->customer_id = $customer->id;
-                $user->save();
-
-                // Upload and save image
-                if ($request->hasFile('image')) {
-                    if ($request->file('image')->isValid()) {
-                        $user->uploadProfileImage($request->file('image'));
-                    }
-                }
-
-                // Remove image
-                if ($request->_remove_image == 'true') {
-                    $user->removeProfileImage();
-                }
-
-                return \Response::json(array(
-                    'status' => 1,
-                    'message' => trans('messages.customer.created'),
-                    'customer_uid' => $customer->uid,
-                ), 200);
-            }
+        //  errors
+        if (!$validator->errors()->isEmpty()) {
+            return response()->json($validator->messages(), 403);
         }
+
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.customer.created'),
+            'customer_uid' => $customer->uid,
+            'api_token' => $user->api_token
+        ), 200);
     }
 
     /**
@@ -119,22 +94,23 @@ class CustomerController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
-        // save posted data
-        if ($request->isMethod('patch')) {
-            if (config('app.demo')) {
-                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
-            }
+        // validation
+        list($validator, $customer) = $customer->updateCustomer(
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id
+        );
 
-            // Save current user info
-            $customer->fill($request->all());
-            $customer->save();
-            
-            return \Response::json(array(
-                'status' => 1,
-                'message' => trans('messages.customer.updated'),
-                'customer_uid' => $customer->uid
-            ), 200);
+        //  errors
+        if (!$validator->errors()->isEmpty()) {
+            return response()->json($validator->messages(), 403);
         }
+
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.customer.updated'),
+            'customer_uid' => $customer->uid
+        ), 200);
     }
 
     /**
@@ -194,11 +170,10 @@ class CustomerController extends Controller
         if ($subscription) {
             $result['current_subscription'] = [
                 'uid' => $subscription->uid,
-                'plan_name' => $subscription->plan_name,
-                'price' => $subscription->price,
-                'currency_code' => $subscription->currency_code,
-                'start_at' => $subscription->start_at,
-                'end_at' => $subscription->end_at,
+                'plan_name' => $subscription->plan ? $subscription->plan->name : null,
+                'current_period_ends_at' => $subscription->current_period_ends_at,
+                'cancelled_at' => $subscription->cancelled_at,
+                'terminated_at' => $subscription->terminated_at,
                 'status' => $subscription->status,
             ];
         }
@@ -319,6 +294,14 @@ class CustomerController extends Controller
 
         // rollback if something went wrong
         \DB::transaction(function () use ($plan, $customer, $request, $offlineGateway) {
+            // force terminate if customer already has new or active subscription
+            if ($request->force == 'true') {
+                // terminate if customer already has new or active subscription
+                if ($customer->getNewOrActiveGeneralSubscription()) {
+                    $customer->getNewOrActiveGeneralSubscription()->terminate();
+                }
+            }
+
             $subscription = $customer->assignGeneralPlan($plan);
 
             // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
@@ -339,6 +322,58 @@ class CustomerController extends Controller
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid
         ), 200);
+    }
+
+    /**
+     * Assign plan to customer.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function subscriptionUpdate(Request $request, $uid)
+    {
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        // terminate if customer already has new or active subscription
+        if ($customer->getNewOrActiveGeneralSubscription()) {
+            $customer->getNewOrActiveGeneralSubscription()->terminate();
+        }
+
+        return $this->assignPlan($request, $uid, $request->plan_uid);
+    }
+
+    /**
+     * Generate one time token.
+     *
+     * PATCH /api/v1/customers/{uid}/login-token
+     *
+     * @param int $id customer's uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loginToken(Request $request)
+    {
+        $user = \Auth::guard('api')->user();
+
+        // if for another customer
+        if ($request->customer_uid) {
+            $customer = Customer::findByUid($request->customer_uid);
+
+            // authorize
+            if (!$user->can('loginAs', $customer)) {
+                return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+            }
+
+            $user = $customer->getFirstUserLegacy();
+        }
+
+        $user->generateOneTimeToken();
+
+        echo json_encode(array(
+            'token' => $user->one_time_api_token,
+            'url' => action('Controller@tokenLogin', ['token' => $user->one_time_api_token]),
+        ), JSON_UNESCAPED_SLASHES);
     }
 
     public function destroy($uid)
@@ -444,5 +479,66 @@ class CustomerController extends Controller
         } catch (\Throwable $e) {
             return \Response::json(array('status' => 0, 'message' => $e->getMessage()), 500);
         }
+    }
+
+    public function findByEmail($email)
+    {
+        $user = \Auth::guard('api')->user();
+
+        $u = \Acelle\Model\User::whereEmail($email)->first();
+
+        // check if item exists
+        if (!$u) {
+            return \Response::json(array('message' => 'Customer not found by email: '. $email), 404);
+        }
+
+        $customer = $u->customer;
+
+        // authorize
+        if (!$user->can('read', $customer)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        // Customer info
+        $result = [
+            'uid' => $customer->uid,
+            'name' => $customer->name,
+            'timezone' => $customer->timezone,
+            'status' => $customer->status,
+        ];
+
+        // Customer contact
+        $contact = $customer->contact;
+        if ($contact) {
+            $result['contact'] = [
+                'first_name' => $contact->first_name,
+                'last_name' => $contact->last_name,
+                'company' => $contact->company,
+                'address_1' => $contact->address_1,
+                'address_2' => $contact->address_2,
+                'country' => $contact->countryName(),
+                'state' => $contact->state,
+                'city' => $contact->city,
+                'zip' => $contact->zip,
+                'phone' => $contact->phone,
+                'url' => $contact->url,
+                'email' => $contact->email,
+            ];
+        }
+
+        // Current subscription
+        $subscription = $customer->getNewOrActiveGeneralSubscription();
+        if ($subscription) {
+            $result['current_subscription'] = [
+                'uid' => $subscription->uid,
+                'plan_name' => $subscription->plan ? $subscription->plan->name : null,
+                'current_period_ends_at' => $subscription->current_period_ends_at,
+                'cancelled_at' => $subscription->cancelled_at,
+                'terminated_at' => $subscription->terminated_at,
+                'status' => $subscription->status,
+            ];
+        }
+
+        return \Response::json(['customer' => $result], 200);
     }
 }

@@ -45,7 +45,7 @@
                             'customer_uid' => $customer->uid,
                             'uid' => $user->uid,
                         ]) }}" data-popup="tooltip"
-                            title="{{ trans('messages.login_as_this_customer') }}" role="button"
+                            title="{{ trans('messages.login_as_this_user') }}" role="button"
                             class="btn btn-primary btn-icon"><span class="material-symbols-rounded">login</span></a>
                     @endcan
                     @if(Auth::user()->admin->can('update', $user))

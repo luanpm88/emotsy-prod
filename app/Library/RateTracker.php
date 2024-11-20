@@ -43,18 +43,50 @@ class RateTracker
         $this->createStorageFile();
     }
 
-    public function count(Carbon $now = null)
+    public function test(Carbon $now = null, $failedCallback = null)
     {
         $lock = new Lockable($this->filepath);
-        $lock->getExclusiveLock(function ($fopen) use ($now) {
+        $lock->getExclusiveLock(function ($fopen) use ($now, $failedCallback) {
             $now = $now ?: Carbon::now();
 
             // Throw an exception if test fails (quota exceeded)
-            $this->_test($now, $fopen);
+            $this->_test($now, $fopen, $failedCallback);
+
+        }, $timeout = 15);
+    }
+
+    public function count(Carbon $now = null, $failedCallback = null)
+    {
+        $lock = new Lockable($this->filepath);
+        $lock->getExclusiveLock(function ($fopen) use ($now, $failedCallback) {
+            $now = $now ?: Carbon::now();
+
+            // Throw an exception if test fails (quota exceeded)
+            $this->_test($now, $fopen, $failedCallback);
 
             // Record credits use
             $this->record($now, $fopen);
         }, $timeout = 15);
+    }
+
+    private function _test(Carbon $now, $fopen, $failedCallback)
+    {
+        foreach ($this->limits as $limit) {
+            $period = sprintf("%s %s", $limit->getPeriodValue(), $limit->getPeriodUnit());
+            $fromDatetime = $now->copy()->subtract($period);
+
+            $creditsUsed = $this->getCreditsUsed($fromDatetime, $now, $fopen);
+
+            if ($creditsUsed >= $limit->getAmount()) {
+                $msg = sprintf("%s exceeded! %s/%s used", $limit->getDescription(), $creditsUsed, $limit->getAmount());
+
+                if ($failedCallback) {
+                    $failedCallback($msg);
+                }
+
+                throw new RateLimitExceeded($msg);
+            }
+        }
     }
 
     // Reverse of count()
@@ -81,32 +113,6 @@ class RateTracker
     {
         if (!file_exists($this->filepath)) {
             touch($this->filepath);
-        }
-    }
-
-    public function test(Carbon $now)
-    {
-        $lock = new Lockable($this->filepath);
-        $lock->getExclusiveLock(function ($fopen) use ($now) {
-            $now = $now ?: Carbon::now();
-
-            // Throw an exception if test fails (quota exceeded)
-            $this->_test($now, $fopen);
-
-        }, $timeout = 15);
-    }
-
-    private function _test(Carbon $now, $fopen)
-    {
-        foreach ($this->limits as $limit) {
-            $period = sprintf("%s %s", $limit->getPeriodValue(), $limit->getPeriodUnit());
-            $fromDatetime = $now->copy()->subtract($period);
-
-            $creditsUsed = $this->getCreditsUsed($fromDatetime, $now, $fopen);
-
-            if ($creditsUsed >= $limit->getAmount()) {
-                throw new RateLimitExceeded(sprintf("%s exceeded! %s/%s used", $limit->getDescription(), $creditsUsed, $limit->getAmount()));
-            }
         }
     }
 

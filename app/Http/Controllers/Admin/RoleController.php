@@ -21,7 +21,7 @@ class RoleController extends Controller
     public function list(Request $request)
     {
         // sort, pagination
-        $roles = Role::search($request->keyword)
+        $roles = Role::global()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -37,7 +37,7 @@ class RoleController extends Controller
      */
     public function create(Request $request)
     {
-        $role = Role::newDefault();
+        $role = Role::newGlobalRole();
 
         return view('admin.roles.create', [
             'role' => $role,
@@ -52,9 +52,13 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $role = Role::newDefault();
-        
-        $errors = $role->saveFromArray($request->all());
+        $role = Role::newGlobalRole();
+
+        $errors = $role->saveRole(
+            $request->name,
+            $request->description,
+            $request->permissions
+        );
 
         // redirect if fails
         if (!$errors->isEmpty()) {
@@ -95,11 +99,15 @@ class RoleController extends Controller
         $role = Role::findByUid($uid);
 
         // authorize
-        if (\Gate::denies('update', $role)) {
+        if (!$request->user()->admin->can('update', $role)) {
             return $this->notAuthorized();
         }
 
-        $errors = $role->saveFromArray($request->all());
+        $errors = $role->saveRole(
+            $request->name,
+            $request->description,
+            $request->permissions
+        );
 
         // redirect if fails
         if (!$errors->isEmpty()) {
@@ -131,7 +139,7 @@ class RoleController extends Controller
         $deleted = 0;
         foreach ($roles->get() as $role) {
             // authorize
-            if (\Gate::allows('delete', $role)) {
+            if ($request->user()->admin->can('delete', $role)) {
                 $role->delete();
                 $deleted += 1;
             }
@@ -153,7 +161,7 @@ class RoleController extends Controller
         $done = 0;
         foreach ($roles->get() as $role) {
             // authorize
-            if (\Gate::allows('enable', $role)) {
+            if ($request->user()->admin->can('enable', $role)) {
                 $role->enable();
                 $done += 1;
             }
@@ -176,11 +184,11 @@ class RoleController extends Controller
         $done = 0;
         foreach ($roles->get() as $role) {
             // authorize
-            if (\Gate::allows('disable', $role)) {
+            if ($request->user()->admin->can('disable', $role)) {
                 $role->disable();
                 $done += 1;
             }
-            
+
         }
 
         return response()->json([

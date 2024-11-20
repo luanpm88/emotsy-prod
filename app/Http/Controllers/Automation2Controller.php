@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Acelle\Model\TemplateCategory;
 use Acelle\Jobs\ForceTriggerAutomation;
 use Exception;
+use Acelle\Model\Customer as MasterCustomer;
 
 class Automation2Controller extends Controller
 {
@@ -47,7 +48,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        $automations = $request->user()->customer->automation2s()
+        $automations = $request->user()->customer->local()->automation2s()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -79,6 +80,8 @@ class Automation2Controller extends Controller
 
     public function wizardTriggerOption(Request $request)
     {
+        $localCustomer = $request->user()->customer->local();
+
         // saving
         if ($request->isMethod('post')) {
             $rules = $this->triggerRules()[$request->options['key']];
@@ -96,8 +99,7 @@ class Automation2Controller extends Controller
                 ], 400);
             }
 
-            $customer = $request->user()->customer;
-            $automation = $customer->automation2s()->make()->newDefault();
+            $automation = $localCustomer->newDefaultAutomation2();
 
             return view('automation2.wizard', [
                 'automation' => $automation,
@@ -125,8 +127,8 @@ class Automation2Controller extends Controller
 
     public function wizard(Request $request)
     {
-        $customer = $request->user()->customer;
-        $automation = $customer->automation2s()->make()->newDefault();
+        $localCustomer = $request->user()->customer->local();
+        $automation = $localCustomer->newDefaultAutomation2();
 
         // authorize
         if (\Gate::denies('create', $automation)) {
@@ -138,7 +140,7 @@ class Automation2Controller extends Controller
             $params = $request->all();
 
             if (isset($params['options'])) {
-                $params['options'] = $this->prepareOptions($params['options'], $customer);
+                $params['options'] = $this->prepareOptions($params['options'], $localCustomer->master());
             }
 
             $validator = $automation->createFromArray($params);
@@ -170,8 +172,6 @@ class Automation2Controller extends Controller
      */
     public function update(Request $request, $uid)
     {
-        $customer = $request->user()->customer;
-
         // find automation
         $automation = Automation2::findByUid($uid);
 
@@ -355,6 +355,13 @@ class Automation2Controller extends Controller
             Automation2::TRIGGER_TAG_BASED => [
                 'options.tags' => 'required',
             ],
+            Automation2::TRIGGER_REMOVE_TAG => [
+                'options.tags' => 'required',
+            ],
+            Automation2::TRIGGER_ATTRIBUTE_UPDATE => [
+                'options.field_uid' => 'required',
+                'options.value' => 'required',
+            ],
         ];
     }
 
@@ -411,12 +418,12 @@ class Automation2Controller extends Controller
             'title' => trans('messages.automation.trigger.title', [
                 'title' => trans('messages.automation.trigger.tree.' . $request->options["key"])
             ]),
-            'options' => $this->prepareOptions($request->options, $request->user()->customer),
+            'options' => $this->prepareOptions($request->options, $request->user()->customer), // master OK
             'rules' => $this->triggerRules()[$request->options['key']],
         ]);
     }
 
-    public function prepareOptions($options, $customer)
+    public function prepareOptions($options, MasterCustomer $customer)
     {
         if (isset($options['key']) && $options['key'] == 'specific-date') {
             if (isset($options['date'])) {
@@ -778,12 +785,8 @@ class Automation2Controller extends Controller
         if ($request->email_uid) {
             $email = Email::findByUid($request->email_uid);
         } else {
-            $email = new Email([
-                'sign_dkim' => true,
-                'track_open' => true,
-                'track_click' => true,
-                'action_id' => $request->action_id,
-            ]);
+            $email = Email::newDefault();
+            $email->action_id = $request->action_id;
             $email->automation2_id = $automation->id;
             $email->customer_id = $automation->customer_id;
             // $email->save();
@@ -840,8 +843,6 @@ class Automation2Controller extends Controller
                 ],
             ], 201);
         }
-
-
 
         return view('automation2.email.setup', [
             'automation' => $automation,
@@ -1025,7 +1026,7 @@ class Automation2Controller extends Controller
 
         // from
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates()->email();
+            $templates = $request->user()->customer->templates()->email(); // master ok
         } elseif ($request->from == 'gallery') {
             $templates = Template::shared()->notPreserved()->email();
         } else {
@@ -1118,7 +1119,7 @@ class Automation2Controller extends Controller
             'list' => $automation->mailList,
             'email' => $email,
             'templates' => $request->user()->customer->getBuilderTemplates(),
-            'customer' => $automation->customer,
+            'customer' => $automation->customer, // master DB OK
         ]);
     }
 
@@ -1493,18 +1494,19 @@ class Automation2Controller extends Controller
         // list by type
         $subscribers = $automation->getSubscribersWithTriggerInfo()
                                   ->simpleSearch($request->keyword)
-                                  ->addSelect('subscribers.created_at')
-                                  ->addSelect('auto_triggers.updated_at')
                                   ->orderBy($sortBy, $sortOrder);
 
+        // Make sure $count returns the same list of $subscribers
+        $count = $automation->subscribers()->simpleSearch($request->keyword)->count();
+
         // setPath() is required, otherwise, it may produce http link even in https
-        $contacts = $subscribers->paginate($request->per_page);
+        $contacts = $subscribers->fastPaginate($request->per_page, $count);
         $contacts->setPath(action('Automation2Controller@contactsList', [ 'uid' => $automation->uid ]));
 
         return view('automation2.contacts.list', [
             'automation' => $automation,
             'contacts' => $contacts,
-            'customer' => $automation->customer,
+            'customer' => $automation->customer, // Master DB OK
         ]);
     }
 
@@ -1558,10 +1560,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function profile(Request $request, $uid, $contact_uid)
+    public function profile(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
 
         // authorize
         if (\Gate::denies('view', $automation)) {
@@ -1581,10 +1583,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function removeContact(Request $request, $uid, $contact_uid)
+    public function removeContact(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
 
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -1604,10 +1606,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function tagContact(Request $request, $uid, $contact_uid)
+    public function tagContact(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
 
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -1691,10 +1693,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function removeTag(Request $request, $uid, $contact_uid)
+    public function removeTag(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
 
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -1754,7 +1756,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        $subscribers = $subscribers = $automation->subscribers();
+        $subscribers = $automation->subscribers();
 
         // saving
         if ($request->isMethod('post')) {
@@ -1995,11 +1997,11 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribersRemove(Request $request, $uid, $subscriber_uid)
+    public function subscribersRemove(Request $request, $uid, $subscriber_id)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $subscriber = Subscriber::findByUid($subscriber_uid);
+        $subscriber = Subscriber::find($subscriber_id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -2017,11 +2019,11 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribersRestart(Request $request, $uid, $subscriber_uid)
+    public function subscribersRestart(Request $request, $uid, $subscriber_id)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $subscriber = Subscriber::findByUid($subscriber_uid);
+        $subscriber = Subscriber::find($subscriber_id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -2039,11 +2041,11 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribersShow(Request $request, $uid, $subscriber_uid)
+    public function subscribersShow(Request $request, $uid, $subscriber_id)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $subscriber = Subscriber::findByUid($subscriber_uid);
+        $subscriber = Subscriber::find($subscriber_id);
 
         // authorize
         if (\Gate::denies('read', $subscriber)) {
@@ -2152,7 +2154,7 @@ class Automation2Controller extends Controller
     public function triggerNow(Request $request)
     {
         $automation = Automation2::findByUid($request->automation);
-        $subscriber = Subscriber::findByUid($request->subscriber);
+        $subscriber = Subscriber::find($request->subscriber);
 
         $existingTrigger = $automation->getAutoTriggerFor($subscriber);
 
@@ -2167,6 +2169,7 @@ class Automation2Controller extends Controller
         // Force trigger a contact
         // Even inactive contacts - in case of Say-Goodbye-Trigger for example
         $trigger = $automation->initTrigger($subscriber, $force = true);
+        $trigger->check($manually = true);
 
         return redirect()->action('AutoTrigger@show', [ 'id' => $trigger->id ]);
     }
@@ -2176,10 +2179,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function contactRetry(Request $request, $uid, $contact_uid)
+    public function contactRetry(Request $request, $uid, $contact_id)
     {
         $automation = Automation2::findByUid($uid);
-        $contact = Subscriber::findByUid($contact_uid);
+        $contact = Subscriber::find($contact_id);
         // authorize
         if (\Gate::denies('view', $automation)) {
             return $this->notAuthorized();
@@ -2394,6 +2397,7 @@ class Automation2Controller extends Controller
                 'update_contact',
                 'tag_contact',
                 'copy_contact',
+                \Acelle\Library\Automation\Operate::OPERATION_REMOVE_TAG,
             ],
         ]);
     }
@@ -2795,13 +2799,6 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $newAutomation = new Automation2();
-
-        // init data
-        $newAutomation->name = trans('messages.automation.copy_name', [
-            'from' => $automation->name,
-        ]);
-        $newAutomation->mailList = $automation->mailList;
 
         // authorize
         if (\Gate::denies('create', $automation)) {
@@ -2809,7 +2806,7 @@ class Automation2Controller extends Controller
         }
 
         if ($request->isMethod('post')) {
-            $validator = $newAutomation->copyFrom($automation, $request->all());
+            [$validator, $newAutomation] = $automation->copy($request->name, $request->mail_list_uid);
 
             // redirect if fails
             if ($validator->fails()) {
@@ -2830,7 +2827,6 @@ class Automation2Controller extends Controller
 
         return view('automation2.copy', [
             'automation' => $automation,
-            'newAutomation' => $newAutomation,
         ]);
     }
 
@@ -2864,5 +2860,36 @@ class Automation2Controller extends Controller
         return view('automation2.email.overview.main', [
             'email' => $email,
         ]);
+    }
+
+    public function retryAllFailedActions($uid)
+    {
+        // Instantiate automation and dispatch the job
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        try {
+            $automation->retryAllFailedActions();
+
+            return response()->json([
+                'message' => trans('messages.automation.action.retry.success'),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function emailSaveSignature(Request $request, $email_uid)
+    {
+        $email = Email::findByUid($email_uid);
+        $signature = \Acelle\Model\Signature::findByUid($request->signature_uid);
+
+        $email->setSignature($signature);
     }
 }

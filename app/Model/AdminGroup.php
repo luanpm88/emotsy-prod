@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdminGroup extends Model
 {
+    protected $connection = 'mysql';
+
     /**
      * The attributes that are mass assignable.
      *

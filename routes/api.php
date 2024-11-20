@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'], function () {
+Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => ['auth:api', 'setdb']], function () {
     //
     Route::get('', function () {
         return \Response::json(\Auth::guard('api')->user());
@@ -38,12 +38,12 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
 
     // Subscriber
     Route::patch('lists/{list_uid}/subscribers/email/{email}/unsubscribe', 'SubscriberController@unsubscribeEmail');
-    Route::post('subscribers/{uid}/add-tag', 'SubscriberController@addTag');
-    Route::post('subscribers/{uid}/remove-tag', 'SubscriberController@removeTag');
+    Route::post('subscribers/{id}/add-tag', 'SubscriberController@addTag');
+    Route::post('subscribers/{id}/remove-tag', 'SubscriberController@removeTag');
     Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
-    Route::delete('subscribers/{uid}', 'SubscriberController@delete');
+    Route::patch('lists/{list_uid}/subscribers/{id}/subscribe', 'SubscriberController@subscribe');
+    Route::patch('lists/{list_uid}/subscribers/{id}/unsubscribe', 'SubscriberController@unsubscribe');
+    Route::delete('subscribers/{id}', 'SubscriberController@delete');
 
     Route::resource('subscribers', 'SubscriberController');
 
@@ -57,6 +57,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('plans', 'PlanController');
 
     // Customer
+    Route::get('customers/by-email/{email}', 'CustomerController@findByEmail');
+    Route::post('customers/{uid}/subscription/update', 'CustomerController@subscriptionUpdate');
     Route::post('customers/{uid}/change-plan/{plan_uid}', 'CustomerController@changePlan');
     Route::post('customers/{uid}/assign-plan/{plan_uid}', 'CustomerController@assignPlan');
     Route::patch('customers/{uid}/disable', 'CustomerController@disable');
@@ -81,4 +83,17 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
 
 Route::group(['namespace' => 'Api\Public', 'prefix' => 'v1'], function () {
     Route::post('public/subscribers', 'SubscriberController@store');
+
+    // Payment
+    Route::get('payment/list', 'PaymentController@list');
+
+    // Email Verification
+    Route::get('email-verification/get-checkout-url', 'EmailVerificationController@getCheckoutUrl');
+    Route::get('email-verification/get-subscription', 'EmailVerificationController@getSubscription');
+    Route::post('email-verification/customer/find-create', 'EmailVerificationController@findOrCreateCustomer');
+    Route::get('email-verification/feature-plan', 'EmailVerificationController@getFeaturePlan');
+    Route::post('email-verification/subscribe', 'EmailVerificationController@subscribe');
+
+    // Plans
+    Route::get('public/plans/available', 'PlanController@availablePlans');
 });

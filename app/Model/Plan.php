@@ -29,6 +29,7 @@ use Acelle\Library\RateLimit;
 class Plan extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     // Plan status
     public const STATUS_INACTIVE = 'inactive';
@@ -50,6 +51,7 @@ class Plan extends Model
         'currency_id',
         'trial_amount',
         'trial_unit',
+        'no_payment_required_when_free',
     ];
 
     public function mapType()

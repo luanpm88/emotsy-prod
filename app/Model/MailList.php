@@ -25,6 +25,9 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Formatter\LineFormatter;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Library\ExtendedSwiftMessage;
@@ -44,6 +47,7 @@ use Acelle\Jobs\VerifyMailListJob;
 use League\Csv\Writer;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\MailListFieldMapping;
+use Acelle\Jobs\BulkVerify;
 
 class MailList extends Model
 {
@@ -60,12 +64,14 @@ class MailList extends Model
     public const EXPORT_TEMP_DIR = 'app/tmp/export/';
 
     public const JOB_TYPE_VERIFY_LIST = 'verify-list';
+    public const JOB_TYPE_IMPORT = 'import';
 
+
+    protected $logger;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
      */
     protected $fillable = [
         'name', 'from_email', 'from_name',
@@ -83,15 +89,6 @@ class MailList extends Model
         'name' => 'required',
         'from_email' => 'required|email',
         'from_name' => 'required',
-        'contact.company' => 'required',
-        'contact.address_1' => 'required',
-        'contact.country_id' => 'required',
-        'contact.state' => 'required',
-        'contact.city' => 'required',
-        'contact.zip' => 'required',
-        'contact.phone' => 'required',
-        'contact.email' => 'required|email',
-        'contact.url' => 'nullable|regex:/^https{0,1}:\/\//',
         'email_subscribe' => 'nullable|regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
         'email_unsubscribe' => 'nullable|regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
         'email_daily' => 'nullable|regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
@@ -138,11 +135,6 @@ class MailList extends Model
         return $this->pages()->where('layout_id', $layout->id)->first();
     }
 
-    public function contact()
-    {
-        return $this->belongsTo('Acelle\Model\Contact');
-    }
-
     public function subscribers()
     {
         return $this->hasMany('Acelle\Model\Subscriber');
@@ -175,11 +167,6 @@ class MailList extends Model
 
         // detele
         static::deleted(function ($item) {
-            //  Delete contact when list deleted
-            if (!is_null($item->contact)) {
-                $item->contact->delete();
-            }
-
             // Delete export jobs
             $item->exportJobs()->delete();
         });
@@ -221,6 +208,29 @@ class MailList extends Model
         $jobTypeName = static::JOB_TYPE_VERIFY_LIST;
         $monitor = $this->dispatchWithBatchMonitor(
             $jobTypeName, // a helpful name for future filtering/querying
+            $queue = ACM_QUEUE_TYPE_BATCH,
+            [$job],
+            $then = null,
+            $catch = null,
+            $finally = null
+        );
+
+        return $monitor;
+    }
+
+    public function dispatchBulkVerificationJob($server, $subscription)
+    {
+        if (is_null($server)) {
+            throw new Exception('Cannot start job: empty verification server');
+        }
+
+        $this->logger()->info("Start BULK verification...");
+
+        $job = new BulkVerify($this, $server, $subscription);
+        $jobTypeName = static::JOB_TYPE_VERIFY_LIST;
+        $monitor = $this->dispatchWithBatchMonitor(
+            $jobTypeName, // a helpful name for future filtering/querying
+            $queue = ACM_QUEUE_TYPE_HIGH, // High priority
             [$job],
             $then = null,
             $catch = null,
@@ -234,7 +244,9 @@ class MailList extends Model
     {
         // Example: /home/acelle/storage/app/tmp/import-000000.csv
         $job = new ImportSubscribersJob($this, $filepath, $map);
-        $monitor = $this->dispatchWithMonitor($job);
+
+        // Make sure that import jobs are of a higher priority ("import" queue)
+        $monitor = $this->dispatchWithMonitor($job, static::JOB_TYPE_IMPORT, ACM_QUEUE_TYPE_IMPORT);
         return $monitor;
     }
 
@@ -315,9 +327,14 @@ class MailList extends Model
         ];
 
         foreach($defaultFields as $attributes) {
-            $attributes['custom_field_name'] = $this->getAvailableField();
-            $field = $this->fields()->create($attributes);
-            Subscriber::addCustomFieldIfNotExist($field->custom_field_name);
+            $this->createField(
+                $attributes['type'],
+                $attributes['label'],
+                $attributes['tag'],
+                $required = $attributes['required'],
+                $visible = $attributes['visible'],
+                $defaultValue = null,
+            );
         }
     }
 
@@ -506,6 +523,32 @@ class MailList extends Model
         ]);
     }
 
+    public function logger()
+    {
+        if (!is_null($this->logger)) {
+            return $this->logger;
+        }
+
+        $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+
+        $logfile = $this->getLogFile();
+        $stream = new RotatingFileHandler($logfile, 0, config('custom.log_level'));
+        $stream->setFormatter($formatter);
+
+        $pid = getmypid();
+        $logger = new Logger($pid);
+        $logger->pushHandler($stream);
+        $this->logger = $logger;
+
+        return $this->logger;
+    }
+
+    public function getLogFile()
+    {
+        $path = storage_path(join_paths('logs', php_sapi_name(), '/list-'.$this->uid.'.log'));
+        return $path;
+    }
+
     /**
      * Open count.
      */
@@ -663,17 +706,6 @@ class MailList extends Model
 
         // @todo: trigger MailListSubscription event here?
 
-        // Contact
-        if ($this->contact) {
-            $new_contact = $this->contact->replicate();
-            $new_contact->uid = uniqid();
-            $new_contact->save();
-
-            // update contact
-            $copy->contact_id = $new_contact->id;
-            $copy->save();
-        }
-
         // Remove default fields
         $copy->fields()->delete();
         // Fields
@@ -765,7 +797,7 @@ class MailList extends Model
                 }
 
                 $attributes['status'] = $subscriber->status;
-                $attributes['uid'] = $subscriber->uid;
+                $attributes['id'] = $subscriber->id;
                 $attributes['created_at'] = $subscriber->created_at->toString();
                 $attributes['updated_at'] = $subscriber->updated_at->toString();
 
@@ -820,7 +852,7 @@ class MailList extends Model
             }
         }
 
-        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('sign_up_confirmation_email');
         $send_page = \Acelle\Model\Page::findPage($this, $layout);
         $send_page->renderContent(null, $subscriber);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
@@ -832,7 +864,9 @@ class MailList extends Model
     public function send($message, $params = [])
     {
         $server = $this->pickSendingServer();
-        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email)));
+        $customerUid = $this->customer->uid;
+
+        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email), $customerUid));
 
         return $server->send($message, $params);
     }
@@ -844,7 +878,7 @@ class MailList extends Model
     {
         $list = $this;
 
-        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_welcome_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('sign_up_welcome_email');
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
     }
@@ -856,14 +890,14 @@ class MailList extends Model
     {
         $list = $this;
 
-        $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_goodbye_email');
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
     }
 
     public function sendSubscriptionNotificationEmailToListOwner($subscriber)
     {
-        $template = Layout::where('alias', 'subscribe_notification_for_list_owner')->first();
+        $template = Layout::findByAlias('subscribe_notification_for_list_owner');
 
         $message = $template->getMessage(function ($html) use ($subscriber) {
             $html = str_replace('{LIST_NAME}', $this->name, $html);
@@ -873,13 +907,15 @@ class MailList extends Model
             return $html;
         });
 
-        $message->setSubject($template->subject);
-        $message->setTo([ $this->customer->user->email => $this->customer->getName()]);
-        $mailer = App::make('xmailer');
-        $result = $mailer->sendWithDefaultFromAddress($message);
+        foreach ($this->customer->users as $user) {
+            $message->setSubject($template->subject);
+            $message->setTo([ $user->email => $this->customer->displayName()]);
+            $mailer = App::make('xmailer');
+            $result = $mailer->sendWithDefaultFromAddress($message);
 
-        if (array_key_exists('error', $result)) {
-            throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            if (array_key_exists('error', $result)) {
+                throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            }
         }
     }
 
@@ -888,27 +924,29 @@ class MailList extends Model
      */
     public function sendUnsubscriptionNotificationEmailToListOwner($subscriber)
     {
-        // Create a message
-        $message = new ExtendedSwiftMessage();
-        $message->setContentType('text/html; charset=utf-8');
-        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->setTo([ $this->customer->user->email => $this->customer->getName()]);
+        foreach ($this->customer->users as $user) {
+            // Create a message
+            $message = new ExtendedSwiftMessage();
+            $message->setContentType('text/html; charset=utf-8');
+            $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+            $message->setTo([ $user->email => $this->customer->displayName()]);
 
-        $template = \Acelle\Model\Layout::where('alias', 'unsubscribe_notification_for_list_owner')->first();
-        $htmlContent = $template->content;
+            $template = \Acelle\Model\Layout::findByAlias('unsubscribe_notification_for_list_owner');
+            $htmlContent = $template->content;
 
-        $htmlContent = str_replace('{LIST_NAME}', $this->name, $htmlContent);
-        $htmlContent = str_replace('{EMAIL}', $subscriber->email, $htmlContent);
-        $htmlContent = str_replace('{FULL_NAME}', $subscriber->getFullName(), $htmlContent);
+            $htmlContent = str_replace('{LIST_NAME}', $this->name, $htmlContent);
+            $htmlContent = str_replace('{EMAIL}', $subscriber->email, $htmlContent);
+            $htmlContent = str_replace('{FULL_NAME}', $subscriber->getFullName(), $htmlContent);
 
-        $message->setSubject($template->subject);
-        $message->addPart($htmlContent, 'text/html');
+            $message->setSubject($template->subject);
+            $message->addPart($htmlContent, 'text/html');
 
-        $mailer = App::make('xmailer');
-        $result = $mailer->sendWithDefaultFromAddress($message);
+            $mailer = App::make('xmailer');
+            $result = $mailer->sendWithDefaultFromAddress($message);
 
-        if (array_key_exists('error', $result)) {
-            throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            if (array_key_exists('error', $result)) {
+                throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+            }
         }
     }
 
@@ -919,7 +957,7 @@ class MailList extends Model
     {
         $list = $this;
 
-        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('profile_update_email');
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
     }
@@ -978,7 +1016,7 @@ class MailList extends Model
         $maxPerList = get_tmp_quota($this->customer, 'subscriber_per_list_max');
 
         $remainingForList = $maxPerList - $this->refresh()->subscribers->count();
-        $remaining = $max - $this->refresh()->customer->subscribersCount(); // no cache
+        $remaining = $max - $this->refresh()->customer->local()->subscribersCount(); // no cache
 
         if ($maxPerList == -1) {
             return ($max == -1) ? -1 : $remaining;
@@ -1146,8 +1184,12 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import($file, $mapArray = null, $progressCallback = null, $invalidRecordCallback = null)
+    public function import($file, $mapArray = null, $update = true, $progressCallback = null, $invalidRecordCallback = null)
     {
+        $importBatchId = uniqid();
+
+        $this->logger()->info("START IMPORT, batch id {$importBatchId}");
+
         // Read CSV files, keep original headers' case (do not lowercase or uppercase)
         list($headers, $total, $results) = $this->readCsv($file);
 
@@ -1179,15 +1221,18 @@ class MailList extends Model
 
         try {
             // process by batches
-            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
+            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($importBatchId, $map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $update, $progressCallback, $invalidRecordCallback, $results) {
+
+
+                $this->logger()->info("Processing a new batch: ".sizeof($batch));
 
                 // Throw exception if no room left
-                if (!$this->customer->user->can('addMoreSubscribers', [ $this, $more = 1 ])) {
+                if (!$this->customer->getFirstUserLegacy()->can('addMoreSubscribers', [ $this, $more = 1 ])) {
                     throw new Exception('MAX CONTACTS quota exceeded');
                 }
 
                 // The last time, only import the allowed room
-                if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
+                if ($this->customer->getFirstUserLegacy()->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {
                     $insertLimit = $this->getRemainingAddSubscribersQuota();
@@ -1200,7 +1245,9 @@ class MailList extends Model
                 // }
 
                 // Create a tmp table like: __tmp_subscribers(field_1, field_2, field_3, field_4, tags)
-                list($tmpTable, $emailFieldName)  = $map->createTmpTableFromMapping();
+                list($tmpTable, $tmpTableWithoutPrefix, $emailFieldName)  = $map->createTmpTableFromMapping();
+
+                $this->logger()->info("- Temp table created: {$tmpTable}, collect data...");
 
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
@@ -1254,10 +1301,14 @@ class MailList extends Model
                     return $record;
                 })->toArray();
 
+                $this->logger()->info("- Data collected. Making data unique...");
+
                 // make the import data table unique by email
                 $data = array_unique_by($data, function ($r) use ($emailFieldName) {
                     return $r[$emailFieldName];
                 });
+
+                $this->logger()->info("- Data is now unique, filter out invalid records....");
 
                 // validate and filter out invalid records
                 $data = array_where($data, function ($record) use (&$failed, $invalidRecordCallback, $emailFieldName) {
@@ -1272,11 +1323,13 @@ class MailList extends Model
                     return $valid;
                 });
 
+                $this->logger()->info("- All done, counting...");
+
                 /*
                  * STEP 1: INSERT FROM FILE to TMP table
                  *
                  */
-                DB::table('__tmp_subscribers')->insert($data);
+                DB::table($tmpTableWithoutPrefix)->insert($data);
                 $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.{$emailFieldName} = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
 
                 if ($newRecordCount > 0 && $insertLimit == 0) {
@@ -1291,35 +1344,44 @@ class MailList extends Model
                  * STEP 2: UPDATE EXISTING RECORDS
                  *
                  */
-                $setFieldValuesSql = array_map(function ($name) {
-                    return "main.{$name} = tmp.{$name}";
-                }, $map->getCustomFields());
-                $setFieldValuesSql = implode(', ', $setFieldValuesSql);
-                $updateSubscribersSql = strtr(
-                    '
-                    UPDATE %subscribers main
-                    INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
-                    SET main.tags = tmp.tags,
-                        main.status = tmp.status,
-                    %set_fields_values
-                    WHERE main.mail_list_id = %list_id',
-                    [
-                        '%subscribers' => table('subscribers'),
-                        '%list_id' => $this->id,
-                        '%set_fields_values' => $setFieldValuesSql,
-                        '%tmp' => $tmpTable,
-                        '%email_field' => $emailFieldName
-                    ]
-                );
 
-                // Actually UPDATE
-                DB::statement($updateSubscribersSql);
+                if ($update) {
+                    $this->logger()->info("- UPDATING...");
+                    $setFieldValuesSql = array_map(function ($name) {
+                        return "main.{$name} = tmp.{$name}";
+                    }, $map->getCustomFields());
+                    $setFieldValuesSql = implode(', ', $setFieldValuesSql);
+                    $updateSubscribersSql = strtr(
+                        '
+                        UPDATE %subscribers main
+                        INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
+                        SET main.tags = tmp.tags,
+                            main.status = tmp.status,
+                        %set_fields_values
+                        WHERE main.mail_list_id = %list_id',
+                        [
+                            '%subscribers' => table('subscribers'),
+                            '%list_id' => $this->id,
+                            '%set_fields_values' => $setFieldValuesSql,
+                            '%tmp' => $tmpTable,
+                            '%email_field' => $emailFieldName
+                        ]
+                    );
+
+                    // Actually UPDATE
+                    DB::statement($updateSubscribersSql);
+
+                    $this->logger()->info("- UPDATE DONE!");
+                } else {
+                    $this->logger()->info("- UPDATE skipped");
+                }
 
                 /*
                  * STEP 3: INSERT NEW RECORDS
                  *
                  */
-                $importBatchId = uniqid();
+
+                $this->logger()->info("- INSERTING...");
 
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
@@ -1373,6 +1435,8 @@ class MailList extends Model
                 // Actually INSERT
                 DB::statement($insertToSubscribersSql);
 
+                $this->logger()->info("- INSERT DONE!");
+
                 // **** STEP 4: FINALIZE
                 // update status, finish one batch
                 $processed += sizeof($batch);
@@ -1381,22 +1445,31 @@ class MailList extends Model
                 }
 
                 // Cleanup
-                //DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
+                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
+
+                $this->logger()->info("- Temp table dropped, updating cache...");
 
                 // Trigger updating related campaigns cache
-                $this->updateCachedInfo();
-
-                try {
-                    // blacklist new emails (if any)
-                    Blacklist::doBlacklist($this->customer);
-                } catch (\Exception $ex) {
-                    // It might cause "Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction"
-                    // Temporarily ignore this issue
-                }
-
-                // Event MailListImported($list)
-                MailListImported::dispatch($this, $importBatchId);
+                $this->updateCache('SubscribeCount');
+                $this->logger()->info("- Cache updated");
             });
+
+            try {
+                // blacklist new emails (if any)
+                Blacklist::doBlacklist($this->customer);
+            } catch (\Exception $ex) {
+                // It might cause "Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction"
+                // Temporarily ignore this issue
+            }
+
+            // Event MailListImported($list)
+            MailListImported::dispatch($this, $importBatchId);
+
+            // clean up uploaded file
+            \Illuminate\Support\Facades\File::delete($file);
+
+            // Update all cache
+            $this->updateCachedInfo();
 
             if (!is_null($progressCallback)) {
                 $progressCallback($processed, $total, $failed, $message = "Processed: {$processed}/{$total} records, skipped: {$failed} records.");
@@ -1495,7 +1568,7 @@ class MailList extends Model
         }
 
         // Update user's cached information
-        $this->customer->updateCache();
+        $this->customer->local()->updateCache();
     }
 
     public function mailListsSendingServers()
@@ -1523,6 +1596,7 @@ class MailList extends Model
                 $server = SendingServer::findByUid($key);
                 $row = new MailListsSendingServer();
                 $row->mail_list_id = $this->id;
+                $row->customer_id = $this->customer_id;
                 $row->sending_server_id = $server->id;
                 $row->fitness = $param['fitness'];
                 $row->save();
@@ -1695,8 +1769,6 @@ class MailList extends Model
                     return [$server->sending_server_id, $server->fitness];
                 });
             }
-            //} elseif ($subscription->useSubAccount()) {
-            //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
         }
 
         $assoc = [];
@@ -1766,16 +1838,6 @@ class MailList extends Model
         }
 
         $copy->save();
-
-        // Contact
-        if ($this->contact) {
-            $new_contact = $this->contact->replicate();
-            $new_contact->save();
-
-            // update contact
-            $copy->contact_id = $new_contact->id;
-            $copy->save();
-        }
 
         // Remove default fields
         $copy->fields()->delete();
@@ -1866,16 +1928,12 @@ class MailList extends Model
             return [$validator, null];
         }
 
-        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API) {
-            $subscriber->status = 'subscribed';
+        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED) {
+            $subscriber->status = Subscriber::STATUS_SUBSCRIBED;
         } elseif ($this->subscribe_confirmation) {
-            if ($subscriber->isSubscribed()) {
-                //
-            } else {
-                $subscriber->status = 'unconfirmed';
-            }
+            $subscriber->status = Subscriber::STATUS_UNCONFIRMED;
         } else {
-            $subscriber->status = 'subscribed';
+            $subscriber->status = Subscriber::STATUS_SUBSCRIBED;
         }
         $subscriber->ip = $request->ip();
         $subscriber->save();
@@ -1910,7 +1968,10 @@ class MailList extends Model
     public function importJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')
-                                   ->whereIn('job_type', [ ImportSubscribersJob::class ]);
+                                   ->whereIn('job_type', [
+                                        ImportSubscribersJob::class, // for backward compatibility
+                                        static::JOB_TYPE_IMPORT
+                                    ]);
     }
 
     public function exportJobs()
@@ -1939,6 +2000,29 @@ class MailList extends Model
             // $progress['processed']
             // $progress['failed']
         }
+
+        return $progress;
+    }
+
+    public function getVerificationProgress($job)
+    {
+        $progress = $job->getJsonData();
+
+        if ($progress['batch_info'] ?? null && $progress['message'] ?? null) {
+            $progress['message'] = $progress['message']. ". ".$progress['batch_info'];
+        }
+
+        $progress['status'] = $job->status;
+        $progress['error'] = $job->error;
+        // $progress['percentage'] is already available
+
+        // For compatibility with single verification
+        if (!isset($progress['percentage'])) {
+            $progress['percentage'] = $job->getBatch()->progress();
+        }
+        $progress['total'] = $job->getBatch()->totalJobs;
+        $progress['processed'] = $job->getBatch()->processedJobs();
+        $progress['failed'] = $job->getBatch()->failedJobs;
 
         return $progress;
     }
@@ -1995,38 +2079,41 @@ class MailList extends Model
         $saved_ids = [];
         foreach ($request->fields as $uid => $item) {
             $field = \Acelle\Model\Field::findByUid($item['uid']);
-            if (!$field) {
-                $field = new \Acelle\Model\Field();
-                $field->mail_list_id = $this->id;
 
-                // assign avaialble field slot
-                $field->custom_field_name = $this->getAvailableField();
+            if (!$field) {
+                $field = $this->createField(
+                    $item['type'],
+                    \Acelle\Model\Field::formatTag($item['tag']),
+                    $item['label'] ?? null,
+                    $defaultValue = $item['default_value'] ?? null,
+                    $required = $item['required'] ?? false,
+                    $visible = $item['visible'] ?? true,
+                );
+            } else {
+                $field->type = $item['type'];
+                if (isset($item['tag'])) {
+                    $field->tag = \Acelle\Model\Field::formatTag($item['tag']);
+                }
+                $field->label = $item['label'] ?? null;
+                $field->default_value = $item['default_value'] ?? null;
+                $field->required = $item['required'] ?? false;
+                $field->visible = $item['visible'] ?? true;
+                $field->save();
             }
 
             // If email field
             if ($this->getEmailField()->uid != $field->uid) {
-                // save exsit field
-                $item['tag'] = \Acelle\Model\Field::formatTag($item['tag']);
-                $field->fill($item);
-                $field->save();
-
                 // save field options
                 $field->fieldOptions()->delete();
                 if (isset($item['options'])) {
                     foreach ($item['options'] as $key2 => $item2) {
                         $option = new \Acelle\Model\FieldOption($item2);
+                        $option->customer_id = $this->customer_id;
                         $option->field_id = $field->id;
                         $option->save();
                     }
                 }
-            } else {
-                $field->label = $item['label'];
-                $field->default_value = $item['default_value'];
-                $field->save();
             }
-
-            // Actually add the custom field to subscribers table
-            Subscriber::addCustomFieldIfNotExist($field->custom_field_name);
 
             // store save ids
             $saved_ids[] = $field->uid;
@@ -2052,6 +2139,7 @@ class MailList extends Model
                 if (!$field) {
                     $field = new \Acelle\Model\Field();
                     $field->uid = $key;
+                    $field->customer_id = $this->customer_id;
                 }
                 $field->fill($item);
 
@@ -2067,6 +2155,7 @@ class MailList extends Model
                     $field->fieldOptions = collect();
                     foreach ($item['options'] as $key2 => $item2) {
                         $option = new \Acelle\Model\FieldOption($item2);
+                        $option->customer_id = $this->customer_id;
                         $option->uid = $key2;
                         $field->fieldOptions->push($option);
                     }
@@ -2206,5 +2295,34 @@ class MailList extends Model
 
         // return [ 'field_100', 'field_101', ..., 'field_999'];
         return $list;
+    }
+
+    public function createField($type, $tag, $label, $default_value, $required, $visible)
+    {
+        $exist = \Acelle\Model\Field::where('mail_list_id', '=', $this->id)
+            ->where('tag', '=', $tag)
+            ->count();
+
+        if ($exist) {
+            throw new \Exception('Field tag exists');
+        }
+
+        // Save field
+        $field = new \Acelle\Model\Field();
+
+        $field->customer_id = $this->customer_id;
+        $field->mail_list_id = $this->id;
+        $field->type = $type;
+        $field->tag = $tag;
+        $field->label = $label;
+        $field->default_value = $default_value;
+        $field->required = $required;
+        $field->visible = $visible;
+        $field->custom_field_name = $this->getAvailableField();
+        $field->save();
+
+        Subscriber::addCustomFieldIfNotExist($field->custom_field_name);
+
+        return $field;
     }
 }

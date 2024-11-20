@@ -69,10 +69,7 @@
         </div>
 
         <div id="html" class="tabcontent" style="display: block">
-            <iframe class="email_preview_frame" src="{{ action('Pub\CampaignController@previewContent', [
-                'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
-            ]) }}"></iframe>
+            <iframe class="email_preview_frame" src="{{ action('Pub\CampaignController@previewContent', [ 'uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid ]) }}"></iframe>
         </div>
     @endif
 

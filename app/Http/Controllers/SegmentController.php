@@ -65,6 +65,7 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = new \Acelle\Model\Segment();
         $segment->mail_list_id = $list->id;
+        $segment->customer_id = $list->customer_id;
 
         // authorize
         if (\Gate::denies('create', $segment)) {
@@ -78,6 +79,7 @@ class SegmentController extends Controller
             $segment->segmentConditions = collect();
             foreach ($request->old()['conditions'] as $key => $item) {
                 $condition = new \Acelle\Model\SegmentCondition();
+                $condition->customer_id = $segment->customer_id;
                 $condition->uid = $key;
                 $condition->fill($item);
                 $segment->segmentConditions->push($condition);
@@ -103,6 +105,7 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = new \Acelle\Model\Segment();
         $segment->mail_list_id = $list->id;
+        $segment->customer_id = $list->customer_id;
 
         // authorize
         if (\Gate::denies('create', $segment)) {
@@ -195,7 +198,7 @@ class SegmentController extends Controller
         $subscribers = $segment->subscribers()
             ->search($request->keyword)
             ->filter($request);
-        
+
 
         if ($request->sort_order) {
             $subscribers->orderBy($request->sort_order, $request->sort_direction);
@@ -405,5 +408,42 @@ class SegmentController extends Controller
     public function noList()
     {
         return view('segments.noList');
+    }
+
+    public function copy(Request $request, $uid)
+    {
+        $segment = \Acelle\Model\Segment::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $segment)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('segments.copy', [
+                    'segment' => $segment,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // copy
+            $segment->copy($request->name);
+
+            // update cached information
+            event(new \Acelle\Events\MailListUpdated($segment->mailList));
+
+            return trans('messages.segment.copied');
+        }
+
+        return view('segments.copy', [
+            'segment' => $segment,
+        ]);
     }
 }

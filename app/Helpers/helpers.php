@@ -22,6 +22,14 @@ use function Acelle\Helpers\xml_to_array;
  *
  */
 
+// List of constants
+// Job types
+define('ACM_QUEUE_TYPE_DEFAULT', 'default');
+define('ACM_QUEUE_TYPE_IMPORT', 'import');    // must be executed on the same server as Nginx/Apache
+define('ACM_QUEUE_TYPE_HIGH', 'high');        // For campaigns that are manually rerun by users (Run at high priority), also for bulk verification
+define('ACM_QUEUE_TYPE_BATCH', 'batch');
+define('ACM_QUEUE_TYPE_SINGLE', 'single');
+
 /**
  * Get full table name by adding the DB prefix.
  *
@@ -219,9 +227,15 @@ function exec_enabled()
  *
  * @return bool
  */
-function artisan_migrate()
+function artisan_migrate($connection = null)
 {
-    \Artisan::call('migrate', ['--force' => true]);
+    if (is_null($connection)) {
+        \Artisan::call('migrate', ['--force' => true]);
+    } else {
+        \Acelle\Helpers\set_userdb_connection($connection);
+        \Artisan::call("migrate", ['--database' => $connection, '--force' => true]);
+    }
+
 }
 
 /**
@@ -251,7 +265,7 @@ function language_code()
     } elseif ($default_language) {
         $language_code = $default_language->code;
     } else {
-        $language_code = 'en';
+        $language_code = config('app.locale');
     }
 
     return $language_code;
@@ -1243,7 +1257,7 @@ function get_tmp_primary_server()
     }
 }
 
-function get_tmp_quota($customer, $name)
+function get_tmp_quota(\Acelle\Model\Customer $customer, $name)
 {
     // PART 1: PLAN & MISC SETTINGS
     $settings = [
@@ -1298,8 +1312,11 @@ function redis_enabled()
 
 function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, $lockTime = null, Closure $waitTimeoutCallback = null)
 {
+    // @important: in case of cache driver = "file"
+    // It will write a uniq string to the lock key when locking, overwriting the key content
+    $lockKey = $resourceKey."-locked";
     $defaultLockTime = 10;
-    $lock = \Illuminate\Support\Facades\Cache::lock($resourceKey, $lockTime ?: $defaultLockTime);
+    $lock = \Illuminate\Support\Facades\Cache::lock($lockKey, $lockTime ?: $defaultLockTime);
     $start = time();
     // $startmili = floor(microtime(true)*1000)/1000;
 
@@ -1317,19 +1334,21 @@ function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, 
             }
         }
 
+        // @important: do not use Cache::block($timeout) here
+        // As Laravel might have a delay (1 second for example) before trying again
         if ($lock->get()) {
             // $waitTime = floor(microtime(true)*1000)/1000 - $startmili;
             // echo "Got lock after {$waitTime}\n";
-
             try {
-                $task();
-            } finally {
-                // In case of Exception, lock is automatically release with cache driver "array"
-                // However, with "redis" driver, need explicitly release it
-                $lock->release();
-            }
 
-            break;
+                $out = $task();
+                $lock->release();
+                return $out;
+            } catch(\Exception $ex) {
+                $lock->release();
+                throw $ex;
+
+            }
         }
     }
 }
@@ -1351,4 +1370,35 @@ function distributed_mode_check()
 function safe_dispatch($job)
 {
     return app(\Illuminate\Contracts\Bus\Dispatcher::class)->dispatch($job);
+}
+
+function get_inner_html($node)
+{
+    $innerHTML = '';
+    $children = $node->childNodes;
+    foreach ($children as $child) {
+        $innerHTML .= $child->ownerDocument->saveXML($child);
+    }
+
+    return $innerHTML;
+}
+
+function groupPermissionsByPrefix($permissions)
+{
+    $grouped = [];
+
+    foreach ($permissions as $permission) {
+        // Split the permission into prefix and access type
+        [$prefix, $access] = explode('.', $permission);
+
+        // Initialize the array for the prefix if it doesn't exist
+        if (!isset($grouped[$prefix])) {
+            $grouped[$prefix] = [];
+        }
+
+        // Add the permission to the corresponding prefix group
+        $grouped[$prefix][] = $permission;
+    }
+
+    return $grouped;
 }

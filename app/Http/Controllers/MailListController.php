@@ -20,6 +20,11 @@ class MailListController extends Controller
      */
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', MailList::class)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         return view('lists.index');
     }
@@ -31,9 +36,14 @@ class MailListController extends Controller
      */
     public function listing(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', MailList::class)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
 
-        $lists = $customer->mailLists()
+        $lists = $customer->local()->mailLists()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -55,17 +65,18 @@ class MailListController extends Controller
     public function create(Request $request)
     {
         // Generate info
-        $customer = $request->user()->customer;
-        $list = new \Acelle\Model\MailList(['all_sending_servers' => true]);
-        $list->contact = new \Acelle\Model\Contact();
+        $user = $request->user();
+        $customer = $user->customer;
+        $list = $customer->newMailList();
 
         if ($customer->contact) {
-            $list->contact->fill($customer->contact->toArray());
             $list->send_to = $customer->contact->email;
+        } else {
+            $list->send_to = $user->email;
         }
 
         // default values
-        $list->subscribe_confirmation = false;
+        $list->subscribe_confirmation = \Acelle\Model\Setting::isYes('list.default.double_optin');
         $list->send_welcome_email = false;
         $list->unsubscribe_notification = false;
 
@@ -78,9 +89,6 @@ class MailListController extends Controller
         if (null !== $request->old()) {
             $list->fill($request->old());
         }
-        if (isset($request->old()['contact'])) {
-            $list->contact->fill($request->old()['contact']);
-        }
 
         // Sending servers
         if (isset($request->old()['sending_servers'])) {
@@ -90,6 +98,7 @@ class MailListController extends Controller
                     $server = \Acelle\Model\SendingServer::findByUid($key);
                     $row = new \Acelle\Model\MailListsSendingServer();
                     $row->mail_list_id = $list->id;
+                    $row->customer_id = $list->customer_id;
                     $row->sending_server_id = $server->id;
                     $row->fitness = $param['fitness'];
                     $list->mailListsSendingServers->push($row);
@@ -116,7 +125,7 @@ class MailListController extends Controller
     {
         // Generate info
         $customer = $request->user()->customer;
-        $list = new \Acelle\Model\MailList();
+        $list = $customer->newMailList();
 
         // authorize
         if (\Gate::denies('create', $list)) {
@@ -137,11 +146,8 @@ class MailListController extends Controller
             }
             $this->validate($request, $rules);
 
-            // Save contact
-            $contact = \Acelle\Model\Contact::create($request->all()['contact']);
             $list->fill($request->all());
             $list->customer_id = $customer->id;
-            $list->contact_id = $contact->id;
             $list->save();
 
             // For sending servers
@@ -195,9 +201,6 @@ class MailListController extends Controller
         if (null !== $request->old()) {
             $list->fill($request->old());
         }
-        if (isset($request->old()['contact'])) {
-            $list->contact->fill($request->old()['contact']);
-        }
 
         // Sending servers
         if (isset($request->old()['sending_servers'])) {
@@ -207,6 +210,7 @@ class MailListController extends Controller
                     $server = \Acelle\Model\SendingServer::findByUid($key);
                     $row = new \Acelle\Model\MailListsSendingServer();
                     $row->mail_list_id = $list->id;
+                    $row->customer_id = $list->customer_id;
                     $row->sending_server_id = $server->id;
                     $row->fitness = $param['fitness'];
                     $list->mailListsSendingServers->push($row);
@@ -255,9 +259,6 @@ class MailListController extends Controller
             }
             $this->validate($request, $rules);
 
-            // Save contact
-            $list->contact->fill($request->all()['contact']);
-            $list->contact->save();
             $list->fill($request->all());
             $list->save();
 
@@ -368,6 +369,11 @@ class MailListController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+
         event(new \Acelle\Events\MailListUpdated($list));
 
         // authorize
@@ -418,7 +424,7 @@ class MailListController extends Controller
         // datas
         foreach ($result['bar_names'] as $bar) {
             for ($i = 4; $i >= 0; --$i) {
-                $result['data'][] = \Acelle\Model\Customer::subscribersCountByTime(
+                $result['data'][] = \Acelle\Model\LocalCustomer::subscribersCountByTime(
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
                     $request->user()->customer->id,
@@ -480,44 +486,24 @@ class MailListController extends Controller
                 $result['data'][] = ['value' => $list->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
             }
         } else {
-            if ($customer->readCache('SubscribedCount', 0)) {
-                $result['data'][] = [
-                    'value' => $customer->readCache('SubscribedCount', 0),
-                    'name' => trans('messages.subscribed'),
-                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('SubscribedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
-                ];
+            if ($customer->local()->readCache('SubscribedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->readCache('SubscribedCount', 0), 'name' => trans('messages.subscribed')];
             }
 
-            if ($customer->readCache('UnsubscribedCount', 0)) {
-                $result['data'][] = [
-                    'value' => $customer->readCache('UnsubscribedCount', 0), 
-                    'name' => trans('messages.unsubscribed'),
-                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('UnsubscribedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
-                ];
+            if ($customer->local()->readCache('UnsubscribedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->readCache('UnsubscribedCount', 0), 'name' => trans('messages.unsubscribed')];
             }
 
-            if ($customer->readCache('UnconfirmedCount', 0)) {
-                $result['data'][] = [
-                    'value' => $customer->readCache('UnconfirmedCount', 0),
-                    'name' => trans('messages.unconfirmed'),
-                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('UnconfirmedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
-                ];
+            if ($customer->local()->readCache('UnconfirmedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->local()->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
             }
 
-            if ($customer->readCache('BlacklistedCount', 0)) {
-                $result['data'][] = [
-                    'value' => $customer->readCache('BlacklistedCount', 0),
-                    'name' => trans('messages.blacklisted'),
-                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('BlacklistedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
-                ];
+            if ($customer->local()->readCache('BlacklistedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
             }
 
-            if ($customer->readCache('SpamReportedCount', 0)) {
-                $result['data'][] = [
-                    'value' => $customer->readCache('SpamReportedCount', 0),
-                    'name' => trans('messages.spam_reported'),
-                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('SpamReportedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
-                ];
+            if ($customer->local()->readCache('SpamReportedCount', 0)) {
+                $result['data'][] = ['value' => $customer->local()->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
             }
         }
 
@@ -684,6 +670,15 @@ class MailListController extends Controller
      */
     public function embeddedFormSubscribe(Request $request)
     {
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
@@ -728,6 +723,9 @@ class MailListController extends Controller
         try {
             // Create subscriber
             list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
+
+            // Timeline record
+            \Acelle\Model\Timeline::recordEmbeddedFormOptIn($subscriber);
         } catch (\Exception $ex) {
             return view('somethingWentWrong', ['message' => $ex->getMessage()]);
         }
@@ -761,15 +759,15 @@ class MailListController extends Controller
             return redirect()->away($request->redirect_url);
         } elseif ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
             // tell subscriber to check email for confirmation
-            return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
+            return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
         } else {
             // All done, confirmed
             return redirect()->action(
                 'PageController@signUpConfirmationThankyou',
                 [
                     'list_uid' => $list->uid,
-                    'uid' => $subscriber->uid,
-                    'code' => 'empty',
+                    'id' => $subscriber->id,
+                    'customer_uid' => $list->customer->uid,
                 ]
             );
         }
@@ -819,7 +817,13 @@ class MailListController extends Controller
             $subscription = null;
         }
 
-        $job = $list->dispatchVerificationJob($server, $subscription);
+        $verificationService = $server->getServiceClient();
+
+        if (is_null($verificationService) || !$verificationService->isBulkVerifySupported()) {
+            $job = $list->dispatchVerificationJob($server, $subscription);
+        } else {
+            $job = $list->dispatchBulkVerificationJob($server, $subscription);
+        }
 
         // Return
         return response()->json([
@@ -870,7 +874,7 @@ class MailListController extends Controller
             throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
         }
 
-        $progress = $list->getProgress($job);
+        $progress = $list->getVerificationProgress($job);
 
         // Get progress updated by the import process and status of the final job monitor
         return response()->json($progress);
@@ -1025,6 +1029,18 @@ class MailListController extends Controller
             return [
                 'text' => $field->tag,
                 'id' => $field->id,
+            ];
+        })->toArray());
+    }
+
+    public function listFieldOptionsUid(Request $request, $uid)
+    {
+        $list = MailList::findByUid($uid);
+
+        return response()->json($list->fields->map(function ($field) {
+            return [
+                'text' => $field->tag,
+                'uid' => $field->uid,
             ];
         })->toArray());
     }
