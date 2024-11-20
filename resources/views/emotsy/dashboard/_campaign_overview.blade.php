@@ -30,7 +30,7 @@
                                             {{ $campaign->name }}
                                         </button>
                                         <ul class="dropdown-menu">
-                                            @foreach (Auth()->user()->customer->campaigns()->done()->where('id', '!=', $campaign->id)->get() as $c)
+                                            @foreach (Auth()->user()->customer->local()->campaigns()->done()->where('id', '!=', $campaign->id)->get() as $c)
                                                 <li>
                                                     <a class="dropdown-item" href="{{ action('HomeController@index', [
                                                         'campaign_uid' => $c->uid

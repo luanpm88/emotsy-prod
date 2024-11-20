@@ -1362,41 +1362,6 @@ class Customer extends Model
         return false;
     }
 
-    public function newUser()
-    {
-        $user = User::newDefault();
-        $user->customer_id = $this->id;
-        return $user;
-    }
-
-    public function saveChatgptApiKey($key)
-    {
-        $this->openai_api_key = $key;
-        $this->save();
-    }
-
-    public function getChatgptApiKey()
-    {
-        return $this->openai_api_key;
-    }
-
-    public function validateFromRequest($request)
-    {
-        // validation
-        $validator = \Validator::make($request->all(), [
-            'name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-        ]);
-
-        // errors
-        if ($validator->fails()) {
-            return $validator;
-        }
-
-        return $validator;
-    }
-
     public function saveFromRequest($request)
     {
         // Save current user info
@@ -1419,19 +1384,6 @@ class Customer extends Model
 
         // return
         return $validator->errors();
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-    
-    public function getGoogleAccessToken()
-    {
-        if (!$this->google_auth) {
-            return null;
-        }
-        return json_decode($this->google_auth, true)['access_token'];
     }
 
     public function setLanguageByCode($code)
