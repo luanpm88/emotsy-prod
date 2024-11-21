@@ -13,6 +13,10 @@ class AddDefaultRoles extends Migration
      */
     public function up()
     {
+        Schema::table('roles', function (Blueprint $table) {
+            $table->boolean('readonly')->default(false);
+        });
+
         // find or create default admin role
         $adminRole = \Acelle\Model\Role::whereCode('organization_admin')->first();
         if (!$adminRole) {
@@ -44,6 +48,47 @@ class AddDefaultRoles extends Migration
         // Add administrator role to all old users that upgrade to rbac version
         foreach(\Acelle\Model\User::whereDoesntHave('roles')->get() as $user) {
             $user->setRole($adminRole);
+        }
+
+
+
+        // find or create default readonly role
+        $role = \Acelle\Model\Role::whereCode('campaign_approver')->first();
+        if (!$role) {
+            $role = \Acelle\Model\Role::newGlobalRole();
+            $role->code = 'campaign_approver';
+            $role->name = 'Campaign approver';
+            $role->description = 'Can approve campaigns';
+            $role->is_global = true;
+        }
+        $role->readonly = false;
+        $role->save();
+        // add permission
+        $role->assignDefaultCampaignApproverPermissions();
+
+        // Add administrator role to all old users that upgrade to rbac version
+        foreach(\Acelle\Model\User::whereDoesntHave('roles')->get() as $user) {
+            $user->setRole($role);
+        }
+
+
+        // find or create default readonly role
+        $role = \Acelle\Model\Role::whereCode('list_manager')->first();
+        if (!$role) {
+            $role = \Acelle\Model\Role::newGlobalRole();
+            $role->code = 'list_manager';
+            $role->name = 'List manager';
+            $role->description = 'Can upload lists but not work on the campaigns';
+            $role->is_global = true;
+        }
+        $role->readonly = false;
+        $role->save();
+        // add permission
+        $role->assignDefaultListManagerPermissions();
+
+        // Add administrator role to all old users that upgrade to rbac version
+        foreach(\Acelle\Model\User::whereDoesntHave('roles')->get() as $user) {
+            $user->setRole($role);
         }
     }
 
