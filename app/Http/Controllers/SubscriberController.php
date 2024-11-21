@@ -851,7 +851,7 @@ class SubscriberController extends Controller
 
         // saving
         if ($request->isMethod('post')) {
-            $subscriber->updateTags($request->tags);
+            $subscriber->updateTags($request->tags ?? []);
 
             return response()->json([
                 'status' => 'success',
