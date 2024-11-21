@@ -22,53 +22,56 @@
 		'menu' => 'subscriber',
 	])
     
-    @include("subscribers._header")
+    
 
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
-            @include("subscribers._menu", [
-                'menu' => 'profile',
-            ])
+            @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('individual_subscriber_profile'))
+                @include("subscribers._header")
 
-            <form enctype="multipart/form-data"  action="{{ action('SubscriberController@update', ['list_uid' => $list->uid, "id" => $subscriber->id]) }}" method="POST" class="form-validate-jqueryz">
-                {{ csrf_field() }}
-                <input type="hidden" name="_method" value="PATCH">
-                <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
-                <div class="sub-section mt-4">
-                    <div class="d-flex align-items-top">
-                        <div>
-                            @include('helpers._upload',[
-                                'src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->id)),
-                                'srcOrigin' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatarOrigin',  $subscriber->id)),
-                                'dragId' => 'upload-avatar',
-                                'preview' => 'image'
-                            ])
-                        </div>
-                        <div class="mt-20">
-                            <div class="dropdown">
-                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                {{ trans('messages.subscribers.profile.action') }}
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
-                                <li><a class="dropdown-item profile-remove-contact" href="#">{{ trans('messages.subscribers.profile.remove_subscriber') }}</a></li>
-                                <li><a class="dropdown-item profile-tag-contact" href="#">{{ trans('messages.subscribers.profile.manage_tags') }}</a></li>
-                            </ul>
+                @include("subscribers._menu", [
+                    'menu' => 'profile',
+                ])
+                <form enctype="multipart/form-data"  action="{{ action('SubscriberController@update', ['list_uid' => $list->uid, "id" => $subscriber->id]) }}" method="POST" class="form-validate-jqueryz">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="_method" value="PATCH">
+                    <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
+                    <div class="sub-section mt-4">
+                        <div class="d-flex align-items-top">
+                            <div>
+                                @include('helpers._upload',[
+                                    'src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->id)),
+                                    'srcOrigin' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatarOrigin',  $subscriber->id)),
+                                    'dragId' => 'upload-avatar',
+                                    'preview' => 'image'
+                                ])
+                            </div>
+                            <div class="mt-20">
+                                <div class="dropdown">
+                                <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    {{ trans('messages.subscribers.profile.action') }}
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
+                                    <li><a class="dropdown-item profile-remove-contact" href="#">{{ trans('messages.subscribers.profile.remove_subscriber') }}</a></li>
+                                    <li><a class="dropdown-item profile-tag-contact" href="#">{{ trans('messages.subscribers.profile.manage_tags') }}</a></li>
+                                </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        
+                        <h3 class="clear-both">{{trans("messages.basic_information")}}</h3>
+                        @include("subscribers._form")
+
+                        <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+                        <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn btn-link"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
+
                     
-                    <h3 class="clear-both">{{trans("messages.basic_information")}}</h3>
-                    @include("subscribers._form")
+                    </div>
+                </form>
+            @endif
 
-                    <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-                    <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn btn-link"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
-
-                
-                </div>
-            </form>
-
-            <div class="sub-section">
+            <div class="sub-section mt-4">
                 <h3 class="text-semibold">{{ trans('messages.verification.title.email_verification') }}</h3>
 
                 @if (is_null($subscriber->verification_status))
