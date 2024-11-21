@@ -217,6 +217,9 @@
             $("input.previewable").on('change', function() {
                 var img = $("img[preview-for='" + $(this).attr("name") + "']");
                 previewImageBrowse(this, img);
+
+                var imput = $(this).parents(".profile-image").find("input[name='_remove_image']");
+                imput.val("");
             });
             $(".remove-profile-image").click(function() {
                 var img = $(this).parents(".profile-image").find("img");
