@@ -6,19 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 use Validator;
 use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;
-use Acelle\Library\Tool;
-use Acelle\Library\StringHelper;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use Acelle\Jobs\SendMessage;
+use Acelle\Jobs\SendSingleMessage;
 use Acelle\Library\Traits\HasTemplate;
 use Acelle\Library\Traits\HasUid;
-use Exception;
 use Acelle\Library\Contracts\HasTemplateInterface;
 use Acelle\Library\HtmlHandler\InjectTrackingPixel;
 use Acelle\Library\HtmlHandler\TransformUrl;
+use Acelle\Library\RouletteWheel;
 use Closure;
+use Exception;
 
 class Email extends Model implements HasTemplateInterface
 {
@@ -29,6 +28,8 @@ class Email extends Model implements HasTemplateInterface
     public const TYPE_REGULAR = 'regular';
     public const TYPE_PLAIN_TEXT = 'plain-text';
 
+    protected $serversPool = null;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -36,6 +37,7 @@ class Email extends Model implements HasTemplateInterface
      */
     protected $fillable = [
         'subject', 'from_email', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id', 'skip_failed_message',
+        'use_default_sending_server_from_email',
     ];
 
     // Cached HTML content
@@ -94,6 +96,17 @@ class Email extends Model implements HasTemplateInterface
         return $this->belongsTo('Acelle\Model\TrackingDomain', 'tracking_domain_id');
     }
 
+    public function signature()
+    {
+        return $this->belongsTo('Acelle\Model\Signature', 'signature_id');
+    }
+
+    public function setSignature($signature)
+    {
+        $this->signature_id = $signature ? $signature->id : null;
+        $this->save();
+    }
+
     /**
      * Get email's default mail list.
      */
@@ -114,6 +127,14 @@ class Email extends Model implements HasTemplateInterface
             'from_email' => 'required|email',
             'from_name' => 'required',
         ];
+
+        if ($this->use_default_sending_server_from_email) {
+            $rules['from_email'] = 'nullable|email';
+            $rules['reply_to'] = 'nullable|email';
+        } else {
+            $rules['from_email'] = 'required|email';
+            $rules['reply_to'] = 'required|email';
+        }
 
         // tracking domain
         if (isset($request) && $request->custom_tracking_domain) {
@@ -180,16 +201,41 @@ class Email extends Model implements HasTemplateInterface
             $exist = $this->emailLinks()->where('link', '=', $link)->count();
 
             if (!$exist) {
-                $this->emailLinks()->create([
+                $emailLink = $this->emailLinks()->make([
                     'link' => $link,
                 ]);
+
+                $emailLink->customer_id = $this->customer_id;
+                $emailLink->save();
             }
         }
     }
 
-    public function queueDeliverTo($subscriber, $triggerId = null)
+    public function getServersPool()
     {
-        $server = $subscriber->mailList->pickSendingServer();
+        if (is_null($this->serversPool)) {
+            // Available sending servers
+            $serversAndWeights = $this->automation->mailList->getSendingServers();
+            // No sending server ready for delivery
+            if (empty($serversAndWeights)) {
+                throw new Exception('No sending server avaialble');
+            }
+
+            $pool = new RouletteWheel();
+            foreach ($serversAndWeights as $serverId => $weight) {
+                $server = SendingServer::find($serverId)->mapType();
+                $pool->add($server, $weight);
+            }
+
+            $this->serversPool = $pool;
+        }
+
+        return $this->serversPool;
+    }
+
+    public function queueDeliverTo($subscriber, $autoTriggerId, $actionId, $queue)
+    {
+        $serversPool = $this->getServersPool();
 
         if (config('app.saas')) {
             $subscription = $this->automation->customer->getCurrentActiveGeneralSubscription();
@@ -197,17 +243,36 @@ class Email extends Model implements HasTemplateInterface
             $subscription = null;
         }
 
-        $job = new SendMessage(
+        $job = new SendSingleMessage(
             $this,
             $subscriber,
-            $server,
+            $serversPool,
             $subscription,
-            $triggerId
+            $autoTriggerId,
+            $actionId,
         );
 
-        $job->onQueue('batch');
+        $connection = config('custom.automation_queue_connection');
 
-        safe_dispatch($job);
+        if (!is_null($this->customer->custom_queue_name)) {
+            $queue = $this->customer->custom_queue_name;
+        } elseif (is_null($queue)) {
+            $queue = ACM_QUEUE_TYPE_SINGLE;
+            // $queue is currently determined by Automation/Send action
+            // in which priority is determined by trigger type
+        }
+
+        if ($connection) {
+            // By default, this value is null, meaning that automation should use the default queue connection
+            // specified in the .env file (QUEUE_CONNECTION)
+            $job->onConnection($connection)->onQueue($queue);
+        } else {
+            $job->onQueue($queue);
+        }
+
+        $jobId = dispatch($job);
+
+        return $jobId;
     }
 
     public function sendTestEmail($emailAddress)
@@ -255,12 +320,20 @@ class Email extends Model implements HasTemplateInterface
 
     public function isOpened($subscriber)
     {
+        if (is_null($subscriber)) {
+            return false;
+        }
+
         return $this->trackingLogs()->where('subscriber_id', $subscriber->id)
                             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')->exists();
     }
 
     public function isClicked($subscriber)
     {
+        if (is_null($subscriber)) {
+            return false;
+        }
+
         return $this->trackingLogs()->where('subscriber_id', $subscriber->id)
                             ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')->exists();
     }
@@ -361,6 +434,8 @@ class Email extends Model implements HasTemplateInterface
             'track_click' => true,
         ]);
 
+        $email->skip_failed_message = Setting::isYes('email.default.skip_failed_message');
+
         return $email;
     }
 
@@ -376,8 +451,18 @@ class Email extends Model implements HasTemplateInterface
         $this->save();
     }
 
+    public function checkDelayFlag()
+    {
+        return false; // not supported
+    }
+
     public function debug(Closure $callback = null)
     {
         // @important: temporary function to avoid Automation bug
+    }
+
+    public function useSendingServerDefaultFromEmailAddress()
+    {
+        return $this->use_default_sending_server_from_email == true;
     }
 }

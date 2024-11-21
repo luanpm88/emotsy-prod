@@ -233,15 +233,17 @@
                 }
             });
 
-            // product widgets
-            editor.addWidget(new ProductListWidget(), {
-                index: 0,
-                group: '{{ trans('builder.widget.e_commerce') }}',
-            });
-            editor.addWidget(new ProductWidget(), {
-                index: 0,
-                group: '{{ trans('builder.widget.e_commerce') }}',
-            });
+            @if (config('custom.woo'))
+                // product widgets
+                editor.addWidget(new ProductListWidget(), {
+                    index: 0,
+                    group: '{{ trans('builder.widget.e_commerce') }}',
+                });
+                editor.addWidget(new ProductWidget(), {
+                    index: 0,
+                    group: '{{ trans('builder.widget.e_commerce') }}',
+                });
+            @endif
 
             @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('rss_campaigns'))
                 // Rss widget

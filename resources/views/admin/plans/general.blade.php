@@ -131,6 +131,90 @@
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])
+                    
+                    {{-- @include('helpers.form_control', [
+                        'type' => 'select_ajax',
+                        'name' => 'plan[general][currency_id]',
+                        'label' => trans('messages.plan.currency'),
+                        'selected' => [
+                            'value' => $plan->currency_id,
+                            'text' => $plan->currency ? $plan->currency->displayName() : ''
+                        ],
+                        'help_class' => 'plan',
+                        'rules' => $plan->generalRules(),
+                        'url' => action('Admin\CurrencyController@select2'),
+                        'placeholder' => trans('messages.select_currency')
+                    ])
+                    
+                    <div id="billingCycleSelectContainer">
+                        @include ('admin.plans._billing_cycle', [
+                            'plan' => $plan,
+                        ])
+                    </div>
+
+                    <div class="mb-2">
+                        @include('helpers.form_control.checkbox', [
+                            'name' => 'has_trial',
+                            'value' => 'yes',
+                            'label' => trans('messages.plan.has_trial_period'),
+                            'attributes' => [
+                                'class' => 'numeric',
+                                'checked' => $plan->hasTrial() ? 'checked' : false
+                            ],
+                        ])
+                    </div>
+                        
+
+                    <div class="trial_settings">
+                        <label class="mb-2">{{ trans('messages.plan.trial_setting') }}</label>
+                        <div class="d-flex">
+                            <div class="me-3">
+                                @include('helpers.form_control.number', [
+                                    'name' => 'plan[general][trial_amount]',
+                                    'value' => $plan->trial_amount,
+                                    'attributes' => [
+                                        'class' => 'numeric',
+                                        'min' => '0',
+                                    ],
+                                ])
+                            </div>
+                            <div class="">
+                                @include('helpers.form_control', [
+                                    'type' => 'select',
+                                    'name' => 'plan[general][trial_unit]',
+                                    'value' => $plan->trial_unit,
+                                    'options' => $plan->timeUnitOptions(),
+                                    'help_class' => 'plan',
+                                ])
+                            </div>
+                        </div>
+                    </div>
+
+                    @include('helpers.form_control', [
+                        'class' => '',
+                        'type' => 'checkbox2',
+                        'name' => 'plan[general][own_tracking_domain_required]',
+                        'label' => trans('messages.plan.own_tracking_domain_required'),
+                        'help' => trans('messages.plan.own_tracking_domain_required.help'),
+                        'value' => $plan->own_tracking_domain_required,
+                        'options' => ['0','1'],
+                        'help_class' => 'plan',
+                        'rules' => $plan->generalRules()
+                    ])
+
+                    <div class="mb-2">
+                        <label class="form-label mb-0">
+                            <span class="form-label d-flex align-items-center">
+                                <label>
+                                    <input type="hidden" name="plan[general][no_payment_required_when_free]" value="0">
+                                    <input {{ $plan->no_payment_required_when_free ? 'checked' : '' }} type="checkbox" class="styled me-2 numeric"
+                                        name="plan[general][no_payment_required_when_free]" value="1" />
+                                    <span class="check-symbol"></span>
+                                </label>
+                                <span class="ms-2">{{ trans('messages.plan.no_payment_required_when_free') }}</span>
+                            </span>
+                        </label>
+                    </div> --}}
                  </div>
             </div>
         </div>

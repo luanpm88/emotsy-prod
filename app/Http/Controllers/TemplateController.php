@@ -34,9 +34,9 @@ class TemplateController extends Controller
     public function listing(Request $request)
     {
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates()->notPreserved()->email();
+            $templates = $request->user()->customer->templates()->notPrivate()->notPreserved()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared()->notPreserved()->email();
+            $templates = Template::shared()->notPrivate()->notPreserved()->email();
         }
 
         // view

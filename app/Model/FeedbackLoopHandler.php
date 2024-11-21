@@ -27,6 +27,7 @@ use Acelle\Library\Traits\HasUid;
 class FeedbackLoopHandler extends DeliveryHandler
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     protected $logfile = 'feedback-loop-handler';
 
@@ -75,6 +76,12 @@ class FeedbackLoopHandler extends DeliveryHandler
             if (empty($msgId)) {
                 imap_setflag_full($mbox, $msgNo, '\\Seen \\Flagged');
                 throw new \Exception('cannot find Message-ID, skipped');
+            }
+
+            $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+            $customer = \Acelle\Model\Customer::findByUid($customerUid);
+            if (!is_null($customer)) {
+                $customer->setUserDbConnection();
             }
 
             $this->logger()->info('Processing abuse notification for message '.$msgId);

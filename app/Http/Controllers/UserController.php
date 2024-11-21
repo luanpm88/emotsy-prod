@@ -19,12 +19,15 @@ class UserController extends Controller
      */
     public function loginBack(Request $request)
     {
+        $customer = $request->user()->customer;
         $id = \Session::pull('orig_user_uid');
         $orig_user = User::findByUid($id);
 
         \Auth::login($orig_user);
 
-        return redirect()->action('Admin\CustomerController@index');
+        return redirect()->action('Admin\UserController@index', [
+            'customer_uid' => $customer->uid,
+        ]);
     }
 
     /**
@@ -97,16 +100,11 @@ class UserController extends Controller
 
         // Initiate customer object for filling the form
         $customer = Customer::newCustomer();
-        $user = new User();
-        if (!empty($request->old())) {
-            $customer->fill($request->old());
-            $user->fill($request->old());
-        }
+        $user = $customer->newUser();
 
         // save posted data
         if ($request->isMethod('post')) {
             $user->fill($request->all());
-            $rules = $user->registerRules();
 
             // Captcha check
             if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
@@ -125,10 +123,29 @@ class UserController extends Controller
                 }
             }
 
-            $this->validate($request, $rules);
+            // validation
+            list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+                $admin = null,
+                $name = $request->name,
+                $timezone = $request->timezone,
+                $language_id = $request->language_id,
+                $email = $request->email,
+                $password = $request->password,
+                $passwordConfirmation = $request->password,
+                $first_name = $request->first_name,
+                $last_name = $request->last_name,
+                $image = $request->image,
+                $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
+            );
 
-            // Okay, create it
-            $user = $customer->createAccountAndUser($request);
+            //  errors
+            if (!$validator->errors()->isEmpty()) {
+                return view('users.register', [
+                    'customer' => $customer,
+                    'user' => $user,
+                    'errors' => $validator->errors(),
+                ]);
+            }
 
             // user email verification
             if (true) {
@@ -203,6 +220,53 @@ class UserController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        return view('users.index');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        $users = $request->user()->customer->users()
+            ->search($request->keyword)
+            ->orderBy($request->sort_order ?? 'created_at', $request->sort_direction ?? 'desc')
+            ->paginate($request->per_page);
+
+        return view('users._list', [
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $user = $customer->newUser();
+
+        // check quota limit
+        if ($customer->getMaxUserQuota() <= $customer->users()->count()) {
+            return $this->noMoreItem();
+        }
+
+        return view('users.create', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
@@ -214,8 +278,17 @@ class UserController extends Controller
         // Get current user
         $user = $request->user()->customer->newUser();
 
-        // 
-        [$result, $errors] = $user->saveFromRequest($request);
+        //
+        [$result, $errors] = $user->saveUser(
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
+
 
         // redirect if fails
         if (!$result) {
@@ -257,8 +330,45 @@ class UserController extends Controller
         // Get current user
         $user = \Acelle\Model\User::findByUid($id);
 
-        // 
-        [$result, $errors] = $user->saveFromRequest($request);
+        // Make sure account has at least one role with code organization_admin
+        if ($request->role_uid) {
+            // find role
+            $role = \Acelle\Model\Role::findByUid($request->role_uid);
+
+            // if updating role is organization_admin ==> ok
+            if ($role->code == 'organization_admin') {
+
+            } else { // if updating role is not organization_admin
+                // ==> kiểm tra tiếp xem là còn user nào có role này không ngoài user đó cùng account
+                $exists = $user->customer->users()
+                    ->where('id', '!=', $user->id)
+                    ->whereHas('roles', function ($q) {
+                        $q->whereCode('organization_admin');
+                    })
+                    ->exists();
+                
+                // check
+                if (!$exists) {
+                    return response()->view('users.edit', [
+                        'user' => $user,
+                        'errors' => new \Illuminate\Support\MessageBag([
+                            'error' => trans('messages.account.at_least_one_admin_user')
+                        ]),
+                    ], 400);
+                }
+            }
+        }
+
+        //
+        [$result, $errors] = $user->saveUser(
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
 
         // redirect if fails
         if (!$result) {
@@ -266,6 +376,11 @@ class UserController extends Controller
                 'user' => $user,
                 'errors' => $errors,
             ], 400);
+        }
+
+        // Remove image
+        if ($request->_remove_image == 'true') {
+            $user->removeProfileImage();
         }
 
         return redirect()->action('UserController@index');

@@ -19,10 +19,18 @@ class SubscriberController extends Controller
      */
     public function search($list, $request)
     {
+        $sortOrder = $request->sort_order ? $request->sort_order : 'created_at';
+        $sortDirection = $request->sort_direction ? $request->sort_direction : 'asc';
+
         $subscribers = $list->subscribers()
             ->search($request->keyword, $list->fields)
-            ->filter($request)
-            ->orderBy($request->sort_order ? $request->sort_order : 'created_at', $request->sort_direction ? $request->sort_direction : 'asc');
+            ->filter($request);
+
+        if ($sortOrder == 'tag') {
+            // sort by tag
+        } else {
+            $subscribers = $subscribers->orderBy($sortOrder, $sortDirection);
+        }
 
         return $subscribers;
     }
@@ -46,7 +54,8 @@ class SubscriberController extends Controller
         }
 
         return view('subscribers.index', [
-            'list' => $list
+            'list' => $list,
+            'columns' => $request->user()->getSetting('subscribers_columns') ?? ['created_at', 'updated_at'],
         ]);
     }
 
@@ -69,7 +78,6 @@ class SubscriberController extends Controller
         $total = $subscribers->count();
         $subscribers->with(['mailList']);
         $subscribers = $subscribers->paginate($request->per_page ? $request->per_page : 50);
-
         $fields = $list->getFields->whereIn('uid', $request->columns);
 
         return view('subscribers._list', [
@@ -141,6 +149,9 @@ class SubscriberController extends Controller
             return back()->withInput()->withErrors($validator);
         }
 
+        // Timeline record
+        \Acelle\Model\Timeline::recordAddedByCustomer($subscriber, $customer);
+
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.subscriber.created'));
         return redirect()->action('SubscriberController@index', $list->uid);
@@ -167,7 +178,7 @@ class SubscriberController extends Controller
     public function edit(Request $request)
     {
         $list = MailList::findByUid($request->list_uid);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -208,7 +219,7 @@ class SubscriberController extends Controller
     {
         $customer = $request->user()->customer;
         $list = MailList::findByUid($request->list_uid);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -234,6 +245,7 @@ class SubscriberController extends Controller
             // Update field
             $subscriber->updateFields($request->all());
 
+            event(new \Acelle\Events\SubscriptionUpdated($subscriber));
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
             // Log
@@ -256,23 +268,18 @@ class SubscriberController extends Controller
     public function delete(Request $request)
     {
         $customer = $request->user()->customer;
-        $uids = $request->uids;
+        $ids = $request->ids;
 
-        if (!is_array($request->uids)) {
-            $uids = explode(',', $request->uids);
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
         }
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $uids);
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
         $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
         }
-
-        // get related mail lists to update the cached information
-        $lists = $subscribers->get()->map(function ($e) {
-            return MailList::find($e->mail_list_id);
-        })->unique();
 
         // actually delete the subscriber
         foreach ($subscribers->get() as $subscriber) {
@@ -283,10 +290,6 @@ class SubscriberController extends Controller
                 // Log
                 $subscriber->log('deleted', $customer);
             }
-        }
-
-        foreach ($lists as $list) {
-            event(new \Acelle\Events\MailListUpdated($list));
         }
 
         // Redirect to my lists page
@@ -307,14 +310,17 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
+        $ids = $request->ids;
 
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
         }
 
         foreach ($subscribers->get() as $subscriber) {
@@ -325,11 +331,11 @@ class SubscriberController extends Controller
                     'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : '#unknown',
                 ]);
 
-                // update MailList cache
-                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
-
                 // Log
                 $subscriber->log('subscribed', $customer);
+
+                // Timeline record
+                \Acelle\Model\Timeline::recordSubscribedByCustomer($subscriber, $customer);
             }
         }
 
@@ -348,14 +354,17 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
+        $ids = $request->ids;
 
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
         }
 
         foreach ($subscribers->get() as $subscriber) {
@@ -369,8 +378,8 @@ class SubscriberController extends Controller
                 // Log
                 $subscriber->log('unsubscribed', $customer);
 
-                // update MailList cache
-                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
+                // Timeline record
+                \Acelle\Model\Timeline::recordUnsubscribedByCustomer($subscriber, $customer);
             }
         }
 
@@ -604,13 +613,16 @@ class SubscriberController extends Controller
         $from_list = MailList::findByUid($request->from_uid);
         $to_list = MailList::findByUid($request->to_uid);
 
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
-            $subscribers = $this->search($from_list, $request)->select('subscribers.*');
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
+            $subscribers = $this->search($from_list, $request);
         }
 
         foreach ($subscribers->get() as $subscriber) {
@@ -648,13 +660,16 @@ class SubscriberController extends Controller
         $from_list = MailList::findByUid($request->from_uid);
         $to_list = MailList::findByUid($request->to_uid);
 
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
-            $subscribers = $this->search($from_list, $request)->select('subscribers.*');
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
+            $subscribers = $this->search($from_list, $request);
         }
 
         foreach ($subscribers->get() as $subscriber) {
@@ -692,13 +707,16 @@ class SubscriberController extends Controller
     {
         $from_list = MailList::findByUid($request->from_uid);
 
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+
+        // Select all items
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($from_list, $request);
-        } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn(
-                'uid',
-                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-            );
         }
 
         return view('subscribers.copy_move_form', [
@@ -713,7 +731,7 @@ class SubscriberController extends Controller
      */
     public function startVerification(Request $request)
     {
-        $subscriber = Subscriber::findByUid($request->uid);
+        $subscriber = Subscriber::find($request->id);
         $server = EmailVerificationServer::findByUid($request->email_verification_server_id);
         try {
             $subscriber->verify($server);
@@ -724,7 +742,7 @@ class SubscriberController extends Controller
             // update MailList cache
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
-            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
+            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'id' => $subscriber->id]);
         } catch (\Exception $e) {
             return view('somethingWentWrong', ['message' => sprintf("Something went wrong while verifying %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
         }
@@ -736,14 +754,14 @@ class SubscriberController extends Controller
      */
     public function resetVerification(Request $request)
     {
-        $subscriber = Subscriber::findByUid($request->uid);
+        $subscriber = Subscriber::find($request->id);
 
         try {
             $subscriber->resetVerification();
             // success message
             $request->session()->flash('alert-success', trans('messages.verification.reset'));
 
-            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
+            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'id' => $subscriber->id]);
         } catch (\Exception $e) {
             return view('somethingWentWrong', ['message' => sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
         }
@@ -754,7 +772,7 @@ class SubscriberController extends Controller
      */
     public function avatar(Request $request)
     {
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         if ($subscriber && is_file($subscriber->getImagePath())) {
             $img = \Image::make($subscriber->getImagePath());
@@ -768,7 +786,7 @@ class SubscriberController extends Controller
     public function avatarOrigin(Request $request)
     {
         // Get current customer
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         if (is_file($subscriber->getImageOriginPath())) {
             $img = \Image::make($subscriber->getImageOriginPath());
@@ -792,16 +810,20 @@ class SubscriberController extends Controller
      */
     public function resendConfirmationEmail(Request $request)
     {
-        $subscribers = \Acelle\Model\Subscriber::whereIn(
-            'uid',
-            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-        );
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
         $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
         }
+
+        $list = MailList::findByUid($request->list_uid);
 
         // Launch re-sending job
         dispatch_now(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
@@ -817,10 +839,10 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function updateTags(Request $request, $list_uid, $uid)
+    public function updateTags(Request $request, $list_uid, $id)
     {
         $list = MailList::findByUid($list_uid);
-        $subscriber = Subscriber::findByUid($uid);
+        $subscriber = Subscriber::find($id);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -852,10 +874,10 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function removeTag(Request $request, $list_uid, $uid)
+    public function removeTag(Request $request, $list_uid, $id)
     {
         $list = MailList::findByUid($list_uid);
-        $subscriber = Subscriber::findByUid($uid);
+        $subscriber = Subscriber::find($id);
 
         // authorize
         if (\Gate::denies('delete', $subscriber)) {
@@ -1144,7 +1166,14 @@ class SubscriberController extends Controller
     {
         // init
         $list = MailList::findByUid($request->list_uid);
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $request->uids);
+
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
@@ -1185,7 +1214,13 @@ class SubscriberController extends Controller
     {
         // init
         $list = MailList::findByUid($request->list_uid);
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $request->uids);
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
@@ -1215,5 +1250,43 @@ class SubscriberController extends Controller
             'list' => $list,
             'subscribers' => $subscribers,
         ]);
+    }
+
+    public function timeline(Request $request)
+    {
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
+
+        return view('subscribers.timeline', [
+            'list' => $subscriber->mailList,
+            'subscriber' => $subscriber,
+        ]);
+    }
+
+    public function timelineList(Request $request)
+    {
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
+
+        $timelines = $subscriber->timelines();
+
+        // filter by type
+        if ($request->type) {
+            if ($request->type == 'automation') {
+                $timelines = $timelines->whereNotNull('activity');
+            } else {
+                $timelines = $timelines->whereType($request->type);
+            }
+        }
+
+        $timelines = $timelines->orderBy('created_at', 'desc')
+            ->paginate($request->per_page ? $request->per_page : 10);
+
+        return view('subscribers.timelineList', [
+            'timelines' => $timelines,
+        ]);
+    }
+
+    public function saveColumnsSettings(Request $request)
+    {
+        $request->user()->writeSetting('subscribers_columns', $request->columns);
     }
 }

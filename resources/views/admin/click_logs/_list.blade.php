@@ -33,7 +33,7 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.campaign') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ $item->trackingLog->sendingServer->name }}</span>
+					<span class="no-margin kq_search">{{ $item->trackingLog->getSendingServer() ? $item->trackingLog->getSendingServer()->name : "[server]" }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.sending_server') }}</span>
 				</td>
 				<td>

@@ -15,7 +15,7 @@
 
         {{ csrf_field() }}
 
-        @foreach(Acelle\Model\TemplateCategory::all() as $category)
+        @foreach(Acelle\Model\TemplateCategory::getAll() as $category)
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
                 'name' => 'categories['.$category->uid.']',

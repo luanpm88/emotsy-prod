@@ -165,6 +165,8 @@ class SendingServerController extends Controller
             return $this->notAuthorized();
         }
 
+        dispatch(new \Acelle\Jobs\UpdateSendingServerJob($server));
+
         // bounce / feedback hanlder nullable
         if ($request->old() && empty($request->old()["bounce_handler_id"])) {
             $server->bounce_handler_id = null;
@@ -684,5 +686,12 @@ class SendingServerController extends Controller
 
         $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
+    }
+
+    public function fromEmails(Request $request)
+    {
+        return view('sending_servers.fromEmails', [
+            'sendingServers' => $request->user()->customer->sendingServers,
+        ]);
     }
 }

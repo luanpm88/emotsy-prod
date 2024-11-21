@@ -416,7 +416,7 @@ class SendingDomain extends Model
             }
 
             // Okay, if name is valid, then check if it is unique
-            $notUniq = $this->customer->sendingDomains()->where('name', $this->name)->exists();
+            $notUniq = $this->customer->local()->sendingDomains()->where('name', $this->name)->exists();
             if ($notUniq) {
                 $validator->errors()->add('name', "A sending domain with name `{$this->name}` already exists");
             }

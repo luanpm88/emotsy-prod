@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Model\RolePermission;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Role extends Model
 {
     use HasFactory;
     use HasUid;
+
+    protected $connection = 'mysql';
 
     // statuses
     public const STATUS_INACTIVE = 'inactive';
@@ -19,6 +22,11 @@ class Role extends Model
     public function rolePermissions()
     {
         return $this->hasMany(RolePermission::class);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_role');
     }
 
     public static function scopeSearch($query, $keyword)
@@ -41,19 +49,49 @@ class Role extends Model
         return $role;
     }
 
-    public function fillAttributes($params)
+    public static function newGlobalRole()
     {
-        $this->name = $params['name'] ?? null;
-        $this->description = $params['description'] ?? null;
+        $role = static::newDefault();
+        $role->is_global = true;
+
+        return $role;
     }
 
-    public function saveFromArray($params)
+    public static function newAccountRole($customer)
     {
-        $this->fillAttributes($params);
+        $role = static::newDefault();
+        $role->is_global = false;
+        $role->customer_id = $customer->id;
+
+        return $role;
+    }
+
+    public static function scopeGlobal($query)
+    {
+        $query->whereIsGlobal(true);
+    }
+
+    public static function scopeReadonly($query)
+    {
+        $query->whereReadonly(true);
+    }
+
+    public static function scopeAccountRoles($query)
+    {
+        $query->whereIsGlobal(false);
+    }
+
+    public function saveRole($name, $description, $permissions=[])
+    {
+        //
+        $this->name = $name;
+        $this->description = $description;
 
         // make validator
-        $validator = \Validator::make($params, [
-            'name' => 'required|unique:roles,name,'.$this->id,
+        $validator = \Validator::make([
+            'name' => $name,
+        ], [
+            'name' => 'required',
         ]);
 
         // redirect if fails
@@ -65,9 +103,20 @@ class Role extends Model
         $this->save();
 
         // update permissions from array
-        $this->updatePermissions($params['permissions'] ?? []);
+        $this->updatePermissions($permissions);
 
         return $validator->errors();
+    }
+
+    public function addPermission($permission)
+    {
+        // check if permission already exists
+        if ($this->hasPermission($permission)) {
+            return;
+        }
+
+        // add new role permission record
+        RolePermission::createRolePermission($this, $permission);
     }
 
     public function updatePermissions($permissions)
@@ -115,5 +164,46 @@ class Role extends Model
     {
         return $this->rolePermissions()->where('permission', $permission)
             ->exists();
+    }
+
+    public static function getDefaultAdminRole()
+    {
+        return static::whereCode('organization_admin')->first();
+    }
+
+    public function assignDefaultAdminPermissions()
+    {
+        $permissions = config('roles.organization_admin');
+
+        foreach ($permissions as $permission) {
+            $this->addPermission($permission);
+        }
+    }
+
+    public function assignDefaultReadonlyPermissions()
+    {
+        $permissions = config('roles.organization_readonly');
+
+        foreach ($permissions as $permission) {
+            $this->addPermission($permission);
+        }
+    }
+
+    public function assignDefaultCampaignApproverPermissions()
+    {
+        $permissions = config('roles.campaign_approver');
+
+        foreach ($permissions as $permission) {
+            $this->addPermission($permission);
+        }
+    }
+
+    public function assignDefaultListManagerPermissions()
+    {
+        $permissions = config('roles.list_manager');
+
+        foreach ($permissions as $permission) {
+            $this->addPermission($permission);
+        }
     }
 }

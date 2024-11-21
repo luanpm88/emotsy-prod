@@ -41,6 +41,33 @@
                         <div class="mb-3 unlimited_control">
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
+                                    <label class="form-label">
+                                        {{ trans('messages.plan.setting.max_users_per_customer') }}
+                                    </label>
+                                    <input type="number" class="form-control" name="plan[options][user_max]"
+                                        value="{{ $options['user_max'] }}"
+                                        default-value="5">
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        <label class="form-label mb-0">
+                                            <span class="form-label d-flex align-items-center">
+                                                <label>
+                                                    <input {{ $options['user_max'] == -1 ? 'checked' : '' }}
+                                                        type="checkbox" class="styled me-2 " name="unlimited"
+                                                        value=""><span class="check-symbol"></span>
+                                                </label>
+                                                <span class="ms-2">{{ trans('messages.unlimited') }}</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
                                         'type' => 'number',
                                         'name' => 'plan[options][email_max]',

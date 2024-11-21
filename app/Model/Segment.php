@@ -67,6 +67,11 @@ class Segment extends Model
         return $this->belongsTo('Acelle\Model\MailList');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
+    }
+
     public function segmentConditions()
     {
         return $this->hasMany('Acelle\Model\SegmentCondition');
@@ -395,7 +400,7 @@ class Segment extends Model
     public function isSubscriberIncluded($subscriber)
     {
         return $this->subscribers()
-                    ->where('uid', $subscriber->uid)
+                    ->where('id', $subscriber->id)
                     ->exists();
     }
 
@@ -441,7 +446,7 @@ class Segment extends Model
      */
     public function updateCacheDelayed()
     {
-        safe_dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
+        dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
     }
 
     /**
@@ -465,6 +470,7 @@ class Segment extends Model
         foreach ($conditions as $key => $param) {
             $condition = new \Acelle\Model\SegmentCondition();
             $condition->fill($param);
+            $condition->customer_id = $this->customer_id;
 
             if (strpos($condition->operator, 'created_date') === 0 && $condition->operator !== 'created_date_last_x_days') {
                 $zone = $this->mailList->customer->getTimezone();
@@ -482,5 +488,24 @@ class Segment extends Model
 
             $condition->save();
         }
+    }
+
+    public function copy($name)
+    {
+        // copy segment
+        $copySegment = $this->replicate();
+        $copySegment->uid = uniqid();
+        $copySegment->name = $name;
+        $copySegment->save();
+
+        // copy all segment conditions
+        foreach ($this->segmentConditions as $condition) {
+            $condition = $condition->replicate();
+            $condition->uid = uniqid();
+            $condition->segment_id = $copySegment->id;
+            $condition->save();
+        }
+
+        return $copySegment;
     }
 }

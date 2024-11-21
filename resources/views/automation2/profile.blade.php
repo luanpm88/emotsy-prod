@@ -15,7 +15,7 @@
                                 <a class="dropdown-item profile-remove-contact"
                                     href="{{ action('Automation2Controller@removeContact', [
                                         'uid' => $automation->uid,
-                                        'contact_uid' => $contact->uid,
+                                        'contact_id' => $contact->id,
                                     ]) }}"
                                     data-confirm="{{ trans('messages.automation.profile.remove_contact.confirm', ['name' => $contact->getFullName()]) }}"
                                 >
@@ -24,12 +24,12 @@
                                 <a class="dropdown-item profile-tag-contact"
                                     href="{{ action('Automation2Controller@tagContact', [
                                         'uid' => $automation->uid,
-                                        'contact_uid' => $contact->uid,
+                                        'contact_id' => $contact->id,
                                     ]) }}"
                                 >{{ trans('messages.automation.profile.manage_tag') }}</a>
                                 <a class="dropdown-item" href="{{ action('SubscriberController@edit', [
                                     'list_uid' => $contact->mailList->uid,
-                                    'uid' => $contact->uid,
+                                    'id' => $contact->id,
                                 ]) }}">{{ trans('messages.automation.profile.go_to_pofile') }}</a>
                             </div>
                         </div>
@@ -49,9 +49,9 @@
                     @else
                         <a
                             image-popup="link"
-                            href="{{ action('SubscriberController@avatarOrigin',  $contact->uid) }}"
+                            href="{{ action('SubscriberController@avatarOrigin',  $contact->id) }}"
                         >
-                            <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
+                            <img src="{{ action('SubscriberController@avatar',  $contact->id) }}" />
                         </a>
                     @endif
                 </div>
@@ -63,7 +63,7 @@
                             @foreach ($contact->getTags() as $tag)
                                 <a href="{{ action('Automation2Controller@removeTag', [
                                     'uid' => $automation->uid,
-                                    'contact_uid' => $contact->uid,
+                                    'contact_id' => $contact->id,
                                     'tag' => $tag,
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
                                     <button role="button" class="btn btn-light btn-tag">{{ $tag }}</button>
@@ -75,7 +75,7 @@
                         @else
                             <a href="{{ action('Automation2Controller@tagContact', [
                                         'uid' => $automation->uid,
-                                        'contact_uid' => $contact->uid,
+                                        'contact_id' => $contact->id,
                                     ]) }}" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
                                 <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
                                     <i class="material-symbols-rounded">add</i>
@@ -90,18 +90,18 @@
             
             <div class="d-flex align-items-center mt-5">
                 <h3 class="mr-auto">{{ trans('messages.automation.contact.activity_feed') }}</h3>
-                <div class="">
+                <div class="hide">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
                             <button id="btnGroupDrop1" role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.contact.all_activities') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
-                                <a class="dropdown-item" href="#">Open</a>
-                                <a class="dropdown-item" href="#">Click</a>
-                                <a class="dropdown-item" href="#">Subscribe</a>
-                                <a class="dropdown-item" href="#">Unsubscribe</a>
-                                <a class="dropdown-item" href="#">Updated</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.open') }}</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.click') }}</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.subscribe') }}</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.unsubscribe') }}</a>
+                                <a class="dropdown-item" href="#">{{ trans('messages.updated_at') }}</a>
                             </div>
                         </div>
                     </div>

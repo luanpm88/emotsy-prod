@@ -7,6 +7,8 @@
     "require": {
         "php": "^8.0",
         "acelle/cashier": "dev-master",
+        "athenaevs/athenaevs-php": "dev-master",
+        "athena/email-verification-result": "dev-main",
         "aws/aws-php-sns-message-validator": "^1.1",
         "aws/aws-sdk-php": "^3.19",
         "bacon/bacon-qr-code": "^2.0",
@@ -53,12 +55,14 @@
         "php-mime-mail-parser/php-mime-mail-parser": "^8.0",
         "pragmarx/google2fa-laravel": "^2.1",
         "psr/log": "^1.1.4",
+        "ramsey/uuid": "^4.7",
         "rdok/elasticemail-php": "^2.2",
         "rmccue/requests": "^1.8",
         "sendgrid/sendgrid": "~7",
         "sendgrid/smtpapi": "^0.5.0",
         "soundasleep/html2text": "^2.1",
         "sparkpost/sparkpost": "^2.1",
+        "square/square": "37.1.1.20240717",
         "swiftmailer/swiftmailer": "~6.0",
         "symfony/yaml": "^4.4",
         "twig/twig": "^3.0",
@@ -115,6 +119,7 @@
             "pestphp/pest-plugin": true
         }
     },
+    "minimum-stability": "dev",
     "repositories": [
         {
             "type": "package",
@@ -151,6 +156,12 @@
         }, {
             "type": "vcs",
             "url": "https://github.com/luanpm88/aws-whitelabel"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/athenaevs/athenaevs-php"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/luanpm88/athena-email-verification-result"
         }
     ]
 }

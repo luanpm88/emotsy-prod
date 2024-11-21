@@ -27,6 +27,7 @@ use Acelle\Library\Traits\HasUid;
 class BounceHandler extends DeliveryHandler
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     protected $table = 'bounce_handlers';
 
@@ -62,6 +63,14 @@ class BounceHandler extends DeliveryHandler
                 return;
             } else {
                 $this->logger()->info('Parsed OK, Message-ID found in email body, proceeding with '.$msgId);
+            }
+
+            $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($msgId);
+            $customer = \Acelle\Model\Customer::findByUid($customerUid);
+            if (!is_null($customer)) {
+                $customer->setUserDbConnection();
+            } else {
+                // backward compatible
             }
 
             $trackingLog = TrackingLog::where('message_id', $msgId)->first();

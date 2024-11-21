@@ -26,6 +26,6 @@ class MailListUpdatedListener
      */
     public function handle(MailListUpdated $event)
     {
-        safe_dispatch(new \Acelle\Jobs\UpdateMailListJob($event->mailList));
+        dispatch(new \Acelle\Jobs\UpdateMailListJob($event->mailList));
     }
 }

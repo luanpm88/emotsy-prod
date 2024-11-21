@@ -7,6 +7,8 @@ use Acelle\Library\Facades\SubscriptionFacade;
 
 class InvoiceChangePlan extends Invoice
 {
+    protected $connection = 'mysql';
+
     protected $table = 'invoices';
 
     public const TYPE_CHANGE_PLAN = 'change_plan';

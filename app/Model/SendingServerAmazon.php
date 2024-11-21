@@ -427,7 +427,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         $name = $this->generateCustomVerificationEmailTemplateName();
 
         // Get the template
-        $template = Layout::where('alias', 'sender_verification_email_for_amazon_ses')->first();
+        $template = Layout::findByAlias('sender_verification_email_for_amazon_ses');
 
         // Replace tags
         $html = $template->content;

@@ -45,40 +45,136 @@
                     'help_class' => 'email',
                     'placeholder' => trans('messages.automation.email.from_name.placeholder'), 
                 ])
+
+                @if (Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() &&
+                    Auth::user()->customer->sendingServers()->count()
+                )
+                    <p>{!! trans('messages.use_default_sending_server_from_email.wording') !!}</p>
+
+                    <div>
+                        <div data-control="option-container" class="d-flex">
+                            <label class="me-3">
+                                <input {{ $email->use_default_sending_server_from_email ? 'checked' : '' }} type="radio" name="use_default_sending_server_from_email" value="1" id="udesfe_true" class="styled" />
+                            </label>
+                            <div>
+                                <label for="udesfe_true" class="fw-semibold">{{ trans('messages.use_default_sending_server_from_email.title') }}</label>
+                                <p data-control="desc">
+                                    {!! trans('messages.use_default_sending_server_from_email.intro') !!}
+                                </p>
+                            </div>
+                        </div>
+                        <div data-control="option-container" class="d-flex mt-2">
+                            <label class="me-3">
+                                <input {{ !$email->use_default_sending_server_from_email ? 'checked' : '' }} type="radio" name="use_default_sending_server_from_email" value="0" id="udesfe_false" class="styled" />
+                            </label>
+                            <div>
+                                <label for="udesfe_false" class="fw-semibold">{{ trans('messages.use_fixed_from_email.title') }}</label>
+                                <p data-control="desc">
+                                    {!! trans('messages.use_fixed_from_email.intro') !!}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        $(() => {
+                            new FromEmailOption({
+                                fixedBox: $('[data-control="from-reply"]'),
+                                radios: $('[name="use_default_sending_server_from_email"]'),
+                                showFromEmailsButton: $('[data-control="show-from-emails"]'),
+                            });
+                        })
+
+                        var FromEmailOption = class {
+                            constructor(options) {
+                                this.fixedBox = options.fixedBox;
+                                this.radios = options.radios;
+                                this.showFromEmailsButton = options.showFromEmailsButton;
+                                this.fromEmailsPopup = new Popup({
+                                    url: '{{ action('SendingServerController@fromEmails') }}',
+                                });
+
+                                this.check();
+
+                                this.events();
+                            }
+
+                            getCheckedRadio() {
+                                return this.radios.filter(':checked');
+                            }
+
+                            getUseSendingServerValue() {
+                                return this.getCheckedRadio().val();
+                            }
+
+                            check() {
+                                this.radios.closest('[data-control="option-container"]').find('[data-control="desc"]').hide();
+								this.getCheckedRadio().closest('[data-control="option-container"]').find('[data-control="desc"]').fadeIn();
+
+                                if(this.getUseSendingServerValue() == '1') {
+                                    //
+                                    this.fixedBox.fadeOut();
+								} else {
+									//
+									this.fixedBox.fadeIn();
+								}
+                            }
+
+                            showFromEmails() {
+                                this.fromEmailsPopup.load();
+                            }
+
+                            events() {
+                                this.radios.on('change', () => {
+                                    this.check();
+                                });
+
+                                this.showFromEmailsButton.on('click', () => {
+                                    this.showFromEmails();
+                                });
+                            }
+                        }
+                    </script>
+
+                @else
+                    <input type="hidden" name="use_default_sending_server_from_email" value="0" />
+                @endif
                 
-                @include('helpers.form_control', [
-                    'type' => 'autofill',
-                    'id' => 'sender_from_input',
-                    'name' => 'from_email',
-                    'label' => trans('messages.from_email'),
-                    'value' => $email->from_email,
-                    'rules' => $email->rules(),
-                    'help_class' => 'email',
-                    'url' => action('SenderController@dropbox'),
-                    'empty' => trans('messages.sender.dropbox.empty'),
-                    'error' => trans('messages.sender.dropbox.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
-                        'sender_link' => action('SendingDomainController@index'),
-                    ]),
-                    'header' => trans('messages.verified_senders'),
-                    'placeholder' => trans('messages.automation.email.from.placeholder'), 
-                ])
-                                                
-                @include('helpers.form_control', [
-                    'type' => 'autofill',
-                    'id' => 'sender_reply_to_input',
-                    'name' => 'reply_to',
-                    'label' => trans('messages.reply_to'),
-                    'value' => $email->reply_to,
-                    'url' => action('SenderController@dropbox'),
-                    'rules' => $email->rules(),
-                    'help_class' => 'email',
-                    'empty' => trans('messages.sender.dropbox.empty'),
-                    'error' => trans('messages.sender.dropbox.reply.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
-                        'sender_link' => action('SendingDomainController@index'),
-                    ]),
-                    'header' => trans('messages.verified_senders'),
-                    'placeholder' => trans('messages.automation.email.from.placeholder'), 
-                ])
+                <div data-control="from-reply">
+                    @include('helpers.form_control', [
+                        'type' => 'autofill',
+                        'id' => 'sender_from_input',
+                        'name' => 'from_email',
+                        'label' => trans('messages.from_email'),
+                        'value' => $email->from_email,
+                        'rules' => $email->rules(),
+                        'help_class' => 'email',
+                        'url' => action('SenderController@dropbox'),
+                        'empty' => trans('messages.sender.dropbox.empty'),
+                        'error' => trans('messages.sender.dropbox.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
+                            'sender_link' => action('SendingDomainController@index'),
+                        ]),
+                        'header' => trans('messages.verified_senders'),
+                        'placeholder' => trans('messages.automation.email.from.placeholder'), 
+                    ])
+                                                    
+                    @include('helpers.form_control', [
+                        'type' => 'autofill',
+                        'id' => 'sender_reply_to_input',
+                        'name' => 'reply_to',
+                        'label' => trans('messages.reply_to'),
+                        'value' => $email->reply_to,
+                        'url' => action('SenderController@dropbox'),
+                        'rules' => $email->rules(),
+                        'help_class' => 'email',
+                        'empty' => trans('messages.sender.dropbox.empty'),
+                        'error' => trans('messages.sender.dropbox.reply.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
+                            'sender_link' => action('SendingDomainController@index'),
+                        ]),
+                        'header' => trans('messages.verified_senders'),
+                        'placeholder' => trans('messages.automation.email.from.placeholder'), 
+                    ])
+                </div>
                 
             </div>
             <div class="col-md-6 segments-select-box">
@@ -110,16 +206,16 @@
                         'rules' => $email->rules(),
                     ])
 
-                    @if ($trackingDomain)
+                    @if (true || $trackingDomain)
 
                         @include('helpers.form_control', [
                             'type' => 'checkbox3',
                             'name' => 'custom_tracking_domain',
                             'label' => trans('messages.custom_tracking_domain'),
-                            'value' => Auth::user()->customer->isCustomTrackingDomainRequired() ? true : ($email->tracking_domain_id || request()->custom_tracking_domain),
+                            'value' => Auth::user()->customer->local()->isCustomTrackingDomainRequired() ? true : ($email->tracking_domain_id || request()->custom_tracking_domain),
                             'options' => [false,true],
                             'help_class' => 'email',
-                            'readonly' => Auth::user()->customer->isCustomTrackingDomainRequired(),
+                            'readonly' => Auth::user()->customer->local()->isCustomTrackingDomainRequired(),
                             'rules' => $email->rules()
                         ])
 
@@ -129,7 +225,7 @@
                                 'name' => 'tracking_domain_uid',
                                 'label' => '',
                                 'value' => $email->trackingDomain? $email->trackingDomain->uid : null,
-                                'options' => Auth::user()->customer->getVerifiedTrackingDomainOptions(),
+                                'options' => Auth::user()->customer->local()->getVerifiedTrackingDomainOptions(),
                                 'include_blank' => trans('messages.automation.email.select_tracking_domain'),
                                 'help_class' => 'email',
                                 'rules' => $email->rules()

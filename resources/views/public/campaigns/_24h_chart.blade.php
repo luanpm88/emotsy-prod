@@ -35,9 +35,10 @@
 <script>
     var Campaigns24hChart = {
         url: '{{ action('Pub\CampaignController@chart24h', [
-                'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
-            ]) }}',
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+            'customer_uid' => $campaign->customer->uid,
+        ]) }}',
 
         getChart: function() {
             return $('#Campaigns24hChart');

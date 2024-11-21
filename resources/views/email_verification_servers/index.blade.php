@@ -20,6 +20,12 @@
 @section('content')
 	<p>{{ trans('messages.email_verification_server.wording') }}</p>
 
+	@if (Acelle\Model\Plugin::isInstalled('acelle/athena') && Acelle\Model\Plugin::getByName('acelle/athena')->isActive())
+		@include('athena::infoBox', [
+			'customer_uid' => \Auth::user()->customer->uid,
+		])
+	@endif
+
 	<div id="EVSsIndexContainer" class="listing-form"
 		sort-url="{{ action('EmailVerificationServerController@sort') }}"
 		data-url="{{ action('EmailVerificationServerController@listing') }}"

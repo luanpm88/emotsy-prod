@@ -30,6 +30,7 @@ use Closure;
 class Layout extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     /**
      * The attributes that are mass assignable.
@@ -196,5 +197,11 @@ class Layout extends Model
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
 
         return $query;
+    }
+
+    public static function findByAlias($name)
+    {
+        // get lastest layout
+        return self::where('alias', $name)->orderByDesc('created_at')->first();
     }
 }

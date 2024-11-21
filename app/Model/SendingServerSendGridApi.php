@@ -54,10 +54,6 @@ class SendingServerSendGridApi extends SendingServerSendGrid
                 'status' => self::DELIVERY_STATUS_SENT,
             );
 
-            if (!is_null($this->subAccount)) {
-                $result['sub_account_id'] = $this->subAccount->id;
-            }
-
             return $result;
         } else {
             throw new \Exception("{$statusCode} ".$response->body());

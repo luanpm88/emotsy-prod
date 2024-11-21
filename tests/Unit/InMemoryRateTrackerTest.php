@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Acelle\Library\InMemoryRateTracker;
 use Acelle\Library\RateLimit;
 use Acelle\Library\Exception\RateLimitExceeded;
+use Exception;
 
 class InMemoryRateTrackerTest extends TestCase
 {
@@ -18,7 +19,7 @@ class InMemoryRateTrackerTest extends TestCase
         $tracker = new InMemoryRateTracker($key);
         $tracker->cleanup();
 
-        $now = Carbon::now();
+        $now = now();
         $oneMinuteAgo = $now->clone()->add('1 minute ago');
 
         // 4 times
@@ -65,7 +66,7 @@ class InMemoryRateTrackerTest extends TestCase
         $used = $tracker->getCreditsUsed($oneMinuteAgo, $now);
         $this->assertEquals($used, 2);
 
-        sleep(1);
+        sleep(2);
 
         $used = $tracker->getCreditsUsed(now()->add('1 minute ago'), $now);
         $this->assertEquals($used, 2);
@@ -126,12 +127,31 @@ class InMemoryRateTrackerTest extends TestCase
         $tracker = new InMemoryRateTracker($key, $limits);
         $tracker->cleanup();
 
+        $exceeded = false;
+
+        $rateExceedingCallback = function ($msg) use (&$exceeded) {
+            $exceeded = true;
+        };
+
         // 2 time
         $tracker->count();
-        $tracker->count();
+        $tracker->count(now(), $rateExceedingCallback);
+
+        $this->assertFalse($exceeded);
 
         $this->assertEquals($tracker->getLimitsDescription(), "#, #");
         $this->assertEquals($tracker->getCreditsUsed(), 2);
+
+
+        try {
+            $tracker->count(now(), $rateExceedingCallback);
+
+            throw new Exception('Not expected here');
+        } catch (RateLimitExceeded $ex) {
+            $this->assertTrue($exceeded);
+        }
+
+
         $this->expectException(RateLimitExceeded::class);
         $tracker->count();
     }

@@ -195,7 +195,7 @@
             'label' => '',
             'name' => 'options[source_uid]',
             'value' => $trigger->getOption('source_uid'),
-            'options' => request()->user()->customer->getSelectOptions('woocommerce'),
+            'options' => request()->user()->customer->local()->getSelectOptions('woocommerce'),
             'help_class' => 'trigger',
             'rules' => [],
         ])

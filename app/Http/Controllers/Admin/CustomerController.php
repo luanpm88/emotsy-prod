@@ -94,41 +94,30 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        // Get current user
-        $customer = \Acelle\Model\Customer::newCustomer();
-        $user = $customer->newUser();
+        // validation
+        list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+            // customer information
+            $admin = $request->user()->admin,
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id,
+            // user information
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
 
-        // authorize
-        if (\Gate::denies('create', $customer)) {
-            return $this->notAuthorized();
-        }
-
-        $validator = $customer->validateFromRequest($request);
-
+        //  errors
         if (!$validator->errors()->isEmpty()) {
             return view('admin.customers.create', [
                 'customer' => $customer,
                 'user' => $user,
                 'errors' => $validator->errors(),
             ]);
-        }
-
-        // 
-        $customer->saveFromRequest($request);
-        $user->customer_id = $customer->id;
-
-        list($result, $errors) = $user->saveFromRequest($request);
-
-        if (!$errors->isEmpty()) {
-            return view('admin.customers.create', [
-                'customer' => $customer,
-                'user' => $user,
-                'errors' => $errors,
-            ]);
-        }
-
-        if (config('app.emotsy')) {
-            \Artisan::call('db:seed', ['class'=>'UserListSeeder']);
         }
 
         return redirect()->action('Admin\CustomerController@index')
@@ -187,15 +176,21 @@ class CustomerController extends Controller
             return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
-        // Get current user
+        //
         $customer = \Acelle\Model\Customer::findByUid($id);
 
-        $errors = $customer->saveFromRequest($request);
+        // validation
+        list($validator, $customer) = $customer->updateCustomer(
+            $name = $request->name,
+            $timezone = $request->timezone,
+            $language_id = $request->language_id
+        );
 
-        if (!$errors->isEmpty()) {
-            return view('admin.customers.create', [
+        //  errors
+        if (!$validator->errors()->isEmpty()) {
+            return view('admin.customers.edit', [
                 'customer' => $customer,
-                'errors' => $errors,
+                'errors' => $validator->errors(),
             ]);
         }
 
@@ -371,11 +366,7 @@ class CustomerController extends Controller
         if ($customer->contact) {
             $contact = $customer->contact;
         } else {
-            $contact = new \Acelle\Model\Contact([
-                'first_name' => $request->user()->first_name,
-                'last_name' => $request->user()->last_name,
-                'email' => $request->user()->email,
-            ]);
+            $contact = new \Acelle\Model\Contact();
         }
 
         // Create new company if null
@@ -400,28 +391,6 @@ class CustomerController extends Controller
         return view('admin.customers.contact', [
             'customer' => $customer,
             'contact' => $contact->fill($request->old()),
-        ]);
-    }
-
-    /**
-     * Customer's sub-account list.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function subAccount(Request $request, $uid)
-    {
-        // Get current user
-        $customer = \Acelle\Model\Customer::findByUid($uid);
-
-        // authorize
-        if (\Gate::denies('viewSubAccount', $customer)) {
-            return redirect()->action('Admin\CustomerController@edit', $customer->uid);
-        }
-
-        return view('admin.customers.sub_account', [
-            'customer' => $customer
         ]);
     }
 

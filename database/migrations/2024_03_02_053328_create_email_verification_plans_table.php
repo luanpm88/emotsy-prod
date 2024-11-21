@@ -24,7 +24,7 @@ class CreateEmailVerificationPlansTable extends Migration
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
             $table->decimal('price', 16, 2);
             $table->timestamps();
-            
+
         });
     }
 

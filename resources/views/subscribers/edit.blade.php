@@ -21,44 +21,25 @@
     @include("lists._menu", [
 		'menu' => 'subscriber',
 	])
+    
+    @include("subscribers._header")
 
-    <div class="row mt-4">
+    <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
-            <div class="sub-section">
-                <form enctype="multipart/form-data"  action="{{ action('SubscriberController@update', ['list_uid' => $list->uid, "uid" => $subscriber->uid]) }}" method="POST" class="form-validate-jqueryz">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="_method" value="PATCH">
-                    <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
-                    <h2 class="font-weight-semibold">{{ $subscriber->getFullName() }}</h2>
-                    <div class="tags mb-4" style="clear:both">
-                        <span class="font-weight-semibold mr-3">{{ trans('messages.tags') }}:</span>
-                        @if ($subscriber->getTags())
-                            @foreach ($subscriber->getTags() as $tag)
-                                <a href="{{ action('SubscriberController@removeTag', [
-                                    'list_uid' => $subscriber->mailList->uid,
-                                    'uid' => $subscriber->uid,
-                                    'tag' => $tag,
-                                ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
-                                    <button role="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
-                                    <button role="button" class="btn btn-light btn-tag font-weight-semibold ml-0">
-                                        <i class="material-symbols-rounded">close</i>
-                                    </button>
-                                </a>
-                            @endforeach
-                        @else
-                            <a href="" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
-                                <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
-                                    <i class="material-symbols-rounded me-2">add</i>
-                                    <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
-                                </button>
-                            </a>
-                        @endif
-                    </div>
+            @include("subscribers._menu", [
+                'menu' => 'profile',
+            ])
+
+            <form enctype="multipart/form-data"  action="{{ action('SubscriberController@update', ['list_uid' => $list->uid, "id" => $subscriber->id]) }}" method="POST" class="form-validate-jqueryz">
+                {{ csrf_field() }}
+                <input type="hidden" name="_method" value="PATCH">
+                <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
+                <div class="sub-section mt-4">
                     <div class="d-flex align-items-top">
                         <div>
                             @include('helpers._upload',[
-                                'src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->uid)),
-                                'srcOrigin' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatarOrigin',  $subscriber->uid)),
+                                'src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->id)),
+                                'srcOrigin' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatarOrigin',  $subscriber->id)),
                                 'dragId' => 'upload-avatar',
                                 'preview' => 'image'
                             ])
@@ -83,15 +64,16 @@
                     <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
                     <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn btn-link"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 
-                </form>
-            </div>
+                
+                </div>
+            </form>
 
             <div class="sub-section">
                 <h3 class="text-semibold">{{ trans('messages.verification.title.email_verification') }}</h3>
 
                 @if (is_null($subscriber->verification_status))
                     <p>{!! trans('messages.verification.wording.verify', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email) ]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@startVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@startVerification', ['id' => $subscriber->id]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
 
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
@@ -111,7 +93,7 @@
                     </form>
                 @elseif ($subscriber->isDeliverable())
                     <p>{!! trans('messages.verification.wording.deliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->last_verification_at) ]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['id' => $subscriber->id]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
@@ -121,7 +103,7 @@
                     </form>
                 @elseif ($subscriber->isUndeliverable())
                     <p>{!! trans('messages.verification.wording.undeliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email)]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['id' => $subscriber->id]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
@@ -131,7 +113,7 @@
                     </form>
                 @else
                     <p>{!! trans('messages.verification.wording.risky_or_unknown', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->last_verification_at), 'result' => sprintf("<strong>%s</strong>", $subscriber->verification_status)]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['id' => $subscriber->id]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
@@ -141,108 +123,11 @@
                     </form>
                 @endif
             </div>
+            
         </div>
-
-        @if(isSiteDemo())
-            <div class="col-sm-12 col-md-6 col-lg-6">
-                <div class="d-flex align-items-top mt-5">
-                    <h3 class="mr-auto">{{ trans('messages.automation.contact.activity_feed') }}</h3>
-                    <div class="">
-                        <div class="mt-10">
-                            <div class="dropdown">
-                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                {{ trans('messages.automation.contact.all_activities') }}
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
-                                <li><a href="#">Open</a></li>
-                                <li><a href="#">Click</a></li>
-                                <li><a href="#">Subscribe</a></li>
-                                <li><a href="#">Unsubscribe</a></li>
-                                <li><a href="#">Updated</a></li>
-                            </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    
-                <div class="activity-feed mt-3">
-                    <label class="date small font-weight-semibold mb-0 divider">Timeline</label>
-                    
-                    <div class="activity d-flex py-3 px-4">
-                        <div class="activity-media pr-4 text-center">
-                            <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-symbols-rounded bg-primary">forward_to_inbox</i>
-                        </div>
-                        <div class="small">
-                            <action class="d-block font-weight-semibold mb-1">
-                                User Ardella Goldrup receives email entitled "Follow up Email"
-                            </action>
-                            <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
-                            </desc>
-                        </div>
-                    </div>
-                                        <div class="activity d-flex py-3 px-4">
-                        <div class="activity-media pr-4 text-center">
-                            <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-symbols-rounded bg-primary">forward_to_inbox</i>
-                        </div>
-                        <div class="small">
-                            <action class="d-block font-weight-semibold mb-1">
-                                User Ardella Goldrup receives email entitled "Welcome to our list"
-                            </action>
-                            <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
-                            </desc>
-                        </div>
-                    </div>
-                                        <div class="activity d-flex py-3 px-4">
-                        <div class="activity-media pr-4 text-center">
-                            <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="lnr lnr-clock bg-secondary"></i>
-                        </div>
-                        <div class="small">
-                            <action class="d-block font-weight-semibold mb-1">
-                                Wait for 24 hours before proceeding with the next event for user Ardella Goldrup
-                            </action>
-                            <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
-                            </desc>
-                        </div>
-                    </div>
-                                        <div class="activity d-flex py-3 px-4">
-                        <div class="activity-media pr-4 text-center">
-                            <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-symbols-rounded bg-warning">call_split</i>
-                        </div>
-                        <div class="small">
-                            <action class="d-block font-weight-semibold mb-1">
-                                User Ardella Goldrup reads email entitled "Welcome email"
-                            </action>
-                            <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
-                            </desc>
-                        </div>
-                    </div>
-                                        <div class="activity d-flex py-3 px-4">
-                        <div class="activity-media pr-4 text-center">
-                            <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-symbols-rounded bg-success">merge</i>
-                        </div>
-                        <div class="small">
-                            <action class="d-block font-weight-semibold mb-1">
-                                User Ardella Goldrup subscribes to mail list, automation triggered!
-                            </action>
-                            <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
-                            </desc>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
     </div>
+
+    
 
     <script>
         var tagContact = new Popup();
@@ -251,7 +136,7 @@
 
             var url = '{{ action('SubscriberController@updateTags', [
                 'list_uid' => $subscriber->mailList->uid,
-                'uid' => $subscriber->uid,
+                'id' => $subscriber->id,
             ]) }}';
 
             tagContact.load(url, function() {
@@ -295,7 +180,7 @@
             var confirm = '{{ trans('messages.subscriber.delete.confirm') }}';
             var url = '{{ action('SubscriberController@delete', [
                 'list_uid' => $subscriber->mailList->uid,
-                'uids' => $subscriber->uid,                
+                'ids' => $subscriber->id,
             ]) }}';
 
             var dialog = new Dialog('confirm', {

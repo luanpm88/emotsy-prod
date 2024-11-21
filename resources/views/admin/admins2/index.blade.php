@@ -1,4 +1,4 @@
-@extends('layouts.core.backend',[
+@extends('layouts.core.backend', [
 	'menu' => 'admin',
 ])
 
@@ -11,7 +11,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><span class="material-symbols-rounded">format_list_bulleted</span> {{ trans('messages.users') }}</span>
+					<span class="text-semibold"><span class="material-symbols-rounded">format_list_bulleted</span> {{ trans('messages.admins') }}</span>
 				</h1>
 			</div>
 
@@ -20,8 +20,8 @@
 @section('content')
 
 				<div class="listing-form"
-					sort-url="{{ action('Admin\Admin2Controller@sort') }}"
-					data-url="{{ action('Admin\Admin2Controller@listing') }}"
+					sort-url="{{ action('Admin\AdminController@sort') }}"
+					data-url="{{ action('Admin\AdminController@listing') }}"
 					per-page="{{ Acelle\Model\Admin::$itemsPerPage }}"
 				>
 					<div class="d-flex top-list-controls top-sticky-content">
@@ -58,8 +58,8 @@
 						</div>
 						@can('create', new Acelle\Model\Admin())
 							<div class="text-end">
-								<a href="{{ action("Admin\Admin2Controller@create") }}" role="button" class="btn btn-secondary">
-									<span class="material-symbols-rounded">add</span> {{ trans('messages.create_user') }}
+								<a href="{{ action("Admin\AdminController@create") }}" role="button" class="btn btn-secondary">
+									<span class="material-symbols-rounded">add</span> {{ trans('messages.create_admin') }}
 								</a>
 							</div>
 						@endcan
@@ -76,7 +76,7 @@
 					var AdminsIndex = {
 						getList: function() {
 							return makeList({
-								url: '{{ action('Admin\Admin2Controller@listing') }}',
+								url: '{{ action('Admin\AdminController@listing') }}',
 								container: $('.listing-form'),
 								content: $('.pml-table-container')
 							});

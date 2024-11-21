@@ -4,7 +4,6 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Model\AutoTrigger as AutoTriggerModel;
-use Acelle\Model\DeliveryAttempt;
 use Acelle\Model\Email;
 use Exception;
 
@@ -18,43 +17,37 @@ class AutoTrigger extends Controller
      */
     public function show(Request $request)
     {
-        $trigger = AutoTriggerModel::find($request->id);
-        $info = [];
-        $info[] = sprintf('This is an auto trigger for automation {{ %s }}', $trigger->automation2->name);
-        $info[] = sprintf('Subscriber {{ %s }}', $trigger->subscriber->email);
-
-        $actions = [];
-        $trigger->getActions(function ($a) use (&$actions, $trigger) {
-            $description = "+ [". (($a->getLastExecuted()) ? "Executed" : "Waiting") . "] " .  $a->getId() . ": " . $a->getTitle();
-            if ($a->isCondition()) {
-                $description .= " (". $a->getEvaluationResult() .")";
-            }
-
-            if ($a->getType() == 'ElementAction' && $a->getLastExecuted()) {
-                // Attempt
-                $email = Email::findByUid($a->getOption('email_uid'));
-
-                $attempt = DeliveryAttempt::where('email_id', $email->id)->where('auto_trigger_id', $trigger->id)->first();
-
-                $id = $attempt->id;
-                $description .= " (Attempt: ".$id.", ";
-            }
-
-            $actions[] = $description;
-        });
-
-        $info[] = implode('<br>', $actions);
-
-        echo implode('<br>', $info);
+        return;
     }
 
     public function check(Request $request)
     {
         $trigger = AutoTriggerModel::find($request->id);
 
-        // Execute AutoTrigger#check
-        // Notice that calling check() directly against AutoTrigger will not update automation's lastError
-        $trigger->check();
-        echo "Done";
+        try {
+            // Execute AutoTrigger#check
+            // Notice that calling check() directly against AutoTrigger will not update automation's lastError
+            $trigger->check($manually = true);
+        } catch (\Throwable $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+        return response()->json($trigger->toJson());
+    }
+
+    public function retry(Request $request)
+    {
+        $trigger = AutoTriggerModel::find($request->auto_trigger_id);
+        $action = $trigger->getActionById($request->action_id);
+
+        if ($request->isMethod('get')) {
+            // popup
+            return view('auto_triggers.retry', [
+                'trigger' => $trigger,
+                'action' => $action,
+            ]);
+        } else {
+            $action->retry($manually = true);
+            return $action->toJson();
+        }
     }
 }

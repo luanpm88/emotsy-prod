@@ -18,10 +18,6 @@ class UserController extends Controller
     {
         $customer = Customer::findByUid($customer_uid);
 
-        if (config('app.emotsy')) {
-            \Artisan::call('db:seed', ['class'=>'UserListSeeder']);
-        }
-
         return view('admin.users.index', [
             'customer' => $customer,
         ]);
@@ -75,19 +71,24 @@ class UserController extends Controller
         $customer = Customer::findByUid($customer_uid);
         $user = $customer->newUser();
 
-        // 
-        [$result, $errors] = $user->saveFromRequest($request);
+        //
+        [$result, $errors] = $user->saveUser(
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
 
         // redirect if fails
         if (!$result) {
             return response()->view('admin.users.create', [
+                'customer' => $customer,
                 'user' => $user,
                 'errors' => $errors,
             ], 400);
-        }
-
-        if (config('app.emotsy')) {
-            \Artisan::call('db:seed', ['class'=>'UserListSeeder']);
         }
 
         return redirect()->action('Admin\UserController@index', [
@@ -126,8 +127,16 @@ class UserController extends Controller
         $customer = Customer::findByUid($customer_uid);
         $user = \Acelle\Model\User::findByUid($user_uid);
 
-        // 
-        [$result, $errors] = $user->saveFromRequest($request);
+        //
+        [$result, $errors] = $user->saveUser(
+            $email = $request->email,
+            $password = $request->password,
+            $passwordConfirmation = $request->password_confirmation,
+            $first_name = $request->first_name,
+            $last_name = $request->last_name,
+            $image = $request->image,
+            $role_uid = $request->role_uid
+        );
 
         // redirect if fails
         if (!$result) {
@@ -136,6 +145,11 @@ class UserController extends Controller
                 'user' => $user,
                 'errors' => $errors,
             ], 400);
+        }
+
+        // Remove image
+        if ($request->_remove_image == 'true') {
+            $user->removeProfileImage();
         }
 
         return redirect()->action('Admin\UserController@index', [
@@ -238,7 +252,6 @@ class UserController extends Controller
 
         \Auth::login($user);
         \Session::put('orig_user_uid', $orig_id);
-        
         return redirect()->action('HomeController@index');
     }
 

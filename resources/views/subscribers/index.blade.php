@@ -26,7 +26,7 @@
 	</div>
 		
 
-	<div class="listing-form subscribers-list"
+	<div id="SubscriberListContainer" class="listing-form subscribers-list"
 		data-url="{{ action('SubscriberController@listing', $list->uid) }}"
 		per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 	>
@@ -117,12 +117,12 @@
 					<span class="filter-group">
 						<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 						<select class="select" name="sort_order">
+							<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>
 							<option value="subscribers.email">{{ trans('messages.email') }}</option>
-							<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>							
-							<option value="subscribers.updated_at">{{ trans('messages.updated_at') }}</option>
+							<option value="tag">{{ trans('messages.tag') }}</option>
 						</select>
-						<input type="hidden" name="sort_direction" value="asc" />
-						<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+						<input type="hidden" name="sort_direction" value="desc" />
+						<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 							<span class="material-symbols-rounded desc">sort</span>
 						</button>
 					</span>
@@ -156,23 +156,7 @@
 									<li>
 										<a href="javascript:;" class="dropdown-item">
 											<label class="d-flex align-items-center">
-												<input {{ ($field->required || $key <= 3 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
-												<span class="ms-2">{{ $field->label }}</span>
-											</label>
-										</a>
-									</li>
-									<li>
-										<a href="javascript:;" class="dropdown-item">
-											<label class="d-flex align-items-center">
-												<input {{ ($field->required || $key <= 3 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
-												<span class="ms-2">{{ $field->label }}</span>
-											</label>
-										</a>
-									</li>
-									<li>
-										<a href="javascript:;" class="dropdown-item">
-											<label class="d-flex align-items-center">
-												<input {{ ($field->required || $key <= 3 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<input {{ (in_array($field->uid, $columns) ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
 												<span class="ms-2">{{ $field->label }}</span>
 											</label>
 										</a>
@@ -182,7 +166,7 @@
 							<li>
 								<a class="dropdown-item checkbox">
 									<label class="d-flex align-items-center">
-										<input checked="checked" type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
+										<input {{ (in_array('created_at', $columns) ? "checked='checked'" : "") }} type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
 										<span class="ms-2">{{ trans('messages.created_at') }}</span>
 									</label>
 								</a>
@@ -190,12 +174,42 @@
 							<li>
 								<a class="dropdown-item checkbox">
 									<label class="d-flex align-items-center">
-										<input checked="checked" type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
+										<input {{ (in_array('updated_at', $columns) ? "checked='checked'" : "") }} type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
 										<span class="ms-2">{{ trans('messages.updated_at') }}</span>
 									</label>
 								</a>
 							</li>
 						</ul>
+
+						<script>
+							$(function() {
+								new ColumnsManager($('#SubscriberListContainer [name="columns[]"]'), '{{ action('SubscriberController@saveColumnsSettings') }}');
+							})
+
+							var ColumnsManager = class {
+								constructor(columnCheckers, url) {
+									this.columnCheckers = columnCheckers;
+									this.url = url;
+
+									this.columnCheckers.on('change', () => {
+										this.save();
+									});
+								}
+
+								save() {
+									$.ajax({
+										url: this.url,
+										method: 'POST',
+										data: {
+											_token: CSRF_TOKEN,
+											columns: this.columnCheckers.filter(':checked').map(function() {
+												return $(this).val();
+											}).get()
+										},
+									});      
+								}
+							}
+						</script>
 					</div>
 					<span class="text-nowrap">
 						<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
@@ -298,12 +312,12 @@
 			// Data list action
 			if ($(this).parents('.list_actions').length) {
 				var form = $(this).parents(".listing-form");
-				var vals = form.find("input[name='uids[]']:checked").map(function () {
+				var vals = form.find("input[name='ids[]']:checked").map(function () {
 					return this.value;
 				}).get();
 
 				data = {
-					uids: vals.join(",")
+					ids: vals.join(",")
 				};
 
 				// select_tool

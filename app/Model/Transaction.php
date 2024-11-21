@@ -8,6 +8,7 @@ use Acelle\Library\Traits\HasUid;
 class Transaction extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     // wait status
     public const STATUS_PENDING = 'pending';

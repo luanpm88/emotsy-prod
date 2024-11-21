@@ -11,7 +11,9 @@
 				'label' => '',
 				'value' => $domain->scheme,
 				'help_class' => 'tracking_domain',
-				'options' => [
+				'options' => Acelle\Model\Setting::isYes('tracking_domain.enable_https') == false ? [
+					['text' => 'HTTP', 'value' => 'http'],
+				] : [
 					['text' => 'HTTP', 'value' => 'http'],
 					['text' => 'HTTPS', 'value' => 'https'],
 				],
@@ -34,27 +36,7 @@
 				<div class="d-flex align-items-top me-3">
 					<label>
 						<input type="radio" name="verification_method"
-							{{ !$domain->verification_method || $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST ? 'checked' : '' }}
-							value="{{ Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST }}" class="styled">
-					</label>
-				</div>
-				<div style="width:100%">
-					<label>
-						{{ trans('messages.host_redirect_verification') }} 
-						<span class="checkbox-description">
-							{{ trans('messages.tracking_domain.host_redirect_verification.help') }} 
-						</span>
-					   
-				   </label>
-				</div>
-				   
-				
-	   		</div>
-			<div class="d-flex">	
-				<div class="d-flex align-items-top me-3">
-					<label>
-						<input type="radio" name="verification_method"
-							{{ $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_CNAME ? 'checked' : '' }}
+							{{ !$domain->verification_method || $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_CNAME ? 'checked' : '' }}
 							value="{{ Acelle\Model\TrackingDomain::VERIFICATION_METHOD_CNAME }}" class="styled">
 					</label>
 				</div>
@@ -70,6 +52,28 @@
 				   
 				
 	   		</div>
+
+			<div class="d-flex">	
+				<div class="d-flex align-items-top me-3">
+					<label>
+						<input type="radio" name="verification_method"
+							{{ $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST ? 'checked' : '' }}
+							value="{{ Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST }}" class="styled">
+					</label>
+				</div>
+				<div style="width:100%">
+					<label>
+						{{ trans('messages.host_redirect_verification') }} 
+						<span class="checkbox-description">
+							{{ trans('messages.tracking_domain.host_redirect_verification.help') }} 
+						</span>
+					   
+				   </label>
+				</div>
+				   
+				
+	   		</div>
+			
 		</div>
 	</div>
 </div>

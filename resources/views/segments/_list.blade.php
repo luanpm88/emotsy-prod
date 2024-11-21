@@ -47,6 +47,11 @@
                         <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span
                                     class="caret ml-0"></span></button>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            @if (\Gate::allows('update', $item))
+                                <li><a data-control="copy-segment" class="dropdown-item"
+                                    href="{{ action('SegmentController@copy', ['uid' => $item->uid]) }}"
+                                ><i class="material-symbols-rounded me-2">content_copy</i>{{ trans("messages.copy") }}</a></li>
+                            @endif
                             @if (\Gate::allows('delete', $item))
                                 <li><a class="dropdown-item list-action-single"
                                        link-confirm="{{ trans('messages.delete_segments_confirm') }}"
@@ -69,6 +74,19 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $segments])
+
+    <script>
+        $(() => {
+            $('[data-control="copy-segment"]').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                window.copySegment.popup.load(url);
+            });
+        });
+
+        
+    </script>
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">

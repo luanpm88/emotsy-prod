@@ -1,4 +1,6 @@
-
+@extends('layouts.core.backend', [
+	'menu' => 'admin',
+])
 
 @section('title', trans('messages.create_admin'))
 	
@@ -7,7 +9,7 @@
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li class="breadcrumb-item"><a href="{{ action("Admin\Admin2Controller@index") }}">{{ trans('messages.users') }}</a></li>
+					<li class="breadcrumb-item"><a href="{{ action("Admin\AdminController@index") }}">{{ trans('messages.admins') }}</a></li>
 				</ul>
 				<h1>
 					<span class="text-semibold"><span class="material-symbols-rounded">add</span> {{ trans('messages.create_admin') }}</span>
@@ -17,10 +19,10 @@
 @endsection
 
 @section('content')
-          <form enctype="multipart/form-data" action="{{ action('Admin\Admin2Controller@store') }}" method="POST" class="form-validate-jqueryz">
+          <form enctype="multipart/form-data" action="{{ action('Admin\AdminController@store') }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}
 					
-					@include('admin.admins2._form')			
+					@include('admin.admins._form')			
 					
 				<form>
 				

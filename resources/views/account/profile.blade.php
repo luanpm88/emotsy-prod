@@ -117,7 +117,10 @@
                         </div>
                     @endif
 
-                    @include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => $user->rules()])
+                    <div class="form-group">
+                        <label class="form-label">{{ trans('messages.email') }}</label>
+                        <input type="text" class="form-control disabled" disabled value="{{ Auth::user()->email }}" />
+                    </div>
 
                     @include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $user->rules()])
 
@@ -174,12 +177,15 @@
                     </div>
 
                 </div>
+                @if (Auth::user()->can('updateProfile', $customer))
+                    <hr>
+                    <div class="text-start">
+                        <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+                    </div>
+                @endif
             </div>
         </div>
-<hr>
-        <div class="text-start">
-            <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-        </div>
+
 
     <form>
 

@@ -22,20 +22,29 @@ class RunCampaign implements ShouldQueue
     use SerializesModels;
 
     protected CampaignInterface $campaign;
+    protected string $campaignQueue;  // Do not use the $queue name, already reserved by Illuminate\Bus\Queueable
+    protected $customer;
 
     public $timeout = 300;
     public $failOnTimeout = true;
     public $tries = 1;
     public $maxExceptions = 1;
 
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(CampaignInterface $campaign)
+    public function __construct(CampaignInterface $campaign, string $queue)
     {
         $this->campaign = $campaign;
+        $this->campaignQueue = $queue;
+
+        // For the sake of DB sharding
+        // We need a customer in the master db which helps
+        // establishing a correct connection
+        $this->customer = $this->campaign->customer;
     }
 
     /**
@@ -45,6 +54,9 @@ class RunCampaign implements ShouldQueue
      */
     public function handle()
     {
+        // Since this is executed in the console, a default db must be set first
+        $this->customer->setUserDbConnection();
+
         if ($this->campaign->isPaused()) {
             return;
         }
@@ -60,10 +72,10 @@ class RunCampaign implements ShouldQueue
 
             $this->campaign->logger()->info("Launch campaign from job: session {$sessionId}");
 
-            $this->campaign->logger()->warning('Pre: set up before send');
+            $this->campaign->logger()->warning('Set up campaign before sending');
             $this->campaign->prepare();
-            $this->campaign->logger()->warning('After: set up before send');
-            $this->campaign->run();
+            $this->campaign->logger()->warning('Done setting up campaign before sending');
+            $this->campaign->run($check = true, $this->campaignQueue);
 
             // after executing campaign.run(), this job just finishes
         } catch (\Throwable $e) {

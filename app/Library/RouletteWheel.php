@@ -24,13 +24,18 @@ namespace Acelle\Library;
 
 class RouletteWheel
 {
-    /**
-     * Pick a random element from an array based on its probability.
-     *
-     * @return mixed
-     */
+    public $weights = [];
+    public $elements = [];
+    public $allElements = [];
+    public $allWeights = [];
+
+    // @deprecated
     public static function take($a)
     {
+        if (empty($a)) {
+            return null;
+        }
+
         $sum = 0.0;
         $total = array_sum(array_values($a));
         $r = self::frandom();
@@ -52,13 +57,66 @@ class RouletteWheel
         return array_keys($a)[sizeof($a) - 1];
     }
 
-    /**
-     * Generate a random float.
-     *
-     * @return float random
-     */
     public static function frandom()
     {
         return (float) rand() / (float) getrandmax();
+    }
+
+    public function _contruct()
+    {
+        //
+    }
+
+    public function add($element, float $weightValue)
+    {
+        if ($weightValue < 0) {
+            throw new \Exception("Invalid WEIGHT value. Must be >= 0");
+        }
+
+        $newElementIndex = sizeof($this->elements);
+        $this->elements[$newElementIndex] = $element;
+        $this->weights[$newElementIndex] = $weightValue;
+
+        $this->allWeights[$newElementIndex] = $weightValue;
+        $this->allElements[$newElementIndex] = $element;
+    }
+
+    public function select($takeOutOfList = false)
+    {
+        $selectedIndex = static::take($this->weights);
+
+        if (is_null($selectedIndex)) {
+            return;
+        }
+
+        $selectedElement = $this->elements[ $selectedIndex ];
+
+        if ($takeOutOfList) {
+            unset($this->elements[$selectedIndex]);
+            unset($this->weights[$selectedIndex]);
+        }
+
+        return $selectedElement;
+    }
+
+    public function count()
+    {
+        return sizeof($this->elements);
+    }
+
+    public function getElements()
+    {
+        return $this->elements;
+    }
+
+    public function getAllElementsInclDroppedOnes()
+    {
+        return $this->allElements;
+    }
+
+    public function reset()
+    {
+        $this->elements = $this->allElements;
+        $this->weights = $this->allWeights;
     }
 }

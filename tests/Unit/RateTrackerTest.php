@@ -61,7 +61,7 @@ test('Rollback just works', function () {
     expect($linesCount)->toBe(1);
 });
 
-test('Clean up tracker', function() {
+test('Clean up tracker', function () {
 
     $file = '/tmp/test-rate';
     $tracker = new RateTracker($file);

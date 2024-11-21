@@ -73,7 +73,7 @@
                     </span>
                 </div>
             </div>
-            @if (Auth::user()->customer->can('create', new Acelle\Model\SendingDomain()))
+            @if (Auth::user()->customer->can('create', Acelle\Model\SendingDomain::class))
                 <div class="text-end">
                     <a href="{{ action('SendingDomainController@create') }}" role="button" class="btn btn-secondary">
                         <span class="material-symbols-rounded">add</span> {{ trans('messages.create_sending_domain') }}

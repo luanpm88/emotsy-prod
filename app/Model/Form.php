@@ -63,11 +63,8 @@ class Form extends Model implements HasTemplateInterface
         }
 
         $this->mail_list_id = \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id;
-        $this->save();
-
-        // set template
         $selectedTemplate = Template::findByUid($params['template_uid']);
-        $this->changeTemplate($selectedTemplate);
+        $this->changeTemplate($selectedTemplate); // also save
 
         return $validator;
     }

@@ -31,6 +31,9 @@ class AppServiceProvider extends ServiceProvider
         // @deprecated
         $this->addCustomValidationRules();
 
+        // Load custom DB connections from config/sharding.php
+        $this->loadShardingDbConnections();
+
         // Just finish if the application is not set up
         if (!isInitiated()) {
             return;
@@ -204,5 +207,28 @@ class AppServiceProvider extends ServiceProvider
         // [Illuminate\Database\QueryException]
         // SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes
         Schema::defaultStringLength(191);
+    }
+
+    private function loadShardingDbConnections()
+    {
+        if (!config('sharding.enabled')) {
+            return;
+        }
+
+        $configFile = base_path(config('sharding.connections_config'));
+
+        if (!file_exists($configFile)) {
+            throw new \Exception("DB SHARDING mode is on, but the config file '{$configFile}' does not exist");
+        }
+
+        $connections  = require $configFile;
+
+        if (!is_array($connections)) {
+            throw new \Exception("Invalid config file for DB SHARDING: '{$configFile}'. Expect an array of connections");
+        }
+
+        foreach ($connections as $name => $settings) {
+            \Config::set("database.connections.{$name}", $settings);
+        }
     }
 }

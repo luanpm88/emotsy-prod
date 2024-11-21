@@ -62,6 +62,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public const DELIVERY_STATUS_BOUNCED = 'bounced';
     public const DELIVERY_STATUS_FEEDBACK = 'feedback';
 
+    protected $serversPool = null;
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -118,6 +120,17 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         return $this->belongsTo(Customer::class);
     }
+    
+    public function signature()
+    {
+        return $this->belongsTo('Acelle\Model\Signature', 'signature_id');
+    }
+
+    public function setSignature($signature)
+    {
+        $this->signature_id = $signature ? $signature->id : null;
+        $this->save();
+    }
 
     /**
      * Get campaign validation rules.
@@ -134,8 +147,10 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
         if ($this->use_default_sending_server_from_email) {
             $rules['from_email'] = 'nullable|email';
+            $rules['reply_to'] = 'nullable|email';
         } else {
             $rules['from_email'] = 'required|email';
+            $rules['reply_to'] = 'required|email';
         }
 
         // tracking domain
@@ -178,7 +193,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     public function bounceLogs()
     {
-        return BounceLog::select('bounce_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')
+        return BounceLog::select('bounce_logs.*')->leftJoin('tracking_logs', 'tracking_logs.id', '=', 'bounce_logs.tracking_log_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
 
@@ -211,7 +226,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     public function feedbackLogs()
     {
-        return FeedbackLog::select('feedback_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')
+        return FeedbackLog::select('feedback_logs.*')->leftJoin('tracking_logs', 'tracking_logs.id', '=', 'feedback_logs.tracking_log_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
 
@@ -247,6 +262,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
         if ($lists_segments->isEmpty()) {
             $lists_segment = new CampaignsListsSegment();
+            $lists_segment->customer_id = $this->customer_id;
             $lists_segment->campaign_id = $this->id;
             $lists_segment->is_default = true;
 
@@ -314,7 +330,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         // @todo: customerneedcheck
         $params = array_merge(array(
-                'campaign_id' => $this->id,
                 'message_id' => $msgId,
                 'subscriber_id' => $subscriber->id,
                 'sending_server_id' => $server->id,
@@ -323,10 +338,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
         if (!isset($params['runtime_message_id'])) {
             $params['runtime_message_id'] = $msgId;
+        } else {
+            Customer::mapKeyToCustomer('runtime_message_id', $params['runtime_message_id'], $this->customer->id);
         }
 
         // create tracking log for message
-        TrackingLog::create($params);
+        $result = $this->trackingLogs()->create($params);
+
     }
 
     /**
@@ -440,6 +458,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             // Campaign link
             if ($this->campaignLinks()->where('url', '=', $url)->count() == 0) {
                 $cl = new CampaignLink();
+                $cl->customer_id = $this->customer_id;
                 $cl->campaign_id = $this->id;
                 $cl->url = $url;
                 $cl->save();
@@ -481,8 +500,10 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         // Step 2
-        if (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
-                && !empty($this->from_email) && !empty($this->reply_to)) {
+        if (!empty($this->name) && !empty($this->subject) &&
+            !empty($this->from_name) &&
+            ($this->use_default_sending_server_from_email || (!empty($this->from_email) && !empty($this->reply_to)))
+        ) {
             $step = 2;
         } else {
             return $step;
@@ -821,7 +842,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     }
 
     /**
-     * Count feedback rate.
+     * feedbackRate.
      *
      * @return number
      */
@@ -836,11 +857,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         return $this->feedbackCount() / $deliveredCount;
     }
 
-    /**
-     * Count bounce back.
-     *
-     * @return number
-     */
     public function bounceCount()
     {
         return $this->bounceLogs()->distinct('subscriber_id')->count('subscriber_id');
@@ -1227,6 +1243,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $newListSegment->segment_id = $listSegment->segment_id;
             $newListSegment->created_at = $now;
             $newListSegment->updated_at = $now;
+            $newListSegment->customer_id = $this->customer_id;
 
             $newListSegment->save();
         }
@@ -1319,7 +1336,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         // and queue again
-        $this->execute();
+        $this->execute($force = false, ACM_QUEUE_TYPE_BATCH);
     }
 
     /**
@@ -1419,6 +1436,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                         $segment = Segment::findByUid($segment_uid);
 
                         $lists_segment = new CampaignsListsSegment();
+                        $lists_segment->customer_id = $this->customer_id;
                         $lists_segment->campaign_id = $this->id;
                         if ($mail_list) {
                             $lists_segment->mail_list_id = $mail_list->id;
@@ -1428,6 +1446,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                     }
                 } else {
                     $lists_segment = new CampaignsListsSegment();
+                    $lists_segment->customer_id = $this->customer_id;
                     $lists_segment->campaign_id = $this->id;
                     if ($mail_list) {
                         $lists_segment->mail_list_id = $mail_list->id;
@@ -1461,6 +1480,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                         'campaign_id' => $this->id,
                         'mail_list_id' => $lists_segments_group['list']->id,
                         'segment_id' => $segment->id,
+                        'customer_id' => $this->customer_id,
                     ];
                 }
             } else {
@@ -1468,6 +1488,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                     'campaign_id' => $this->id,
                     'mail_list_id' => $lists_segments_group['list']->id,
                     'segment_id' => null,
+                    'customer_id' => $this->customer_id,
                 ];
             }
         }
@@ -2102,8 +2123,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             function ($join) {
                 $join->on('tracking_logs.subscriber_id', 'subscribers.id');
             }
-        )->leftJoin('bounce_logs', 'tracking_logs.message_id', 'bounce_logs.message_id')
-         ->leftJoin('feedback_logs', 'tracking_logs.message_id', 'feedback_logs.message_id')
+        )->leftJoin('bounce_logs', 'tracking_logs.id', 'bounce_logs.tracking_log_id')
+         ->leftJoin('feedback_logs', 'tracking_logs.id', 'feedback_logs.tracking_log_id')
          ->leftJoin('unsubscribe_logs', 'tracking_logs.message_id', 'unsubscribe_logs.message_id');
 
         $query->select(DB::raw(strtr("
@@ -2159,23 +2180,23 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         return route('webViewerPreviewUrl', [
             'campaign_uid' => $this->uid,
-            'subscriber_uid' => $subscriber->uid,
+            'subscriber_id' => $subscriber->id,
         ]);
     }
 
     public function prepare()
     {
         // Available sending servers
-        $sendingServersPool = $this->defaultMailList->getSendingServers();
+        $servers = $this->defaultMailList->getSendingServers();
 
         // No sending server ready for delivery
-        if (empty($sendingServersPool)) {
+        if (empty($servers)) {
             throw new Exception('No sending server avaialble');
         }
 
         // @important: make sure this function is called twice at the same time.
         // Otherwise, concurrency issue might happen: "Campaign stopped. Timeout getting lock #Lockable for: /home/app/public_html/storage/locks/sending-server-sns-6512d..."
-        foreach ($sendingServersPool as $serverId => $fitness) {
+        foreach ($servers as $serverId => $fitness) {
             $server = SendingServer::find($serverId)->mapType();
 
             if ($this->useSendingServerFromEmailAddress()) {
@@ -2207,22 +2228,36 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
     }
 
+    public function getServersPool()
+    {
+        if (is_null($this->serversPool)) {
+            // Available sending servers
+            $serversAndWeights = $this->defaultMailList->getSendingServers();
+            // No sending server ready for delivery
+            if (empty($serversAndWeights)) {
+                throw new Exception('No sending server avaialble');
+            }
+
+            $pool = new RouletteWheel();
+            foreach ($serversAndWeights as $serverId => $weight) {
+                $server = SendingServer::find($serverId)->mapType();
+                $pool->add($server, $weight);
+            }
+
+            $this->serversPool = $pool;
+        }
+
+        return $this->serversPool;
+    }
+
     /**
      * Load delivery jobs from a list of IDs
      */
     public function loadDeliveryJobsByIds(Closure $callback, int $page, array $listOfIds)
     {
-        // Available sending servers
-        $sendingServersPool = $this->defaultMailList->getSendingServers();
-
-        // No sending server ready for delivery
-        if (empty($sendingServersPool)) {
-            throw new Exception('No sending server avaialble');
-        }
-
         // Query subscribers
         $subscribers = $this->subscribersToSend()->whereIn('subscribers.id', $listOfIds)->get();
-
+        $serverPool = $this->getServersPool();
         if (sizeof($subscribers) == 0) {
             $this->logger()->info("Page {$page}, no contacts in this page");
         } else {
@@ -2230,18 +2265,14 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         foreach ($subscribers as $subscriber) {
-            $serverId = RouletteWheel::take($sendingServersPool);
-            $server = SendingServer::find($serverId)->mapType();
-
             // Dispatch delivery job and return it to the LoadCampaign to monitor
-
             if (config('app.saas')) {
                 $subscription = $this->customer->getCurrentActiveGeneralSubscription();
             } else {
                 $subscription = null;
             }
 
-            $job = new SendMessage($this, $subscriber, $server, $subscription);
+            $job = new SendMessage($this, $subscriber, $serverPool, $subscription);
             $stopOnError = $this->stopOnError();
             // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
             $job->setStopOnError($stopOnError);
@@ -2263,9 +2294,11 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     //           + It guarantees that this method is not called the second time before all SendMessage jobs are already done.
     public function subscribersToSend()
     {
+
+        // Notice that if an email already exists in tracking_logs but with status 'duplicate' (skipped) => then a new message to the same email will be allowed
         // Retrieve subscribers to send!
         $query = $this->subscribers([])
-                ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
+                ->whereRaw(sprintf(table('subscribers').".email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s AND t.status != '%s')", table('tracking_logs'), table('subscribers'), $this->id, TrackingLog::STATUS_DUPLICATE))
                 ->subscribed()
                 ->deliverableOrNotVerified();
 
@@ -2370,7 +2403,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         $webhook = new \Acelle\Model\CampaignWebhook();
         $webhook->campaign_id = $this->id;
-
+        $webhook->customer_id = $this->customer_id;
         return $webhook;
     }
 
@@ -2449,6 +2482,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $campaign->type = self::TYPE_REGULAR;
         $campaign->name = trans('messages.untitled');
         $campaign->status = Campaign::STATUS_NEW;
+        $campaign->skip_failed_message = Setting::isYes('email.default.skip_failed_message');
 
         return $campaign;
     }
@@ -2504,6 +2538,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $template = new Template();
         $template->uid = uniqid();
         $template->fill($attributes); // Including 'uid', 'name', 'content', 'builder'
+        $template->is_private = Template::IS_PRIVATE;
         $template->content = $content;
         $template->customer_id = $this->customer_id;
         $template->name = trans('messages.campaign.template_name', ['name' => $this->name]);
@@ -2550,7 +2585,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             // Pick up an available sending server
             // Throw exception in case no server available
             $server = $this->pickSendingServer($this);
-            $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+            $customerUid = $this->customer->uid;
+            $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email), $customerUid);
 
             $sent = [
                 'status' => 'sent',
@@ -2628,6 +2664,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         foreach ($this->trackingLogs()->whereIn('id', $unsubscribeLogs)->get() as $r) {
             // Unsubscribe log
             $log = new \Acelle\Model\UnsubscribeLog();
+            $log->customer_id = $this->customer_id;
             $log->message_id = $r->message_id;
             $log->subscriber_id = $r->subscriber_id;
             $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
@@ -2965,7 +3002,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             if ($diffInSeconds > $triggerIfExceeds) {
                 $notice = sprintf("Audit: Campaign '%s' is pending (last updated '%s'), force resuming...", $campaign->name, $lastActivityAt->diffForHumans());
                 $campaign->logger()->warning($notice);
-                $campaign->execute($force = true);
+                $campaign->execute($force = true, ACM_QUEUE_TYPE_BATCH);
             } else {
                 // Just fine
                 $campaign->logger()->warning(sprintf("Audit: campaign '%s' was last updated '%s', it is just fine", $campaign->name, $lastActivityAt->diffForHumans()));
@@ -2977,7 +3014,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         $campaignHeader = campaignHeader::newDefault();
         $campaignHeader->campaign_id = $this->id;
+        $campaignHeader->customer_id = $this->customer_id;
 
         return $campaignHeader;
+    }
+
+    public function useSendingServerDefaultFromEmailAddress()
+    {
+        return $this->use_default_sending_server_from_email == true;
     }
 }

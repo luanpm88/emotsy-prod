@@ -164,7 +164,7 @@ http://test.acellemail.com:8888/api/v1/lists/{list_uid}/subscribers? \
 -d api_token=ME45Scg0tKaDplHgvR7Pcv20o9RsNna9dxx39lsayRpKkCZkP9QAgqT10yL7
 </code></pre>
 
-<h4 id="get-apiv1listslist_uidsubscribersuid">GET /api/v1/lists/{list_uid}/subscribers/{uid}</h4>
+<h4 id="get-apiv1listslist_uidsubscribersuid">GET /api/v1/lists/{list_uid}/subscribers/{id}</h4>
 <p>Retrive a particulr subscriber of a mail list</p>
 <p>Parameters:</p>
 <ul>
@@ -172,11 +172,11 @@ http://test.acellemail.com:8888/api/v1/lists/{list_uid}/subscribers? \
 <li><code>uid</code> Subscriber's UID</li>
 </ul>
 <pre><code class="sh">curl -X GET -H &quot;accept:application/json&quot; -G \
-http://test.acellemail.com:8888/api/v1/lists/{list_uid}/subscribers/{uid}? \
+http://test.acellemail.com:8888/api/v1/lists/{list_uid}/subscribers/{id}? \
 -d api_token=ME45Scg0tKaDplHgvR7Pcv20o9RsNna9dxx39lsayRpKkCZkP9QAgqT10yL7
 </code></pre>
 
-<h4 id="patch-apiv1listslist_uidsubscribersuidsubscribe">PATCH /api/v1/lists/{list_uid}/subscribers/{uid}/subscribe</h4>
+<h4 id="patch-apiv1listslist_uidsubscribersuidsubscribe">PATCH /api/v1/lists/{list_uid}/subscribers/{id}/subscribe</h4>
 <p>Subscribe a subscriber</p>
 <p>Parameters:</p>
 <ul>
@@ -184,11 +184,11 @@ http://test.acellemail.com:8888/api/v1/lists/{list_uid}/subscribers/{uid}? \
 <li><code>uid</code> Subscriber's UID</li>
 </ul>
 <pre><code class="sh">curl -X PATCH -H &quot;accept:application/json&quot; -G \
-http://test.acellemail.com:8888/api/v1/lists/{list_uid}/subscribers/{uid}/subscribe? \
+http://test.acellemail.com:8888/api/v1/lists/{list_uid}/subscribers/{id}/subscribe? \
 -d api_token=ME45Scg0tKaDplHgvR7Pcv20o9RsNna9dxx39lsayRpKkCZkP9QAgqT10yL7
 </code></pre>
 
-<h4 id="patch-apiv1listslist_uidsubscribersuidunsubscribe">PATCH /api/v1/lists/{list_uid}/subscribers/{uid}/unsubscribe</h4>
+<h4 id="patch-apiv1listslist_uidsubscribersuidunsubscribe">PATCH /api/v1/lists/{list_uid}/subscribers/{id}/unsubscribe</h4>
 <p>Unsubscribe a subscriber</p>
 <p>Parameters:</p>
 <ul>
@@ -196,7 +196,7 @@ http://test.acellemail.com:8888/api/v1/lists/{list_uid}/subscribers/{uid}/subscr
 <li><code>uid</code> Subscriber's UID</li>
 </ul>
 <pre><code class="sh">curl -X PATCH -H &quot;accept:application/json&quot; -G \
-http://test.acellemail.com:8888/api/v1/lists/{list_id}/subscribers/{uid}/unsubscribe? \
+http://test.acellemail.com:8888/api/v1/lists/{list_id}/subscribers/{id}/unsubscribe? \
 -d api_token=ME45Scg0tKaDplHgvR7Pcv20o9RsNna9dxx39lsayRpKkCZkP9QAgqT10yL7
 </code></pre></div>
             

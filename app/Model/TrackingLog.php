@@ -28,12 +28,13 @@ class TrackingLog extends Model
 {
     public const STATUS_SENT = 'sent';
     public const STATUS_FAILED = 'failed';
+    public const STATUS_DUPLICATE = 'duplicate'; // record in tracking log as duplicate, not sent
 
     public const STATUS_BOUNCED = 'bounced';
     public const STATUS_FEEDBACK_ABUSE = 'feedback-abuse';
     public const STATUS_FEEDBACK_SPAM = 'feedback-spam';
 
-    protected $fillable = ['email_id', 'campaign_id', 'message_id', 'runtime_message_id', 'subscriber_id', 'sending_server_id', 'customer_id', 'status', 'error', 'auto_trigger_id', 'sub_account_id', 'mail_list_id'];
+    protected $fillable = ['email_id', 'campaign_id', 'message_id', 'runtime_message_id', 'subscriber_id', 'sending_server_id', 'customer_id', 'status', 'error', 'auto_trigger_id', 'mail_list_id'];
 
     /**
      * Associations.
@@ -57,7 +58,12 @@ class TrackingLog extends Model
 
     public function sendingServer()
     {
-        return $this->belongsTo('Acelle\Model\SendingServer');
+        throw new \Exception("Cross DB reference: tracking log -> sending server");
+    }
+
+    public function getSendingServer()
+    {
+        return SendingServer::find($this->sending_server_id);
     }
 
     public function subscriber()
@@ -85,7 +91,8 @@ class TrackingLog extends Model
         $query = self::select('tracking_logs.*');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+        // Cross DB ref, not supported
+        // $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
 
         // Keyword

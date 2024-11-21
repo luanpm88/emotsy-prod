@@ -2,6 +2,7 @@
 
 use Acelle\Library\CreditTracker;
 use Acelle\Library\Exception\OutOfCredits;
+
 use function Acelle\Helpers\execute_with_limits;
 
 test('Credit tracker just works', function () {
@@ -79,7 +80,7 @@ test('Cannot assign invalid values for CreditTracker (<-1)', function () {
 })->throws(Exception::class);
 
 
-test("Top-up credits", function() {
+test("Top-up credits", function () {
     $key1 = 'credit-tracker-test-1';
     $creditTracker1 = CreditTracker::load($key1);
     $creditTracker1->setCredits(100);

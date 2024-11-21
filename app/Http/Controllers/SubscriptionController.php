@@ -8,6 +8,8 @@ use Acelle\Model\SubscriptionLog;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Model\InvoiceNewSubscription;
+use Acelle\Model\InvoiceRenewSubscription;
+use Acelle\Model\InvoiceChangePlan;
 use Acelle\Model\Transaction;
 use Acelle\Model\PlanGroup;
 
@@ -53,6 +55,11 @@ class SubscriptionController extends Controller
 
     public function selectPlan(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         // init
         $customer = $request->user()->customer;
         $subscription = $customer->getNewOrActiveGeneralSubscription();
@@ -67,6 +74,11 @@ class SubscriptionController extends Controller
 
     public function assignPlan(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         $plan = PlanGeneral::findByUid($request->plan_uid);
 
@@ -85,9 +97,28 @@ class SubscriptionController extends Controller
         // assign plan
         $subscription = $customer->assignGeneralPlan($plan);
 
-        // Check if subscriotion is new
+        //
+        $invoice = $subscription->getItsOnlyUnpaidInitInvoice();
+
+        // Nếu invoice cho plan mà bỏ qua payment when free thì return view confirmation
+        if (
+            in_array($invoice->type, [
+                InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
+                InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
+                InvoiceChangePlan::TYPE_CHANGE_PLAN,
+            ]) &&
+            $invoice->no_payment_required_when_free &&
+            $invoice->isFree()
+        ) {
+            // return to subscription
+            return redirect()->action('SubscriptionController@noPaymentConfirmation', [
+                'invoice_uid' => $invoice->uid,
+            ]);
+        }
+
+        // redirect to billing information step
         return redirect()->action('SubscriptionController@billingInformation', [
-            'invoice_uid' => $subscription->getItsOnlyUnpaidInitInvoice()->uid,
+            'invoice_uid' => $invoice->uid,
         ]);
     }
 
@@ -105,13 +136,27 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if ($invoice->isPaid()) {
-            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
-            return redirect()->action('SubscriptionController@index')
-                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('InvoiceController@show', $request->invoice_uid);
         }
 
         // always update invoice price from plan
-        $invoice->mapType()->refreshPrice();
+        $invoice = $invoice->mapType();
+
+        // Nếu invoice cho plan mà bỏ qua payment when free thì return view confirmation
+        if (
+            in_array($invoice->type, [
+                InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
+                InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
+                InvoiceChangePlan::TYPE_CHANGE_PLAN,
+            ]) &&
+            $invoice->no_payment_required_when_free &&
+            $invoice->isFree()
+        ) {
+            // return to subscription
+            return redirect()->action('SubscriptionController@noPaymentConfirmation', [
+                'invoice_uid' => $invoice->uid,
+            ]);
+        }
 
         // Save posted data
         if ($request->isMethod('post')) {
@@ -160,6 +205,11 @@ class SubscriptionController extends Controller
 
     public function payment(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         // Get current customer
         $customer = $request->user()->customer;
 
@@ -175,9 +225,7 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if ($invoice->isPaid()) {
-            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
-            return redirect()->action('SubscriptionController@index')
-                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('InvoiceController@show', $request->invoice_uid);
         }
 
         // no unpaid invoice found
@@ -194,13 +242,29 @@ class SubscriptionController extends Controller
         }
 
         // always update invoice price from plan
-        $invoice->mapType()->refreshPrice();
+        $invoice = $invoice->mapType();
 
         // nếu đang có pending transaction thì luôn show màn hình pending
         if ($invoice->getPendingTransaction()) {
             return view('subscription.pending', [
                 'invoice' => $invoice,
                 'transaction' => $invoice->getPendingTransaction(),
+            ]);
+        }
+
+        // Nếu invoice cho plan mà bỏ qua payment when free thì return view confirmation
+        if (
+            in_array($invoice->type, [
+                InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
+                InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
+                InvoiceChangePlan::TYPE_CHANGE_PLAN,
+            ]) &&
+            $invoice->no_payment_required_when_free &&
+            $invoice->isFree()
+        ) {
+            // return to subscription
+            return redirect()->action('SubscriptionController@noPaymentConfirmation', [
+                'invoice_uid' => $invoice->uid,
             ]);
         }
 
@@ -218,6 +282,11 @@ class SubscriptionController extends Controller
 
     public function checkout(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first()->mapType();
 
@@ -229,9 +298,7 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if ($invoice->isPaid()) {
-            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
-            return redirect()->action('SubscriptionController@index')
-                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('InvoiceController@show', $request->invoice_uid);
         }
 
         // always update invoice price from plan
@@ -256,12 +323,20 @@ class SubscriptionController extends Controller
             return redirect()->action('SubscriptionController@index');
         }
 
+        // set return url
+        Billing::setReturnUrl(action('SubscriptionController@index'));
+
         // redirect to service checkout
         return redirect()->away($customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice));
     }
 
     public function cancelInvoice(Request $request, $uid)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $invoice = \Acelle\Model\Invoice::findByUid($uid);
 
         // return to select plan if sub is NEW
@@ -289,6 +364,11 @@ class SubscriptionController extends Controller
      **/
     public function changePlan(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         $subscription = $customer->getCurrentActiveGeneralSubscription();
         $gateway = $customer->getPreferredPaymentGateway();
@@ -346,6 +426,11 @@ class SubscriptionController extends Controller
      */
     public function disableRecurring(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
@@ -372,6 +457,11 @@ class SubscriptionController extends Controller
      */
     public function enableRecurring(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $customer = $request->user()->customer;
         $subscription = $customer->getNewOrActiveGeneralSubscription();
 
@@ -393,6 +483,11 @@ class SubscriptionController extends Controller
      */
     public function cancelNow(Request $request)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
@@ -433,6 +528,11 @@ class SubscriptionController extends Controller
 
     public function verifyPendingTransaction(Request $request, $invoice_uid)
     {
+        // authorize
+        if (!$request->user()->customer->can('updateProfile', $request->user()->customer)) {
+            return $this->notAuthorized();
+        }
+
         $invoice = \Acelle\Model\Invoice::findByUid($invoice_uid);
         $transaction = $invoice->getPendingTransaction();
 
@@ -495,6 +595,57 @@ class SubscriptionController extends Controller
         return view('subscription.selectTierChange', [
             'plan' => $plan,
             'subscription' => $subscription,
+        ]);
+    }
+    
+    public function noPaymentConfirmation(Request $request)
+    {
+        $invoice = $request->user()->customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
+        $invoice = $invoice->mapType();
+
+        // can not found the invoice
+        if (!$invoice) {
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] does not exist!");
+        }
+
+        //
+        if (!in_array($invoice->type, [
+            InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
+            InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
+            InvoiceChangePlan::TYPE_CHANGE_PLAN,
+        ])) {
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "Invoice type is invalid!");
+        }
+
+        // can not found the invoice
+        if ($invoice->isPaid()) {
+            return redirect()->action('InvoiceController@show', $request->invoice_uid);
+        }
+
+        // check settings
+        if (!$invoice->no_payment_required_when_free) {
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The plan no_payment_required_when_free setting is false!");
+        }
+
+        // check settings
+        if (!$invoice->isFree()) {
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice total is not free!");
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            // checkout no payment
+            $invoice->bypassPayment();
+
+            return redirect()->action('SubscriptionController@index');
+        }
+
+        return view('subscription.noPaymentConfirmation', [
+            'invoice' => $invoice,
         ]);
     }
 }

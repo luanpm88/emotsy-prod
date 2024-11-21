@@ -34,11 +34,14 @@ use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\Hook;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Acelle\Library\Traits\HasSettingsField;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use HasSettingsField;
     use HasUid;
+    protected $connection = 'mysql';
 
     /*******
      * Important: Storage location: User vs Customer
@@ -164,7 +167,7 @@ class User extends Authenticatable
      */
     public function sendActivationMail($name = null, $planUid = null)
     {
-        $layout = \Acelle\Model\Layout::where('alias', 'registration_confirmation_email')->first();
+        $layout = \Acelle\Model\Layout::findByAlias('registration_confirmation_email');
         $token = $this->getToken();
 
         $layout->content = str_replace('{ACTIVATION_URL}', join_url(config('app.url'), action('UserController@activate', ['token' => $token, 'plan_uid' => $planUid], false)), $layout->content);
@@ -184,6 +187,12 @@ class User extends Authenticatable
 
         $mailer = App::make('xmailer');
         $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (!empty(Setting::get('notification.on_user_created'))) {
+            $message->setTo(Setting::get('notification.on_user_created'));
+            $mailer->sendWithDefaultFromAddress($message);
+            echo "OK";
+        }
 
         if (array_key_exists('error', $result)) {
             throw new \Exception($result['error']);
@@ -653,16 +662,13 @@ class User extends Authenticatable
         $locale = app()->getLocale();
         $language = Language::where('code', '=', $locale)->first();
 
-        $customer = \Acelle\Model\Customer::newCustomer();
-        $customer->language_id = $language->id;
-        $customer->status = 'active';
-        $customer->timezone = date_default_timezone_get();
-        
-        if (!$customer->name) {
-            $customer->name = $user->email;
-        }
-
-        $customer->save();
+        // SAVE CUSTOMER
+        list($validator, $customer) = Customer::createCustomer(
+            $name = $params['name'],
+            $timezone = date_default_timezone_get(),
+            $language_id = $language->id,
+            $admin = null
+        );
 
         // assign customer
         $user->customer_id = $customer->id;
@@ -723,59 +729,6 @@ class User extends Authenticatable
         $this->fill($params);
     }
 
-    public function saveFromRequest($request)
-    {
-        $rules = array(
-            'email' => 'required|email|unique:users,email,'.$this->id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'image' => 'nullable|image',
-            'role_uid' => 'required',
-        );
-
-        if (isset($this->id)) {
-            $rules['password'] = 'nullable|confirmed|min:5|max:255';
-        } else {
-            $rules['password'] = 'required|confirmed|min:5|max:255';
-        }
-
-        $this->fillAttributes($request->all());
-
-        $validator = \Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return [false, $validator->errors()];
-        }
-
-        // Update password
-        if (!empty($request->password)) {
-            $this->password = bcrypt($request->password);
-        }
-
-        // save
-        $this->save();
-
-        // Upload and save image
-        if ($request->hasFile('image')) {
-            if ($request->file('image')->isValid()) {
-                // Remove old images
-                $this->uploadProfileImage($request->file('image'));
-            }
-        }
-
-        // Remove image
-        if ($request->_remove_image == 'true') {
-            $this->removeProfileImage();
-        }
-
-        // update user role
-        if ($request->role_uid) {
-            $this->setRole(Role::findByUid($request->role_uid));
-        }
-
-        return [true, $validator->errors()];
-    }
-
     public function enable()
     {
         $this->activated = 1;
@@ -817,10 +770,9 @@ class User extends Authenticatable
         if (!$this->getRole()) {
             return false;
         }
-        
+
         return $this->getRole()->hasPermission($permission);
     }
-    
     public function getOnscreenIntros()
     {
         if (!$this->onscreen_intros) {
@@ -978,5 +930,84 @@ class User extends Authenticatable
     public function is2FAGoogleAuthentictorEnabled()
     {
         return $this->enable_2fa_google_authenticator && $this->google_2fa_secret_key;
+    }
+
+    public function saveUser(
+        $email,
+        $password,
+        $passwordConfirmation,
+        $first_name,
+        $last_name,
+        $image,
+        $role_uid
+    ) {
+        $rules = [
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
+            'role_uid' => 'required',
+        ];
+
+        if (isset($this->id)) {
+            $rules['password'] = 'nullable|confirmed|min:5|max:255';
+        } else {
+            $rules['password'] = 'required|confirmed|min:5|max:255';
+        }
+
+        // fill
+        $this->email = $email;
+        if ($password) {
+            $this->password = $password;
+        }
+        $this->first_name = $first_name;
+        $this->last_name = $last_name;
+
+        $validator = \Validator::make([
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $passwordConfirmation,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'image' => $image,
+            'role_uid' => $role_uid,
+        ], $rules);
+
+        // validate
+        if ($validator->fails()) {
+            return [false, $validator->errors()];
+        }
+
+        // find role
+        $role = Role::findByUid($role_uid);
+
+        // Update password
+        if (!empty($password)) {
+            $this->password = bcrypt($password);
+        }
+
+        // is_new check
+        $isNew = !$this->id;
+
+        // save
+        $this->save();
+
+        // Hook
+        if ($isNew) {
+            Hook::execute('user_added', [$this]);
+        }
+
+        // Upload and save image
+        if ($image) {
+            if ($image->isValid()) {
+                // Remove old images
+                $this->uploadProfileImage($image);
+            }
+        }
+
+        // role is required
+        $this->setRole($role);
+
+        return [true, $validator->errors()];
     }
 }

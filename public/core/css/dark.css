@@ -888,5 +888,24 @@ body.mode-dark [chat-control="insert"]:hover {
     background-color: rgba(255,255,255,0.1);
 }
 body.mode-dark .text-dark {
-    color: rgba(255,255,255,0.8)!important; 
+    color: rgba(255,255,255,0.9)!important;
+}
+body.mode-dark input {
+    color: rgba(255,255,255,0.9);
+}
+
+body.mode-dark .iti__country-list {
+    background: rgba(0,0,0,0.5);
+    border-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+body.mode-dark input.disabled {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+body.mode-dark .radio-label {
+    color: rgba(255,255,255,0.9)!important;
+}
+.radio-label:hover {
+    border-color: rgba(255, 255, 255, 0.2);
 }

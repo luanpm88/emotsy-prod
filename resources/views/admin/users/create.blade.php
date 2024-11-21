@@ -5,16 +5,15 @@
 @section('title', trans('messages.create_customer'))
 	
 @section('page_header')
-    <div class="page-title">
+    <div class="page-title">				
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ action("Admin\UserController@index", [
-                'customer_uid' => $customer->uid,
-            ]) }}">{{ trans('messages.users') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\CustomerController@index") }}">{{ trans('messages.customers') }}</a></li>
+            <li class="breadcrumb-item active">{{ trans('messages.user.add_new') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">add</span> {{ trans('messages.user.add_new') }}</span>
-        </h1>
+            <span class="text-semibold"><span class="material-symbols-rounded">apartment</span> {{ $customer->displayName() }}</span>
+        </h1>				
     </div>
 @endsection
 

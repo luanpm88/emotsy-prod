@@ -4,7 +4,7 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Acelle\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Acelle\SendingCredit\Model\EmailVerificationPlan;
+use Acelle\Model\EmailVerificationPlan;
 
 class EmailVerificationPlanController extends Controller
 {
@@ -15,7 +15,7 @@ class EmailVerificationPlanController extends Controller
      */
     public function index(Request $request)
     {
-        return view('sending-credit::admin.email_verification_plans.index');
+        return view('admin.email_verification_plans.index');
     }
 
     /**
@@ -29,7 +29,7 @@ class EmailVerificationPlanController extends Controller
             ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
             ->paginate($request->per_page);
 
-        return view('sending-credit::admin.email_verification_plans._list', [
+        return view('admin.email_verification_plans._list', [
             'plans' => $plans,
         ]);
     }
@@ -40,7 +40,7 @@ class EmailVerificationPlanController extends Controller
         $plans = EmailVerificationPlan::newDefault();
 
         //
-        return view('sending-credit::admin.email_verification_plans.create', [
+        return view('admin.email_verification_plans.create', [
             'plan' => $plans,
         ]);
     }
@@ -55,7 +55,7 @@ class EmailVerificationPlanController extends Controller
 
         // if error
         if ($validator->fails()) {
-            return response()->view('sending-credit::admin.email_verification_plans.create', [
+            return response()->view('admin.email_verification_plans.create', [
                 'plan' => $plans,
                 'errors' => $validator->errors(),
             ], 400);
@@ -74,7 +74,7 @@ class EmailVerificationPlanController extends Controller
         $plans = EmailVerificationPlan::findByUid($uid);
 
         //
-        return view('sending-credit::admin.email_verification_plans.edit', [
+        return view('admin.email_verification_plans.edit', [
             'plan' => $plans,
         ]);
     }
@@ -89,7 +89,7 @@ class EmailVerificationPlanController extends Controller
 
         // if error
         if ($validator->fails()) {
-            return response()->view('sending-credit::admin.email_verification_plans.edit', [
+            return response()->view('admin.email_verification_plans.edit', [
                 'plan' => $plans,
                 'errors' => $validator->errors(),
             ], 400);
@@ -166,7 +166,7 @@ class EmailVerificationPlanController extends Controller
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
-        return view('sending-credit::admin.email_verification_plans.delete_confirm', [
+        return view('admin.email_verification_plans.delete_confirm', [
             'plans' => $plans,
         ]);
     }

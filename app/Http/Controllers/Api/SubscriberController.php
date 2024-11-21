@@ -127,10 +127,13 @@ class SubscriberController extends Controller
                 $subscriber->save();
             }
 
+            // Timeline record
+            \Acelle\Model\Timeline::recordApiAdded($subscriber, $user->customer);
+
             return \Response::json(array(
                 'status' => 1,
                 'message' => ($list->subscribe_confirmation) ? trans('messages.subscriber.confirmation_email_sent') : trans('messages.subscriber.created'),
-                'subscriber_uid' => $subscriber->uid,
+                'subscriber_id' => $subscriber->id,
             ), 200);
         } catch (\Exception $ex) {
             return \Response::json(array('message' => $ex->getMessage()), 500);
@@ -147,11 +150,11 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($uid)
+    public function show($id)
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Acelle\Model\Subscriber::where('uid', '=', $uid)
+        $item = \Acelle\Model\Subscriber::where('id', '=', $id)
             ->first();
 
         $list = $item->mailList;
@@ -195,10 +198,10 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribe($list_uid, $uid)
+    public function subscribe($list_uid, $id)
     {
         $user = \Auth::guard('api')->user();
-        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
+        $subscriber = \Acelle\Model\Subscriber::find($id);
 
         // check if item exists
         if (!$subscriber) {
@@ -231,6 +234,9 @@ class SubscriberController extends Controller
 
         $subscriber->subscribe($trackingInfo);
 
+        // Timeline record
+        \Acelle\Model\Timeline::recordApiSubscribed($subscriber, $user->customer);
+
         // Log
         $subscriber->log('subscribed', $user->customer);
 
@@ -247,10 +253,10 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function unsubscribe($list_uid, $uid)
+    public function unsubscribe($list_uid, $id)
     {
         $user = \Auth::guard('api')->user();
-        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
+        $subscriber = \Acelle\Model\Subscriber::find($id);
 
         // check if item exists
         if (!$subscriber) {
@@ -362,10 +368,10 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete($uid)
+    public function delete($id)
     {
         $user = \Auth::guard('api')->user();
-        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
+        $subscriber = \Acelle\Model\Subscriber::find($id);
 
         // check if item exists
         if (!$subscriber) {
@@ -423,7 +429,7 @@ class SubscriberController extends Controller
             if ($user->can('read', $subscriber)) {
                 // subscriber
                 $row = [
-                    'uid' => $subscriber->uid,
+                    'id' => $subscriber->id,
                     'list_uid' => $subscriber->mailList->uid,
                     'email' => $subscriber->email,
                     'status' => $subscriber->status,
@@ -452,11 +458,11 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $uid)
+    public function update(Request $request, $id)
     {
         $user = \Auth::guard('api')->user();
         $customer = $user->customer;
-        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
+        $subscriber = \Acelle\Model\Subscriber::find($id);
 
         // authorize
         if (!$user->can('update', $subscriber)) {
@@ -502,7 +508,7 @@ class SubscriberController extends Controller
         return \Response::json(array(
             'status' => 1,
             'message' => trans('messages.subscriber.updated'),
-            'subscriber_uid' => $subscriber->uid,
+            'subscriber_id' => $subscriber->id,
         ), 200);
     }
 
@@ -514,10 +520,10 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function addTag(Request $request, $uid)
+    public function addTag(Request $request, $id)
     {
         $user = \Auth::guard('api')->user();
-        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
+        $subscriber = \Acelle\Model\Subscriber::find($id);
 
         // authorize
         if (!$user->can('update', $subscriber)) {
@@ -533,15 +539,15 @@ class SubscriberController extends Controller
         return \Response::json(array(
             'status' => 1,
             'message' => trans('messages.subscriber.tag_added'),
-            'subscriber_uid' => $subscriber->uid,
+            'subscriber_id' => $subscriber->id,
             'tags' => $subscriber->getTags(),
         ), 200);
     }
 
-    public function removeTag(Request $request, $uid)
+    public function removeTag(Request $request, $id)
     {
         $user = \Auth::guard('api')->user();
-        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
+        $subscriber = \Acelle\Model\Subscriber::find($id);
 
         // authorize
         if (!$user->can('update', $subscriber)) {
@@ -557,7 +563,7 @@ class SubscriberController extends Controller
         return \Response::json(array(
             'status' => 1,
             'message' => trans('messages.subscriber.tag_removed'),
-            'subscriber_uid' => $subscriber->uid,
+            'subscriber_id' => $subscriber->id,
             'tags' => $subscriber->getTags(),
         ), 200);
     }

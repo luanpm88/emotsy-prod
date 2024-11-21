@@ -25,6 +25,25 @@
     </table>
 @endif
 
+@if (request()->operation == 'remove_tag')
+    <table class="table my-3" style="border-bottom: solid 1px #ddd">
+        <thead class="thead-light">
+            <tr>
+                <th width="40%" scope="col" class="ps-0">{{ trans('messages.automation.operation.remove_tag.will_be_removed') }}</th>
+                <td>
+                    @php
+                        $tags = isset($element) ? ($element->getOption('tags') ?? []) : [];
+                    @endphp
+
+                    @foreach($tags as $tag)
+                        <span class="label bg-error mr-1" style="text-transform:none">{{ $tag }}</span>
+                    @endforeach
+                </td>
+            </tr>
+        </thead>
+    </table>
+@endif
+
 @php
     $operation = request()->operation;
     if (in_array(request()->operation, ['copy','move','delete'])) {
@@ -34,7 +53,7 @@
 
 <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@operationEdit', [
     'uid' => $automation->uid,
-    'operation' =>  $operation . '_contact',
+    'operation' =>  $operation == 'remove_tag' ? $operation : $operation . '_contact',
     'id' => request()->id,
 ]) }}')" class="btn btn-secondary me-1">{{ trans('messages.automation.edit_operation') }}</a>
 

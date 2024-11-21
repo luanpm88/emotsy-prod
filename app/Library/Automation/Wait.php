@@ -20,7 +20,7 @@ class Wait extends Action
 
     ****/
 
-    protected function doExecute()
+    protected function doExecute($manually)
     {
         if (config('app.demo') == true) {
             $check = (bool) random_int(0, 1);
@@ -47,7 +47,7 @@ class Wait extends Action
 
     public function getActionDescription()
     {
-        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        $nameOrEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
 
         return trans('messages.automation.action.wait.executed_description', [ 'wait' => $this->getOption('time') ]);
     }

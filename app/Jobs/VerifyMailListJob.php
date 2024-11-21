@@ -17,6 +17,7 @@ class VerifyMailListJob extends Base
     protected $mailList;
     protected $server;
     protected $subscription;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -28,6 +29,8 @@ class VerifyMailListJob extends Base
         $this->mailList = $mailList;
         $this->server = $server;
         $this->subscription = $subscription;
+
+        $this->customer = $this->mailList->customer;
 
         $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
@@ -50,6 +53,8 @@ class VerifyMailListJob extends Base
         if ($this->batch()->cancelled()) {
             return;
         }
+
+        $this->customer->setUserDbConnection();
 
         $this->monitor->updateJsonData([
             'message' => 'Verification is in progress...',

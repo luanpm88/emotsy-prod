@@ -92,7 +92,7 @@ class TransformTag implements StageInterface
                 $unsubscribeUrl = $sampleLink;
                 $webViewUrl = $sampleLink;
             } else {
-                $unsubscribeUrl = $this->subscriber->generateUnsubscribeUrl($this->msgId);
+                $unsubscribeUrl = $this->subscriber->generateUnsubscribeForm($this->msgId);
                 $webViewUrl = StringHelper::generateWebViewerUrl($this->msgId);
             }
 

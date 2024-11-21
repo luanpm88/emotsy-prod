@@ -81,7 +81,7 @@ class SubscriberController extends Controller
             return \Response::json(array(
                 'status' => 1,
                 'message' => ($list->subscribe_confirmation) ? trans('messages.subscriber.confirmation_email_sent') : trans('messages.subscriber.created'),
-                'subscriber_uid' => $subscriber->uid,
+                'subscriber_id' => $subscriber->id,
             ), 200);
         } catch (\Exception $ex) {
             return \Response::json(array('message' => $ex->getMessage()), 500);

@@ -24,7 +24,7 @@ class NotLoggedIn
         } elseif ($default_language) {
             $language_code = $default_language->code;
         } else {
-            $language_code = 'en';
+            $language_code = config('app.locale');
         }
 
         // Language

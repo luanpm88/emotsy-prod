@@ -33,6 +33,7 @@ class LoadCampaign implements ShouldQueue
     protected CampaignInterface $campaign;
     protected $page;
     protected $listOfIds;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -44,6 +45,9 @@ class LoadCampaign implements ShouldQueue
         $this->campaign = $campaign;
         $this->page = $page;
         $this->listOfIds = $listOfIds;
+        $this->customer = $this->campaign->customer;
+
+        //// DO NOT SET CONNECTION HERE (IT IS EXECUTED IN A LOOP INSIDE BaseCampaign::run() )
     }
 
     /**
@@ -53,6 +57,8 @@ class LoadCampaign implements ShouldQueue
      */
     public function handle()
     {
+        $this->customer->setUserDbConnection();
+
         if ($this->batch()->cancelled()) {
             return;
         }
@@ -75,7 +81,6 @@ class LoadCampaign implements ShouldQueue
             // Must return;
             return $info;
         });
-
 
         $count = 0;
         $total = sizeof($this->listOfIds);

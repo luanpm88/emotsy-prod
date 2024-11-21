@@ -12,6 +12,11 @@ class FormPolicy
 
     public function list(User $user)
     {
+        // RBAC check
+        if (!$user->hasPermission('form.full_access') && !$user->hasPermission('form.read_only')) {
+            return false;
+        }
+
         if (app_profile('form.disable') === true) {
             return false;
         }
@@ -21,6 +26,11 @@ class FormPolicy
 
     public function create(User $user)
     {
+        // RBAC check
+        if (!$user->hasPermission('form.full_access')) {
+            return false;
+        }
+
         if (app_profile('form.disable') === true) {
             return false;
         }
@@ -35,6 +45,11 @@ class FormPolicy
 
     public function read(User $user, Form $form)
     {
+        // RBAC check
+        if (!$user->hasPermission('form.full_access') && !$user->hasPermission('form.read_only')) {
+            return false;
+        }
+
         if (app_profile('form.disable') === true) {
             return false;
         }
@@ -44,6 +59,11 @@ class FormPolicy
 
     public function update(User $user, Form $form)
     {
+        // RBAC check
+        if (!$user->hasPermission('form.full_access')) {
+            return false;
+        }
+
         if (app_profile('form.disable') === true) {
             return false;
         }
@@ -53,6 +73,11 @@ class FormPolicy
 
     public function delete(User $user, Form $form)
     {
+        // RBAC check
+        if (!$user->hasPermission('form.full_access')) {
+            return false;
+        }
+
         if (app_profile('form.disable') === true) {
             return false;
         }
@@ -62,6 +87,11 @@ class FormPolicy
 
     public function publish(User $user, Form $form)
     {
+        // RBAC check
+        if (!$user->hasPermission('form.full_access')) {
+            return false;
+        }
+
         if (app_profile('form.disable') === true) {
             return false;
         }
@@ -71,6 +101,11 @@ class FormPolicy
 
     public function unpublish(User $user, Form $form)
     {
+        // RBAC check
+        if (!$user->hasPermission('form.full_access')) {
+            return false;
+        }
+
         if (app_profile('form.disable') === true) {
             return false;
         }

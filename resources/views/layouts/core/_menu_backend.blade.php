@@ -29,8 +29,8 @@
 				</li>
 
 				@if (Auth::user()->can("read", new Acelle\Model\Customer()))
-					<li class="nav-item dropdown {{ in_array($menu, ['customer','subscription','invoice','domain','hosting','monitor_campaign']) ? 'active' : '' }}">
-						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['customer','subscription','invoice','domain','hosting','monitor_campaign']) ? 'show' : '' }}" data-bs-toggle="dropdown">
+					<li class="nav-item dropdown {{ in_array($menu, ['customer','subscription','invoice','domain','hosting','monitor_campaign','role','user']) ? 'active' : '' }}">
+						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['customer','subscription','invoice','domain','hosting','monitor_campaign','role','user']) ? 'show' : '' }}" data-bs-toggle="dropdown">
 							<i class="navbar-icon">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92 103"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path d="M46,51.6A25.8,25.8,0,1,1,71.8,25.8,25.9,25.9,0,0,1,46,51.6ZM46,7A18.8,18.8,0,1,0,64.8,25.8,18.8,18.8,0,0,0,46,7Z" style="fill:#f2f2f2"/><path d="M88.5,103A3.5,3.5,0,0,1,85,99.5a39,39,0,0,0-78,0A3.5,3.5,0,0,1,3.5,103,3.5,3.5,0,0,1,0,99.5a46,46,0,0,1,92,0A3.5,3.5,0,0,1,88.5,103Z" style="fill:#f2f2f2"/><path d="M19.5,103H3.5a3.5,3.5,0,0,1,0-7h16a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M88.5,103H36.9a3.5,3.5,0,0,1,0-7H88.5a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M46,39c-3.3,0-6.4-1.6-7.7-4a3.6,3.6,0,0,1,1.4-4.8,3.5,3.5,0,0,1,4.7,1.4A3.5,3.5,0,0,0,46,32a3,3,0,0,0,1.6-.5,3.4,3.4,0,0,1,4.5-1.6,3.4,3.4,0,0,1,1.8,4.6C52.6,37.6,48.9,39,46,39Zm-1.5-7.4Z" style="fill:lime"/></g></g></g></g></svg>
 							</i>
@@ -48,6 +48,14 @@
 									</a>
 								</li>
 							@endif
+							<li class="nav-item {{ $menu == 'role' ? 'active' : '' }}">
+								<a href="{{ action('Admin\RoleController@index') }}" class="dropdown-item d-flex align-items-center">
+									<i class="navbar-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 20"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M13,15a1.5,1.5,0,1,0,0-3,1.5,1.5,0,1,0,0,3Zm0,3a2.3,2.3,0,0,0,1.4-.4,2.4,2.4,0,0,0,1.1-.9l-1.2-.5L13,16l-1.3.2-1.2.5a2.4,2.4,0,0,0,1.1.9A2.3,2.3,0,0,0,13,18ZM8,20a9.9,9.9,0,0,1-5.7-4A11.7,11.7,0,0,1,0,9.1V3L8,0l8,3V8.7l-1-.4-1-.2V4.4L8,2.2,2,4.4V9.1a9.9,9.9,0,0,0,.3,2.4,10.2,10.2,0,0,0,.9,2.2,9,9,0,0,0,1.4,2,8,8,0,0,0,1.7,1.5,10.9,10.9,0,0,0,.8,1.5,6.4,6.4,0,0,0,1,1.3Zm5,0a4.5,4.5,0,0,1-3.5-1.5A4.5,4.5,0,0,1,8,15a4.5,4.5,0,0,1,1.5-3.5A4.5,4.5,0,0,1,13,10a4.5,4.5,0,0,1,3.5,1.5A4.5,4.5,0,0,1,18,15a4.5,4.5,0,0,1-1.5,3.5A4.5,4.5,0,0,1,13,20Z" style="fill:#f2f2f2"/></g></g></svg>
+									</i>
+									<span>{{ trans('messages.roles') }}</span>
+								</a>
+							</li>
 							<li class="nav-item {{ $menu == 'subscription' ? 'active' : '' }}">
 								<a href="{{ action('Admin\SubscriptionController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="navbar-icon">
@@ -124,23 +132,21 @@
 								</li>
 							@endif
 
-							@if (\Acelle\Helpers\isSendingCreditPluginActive())
-								<li class="nav-item {{ in_array($menu, ['sending_credit_plan']) ? 'active' : '' }}">
-									<a href="{{ action('Admin\SendingCreditPlanController@index') }}" class="dropdown-item d-flex align-items-center">
-										<i class="navbar-icon">
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 106.1 92.1"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path d="M40.8,92.1h-.1a5.2,5.2,0,0,1-5.1-4.8c-1.4-4.5-2.7-9-4-13.4S29,65.3,27.8,61L3.2,50.4a.1.1,0,0,0-.1-.1A5.7,5.7,0,0,1,.5,47.8a5.6,5.6,0,0,1,2.6-7.4.1.1,0,0,0,.1-.1c16-6.8,31.7-13.2,46.9-19.3S82.2,8,98.9.8a4.5,4.5,0,0,1,5.7.4,4.6,4.6,0,0,1,1.5,4.1l-5.4,38.1C99,56.1,97.2,68.8,95.4,81.6a5.5,5.5,0,0,1-2,3.7,5.6,5.6,0,0,1-4.1,1.4l-1.4-.3h-.2L52.1,71.2c-2.2,6-4.2,11.3-6,16.4A5.4,5.4,0,0,1,40.8,92.1ZM9.3,45.4,31.6,55a4.8,4.8,0,0,1,2.6,3c1.3,4.6,2.7,9.2,4.1,13.9L41,81q2.7-7.2,5.7-15.6l.2-.3.2-.4c.1-.2.2-.5.4-.6L89.2,12.6C76.8,17.8,64.6,22.7,52.7,27.5,38.6,33.2,24.1,39.1,9.3,45.4ZM55.6,65.2,88.7,79.1l5.1-36.6L98,12.8ZM27.5,59.9h0Z" style="fill:#f2f2f2"/><path class="color-badge" d="M40.1,54.6a3.6,3.6,0,0,1-2.2-6.3l2-1.6a3.6,3.6,0,0,1,5,.6,3.5,3.5,0,0,1-.6,4.9l-2,1.6A3.5,3.5,0,0,1,40.1,54.6Z" style="fill:#ff0"/> <path class="color-badge" d="M52.4,45.2a3.5,3.5,0,0,1-2.7-1.4,3.4,3.4,0,0,1,.6-4.9L63.4,28.6a3.5,3.5,0,0,1,4.3,5.5L54.6,44.4A3.7,3.7,0,0,1,52.4,45.2Z" style="fill:aqua"/></g></g></g></g></svg>
-										</i>
-										{{ trans('messages.sending_credit_plan.plans') }}
-									</a>
-								</li>
-								<li class="nav-item {{ in_array($menu, ['email_verification_plan']) ? 'active' : '' }}">
-									<a href="{{ action('Admin\EmailVerificationPlanController@index') }}" class="dropdown-item d-flex align-items-center">
-										<i class="navbar-icon" style="width: 20px;">
-											<svg xmlns="http://www.w3.org/2000/svg" id="b" viewBox="0 0 21 18"><g id="c"><path d="M13.95,18l-4.25-4.25,1.4-1.4,2.85,2.85,5.65-5.65,1.4,1.4-7.05,7.05ZM10,7l8-5H2l8,5ZM10,9L2,4v10h5.15l2,2H2c-.55,0-1.02-.2-1.41-.59s-.59-.86-.59-1.41V2C0,1.45.2.98.59.59s.86-.59,1.41-.59h16c.55,0,1.02.2,1.41.59s.59.86.59,1.41v4.35l-2,2v-4.35l-8,5Z" style="fill:#f2f2f2; stroke-width:0px;"/></g></svg>
-										</i>{{ trans('messages.email_verification_plan.plans') }}
-									</a>
-								</li>
-							@endif
+							<li class="nav-item {{ in_array($menu, ['sending_credit_plan']) ? 'active' : '' }}">
+								<a href="{{ action('Admin\SendingCreditPlanController@index') }}" class="dropdown-item d-flex align-items-center">
+									<i class="navbar-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 106.1 92.1"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path d="M40.8,92.1h-.1a5.2,5.2,0,0,1-5.1-4.8c-1.4-4.5-2.7-9-4-13.4S29,65.3,27.8,61L3.2,50.4a.1.1,0,0,0-.1-.1A5.7,5.7,0,0,1,.5,47.8a5.6,5.6,0,0,1,2.6-7.4.1.1,0,0,0,.1-.1c16-6.8,31.7-13.2,46.9-19.3S82.2,8,98.9.8a4.5,4.5,0,0,1,5.7.4,4.6,4.6,0,0,1,1.5,4.1l-5.4,38.1C99,56.1,97.2,68.8,95.4,81.6a5.5,5.5,0,0,1-2,3.7,5.6,5.6,0,0,1-4.1,1.4l-1.4-.3h-.2L52.1,71.2c-2.2,6-4.2,11.3-6,16.4A5.4,5.4,0,0,1,40.8,92.1ZM9.3,45.4,31.6,55a4.8,4.8,0,0,1,2.6,3c1.3,4.6,2.7,9.2,4.1,13.9L41,81q2.7-7.2,5.7-15.6l.2-.3.2-.4c.1-.2.2-.5.4-.6L89.2,12.6C76.8,17.8,64.6,22.7,52.7,27.5,38.6,33.2,24.1,39.1,9.3,45.4ZM55.6,65.2,88.7,79.1l5.1-36.6L98,12.8ZM27.5,59.9h0Z" style="fill:#f2f2f2"/><path class="color-badge" d="M40.1,54.6a3.6,3.6,0,0,1-2.2-6.3l2-1.6a3.6,3.6,0,0,1,5,.6,3.5,3.5,0,0,1-.6,4.9l-2,1.6A3.5,3.5,0,0,1,40.1,54.6Z" style="fill:#ff0"/> <path class="color-badge" d="M52.4,45.2a3.5,3.5,0,0,1-2.7-1.4,3.4,3.4,0,0,1,.6-4.9L63.4,28.6a3.5,3.5,0,0,1,4.3,5.5L54.6,44.4A3.7,3.7,0,0,1,52.4,45.2Z" style="fill:aqua"/></g></g></g></g></svg>
+									</i>
+									{{ trans('messages.sending_credit_plan.plans') }}
+								</a>
+							</li>
+							<li class="nav-item {{ in_array($menu, ['email_verification_plan']) ? 'active' : '' }}">
+								<a href="{{ action('Admin\EmailVerificationPlanController@index') }}" class="dropdown-item d-flex align-items-center">
+									<i class="navbar-icon" style="width: 20px;">
+										<svg xmlns="http://www.w3.org/2000/svg" id="b" viewBox="0 0 21 18"><g id="c"><path d="M13.95,18l-4.25-4.25,1.4-1.4,2.85,2.85,5.65-5.65,1.4,1.4-7.05,7.05ZM10,7l8-5H2l8,5ZM10,9L2,4v10h5.15l2,2H2c-.55,0-1.02-.2-1.41-.59s-.59-.86-.59-1.41V2C0,1.45.2.98.59.59s.86-.59,1.41-.59h16c.55,0,1.02.2,1.41.59s.59.86.59,1.41v4.35l-2,2v-4.35l-8,5Z" style="fill:#f2f2f2; stroke-width:0px;"/></g></svg>
+									</i>{{ trans('messages.email_verification_plan.plans') }}
+								</a>
+							</li>
 
 							@if (Auth::user()->can("read", new Acelle\Model\Currency()))
 								<li class="nav-item {{ in_array($menu, ['currency']) ? 'active' : '' }}">
@@ -223,7 +229,6 @@
 					|| Auth::user()->admin->getPermission("bounce_handler_read") != 'no'
 					|| Auth::user()->admin->getPermission("fbl_handler_read") != 'no'
 					|| Auth::user()->admin->getPermission("email_verification_server_read") != 'no'
-					|| Auth::user()->admin->can('read', new \Acelle\Model\SubAccount())
 				)
 					<li class="nav-item dropdown {{ in_array($menu, ['bounce','feedback','sending_server','sending_domain','sub_account','email_verification']) ? 'active' : '' }}">
 						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['bounce','feedback','sending_server','sending_domain','sub_account','email_verification']) ? 'show' : '' }}" data-bs-toggle="dropdown">
@@ -243,15 +248,7 @@
 									</a>
 								</li>
 							@endif
-							@if (Auth::user()->admin->can('read', new \Acelle\Model\SubAccount()))
-								<li class="nav-item {{ in_array($menu, ['sub_account']) ? 'active' : '' }}">
-									<a href="{{ action('Admin\SubAccountController@index') }}" class="dropdown-item d-flex align-items-center">
-									<i class="navbar-icon">
-								<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 88.3 88.3" style="enable-background:new 0 0 88.3 88.3;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><g><path id="Layer_1-3_1_" class="st0" d="M44.2,1C20.4,0.9,1,20.1,0.9,43.9c0,12.4,5.2,24.1,14.5,32.4l0,0l0.6,0.6l0.4,0.3 c1.8,1.5,3.7,2.8,5.7,4.1l0.5,0.2l3,1.7h0.1c2.3,1,4.6,1.9,7,2.6h0.1l3.6,0.8h0.3l3.5,0.5h8l3.5-0.5H52l3.5-0.8h0.1 c2.4-0.7,4.8-1.6,7.1-2.6l0,0c1.1-0.5,2.1-1.1,3.1-1.7l0.5-0.2l2.6-1.8l0.7-0.5l2.4-1.8l0.3-0.3l0.7-0.6l0,0 c17.7-16,19.2-43.3,3.2-61C68,6.2,56.4,1,44.2,1z M44.2,44.2c-8,0-14.4-6.4-14.4-14.4c0-8,6.4-14.4,14.4-14.4s14.4,6.4,14.4,14.4 S52.2,44.2,44.2,44.2L44.2,44.2z M49.6,47.8c10.9,0,19.8,8.9,19.8,19.8v7.1l-0.3,0.2l-2.2,1.6l-0.4,0.4L64,78.4l-0.5,0.3 c-3.8,2.1-8,3.6-12.3,4.4h-0.3l-3.1,0.4h-7.2L37.2,83c-3.2-0.6-6.4-1.5-9.4-2.9h-0.3c-1.1-0.5-2.1-1.1-3.1-1.7l-2.5-1.5l-0.5-0.4 l-2.2-1.6c-0.1-0.1-0.1-0.2-0.2-0.2v-7.1c0-10.9,8.9-19.8,19.8-19.8h0H49.6z M73,71.3v-3.7c0-11.1-7.8-20.7-18.7-22.9 c4.9-3.4,7.8-8.9,7.9-14.9c0-9.9-8.1-18-18-18s-18,8.1-18,18c0,6,3,11.5,7.9,14.9c-10.9,2.2-18.7,11.8-18.7,22.9v3.7 C0.5,55.4,1.3,30.4,17.2,15.5S58.1,1.3,73,17.2C87.3,32.4,87.3,56.1,73,71.3z"/><path class="st0" d="M48.3,88.1l-8.2,0l-3.9-0.5l-3.8-0.8c-2.4-0.7-4.7-1.6-6.9-2.6h-0.1l-3.2-1.8l-0.6-0.3c-2-1.3-4-2.7-5.8-4.2 l-0.5-0.4L14.7,77C5.3,68.6-0.1,56.6-0.1,43.9C0,19.7,19.8,0,44,0c0.1,0,0.1,0,0.2,0c12.5,0,24.4,5.4,32.7,14.6 C93.2,32.7,91.8,60.7,73.7,77l-1.1,1l-3.1,2.3l-2.8,1.9l-0.4,0.2c-1,0.6-2.1,1.2-3.1,1.7c-2.4,1.1-4.8,1.9-7.3,2.7l-0.3,0 L52,87.6h-0.2L48.3,88.1z M40.3,86.1h7.9l3.8-0.5l3.6-0.8c2.3-0.7,4.6-1.5,6.8-2.5c1-0.5,2-1,3-1.6l0.2-0.1l0.4-0.2l3.2-2.2 l2.6-2l0.8-0.7C89.6,60,91,33.2,75.4,16C67.5,7.1,56.1,2,44.2,2h0c0,0-0.1,0-0.2,0C20.9,2,2,20.8,1.9,44 c0,12.1,5.1,23.6,14.1,31.6l0.6,0.6l0.3,0.3c1.8,1.5,3.6,2.8,5.6,4l0.5,0.2l3,1.7c2.2,1,4.4,1.8,6.8,2.5l0.2,0l3.8,0.8L40.3,86.1 z M47.9,84.5l-7.4,0L37.1,84c-3.3-0.6-6.5-1.5-9.5-2.9h-0.3L27.1,81c-1.1-0.5-2.2-1.1-3.2-1.8l-2.6-1.6l-0.5-0.4l-2.2-1.6H18 v-8.1c0-11.5,9.3-20.8,20.8-20.8h10.8c11.5,0,20.8,9.3,20.8,20.8v7.6l-0.7,0.5l-2.1,1.5L67,77.8l-3,1.8c-4,2.2-8.2,3.7-12.6,4.5 l-0.4,0L47.9,84.5z M40.7,82.5h7.1l3.4-0.4c4.2-0.8,8.2-2.2,11.9-4.3l2.9-1.7l0.4-0.4l2.1-1.5v-6.6c0-10.4-8.4-18.8-18.8-18.8 H38.8C28.4,48.8,20,57.2,20,67.6v6.6l2.5,1.8l2.4,1.5c0.9,0.6,1.9,1.1,2.8,1.6H28l0.2,0.1c2.9,1.3,6,2.3,9.2,2.8L40.7,82.5z M16.4,73.8L14.7,72c-7.4-7.9-11.3-18.2-11-29c0.3-10.8,4.9-20.8,12.8-28.2c16.3-15.3,42-14.5,57.2,1.8 c14.6,15.5,14.6,39.9,0,55.4L72,73.8v-6.2c0-10.6-7.5-19.8-17.9-21.9l-2.3-0.5l1.9-1.3c4.6-3.2,7.4-8.5,7.5-14.1 c0-9.4-7.6-17-17-17c-9.4,0-17,7.6-17,17c0,5.6,2.8,10.9,7.5,14.1l2,1.3l-2.3,0.5C23.9,47.8,16.4,57,16.4,67.6V73.8z M44.2,5.8 c-9.5,0-18.9,3.4-26.3,10.4C10.4,23.2,6,32.8,5.7,43c-0.3,9.4,2.8,18.4,8.7,25.6v-1c0-10.8,7.2-20.4,17.4-23.4 c-4.2-3.6-6.6-8.8-6.6-14.4c0-5.1,2-9.8,5.6-13.4s8.4-5.6,13.4-5.6c10.5,0,19,8.5,19,19c0,5.6-2.5,10.8-6.7,14.4 C66.8,47.3,74,56.8,74,67.6v1c12.1-14.8,11.5-36.6-1.7-50.7C64.7,9.9,54.5,5.8,44.2,5.8z M44.2,45.2c-8.5,0-15.4-6.9-15.4-15.4 s6.9-15.4,15.4-15.4c8.5,0,15.4,6.9,15.4,15.4S52.7,45.2,44.2,45.2z M44.2,16.4c-7.4,0-13.4,6-13.4,13.4c0,7.4,6,13.4,13.4,13.4 c7.4,0,13.4-6,13.4-13.4C57.6,22.4,51.6,16.4,44.2,16.4z"/></g></g></g></svg>
-							</i>{{ trans('messages.sub_accounts') }}
-									</a>
-								</li>
-							@endif
+
 							@if (Auth::user()->admin->can('read', new \Acelle\Model\BounceHandler()))
 								<li class="nav-item {{ in_array($menu, ['bounce']) ? 'active' : '' }}">
 									<a href="{{ action('Admin\BounceHandlerController@index') }}" class="dropdown-item d-flex align-items-center">

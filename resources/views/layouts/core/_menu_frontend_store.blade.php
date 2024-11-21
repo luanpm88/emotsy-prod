@@ -73,10 +73,10 @@
                                 <span>{{ trans('messages.lists') }}</span>
                             </a>
                         </li>
-                        @if (Auth::user()->customer->mailLists()->count())
+                        @if (Auth::user()->customer->local()->mailLists()->count())
                             <li class="nav-item {{ $menu == 'subscriber' ? 'active' : '' }}">
                                 <a class="dropdown-item d-flex align-items-center" href="{{ action('SubscriberController@index', [
-                                    'list_uid' => Auth::user()->customer->mailLists()->first() ? Auth::user()->customer->mailLists()->first()->uid : null,
+                                    'list_uid' => Auth::user()->customer->local()->mailLists()->first() ? Auth::user()->customer->local()->mailLists()->first()->uid : null,
                                 ]) }}">
                                     <i class="navbar-icon" style="">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 94.8 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M3.5,87.5H3.4A3.5,3.5,0,0,1,0,83.9a39.5,39.5,0,0,1,78.9,0,3.4,3.4,0,0,1-3.4,3.6h-.1a3.5,3.5,0,0,1-3.5-3.4A32.5,32.5,0,0,0,7,84.1,3.5,3.5,0,0,1,3.5,87.5Z" style="fill:#333"/><path d="M16.5,87.5H3.5a3.5,3.5,0,0,1,0-7h13a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/><path d="M75.4,87.5H32.5a3.5,3.5,0,0,1,0-7H75.4a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/><path d="M40.1,41.2A20.6,20.6,0,1,1,60.7,20.6,20.6,20.6,0,0,1,40.1,41.2ZM40.1,7A13.6,13.6,0,1,0,53.7,20.6,13.6,13.6,0,0,0,40.1,7Z" style="fill:#333"/><path d="M91.3,86.9a3.5,3.5,0,0,1-3.5-3.4C87.6,70,81.8,57.7,73,52.2a3.5,3.5,0,1,1,3.7-5.9c11,6.8,17.9,21,18.1,37.1a3.5,3.5,0,0,1-3.5,3.5Z" style="fill:#333"/><path d="M67.5,34.5a4.1,4.1,0,0,1-1.8-.5,3.5,3.5,0,0,1-1.2-4.8,19.8,19.8,0,0,0,2.6-11.9A18.8,18.8,0,0,0,63.6,8a3.5,3.5,0,1,1,5.8-4,27.2,27.2,0,0,1,4.7,12.6,27.5,27.5,0,0,1-3.6,16.2A3.4,3.4,0,0,1,67.5,34.5Z" style="fill:#333"/></g></g></svg>
@@ -87,7 +87,7 @@
                             @if (Auth::user()->customer->can("list", new Acelle\Model\Segment()))
                                 <li class="nav-item {{ $menu == 'segment' ? 'active' : '' }}">
                                     <a class="dropdown-item d-flex align-items-center" href="{{ action('SegmentController@index', [
-                                        'list_uid' => Auth::user()->customer->mailLists()->first() ? Auth::user()->customer->mailLists()->first()->uid : null,
+                                        'list_uid' => Auth::user()->customer->local()->mailLists()->first() ? Auth::user()->customer->local()->mailLists()->first()->uid : null,
                                     ]) }}">
                                         <i class="navbar-icon" style="">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M34.6,33H7.1A7.1,7.1,0,0,1,0,25.9V7.1A7.1,7.1,0,0,1,7.1,0H34.6a7.1,7.1,0,0,1,7.1,7.1V25.9A7.1,7.1,0,0,1,34.6,33ZM7.1,7H7V25.9c0,.1,0,.1.1.1H34.6c.1,0,.1,0,.1-.1V7.1H7.1Z" style="fill:#333"/><path d="M33.9,87.5H8.4A8.1,8.1,0,0,1,.3,79.4V46.1A8.1,8.1,0,0,1,8.4,38H33.9A8.1,8.1,0,0,1,42,46.1V79.4A8.1,8.1,0,0,1,33.9,87.5ZM8.4,45a1.1,1.1,0,0,0-1.1,1.1V79.4a1.1,1.1,0,0,0,1.1,1.1H33.9A1.1,1.1,0,0,0,35,79.4V46.1A1.1,1.1,0,0,0,33.9,45Z" style="fill:#333"/><path d="M86.5,87.5h-29A10.5,10.5,0,0,1,47,77V11A10.5,10.5,0,0,1,57.5.5h29A10.5,10.5,0,0,1,97,11V77A10.5,10.5,0,0,1,86.5,87.5Zm-29-80A3.5,3.5,0,0,0,54,11V77a3.5,3.5,0,0,0,3.5,3.5h29A3.5,3.5,0,0,0,90,77V11a3.5,3.5,0,0,0-3.5-3.5Z" style="fill:#333"/><rect x="13.4" y="50.8" width="15.2" height="24.5" rx="4.1" style="fill:#333"/><path d="M93.5,56h-13A3.5,3.5,0,0,1,77,52.5v-17A3.5,3.5,0,0,1,80.5,32h13A3.5,3.5,0,0,1,97,35.5v17A3.5,3.5,0,0,1,93.5,56ZM84,49h6V39H84Z" style="fill:#333"/></g></g></svg>

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class PlansSendingServer extends Model
 {
+    protected $connection = 'mysql';
+
     public function sendingServer()
     {
         return $this->belongsTo('Acelle\Model\SendingServer');

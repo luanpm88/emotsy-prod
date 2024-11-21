@@ -101,7 +101,7 @@
                                 </div>
                                  
                                 <p class="pt-2">
-                                    <a href="{{ action('CampaignController@index') }}">{{ Auth::user()->customer->campaignsCount() }} {{ trans('messages.campaigns') }}</a>
+                                    <a href="{{ action('CampaignController@index') }}">{{ Auth::user()->customer->local()->campaignsCount() }} {{ trans('messages.campaigns') }}</a>
                                 </p>
                             </div>
                             <div class="campain-new-title">
@@ -157,7 +157,7 @@
                                     </svg>
                                 </div>
                                 <p class="pt-2">
-                                    <a href="{{ action('MailListController@index') }}">{{ Auth::user()->customer->listsCount() }} {{ trans('messages.lists') }}</a>
+                                    <a href="{{ action('MailListController@index') }}">{{ Auth::user()->customer->local()->listsCount() }} {{ trans('messages.lists') }}</a>
                                 </p>
                             </div>
                             <div class="campain-list-title">

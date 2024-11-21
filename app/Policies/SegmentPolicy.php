@@ -21,6 +21,11 @@ class SegmentPolicy
 
     public function create(User $user, Segment $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
         if (app_profile('list.disable_segment') === true) {
             return false;
         }
@@ -43,6 +48,11 @@ class SegmentPolicy
 
     public function update(User $user, Segment $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
         if (app_profile('list.disable_segment') === true) {
             return false;
         }
@@ -53,6 +63,11 @@ class SegmentPolicy
 
     public function delete(User $user, Segment $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
         if (app_profile('list.disable_segment') === true) {
             return false;
         }
@@ -63,6 +78,11 @@ class SegmentPolicy
 
     public function export(User $user, Segment $item)
     {
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
         if (app_profile('list.disable_segment') === true) {
             return false;
         }

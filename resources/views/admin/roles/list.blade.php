@@ -25,7 +25,18 @@
                     </div>
                 </td>
 
-                <td>
+                <td style="width:30%">
+                    <div class="px-md-4">
+                        <div class="mb-1">
+                            <span class="" href="{{ action('Admin\RoleController@edit', $role->uid) }}">
+                                <span class="badge bg-secondary">{{ $role->users()->count() }}</span>
+                            </span>
+                        </div>
+                        <span class="text-muted">{{ trans("messages.role.user_count") }}</span>
+                    </div>
+                </td>
+
+                <td width="20%">
                     <div class="single-stat-box pull-left">
                         <span class="no-margin stat-num">{{ $role->updated_at->diffForHumans() }}</span>
                         <br />
@@ -33,7 +44,7 @@
                     </div>
                 </td>
 
-                <td>
+                <td width="10%">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $role->status }}">{{ trans('messages.role.status.' . $role->status) }}</span>
                     </span>
@@ -49,13 +60,13 @@
                         </a>
                         
                         @if (
-                            Auth::user()->can('enable', $role) ||
-                            Auth::user()->can('disable', $role) ||
-                            Auth::user()->can('delete', $role)
+                            Auth::user()->admin->can('enable', $role) ||
+                            Auth::user()->admin->can('disable', $role) ||
+                            Auth::user()->admin->can('delete', $role)
                         )
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                @if (Auth::user()->can('enable', $role))
+                                @if (Auth::user()->admin->can('enable', $role))
                                     <li><a
                                         class="dropdown-item list-action-single"
                                         link-method="POST"
@@ -66,7 +77,7 @@
                                     </li>
                                 @endif
 
-                                @if (Auth::user()->can('disable', $role))
+                                @if (Auth::user()->admin->can('disable', $role))
                                     <li><a
                                         class="dropdown-item list-action-single"
                                         link-method="POST"
@@ -77,7 +88,7 @@
                                     </li>
                                 @endif
                                 
-                                @if (Auth::user()->can('delete', $role))
+                                @if (Auth::user()->admin->can('delete', $role))
                                     <li><a
                                         class="dropdown-item list-action-single"
                                         link-method="POST"

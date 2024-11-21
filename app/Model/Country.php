@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
+    protected $connection = 'mysql';
+
     /**
      * Get all languages.
      *

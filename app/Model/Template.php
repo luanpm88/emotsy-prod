@@ -50,6 +50,7 @@ use function Acelle\Helpers\url_get_contents_ssl_safe;
 class Template extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     public const BUILDER_ENABLED = true;
     public const BUILDER_DISABLED = false;
@@ -736,8 +737,7 @@ class Template extends Model
             }
 
             if (parse_url($url, PHP_URL_HOST) === false) {
-                // false ==> if url is invalid
-                // null ==> if url does not have host information
+                // false ==> if url is invalid (whereas null ==> if url does not have host information)
                 return $url;
             }
 
@@ -745,11 +745,12 @@ class Template extends Model
                 return $url;
             }
 
+
             if (!is_null(parse_url($url, PHP_URL_HOST))) {
                 // url is with a host like "http://" or "//"
                 if (!is_null($urlTransform)) {
                     // Make trackable links like. For example:
-                    // StringHelper::makeTrackableLink('http://google.com', 'MSGID')
+                    // call to StringHelper::makeTrackableLink('http://google.com', 'MSGID')
                     // ==> https://localhost/p/aHR0cDovL2dvb2dsZS5jb20/click/TVNHSUQ
                     $url = $urlTransform($url, $element);
                 }

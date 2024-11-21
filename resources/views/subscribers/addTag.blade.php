@@ -8,8 +8,8 @@
             >
                 {{ csrf_field() }}
 
-                @foreach (request()->uids as $uid)
-                    <input type="hidden" name="uids[]" value="{{ $uid }}" />
+                @foreach (request()->ids as $uid)
+                    <input type="hidden" name="ids[]" value="{{ $uid }}" />
                 @endforeach
 
                 <input type="hidden" name="select_tool" value="{{ request()->select_tool }}" />

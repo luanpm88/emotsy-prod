@@ -65,11 +65,8 @@
     </div>
 </div>
 
-<div class="listing-form"
-        data-url="{{ action('Pub\CampaignController@subscribersListing', [
-            'uid' => $campaign->uid,
-            'version_b' => request()->version_b,
-        ]) }}"
+<div id="SubscriberListContainer" class="listing-form"
+        data-url="{{ action('Pub\CampaignController@subscribersListing', ['uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid]) }}"
         per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
     >
     <div class="d-flex top-list-controls top-sticky-content">
@@ -153,36 +150,66 @@
                         <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                             {{ trans('messages.columns') }} <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            @foreach ($list->getFields as $field)
-                                @if ($field->tag != "EMAIL")
-                                    <li>
-                                        <div class="checkbox">
-                                            <label>
-                                                <input {{ ($field->required ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
-                                                {{ $field->label }}
-                                            </label>
-                                        </div>
-                                    </li>
-                                @endif
-                            @endforeach
-                            <li>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
-                                        {{ trans('messages.created_at') }}
-                                    </label>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
-                                        {{ trans('messages.updated_at') }}
-                                    </label>
-                                </div>
-                            </li>
-                        </ul>
+                        <ul class="dropdown-menu list-columns-checkbox dropdown-menu-end" style="max-height:300px;overflow-y:auto;">
+							@foreach ($list->getFields as $key => $field)
+								@if ($field->tag != "EMAIL")
+									<li>
+										<a href="javascript:;" class="dropdown-item">
+											<label class="d-flex align-items-center">
+												<input {{ (in_array($field->uid, $columns) ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<span class="ms-2">{{ $field->label }}</span>
+											</label>
+										</a>
+									</li>
+								@endif
+							@endforeach
+							<li>
+								<a class="dropdown-item checkbox">
+									<label class="d-flex align-items-center">
+										<input {{ (in_array('created_at', $columns) ? "checked='checked'" : "") }} type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
+										<span class="ms-2">{{ trans('messages.created_at') }}</span>
+									</label>
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item checkbox">
+									<label class="d-flex align-items-center">
+										<input {{ (in_array('updated_at', $columns) ? "checked='checked'" : "") }} type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
+										<span class="ms-2">{{ trans('messages.updated_at') }}</span>
+									</label>
+								</a>
+							</li>
+						</ul>
+
+						<script>
+							$(function() {
+								new ColumnsManager($('#SubscriberListContainer [name="columns[]"]'), '{{ action('SubscriberController@saveColumnsSettings') }}');
+							})
+
+							var ColumnsManager = class {
+								constructor(columnCheckers, url) {
+									this.columnCheckers = columnCheckers;
+									this.url = url;
+
+									this.columnCheckers.on('change', () => {
+										this.save();
+									});
+								}
+
+								save() {
+									$.ajax({
+										url: this.url,
+										method: 'POST',
+										data: {
+											_token: CSRF_TOKEN,
+											columns: this.columnCheckers.filter(':checked').map(function() {
+												return $(this).val();
+											}).get()
+										},
+									});      
+								}
+							}
+						</script>
                     </div>
                     <span class="filter-group ml-4">
                         <span class="title text-semibold text-muted">{{ trans('messages.subscribers_who') }}</span>
@@ -229,15 +256,17 @@
 
 <script>
     var SubscribersIndex = {
+        list: null,
         getList: function() {
-            return makeList({
-                url: '{{ action('Pub\CampaignController@subscribersListing', [
-                    'uid' => $campaign->uid,
-                    'version_b' => request()->version_b,
-                ]) }}',
-                container: $('.listing-form'),
-                content: $('.pml-table-container')
-            });
+            if (this.list == null) {
+                this.list = makeList({
+                    url: '{{ action('Pub\CampaignController@subscribersListing', ['uid' => $campaign->uid, 'version_b' => request()->version_b, 'customer_uid' => $campaign->customer->uid]) }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+            
+            return this.list;
         }
     };
 

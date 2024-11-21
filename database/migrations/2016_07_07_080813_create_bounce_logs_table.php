@@ -15,7 +15,7 @@ class CreateBounceLogsTable extends Migration
             $table->string('runtime_message_id')->nullable();
             $table->string('message_id')->nullable();
             $table->string('bounce_type');
-            $table->text('raw');
+            $table->text('raw')->nullable();
 
             $table->timestamps();
 

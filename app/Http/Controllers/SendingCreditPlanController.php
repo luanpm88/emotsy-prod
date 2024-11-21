@@ -3,20 +3,20 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\SendingCredit\Model\SendingCreditPlan;
+use Acelle\Model\SendingCreditPlan;
 
 class SendingCreditPlanController extends Controller
 {
     public function index()
     {
-        return view('sending-credit::sending_credit_plans.index');
+        return view('sending_credit_plans.index');
     }
 
     public function select(Request $request)
     {
         $plans = SendingCreditPlan::visible()->orderBy('credits', 'asc')->get();
 
-        return view('sending-credit::sending_credit_plans.select', [
+        return view('sending_credit_plans.select', [
             'plans' => $plans,
         ]);
     }
@@ -65,7 +65,7 @@ class SendingCreditPlanController extends Controller
         $invoices = $invoices->paginate($request->per_page);
 
         // view
-        return view('sending-credit::sending_credit_plans.invoiceList', [
+        return view('sending_credit_plans.invoiceList', [
             'invoices' => $invoices,
         ]);
     }
@@ -88,7 +88,7 @@ class SendingCreditPlanController extends Controller
         $transactions = $transactions->paginate($request->per_page);
 
         // view
-        return view('sending-credit::sending_credit_plans.transactionList', [
+        return view('sending_credit_plans.transactionList', [
             'transactions' => $transactions,
         ]);
     }

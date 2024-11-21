@@ -22,10 +22,6 @@
                 @if(View::exists('automation2.wizard.' . $trigger_type))
                     @include('automation2.wizard.' . $trigger_type)
                 @endif
-
-                <div class="automation-segment">
-
-                </div>
                 
                 <button class="btn btn-secondary select-trigger-confirm mt-2">
                     {{ trans('messages.automation.trigger.select_confirm') }}

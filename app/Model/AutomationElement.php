@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Carbon\Carbon;
 
+// @important: this is not a model (no db table)
 class AutomationElement
 {
     protected $data;

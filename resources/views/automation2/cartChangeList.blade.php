@@ -25,7 +25,7 @@
                                 'label' => '',
                                 'required' => true,
                                 'value' => $trigger->getOption('list_uid'),
-                                'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+                                'options' => Auth::user()->customer->local()->readCache('MailListSelectOptions', []),
                                 'rules' => [],
                             ])
                         </div>

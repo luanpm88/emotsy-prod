@@ -29,6 +29,7 @@ use Closure;
 class Notification extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     protected $table = 'notifications';
 

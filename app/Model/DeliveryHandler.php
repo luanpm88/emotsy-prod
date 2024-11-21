@@ -31,6 +31,8 @@ use Monolog\Formatter\LineFormatter;
 
 class DeliveryHandler extends Model
 {
+    protected $connection = 'mysql';
+
     protected $logger;
 
     public function logger()

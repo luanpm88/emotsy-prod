@@ -9,6 +9,30 @@ use Acelle\Cashier\Cashier;
 class CustomerController extends Controller
 {
     /**
+     * Log in back user.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loginBack(Request $request)
+    {
+        if ($request->user()->admin) {
+            return redirect()->action('Admin\HomeController@index');
+        }
+
+        $customer = $request->user()->customer;
+        $id = \Session::pull('orig_user_uid');
+        $orig_user = \Acelle\Model\User::findByUid($id);
+
+        \Auth::login($orig_user);
+
+        return redirect()->action('Admin\UserController@index', [
+            'customer_uid' => $customer->uid,
+        ]);
+    }
+
+    /**
      * Admin area.
      *
      * @param \Illuminate\Http\Request $request

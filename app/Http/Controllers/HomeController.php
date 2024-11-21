@@ -24,13 +24,13 @@ class HomeController extends Controller
         $maxCampaigns = get_tmp_quota($customer, 'campaign_max');
         $maxSubscribers = get_tmp_quota($customer, 'subscriber_max');
 
-        $listsCount = $customer->listsCount();
+        $listsCount = $customer->local()->listsCount();
         $listsUsed = ($maxLists == -1) ? 0 : $listsCount / $maxLists;
 
-        $campaignsCount = $customer->campaignsCount();
+        $campaignsCount = $customer->local()->campaignsCount();
         $campaignsUsed = ($maxCampaigns == -1) ? 0 : $campaignsCount / $maxCampaigns;
 
-        $subscribersCount = $customer->readCache('SubscriberCount', 0);
+        $subscribersCount = $customer->local()->readCache('SubscriberCount', 0);
         $subscribersUsed = ($maxSubscribers == -1) ? 0 : $subscribersCount / $maxSubscribers;
 
         if (config('app.cartpaye')) {
@@ -40,7 +40,7 @@ class HomeController extends Controller
             $list = new \Acelle\Model\MailList();
             $list->customer_id = $request->user()->customer->id;
             $list->uid = 'all';
-            $campaign = $request->campaign_uid ? \Acelle\Model\Campaign::findByUid($request->campaign_uid) : $customer->campaigns()->done()->first();
+            $campaign = $request->campaign_uid ? \Acelle\Model\Campaign::findByUid($request->campaign_uid) : $customer->local()->campaigns()->done()->first();
 
             return view('emotsy.dashboard', [
                 // 'sendingCreditsUsed' => $sendingCreditsUsed,

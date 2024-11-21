@@ -30,9 +30,7 @@ class Frontend
         }
 
         // Site offline
-        if (\Acelle\Model\Setting::get('site_online') == 'false' &&
-            (isset($user) && get_tmp_quota($user->customer, 'access_when_offline') != 'yes')
-        ) {
+        if (\Acelle\Model\Setting::get('site_online') == 'false') {
             return redirect()->action('Controller@offline');
         }
 
@@ -47,6 +45,11 @@ class Frontend
         if ($user->customer->language) {
             \App::setLocale($user->customer->language->code);
             \Carbon\Carbon::setLocale($user->customer->language->code);
+        }
+
+        // DB here
+        if (config('sharding.enabled') && $user->customer->hasLocalDb()) {
+            $user->customer->setUserDbConnection();
         }
 
         // Wordpress db by user

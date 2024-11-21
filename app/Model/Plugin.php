@@ -20,6 +20,7 @@ use function Acelle\Helpers\pcopy;
 class Plugin extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';

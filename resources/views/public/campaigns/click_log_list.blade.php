@@ -34,7 +34,7 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.campaign') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ $item->trackingLog->sendingServer->name }}</span>
+					<span class="no-margin kq_search">{{ $item->trackingLog->getSendingServer() ? $item->trackingLog->getSendingServer()->name : '[server]' }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.sending_server') }}</span>
 				</td>
 				<td>
@@ -44,7 +44,8 @@
 				@if ($item->trackingLog->campaign->campaignWebhooks()->click()->count())
                     <td class="text-end">
                         <a href="{{ action('Pub\CampaignController@clickLogExecute', [
-                            'uid' => $item->trackingLog->campaign->uid,
+                            'uid' => $campaign->uid,
+                            'customer_uid' => $campaign->customer->uid,
                             'message_id' => $item->message_id,
                         ]) }}" class="btn btn-light click_log_detail">
                             {{ trans('messages.webhook.execute_click_callback') }}

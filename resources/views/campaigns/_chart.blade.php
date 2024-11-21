@@ -24,9 +24,8 @@
             {{ trans('messages.opened') }}
             <span class="fw-600">
                 {{ trans('messages.open_uniq_per_total', [
-                    'count' => $campaign->readCache('UniqOpenCount'),
-                    'total' => $campaign->uniqueOpenCount(),
-                    'delivered' => $campaign->deliveredCount(),
+                    'count' => number_with_delimiter($campaign->readCache('UniqOpenCount', 0)),
+                    'delivered' => number_with_delimiter($campaign->deliveredCount()),
                 ]) }}
             </span><span class="px-2"> · </span>
             <a class="text-warning" href="{{ action('CampaignController@openLog', [
@@ -40,8 +39,8 @@
             {{ trans('messages.not_opened') }}
             <span class="fw-600">
                 {{ trans('messages.not_open_per_total', [
-                    'count' => $campaign->readCache('NotOpenCount', 0),
-                    'total' => $campaign->readCache('SubscriberCount', 0),
+                    'count' => number_with_delimiter($campaign->readCache('NotOpenCount', 0)),
+                    'total' => number_with_delimiter($campaign->readCache('SubscriberCount', 0)),
                 ]) }}
             </span><span class="px-2"> · </span>
             <a class="text-warning" href="{{ action('CampaignController@subscribers', [
@@ -56,8 +55,8 @@
             {{ trans('messages.clicked_emails_rate') }}
             <span class="fw-600">
                 {{ trans('messages.count_clicked_opened', [
-                    'count' => $campaign->uniqueClickCount(),
-                    'total' => $campaign->openUniqCount()
+                    'count' => number_with_delimiter($campaign->uniqueClickCount()),
+                    'total' => number_with_delimiter($campaign->openUniqCount())
                 ]) }}
             </span><span class="px-2"> · </span>
             <a class="text-warning" href="{{ action('CampaignController@clickLog', [
@@ -71,7 +70,7 @@
             {{ trans('messages.unsubscribed') }}
             <span class="fw-600">
                 {{ trans('messages.count_unsubscribed', [
-                    'count' => $campaign->unsubscribeCount()
+                    'count' => number_with_delimiter($campaign->unsubscribeCount())
                 ]) }}
             </span><span class="px-2"> · </span>
             <a class="text-warning" href="{{ action('CampaignController@unsubscribeLog', [
@@ -85,7 +84,7 @@
             {{ trans('messages.bounced') }}
             <span class="fw-600">
                 {{ trans('messages.count_bounced', [
-                    'count' => $campaign->bounceCount()
+                    'count' => number_with_delimiter($campaign->bounceCount())
                 ]) }}
             </span><span class="px-2"> · </span>
             <a class="text-warning" href="{{ action('CampaignController@bounceLog', [
@@ -99,7 +98,7 @@
             {{ trans('messages.reported') }}
             <span class="fw-600">
                 {{ trans('messages.count_reported', [
-                    'count' => $campaign->feedbackCount()
+                    'count' => number_with_delimiter($campaign->feedbackCount())
                 ]) }}
             </span><span class="px-2"> · </span>
             <a class="text-warning" href="{{ action('CampaignController@feedbackLog', [

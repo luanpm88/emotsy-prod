@@ -13,8 +13,8 @@
 			<li class="breadcrumb-item active">{{ trans('messages.contact_information') }}</li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-address-book3"></i> {{ $customer->getName() }}</span>
-		</h1>
+            <span class="text-semibold"><span class="material-symbols-rounded">apartment</span> {{ $customer->displayName() }}</span>
+        </h1>
 	</div>
 
 @endsection

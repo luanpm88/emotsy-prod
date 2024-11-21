@@ -13,6 +13,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Jobs\LoadCampaign;
 use Acelle\Jobs\RunCampaign;
+use Acelle\Jobs\HandleDuplicateEmails;
 use Illuminate\Bus\Batch;
 use Acelle\Events\CampaignUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +22,7 @@ use Closure;
 use Exception;
 use DB;
 use Illuminate\Support\Facades\Cache;
+use Acelle\Model\Setting;
 
 class BaseCampaign extends Model
 {
@@ -143,7 +145,10 @@ class BaseCampaign extends Model
 
         $lock->getExclusiveLock(function ($f) {
             foreach (static::scheduled()->get() as $campaign) {
-                $campaign->execute();
+                // This is called in the console, so a default db connection must be set
+                $campaign->customer->setUserDbConnection();
+
+                $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
             }
         }, $timeout, $timeoutCallback);
     }
@@ -166,14 +171,14 @@ class BaseCampaign extends Model
 
     // This method called when user clicks CONFIRM button on the web UI
     // This method is also called by a cronjob which periodically check for campaigns to run
-    public function execute($force = false)
+    public function execute($force = false, string $queue = ACM_QUEUE_TYPE_BATCH)
     {
-        DB::transaction(function () use ($force) {
+        DB::transaction(function () use ($force, $queue) {
             $now = Carbon::now();
 
             if (!is_null($this->run_at) && $this->run_at->gte($now)) {
                 $scheduledAt = $this->run_at->timezone($this->customer->timezone);
-                $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $scheduledAt->format('Y-m-d H:m'), $scheduledAt->diffForHumans()));
+                $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $this->customer->formatDateTime($scheduledAt, 'datetime_short'), $scheduledAt->diffForHumans()));
                 return;
             }
 
@@ -190,11 +195,11 @@ class BaseCampaign extends Model
             $this->cancelAndDeleteJobs($jobType = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES);
 
             // Schedule Job initialize
-            $job = (new RunCampaign($this));
+            $job = (new RunCampaign($this, $queue));
 
             // Dispatch using the method provided by TrackJobs
             // to also generate job-monitor record
-            $this->dispatchWithMonitor($job, $jobType = static::JOB_TYPE_RUN_CAMPAIGN);
+            $this->dispatchWithMonitor($job, $jobType = static::JOB_TYPE_RUN_CAMPAIGN, $queue);
 
             // After this job is dispatched successfully, set status to "queued"
             $this->setQueued();
@@ -208,21 +213,15 @@ class BaseCampaign extends Model
         return $this;
     }
 
-    public function rerun()
-    {
-        $this->logger()->warning('Rerun campaign!');
-        $this->execute();
-    }
-
     // Manually resume via web UI
-    public function resume()
+    public function resume(string $queue)
     {
-        $this->logger()->warning('Resume campaign');
-        $this->execute();
+        $this->logger()->warning('Resume campaign in queue: '.$queue);
+        $this->execute($force = false, $queue);
     }
 
     // Should be called by RunCampaign
-    public function run($check = true)
+    public function run($check = true, string $queue = ACM_QUEUE_TYPE_BATCH)
     {
         if ($check) {
             $this->withLock(function () {
@@ -231,6 +230,8 @@ class BaseCampaign extends Model
                 }
                 $this->setSending();
             });
+        } else {
+            $this->logger()->info('Run without status check');
         }
 
 
@@ -246,20 +247,42 @@ class BaseCampaign extends Model
         // Clean up DELAY flag
         $this->setDelayFlag(null);
 
+        $this->debug(function ($info) {
+            $info['delay_note'] = null;
+
+            // Must return;
+            return $info;
+        });
+
         // Option 1: load multiple Campaign loader jobs
         // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
         // So there will be 200 x 2 = 400 jobs in queue (in case of sending speed limit)
         // Be careful before increase this value, otherwise, jobs release/retry may prevents
         //     other campaigns from sending
-        $perPage = 50;
+        $perPage = 100;
         $maxPageToLoad = 2;
-        $subscribersQuery = $this->subscribersToSend();
-
         $campaignLoaders = [];
         $pageCount = 0;
+
+        if (Setting::isYes('campaign.duplicate')) {
+            $subscribersQuery = $this->subscribersToSend();
+        } else {
+            $this->calculateDuplicateEmails();
+
+            $subscribersQuery = $this->subscribersToSend()->leftJoin($this->getDuplicateTable(), function ($join) {
+                $join->on("{$this->getDuplicateTable()}.email", '=', 'subscribers.email');
+            })->where(function ($query) {
+                $query->whereNull("{$this->getDuplicateTable()}.email")->orWhere("{$this->getDuplicateTable()}.selected_id", '=', DB::raw('subscribers.id'));
+            });
+
+            // handle duplicate
+            $campaignLoaders[] = new HandleDuplicateEmails($this);
+        }
+
         paginate_query($subscribersQuery, $perPage, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$campaignLoaders, &$pageCount) {
             $pageCount += 1;
             $listOfIds = $subscribers->pluck('subscribers.id')->toArray();
+
             $campaignLoaders[] = new LoadCampaign($this, $pageNumber, $listOfIds);
         }, $maxPageToLoad);
 
@@ -270,12 +293,13 @@ class BaseCampaign extends Model
 
         $campaignId = $this->uid;
         $className = get_called_class(); // Something like App\Model\Campaign (late binding, inherited class name)
-
+        $customerId = $this->customer->id;
         // Dispatch it with a batch monitor
-        $this->dispatchWithBatchMonitor(
+        $monitor = $this->dispatchWithBatchMonitor(
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
+            $queue,
             $campaignLoaders,
-            function ($batch) use ($campaignId, $className) {
+            function ($batch) use ($campaignId, $className, $queue) {
                 // THEN callback of a batch
                 //
                 // Important:
@@ -298,7 +322,7 @@ class BaseCampaign extends Model
                     // Run over and over again until there is no subscribers left to send
                     // Because each LoadCampaign jobs only load a fixed number of subscribers
                     $campaign->logger()->warning('Load another batch of the remaining '.$count);
-                    $campaign->run($check = false); // Campaign is already in 'sending' status, set $check = false to bypass locking
+                    $campaign->run($check = false, $queue); // Campaign is already in 'sending' status, set $check = false to bypass locking
                 } else {
                     $campaign->logger()->warning('No contact left, campaign finishes successfully!');
                     $campaign->setDone();
@@ -314,20 +338,32 @@ class BaseCampaign extends Model
 
                 return;
             },
-            function (Batch $batch, Throwable $e) use ($campaignId, $className) {
+            function (Batch $batch, Throwable $e) use ($campaignId, $className, $customerId) {
                 // CATCH callback
+                $customer = \Acelle\Model\Customer::find($customerId);
+                $customer->setUserDbConnection();
+
                 $campaign = $className::findByUid($campaignId);
                 $errorMsg = "Campaign stopped. ".$e->getMessage()."\n".$e->getTraceAsString();
                 $campaign->logger()->info($errorMsg);
                 $campaign->setError($errorMsg);
             },
-            function () use ($campaignId, $className) {
+            function () use ($campaignId, $className, $customerId) {
                 // FINALLY callback
+                $customer = \Acelle\Model\Customer::find($customerId);
+                $customer->setUserDbConnection();
+
                 $campaign = $className::findByUid($campaignId);
                 $campaign->logger()->info('Finally callback of batch! Updating cache');
                 $campaign->updateCache();
+                if (Setting::isYes('campaign.duplicate')) {
+                    $campaign->cleanupDuplicateTable();
+                }
             }
         );
+
+        $this->logger()->info('Batch dispatched, JobMonitor #'.$monitor->id);
+
 
         /**** MORE NOTES ****/
         //
@@ -547,5 +583,37 @@ class BaseCampaign extends Model
         with_cache_lock($key, function () use ($task) {
             $task();
         });
+    }
+
+    public function getDuplicateTable()
+    {
+        return '__campaign_duplicate_'.$this->uid;
+    }
+
+    public function cleanupDuplicateTable()
+    {
+        $duplicateTable = $this->getDuplicateTable();
+        $duplicateTableWithPrefix = table($duplicateTable);
+
+        DB::statement("DROP TABLE IF EXISTS `{$duplicateTableWithPrefix}`;");
+    }
+
+    // Create a table with duplicate emails, along with the subscriber_id to keep
+    public function calculateDuplicateEmails()
+    {
+        // Create a list of duplicated email and a selected ID
+        // Selected id is
+        // + From default mail list
+        // + Randonly selected (min ID) if contacts whose email address do not belong to default list
+        $duplicateEmails = $this->subscribers()->select('subscribers.email', DB::raw('min(id) AS selected_id'))->groupBy('subscribers.email')->havingRaw('count(*) > 1')->get()->toArray();
+
+        $duplicateTable = $this->getDuplicateTable();
+        $duplicateTableWithPrefix = table($duplicateTable);
+
+        DB::statement("DROP TABLE IF EXISTS `{$duplicateTableWithPrefix}`;");
+        DB::statement("CREATE TABLE `{$duplicateTableWithPrefix}` (`selected_id` int unsigned, `email` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci) ENGINE=InnoDB;");
+        DB::table($duplicateTable)->insert($duplicateEmails);
+        DB::statement("CREATE INDEX `_index_email_{$duplicateTableWithPrefix}` ON `{$duplicateTable}`(`email`);");
+        DB::statement("UPDATE `{$duplicateTableWithPrefix}` AS dup INNER JOIN `subscribers` s ON dup.email = s.email SET dup.selected_id = s.id WHERE s.mail_list_id = {$this->defaultMailList->id}");
     }
 }

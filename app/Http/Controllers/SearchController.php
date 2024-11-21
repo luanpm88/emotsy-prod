@@ -196,7 +196,7 @@ class SearchController extends Controller
         $customer = $request->user()->customer;
         $count = 5;
 
-        $campaigns = $customer->campaigns()
+        $campaigns = $customer->local()->campaigns()
             ->search($request->keyword)
             ->filter($request)
             ->orderBy('campaigns.name', 'asc')
@@ -213,7 +213,7 @@ class SearchController extends Controller
         $customer = $request->user()->customer;
         $count = 5;
 
-        $lists = $customer->mailLists()
+        $lists = $customer->local()->mailLists()
             ->search($request->keyword)
             ->orderBy('mail_lists.name', 'asc')
             ->paginate($count);
@@ -229,7 +229,7 @@ class SearchController extends Controller
         $customer = $request->user()->customer;
         $count = 5;
 
-        $automations = $customer->automation2s()
+        $automations = $customer->local()->automation2s()
             ->search($request->keyword)
             ->orderBy('automation2s.name', 'asc')
             ->paginate($count);
@@ -263,7 +263,7 @@ class SearchController extends Controller
         $customer = $request->user()->customer;
         $count = 5;
 
-        $subscribers = $customer->subscribers()
+        $subscribers = $customer->local()->subscribers()
             ->search($request->keyword)
             ->paginate($count);
 
@@ -278,7 +278,7 @@ class SearchController extends Controller
         $customer = $request->user()->customer;
         $count = 5;
 
-        $forms = $customer->forms()
+        $forms = $customer->local()->forms()
             ->search($request->keyword)
             ->paginate($count);
 
@@ -293,7 +293,7 @@ class SearchController extends Controller
         $customer = $request->user()->customer;
         $count = 5;
 
-        $websites = $customer->websites()
+        $websites = $customer->local()->websites()
             ->search($request->keyword)
             ->paginate($count);
 

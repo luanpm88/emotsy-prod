@@ -21,6 +21,7 @@ use DB;
 class Subscription extends Model
 {
     use HasUid;
+    protected $connection = 'mysql';
 
     public const STATUS_NEW = 'new';
     public const STATUS_ACTIVE = 'active';
@@ -231,6 +232,11 @@ class Subscription extends Model
 
         // save subscription to invoice
         $invoice->subscription_id = $this->id;
+
+        // set no_payment_required_when_free to invoice from plan
+        $invoice->no_payment_required_when_free = $this->planGeneral->no_payment_required_when_free;
+
+        // save
         $invoice->save();
 
         // return
@@ -272,6 +278,11 @@ class Subscription extends Model
 
         // save subscription to invoice
         $invoice->subscription_id = $this->id;
+
+        // set no_payment_required_when_free to invoice from plan
+        $invoice->no_payment_required_when_free = $this->planGeneral->no_payment_required_when_free;
+
+        // save
         $invoice->save();
 
         // return
@@ -319,6 +330,11 @@ class Subscription extends Model
 
             // save subscription to invoice
             $invoice->subscription_id = $this->id;
+
+            // set no_payment_required_when_free to invoice from plan
+            $invoice->no_payment_required_when_free = $this->planGeneral->no_payment_required_when_free;
+
+            // save
             $invoice->save();
 
             return $invoice;
@@ -373,6 +389,11 @@ class Subscription extends Model
         // save subscription to invoice
         $invoice->subscription_id = $this->id;
         $invoice->new_plan_id = $newPlan->id;
+
+        // set no_payment_required_when_free to invoice from plan
+        $invoice->no_payment_required_when_free = $newPlan->no_payment_required_when_free;
+
+        // save
         $invoice->save();
 
         // return
@@ -538,18 +559,25 @@ class Subscription extends Model
      */
     public function activate()
     {
-        if (!$this->isNew()) {
-            throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
-        }
+        \DB::transaction(function () {
+            if (!$this->isNew()) {
+                throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
+            }
 
-        if ($this->plan->hasTrial()) {
-            $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
-        } else {
-            $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
-        }
+            // already have active subscription
+            if ($this->customer->getCurrentActiveSubscription()) {
+                throw new \Exception("Customer already has active subscription!");
+            }
 
-        $this->status = self::STATUS_ACTIVE;
-        $this->save();
+            if ($this->plan->hasTrial()) {
+                $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
+            } else {
+                $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
+            }
+
+            $this->status = self::STATUS_ACTIVE;
+            $this->save();
+        });
     }
 
     /**
@@ -743,6 +771,10 @@ class Subscription extends Model
             if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
                 $this->getItsOnlyUnpaidChangePlanInvoice()->delete();
             }
+
+            // reset credits
+            $this->getSendEmailCreditTracker()->setCredits(0);
+            $this->getVerifyEmailCreditTracker()->setCredits(0);
 
             // set status = ended. Lưu thời điểm bị end lại trong cột cancelled_at
             $this->setCancelled();
@@ -985,6 +1017,10 @@ class Subscription extends Model
 
     public static function createNewSubscription($customer, $plan)
     {
+        if ($customer->getNewOrActiveGeneralSubscription()) {
+            throw new \Exception(trans('messages.customer.already_new_active_sub'));
+        }
+
         $subscription = new self();
         $subscription->status = self::STATUS_NEW;
         $subscription->customer_id = $customer->id;
@@ -1051,7 +1087,17 @@ class Subscription extends Model
 
     public function setDefaultVerificationCredits()
     {
-        $defaultCredits = (int)$this->planGeneral->getOption('verification_credits_limit');
+        if ($this->planGeneral->getOption('create_email_verification_servers') == 'yes') {
+            $defaultCredits = InMemoryCreditTracker::UNLIMITED;
+        } else {
+            $defaultCredits = (int)$this->planGeneral->email_verification_credits;
+        }
+
         $this->getVerifyEmailCreditTracker()->setCredits($defaultCredits);
+    }
+
+    public function apiKey()
+    {
+        return $this->hasOne(ApiKey::class);
     }
 }

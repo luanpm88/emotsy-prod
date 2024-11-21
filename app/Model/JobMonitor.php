@@ -15,6 +15,7 @@ class JobMonitor extends Model
 {
     use HasFactory;
     use HasUid;
+    protected $connection = 'mysql';
 
     public const STATUS_QUEUED = 'queued';
     public const STATUS_RUNNING = 'running';

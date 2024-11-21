@@ -24,7 +24,7 @@ class CustomerPolicy
         return $can;
     }
 
-    public function create(User $user, Customer $item, $role='admin')
+    public function create(User $user, Customer $item, $role = 'admin')
     {
         $can = $user->admin->getPermission('customer_create') == 'yes';
 
@@ -36,10 +36,10 @@ class CustomerPolicy
         $can = $user->customer_id == $customer->id;
 
         // RBAC check
-        if ($user->hasPermission('account.all')) {
-            $permission = true;   
+        if ($user->hasPermission('account.full_access')) {
+            $permission = true;
         } else {
-            $permission = false;    
+            $permission = false;
         }
 
         return $can && $permission;
@@ -89,15 +89,6 @@ class CustomerPolicy
         return true;
     }
 
-    public function viewSubAccount(User $user, Customer $item)
-    {
-        $ability = $user->admin->getPermission('customer_update');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->admin->id == $item->admin_id);
-        $can = $can && $item->subAccounts()->count();
-        return $can;
-    }
-
     public function assignPlan(User $user, Customer $item)
     {
         $ability = $user->admin->getPermission('customer_update');
@@ -114,5 +105,10 @@ class CustomerPolicy
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
+    }
+
+    public function profile(User $user, Customer $customer)
+    {
+        return $user->customer_id == $customer->id;
     }
 }

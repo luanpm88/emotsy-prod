@@ -4,5 +4,8 @@
     'type' => 'select',
     'label' => trans('messages.list'),
     'value' => '',
-    'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+    'options' => Auth::user()->customer->local()->readCache('MailListSelectOptions', []),
 ])
+<div class="automation-segment">
+
+</div>

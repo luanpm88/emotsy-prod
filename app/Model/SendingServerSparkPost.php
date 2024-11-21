@@ -193,13 +193,20 @@ class SendingServerSparkPost extends SendingServer
      */
     private static function handleBounce($message)
     {
-        $bounceLog = new BounceLog();
-
         // use Elastic Email transaction id as runtime-message-id
         try {
-            $bounceLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
+            $msgId = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
+            $customer = \Acelle\Model\Customer::getCustomerFromKey('runtime_message_id', $msgId);
+            if ($customer) {
+                $customer->setUserDbConnection();
+            } else {
+                throw new Exception('Cannot associate message id with a customer: '.$msgId);
+            }
+
+            $bounceLog = new BounceLog();
+            $bounceLog->runtime_message_id = $msgId;
         } catch (\Exception $e) {
-            MailLog::warning('Cannot retrive runtime_message_id');
+            MailLog::warning('Cannot retrive runtime_message_id'.$e->getMessage());
 
             return response('', 200);
         }
@@ -229,13 +236,20 @@ class SendingServerSparkPost extends SendingServer
      */
     private static function handleSpamComplaint($message)
     {
-        $feedbackLog = new FeedbackLog();
-
         try {
+            $msgId = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
+            $customer = \Acelle\Model\Customer::getCustomerFromKey('runtime_message_id', $msgId);
+            if ($customer) {
+                $customer->setUserDbConnection();
+            } else {
+                throw new Exception('Cannot associate message id with a customer: '.$msgId);
+            }
+
             // use Elastic Email transaction id as runtime-message-id
-            $feedbackLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
+            $feedbackLog = new FeedbackLog();
+            $feedbackLog->runtime_message_id = $msgId;
         } catch (\Exception $e) {
-            MailLog::warning('Cannot retrive runtime_message_id');
+            MailLog::warning('Cannot retrive runtime_message_id'.$e->getMessage());
 
             return response('', 200);
         }

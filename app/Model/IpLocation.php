@@ -29,6 +29,8 @@ use Acelle\Library\Notification\BackendError;
 
 class IpLocation extends Model
 {
+    protected $connection = 'mysql';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -53,7 +55,19 @@ class IpLocation extends Model
 
         try {
             $geoip->resolveIp($ip);
-        } catch (\Exception $e) {
+
+            $location->ip_address = $ip;
+            $location->country_code = $geoip->getCountryCode();
+            $location->country_name = $geoip->getCountryName();
+            $location->region_name = $geoip->getRegionName();
+            $location->city = $geoip->getCity();
+            $location->zipcode = $geoip->getZipcode();
+            $location->latitude = $geoip->getLatitude();
+            $location->longitude = $geoip->getLongitude();
+            $location->save();
+
+            return $location;
+        } catch (\Throwable $e) {
             // Note log
             $title = 'GeoIP Error';
             LaravelLog::warning('Cannot get IP location info for '.$ip.'. Error: '.$e->getMessage());
@@ -62,21 +76,7 @@ class IpLocation extends Model
                 'title' => $title,
                 'message' => $e->getMessage(),
             ]);
-
-            throw $e;
         }
-
-        $location->ip_address = $ip;
-        $location->country_code = $geoip->getCountryCode();
-        $location->country_name = $geoip->getCountryName();
-        $location->region_name = $geoip->getRegionName();
-        $location->city = $geoip->getCity();
-        $location->zipcode = $geoip->getZipcode();
-        $location->latitude = $geoip->getLatitude();
-        $location->longitude = $geoip->getLongitude();
-        $location->save();
-
-        return $location;
     }
 
     /**

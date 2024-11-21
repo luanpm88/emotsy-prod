@@ -95,17 +95,27 @@ class StringHelper
      *
      * @return string
      */
-    public static function generateMessageId($domain, $test = false)
+    public static function generateMessageId($domain, $customerUid = null, $test = false)
     {
+        if (is_null($customerUid)) {
+            $customerUid = '0000000000000'; // 13 digits
+        }
         // @note: be careful when changing the message format, it may impact some other parts of the application
         // For example, see the DeliveryHandler::getMessageId()
         if ($test) {
             // generate a test MessageId for a test email
             // then replace the uniqid() with 0*13
-            return time().rand(100000, 999999).'.0000000000000@'.$domain;
+            return time().rand(100000, 999999).'.0000000000000.'.$customerUid.'@'.$domain;
         } else {
-            return time().rand(100000, 999999).'.'.uniqid().'@'.$domain;
+            return time().rand(100000, 999999).'.'.uniqid().'.'.$customerUid.'@'.$domain;
         }
+    }
+
+    public static function extractCustomerUidFromMessageId(string $messageId)
+    {
+        preg_match('/\.(?P<CustomerUid>[a-z0-9]+)@/', $messageId, $matched);
+
+        return $matched['CustomerUid'] ?? null;
     }
 
     /**

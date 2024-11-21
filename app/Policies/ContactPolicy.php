@@ -12,6 +12,11 @@ class ContactPolicy
 
     public function update(User $user, Contact $item)
     {
-        return !isset($item->id) || $user->contact_id == $item->id && !$user->isReadOnly();
+        // RBAC check
+        if ($user->hasPermission('account.read_only')) {
+            return false;
+        }
+
+        return !isset($item->id) || $user->contact_id == $item->id;
     }
 }
