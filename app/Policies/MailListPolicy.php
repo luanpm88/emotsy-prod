@@ -112,14 +112,7 @@ class MailListPolicy
 
         $can = ($can == 'yes' && $item->customer_id == $customer->id);
 
-        // RBAC check
-        if ($user->hasPermission('list.all')) {
-            $permission = true;   
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 
     public function export(User $user, MailList $item)
