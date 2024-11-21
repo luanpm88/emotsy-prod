@@ -62,11 +62,10 @@ class Kernel extends ConsoleKernel
             event(new \Acelle\Events\CronJobExecuted());
         })->name('cronjob_event:log')->everyMinute();
 
-        // Automation2
+
         $schedule->call(function () {
-            // Make sure connection is properly set in this method
-            Automation2::run();
-        })->name('automation:run')->everyFiveMinutes();
+            DispatchAutomationJobs::dispatch()->onQueue('default');
+        })->name('automation:run')->everyMinute();
 
         // Bounce/feedback handler
         $schedule->command('handler:run')->everyThirtyMinutes();
