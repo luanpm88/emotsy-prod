@@ -3,6 +3,9 @@
     'campaign.full_access.desc' => 'Full access to create, view, edit, run and delete email campaigns.',
     'campaign.read_only.title' => 'Read Only',
     'campaign.read_only.desc' => 'View only access to email campaigns.',
+    'campaign.approve.title' => 'Approval',
+    'campaign.approve.desc' => 'Users with this permission can approve campaigns that are waiting for approval. Users who have this permission do not need approval for their campaigns.',
+
     'list.full_access.title' => 'Full Access',
     'list.full_access.desc' => 'Full access to create, view, edit and delete email lists.',
     'list.read_only.title' => 'Read Only',
