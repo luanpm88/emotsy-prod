@@ -35,7 +35,7 @@ class Automation2Policy
 
         $can = $max > $customer->local()->automationsCount() || $max == -1;
 
-        return $can
+        return $can;
     }
 
     public function view(User $user, Automation2 $automation)
