@@ -52,14 +52,7 @@ class CampaignPolicy
             // ignore limit because it is null
         }
 
-        // RBAC check
-        if ($user->hasPermission('campaign.all')) {
-            $permission = true;    
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 
     public function overview(User $user, Campaign $item)
@@ -67,16 +60,7 @@ class CampaignPolicy
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id && !$user->isReadOnly() && !$item->isWaitForApproval();
 
-        // RBAC check
-        if ($user->hasPermission('campaign.all')) {
-            $permission = true;  
-        } elseif ($user->hasPermission('campaign.read')) {
-            $permission = true;    
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 
     public function approve(User $user, Campaign $item, $role='admin')
