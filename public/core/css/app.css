@@ -8599,12 +8599,12 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
 .avatar-layer {
     width: 28px;
 }
-.avatar-layer .avatar-img {
+.avatar-layer .avatar-img, .leftbar .avatar-layer .avatar-img {
     border: solid 2px #fff;
     height: 36px;
     width: 36px;
     background-color: #fff;
 }
-.avatar-layer .avatar-img:hover {
+.avatar-layer .avatar-img:hover, .leftbar .avatar-layer .avatar-img:hover {
     border: solid 2px #efefef;
 }
