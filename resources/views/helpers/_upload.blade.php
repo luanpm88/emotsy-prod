@@ -61,6 +61,9 @@
                 // 
                 img.closest('a').attr("href", img.attr("src"));
             });
+
+            var imput = $(this).parents(".profile-image").find("input[name='_remove_image']");
+            imput.val("");
 		});
 		$(".remove-profile-image").click(function() {
 			var img = $(this).parents(".profile-image").find("img");
