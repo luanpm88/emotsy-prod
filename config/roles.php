@@ -22,5 +22,17 @@ return [
         'sending_server.read_only',
         'sending_domain.read_only',
         'account.read_only',
-    ]
+    ],
+
+    'campaign_approver' => [
+        'campaign.read_only',
+        'campaign.approve',
+    ],
+
+    'list_manager' => [
+        'campaign.read_only',
+        'campaign.approve',
+    ],
+
+
 ];

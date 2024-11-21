@@ -188,4 +188,22 @@ class Role extends Model
             $this->addPermission($permission);
         }
     }
+
+    public function assignDefaultCampaignApproverPermissions()
+    {
+        $permissions = config('roles.campaign_approver');
+
+        foreach ($permissions as $permission) {
+            $this->addPermission($permission);
+        }
+    }
+
+    public function assignDefaultListManagerPermissions()
+    {
+        $permissions = config('roles.list_manager');
+
+        foreach ($permissions as $permission) {
+            $this->addPermission($permission);
+        }
+    }
 }

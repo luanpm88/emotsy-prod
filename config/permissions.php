@@ -3,8 +3,11 @@
 return [
     'campaign.full_access',
     'campaign.read_only',
+    'campaign.approve',
+    
     'list.full_access',
     'list.read_only',
+
     'automation.full_access',
     'automation.read_only',
 
