@@ -55,15 +55,8 @@ class MailListPolicy
         } else {
             // ignore limit because it is null
         }
-        
-        // RBAC check
-        if ($user->hasPermission('list.all')) {
-            $permission = true; 
-        } else {
-            $permission = false;    
-        }
 
-        return $can && $permission;
+        return $can;
     }
 
     public function update(User $user, MailList $item)
@@ -76,14 +69,7 @@ class MailListPolicy
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id;
 
-        // RBAC check
-        if ($user->hasPermission('list.all')) {
-            $permission = true; 
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 
     public function delete(User $user, MailList $item)
@@ -96,14 +82,7 @@ class MailListPolicy
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id;
 
-        // RBAC check
-        if ($user->hasPermission('list.all')) {
-            $permission = true;
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
 
     public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers = 1)
@@ -119,14 +98,6 @@ class MailListPolicy
             ($max >= $user->customer->local()->subscribersCount() + $numberOfSubscribers || $max == -1) &&
             ($maxPerList >= $mailList->subscribersCount() + $numberOfSubscribers || $maxPerList == -1);
 
-        // RBAC check
-        if ($user->hasPermission('list.all')) {
-            $permission = true;   
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
     }
 
     public function import(User $user, MailList $item)
@@ -163,16 +134,7 @@ class MailListPolicy
 
         $can = ($can == 'yes' && $item->customer_id == $customer->id);
 
-        // RBAC check
-        if ($user->hasPermission('list.all')) {
-            $permission = true;  
-        } elseif ($user->hasPermission('list.read')) {
-            $permission = true;    
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can;
     }
     
     public function embedded_form(User $user, MailList $item)

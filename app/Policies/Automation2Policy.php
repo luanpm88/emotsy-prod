@@ -20,18 +20,7 @@ class Automation2Policy
             return false;
         }
 
-        // RBAC check
-        if ($user->hasPermission('automation.all')) {
-            $permission = true; 
-        } else {
-            $permission = false;    
-        }
-
-        if (!$user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
-            return false;
-        }
-
-        return $permission;
+        return true;
     }
 
     public function create(User $user, Automation2 $automation)
@@ -46,14 +35,7 @@ class Automation2Policy
 
         $can = $max > $customer->local()->automationsCount() || $max == -1;
 
-        // RBAC check
-        if ($user->hasPermission('automation.all')) {
-            $permission = true;   
-        } else {
-            $permission = false;    
-        }
-
-        return $can && $permission;
+        return $can
     }
 
     public function view(User $user, Automation2 $automation)

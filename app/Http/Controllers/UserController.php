@@ -212,47 +212,6 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $user = $request->user()->customer->newUser();
-
-        return view('users.create', [
-            'user' => $user,
-        ]);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-    {
-        return view('users.index');
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function listing(Request $request)
-    {
-        $users = $request->user()->customer->users()
-            ->search($request->keyword)
-            ->orderBy($request->sort_order ?? 'created_at', $request->sort_direction ?? 'desc')
-            ->paginate($request->per_page);
-
-        return view('users._list', [
-            'users' => $users,
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
         $customer = $request->user()->customer;
         $user = $customer->newUser();
 
