@@ -33,7 +33,11 @@
                             <label class="form-check-label d-flex py-3 border-bottom" for="{{ $permission }}">
                                 <span class="me-3">
                                     <label class="checker">
-                                        <input select-one="checkbox" {{ Auth::user()->admin->can('update', $role) ? '' : 'disabled' }} type="checkbox" name="permissions[]" value="{{ $permission }}" class="styled4" id="{{ $permission }}" {{ $role->hasPermission($permission) ? 'checked' : '' }}>
+                                        <input
+                                            @if ($permission !== 'campaign.approve')
+                                                select-one="checkbox"
+                                            @endif
+                                            {{ Auth::user()->admin->can('update', $role) ? '' : 'disabled' }} type="checkbox" name="permissions[]" value="{{ $permission }}" class="styled4" id="{{ $permission }}" {{ $role->hasPermission($permission) ? 'checked' : '' }}>
                                         <span class="checker-symbol"></span>
                                     </label>
                                 </span>
