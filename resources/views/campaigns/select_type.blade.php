@@ -25,7 +25,7 @@
         <p class="text-center mb-4 pb-2 px-5">{{ trans('messages.campaign.select_type.wording') }}</p>
         <ul class="modern-listsing big-icon mt-0 pb-2 px-0 border-top">
             @foreach (Acelle\Model\Campaign::types() as $key => $type)
-                @if ($type == 'ab-test' && !Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ab_testing'))
+                @if ($key == 'ab-test' && !Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ab_testing'))
                 @else
                     <li class="d-flex py-4 border-bottom box-shadow-sm">
                         <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
