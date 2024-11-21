@@ -1347,11 +1347,6 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
 }
-.theme-emotsy a:not(.btn, .dropdown-item, .nav-link) {
-    background: transparent;
-    margin-right: 10px;
-    margin-top: 2px;
-}
 .middle-bar-element {
     margin-top: 5px;
 }
