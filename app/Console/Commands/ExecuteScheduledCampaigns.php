@@ -38,7 +38,6 @@ class ExecuteScheduledCampaigns extends Command
      */
     public function handle()
     {
-        echo 123;
         $lockFile = storage_path('tmp/check-and-execute-scheduled-campaign');
         $lock = new Lockable($lockFile);
         $timeout = 5; // seconds

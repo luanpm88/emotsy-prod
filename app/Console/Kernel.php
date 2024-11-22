@@ -87,9 +87,7 @@ class Kernel extends ConsoleKernel
         })->name('subscription:monitor')->everyFiveMinutes();
 
         // Check for scheduled campaign to execute
-        $schedule->call(function () {
-            Campaign::checkAndExecuteScheduledCampaigns();
-        })->name('check_and_execute_scheduled_campaigns')->everyMinute();
+        $schedule->command('campaign:schedule')->everyMinute();
 
         $licenseTask = $schedule->call(function () {
             Notification::recordIfFails(

@@ -115,27 +115,6 @@ class BaseCampaign extends Model
         return $this;
     }
 
-    public static function checkAndExecuteScheduledCampaigns()
-    {
-        $lockFile = storage_path('tmp/check-and-execute-scheduled-campaign');
-        $lock = new Lockable($lockFile);
-        $timeout = 5; // seconds
-        $timeoutCallback = function () {
-            // pass this to the getExclusiveLock method
-            // to have it silently quit, without throwing an exception
-            return;
-        };
-
-        $lock->getExclusiveLock(function ($f) {
-            foreach (static::scheduled()->get() as $campaign) {
-                // This is called in the console, so a default db connection must be set
-                $campaign->customer->setUserDbConnection();
-
-                $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
-            }
-        }, $timeout, $timeoutCallback);
-    }
-
     public function deleteAndCleanup()
     {
         if ($this->template) {
