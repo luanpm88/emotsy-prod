@@ -2823,41 +2823,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $this->save();
     }
 
-    public static function checkAndForceRerunCampaigns()
-    {
-        // Audit all "sending" campaigns
-        $campaigns = static::sending()->get();
-
-        // Check if they are actually running!
-        foreach ($campaigns as $campaign) {
-            $info = $campaign->debug();
-
-            if (is_null($info)) {
-                $campaign->logger()->warning("Audit: Campaign {$campaign->name} does not have debug info");
-                continue;
-            }
-
-            if (!array_key_exists('last_activity_at', $info)) {
-                $campaign->logger()->warning("Audit: Campaign {$campaign->name} does not have 'last_activity_at' information");
-                continue;
-            }
-
-            $lastActivityAt = Carbon::parse($info['last_activity_at']);
-            $now = Carbon::now();
-            $triggerIfExceeds = 300; // Auto rerun a campaign if it has been 'sending' idle for the last 300 seconds (5 minutes)
-            $diffInSeconds = $now->diffInSeconds($lastActivityAt);
-
-            if ($diffInSeconds > $triggerIfExceeds) {
-                $notice = sprintf("Audit: Campaign '%s' is pending (last updated '%s'), force resuming...", $campaign->name, $lastActivityAt->diffForHumans());
-                $campaign->logger()->warning($notice);
-                $campaign->execute($force = true, ACM_QUEUE_TYPE_BATCH);
-            } else {
-                // Just fine
-                $campaign->logger()->warning(sprintf("Audit: campaign '%s' was last updated '%s', it is just fine", $campaign->name, $lastActivityAt->diffForHumans()));
-            }
-        }
-    }
-
     public function newCampaignHeader()
     {
         $campaignHeader = campaignHeader::newDefault();

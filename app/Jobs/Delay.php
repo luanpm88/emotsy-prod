@@ -99,7 +99,7 @@ class Delay implements ShouldQueue
 
         } catch (RateLimitExceeded $ex) {
 
-            // Record last activity. Otherwise, this job shall be erase when running Campaign::checkAndForceRerunCampaigns()
+            // Record last activity. Otherwise, this job shall be erase when running "campaign::rerun"
             $this->campaign->debug(function ($info) use ($ex) {
                 $info['last_activity_at'] = Carbon::now()->toString();
 

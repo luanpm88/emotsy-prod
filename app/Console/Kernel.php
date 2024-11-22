@@ -113,10 +113,8 @@ class Kernel extends ConsoleKernel
             $licenseTask->weeklyOn(rand(1, 6), '10:'.rand(10, 59)); // randomly from Mon to Sat, at 10:10 - 10:59
         }
 
-        // Auto (force) resume pending campaigns (those are in "sending" status but not actually running)
-        $schedule->call(function () {
-            Campaign::checkAndForceRerunCampaigns();
-        })->name('campaign:force-rerun-pending-campaigns')->everyTenMinutes();
+        // Rerun "sending" campaigns that are stuck for too long
+        $schedule->command('campaign:rerun')->everyTenMinutes();
 
         /*
         // Update list/user cache every 30 minutes
