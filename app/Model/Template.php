@@ -308,6 +308,7 @@ class Template extends Model
         // Copy flags
         $copy->builder = $this->builder;
         $copy->is_default = false; // no longer default
+        $copy->is_private = false;
 
         // Overwrite attributes :name
         $copy->name = isset($attributes['name']) ? $attributes['name'] : $this->name;
