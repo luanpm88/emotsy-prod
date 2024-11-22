@@ -3,7 +3,6 @@
 namespace Acelle\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -14,19 +13,23 @@ use Illuminate\Contracts\Cache\Repository;
 
 use Acelle\Model\Customer;
 
-class DispatchAutomationJobs implements ShouldQueue, ShouldBeUnique
+class DispatchAutomationJobs implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
+    {
+        with_cache_lock('lock_run_all_automations', function() {
+            $this->run();
+        }, $getLockTimeout = 5, $lockExpiresAfter = 120, $timeoutCallback = function() {
+            // do nothing, do not throw exception
+        });
+    }
+
+    private function run()
     {
         $customers = Customer::all();
         foreach ($customers as $customer) {
@@ -46,28 +49,4 @@ class DispatchAutomationJobs implements ShouldQueue, ShouldBeUnique
             }
         }
     }
-
-    /**
-     * The unique ID of the job.
-     *
-     * @return string
-     */
-    public $uniqueFor = 120;
-    public function uniqueId()
-    {
-        // a fixed id, making sure only one job in queue at any given time
-        return 1;
-    }
-
-    public function uniqueVia(): Repository
-    {
-        return Cache::driver('file');
-    }
-
-    public function middleware()
-    {
-        return [(new WithoutOverlapping(1))->dontRelease()->expireAfter(120)];
-    }
-
-
 }
