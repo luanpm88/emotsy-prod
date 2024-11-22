@@ -76,6 +76,7 @@ class RerunCampaigns extends Command
     {
         $customers = \Acelle\Model\Customer::all();
         foreach ($customers as $customer) {
+            $customer->setUserDbConnection();
             $campaigns = $customer->local()->campaigns()->sending()->get();
             $callback($customer, $campaigns);
         }
