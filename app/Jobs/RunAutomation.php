@@ -14,7 +14,7 @@ use Illuminate\Contracts\Cache\Repository;
 
 use Acelle\Model\Automation2;
 
-class RunAutomation implements ShouldQueue
+class RunAutomation implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable;
     use InteractsWithQueue;
