@@ -260,6 +260,7 @@
   'widget.product_list' => 'Elenco Prodotti',
   'widget.remove' => 'Rimuovi',
   'widget.rss' => 'RSS',
+  'widget.signature' => 'Signature',
   'widget.template_content' => 'Contenuto del template',
   'widget.three_columns' => '3 colonne',
   'widget.two_columns' => '2 cololonne',

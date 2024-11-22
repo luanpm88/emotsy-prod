@@ -259,6 +259,7 @@
   'widget.product_list' => '製品一覧',
   'widget.remove' => '削除する',
   'widget.rss' => 'RSS',
+  'widget.signature' => 'Signature',
   'widget.template_content' => 'テンプレートコンテンツ',
   'widget.three_columns' => '3列',
   'widget.two_columns' => '2列',
