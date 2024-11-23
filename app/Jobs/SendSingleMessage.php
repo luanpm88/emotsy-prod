@@ -46,7 +46,7 @@ class SendSingleMessage extends SendMessage
         }
 
         if (is_null($this->autoTrigger)) {
-            throw new \Exception("Cannot find trigger {$this->autoTriggerId} (DB connection ".\DB::connection()->getName().")")
+            throw new \Exception("Cannot find trigger {$this->autoTriggerId} (DB connection ".\DB::connection()->getName().")");
         }
 
         return $this->autoTrigger;
