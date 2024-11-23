@@ -1767,10 +1767,12 @@ class Customer extends Model
 
     public function setUserDbConnection()
     {
-        if (config('sharding.enabled') && $this->hasLocalDb()) {
-            \Acelle\Helpers\set_userdb_connection($this->db_connection);
-        } else {
-            \Acelle\Helpers\set_userdb_connection('mysql');
+        if (config('sharding.enabled')) {
+            if ($this->hasLocalDb()) {
+                \Acelle\Helpers\set_userdb_connection($this->db_connection);
+            } else {
+                \Acelle\Helpers\set_userdb_connection('mysql');
+            }
         }
     }
 
