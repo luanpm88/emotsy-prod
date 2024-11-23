@@ -467,18 +467,6 @@ class Subscriber extends Model
     public static $itemsPerPage = 25;
 
     /**
-     * Get secure code for updating subscriber.
-     *
-     * @param string $action
-     */
-    public function getSecurityToken($action)
-    {
-        $string = $this->email.$action.config('app.key');
-
-        return md5($string);
-    }
-
-    /**
      * Create customer action log.
      *
      * @param string   $cat
@@ -1173,7 +1161,7 @@ class Subscriber extends Model
 
     public function generateUpdateProfileUrl()
     {
-        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'id' => $this->id, 'code' => $this->getSecurityToken('update-profile')]);
+        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'id' => $this->id, 'customer_uid' => $this->mailList->customer->uid]);
     }
 
     // Change status to SUBSCRIBED

@@ -475,17 +475,15 @@ class PageController extends Controller
         $page->renderContent($values, $subscriber);
 
         if ($request->isMethod('post')) {
-            if ($subscriber->getSecurityToken('update-profile') == $request->code) {
-                $rules = $subscriber->getRules();
-                $rules['EMAIL'] .= '|in:'.$subscriber->email;
-                // Validation
-                $this->validate($request, $rules);
+            $rules = $subscriber->getRules();
+            $rules['EMAIL'] .= '|in:'.$subscriber->email;
+            // Validation
+            $this->validate($request, $rules);
 
-                // Update field
-                $subscriber->updateFields($request->all());
+            // Update field
+            $subscriber->updateFields($request->all());
 
-                return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
-            }
+            return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
         }
 
         return view('pages.form', [
