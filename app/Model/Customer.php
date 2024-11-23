@@ -1769,6 +1769,8 @@ class Customer extends Model
     {
         if (config('sharding.enabled') && $this->hasLocalDb()) {
             \Acelle\Helpers\set_userdb_connection($this->db_connection);
+        } else {
+            \Acelle\Helpers\set_userdb_connection('mysql');
         }
     }
 
