@@ -93,5 +93,8 @@ class SendSingleMessage extends SendMessage
             $action->setError($ex->getMessage());
             $this->campaign->logger()->info('Error sending trigger email: '.$ex->getMessage());
         });
+
+        // Return true is important, telling the caller not to throw exception
+        return true;
     }
 }
