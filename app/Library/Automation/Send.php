@@ -107,7 +107,13 @@ class Send extends Action
     public function getProgressDescription($timezone = null, $locale = null)
     {
         $email = $this->getEmail();
-        $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
+
+        if ($this->autoTrigger) {
+            $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
+        } else {
+            // In case this element is get from automation->getAction(...), no trigger yet
+            $subscriberEmail = '[email]';
+        }
 
         if (!is_null($this->getLastExecuted())) {
             $queuedAt = Carbon::parse($this->getOption('queued_at'));
@@ -135,7 +141,7 @@ class Send extends Action
                     'c' => $subscriberEmail,
                     'dif' => $queuedAt->diffForHumans(),
                     'dt' => format_datetime($queuedAt, 'datetime_full_with_timezone', $locale),
-                    'id' => $this->getOption('delivery_job_id')
+                    'id' => $this->getOption('delivery_job_id') ?: '#', // temporary hack, to fix previous version issue (delivery_job_id turns out to be an empty array)
                 ]);
 
 
