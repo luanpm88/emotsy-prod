@@ -342,6 +342,8 @@ class SendMessage implements ShouldQueue
             LaravelLog::error('ERROR SENDING EMAIL (debug): '.$ex->getMessage()."\n".$ex->getTraceAsString());
             $logger->error($message);
 
+            $this->handleUnknownException($ex);
+
             // In case of these exceptions, stop campaign immediately even if stopOnError is currently false
             // This is helpful in certain cases: for example, when credits runs out, then it does not make sense to keep sending (and failing)
             $forceEndCampaignExceptions = [
@@ -366,6 +368,11 @@ class SendMessage implements ShouldQueue
     }
 
     public function afterSuccess()
+    {
+        return;
+    }
+
+    public function handleUnknownException($ex)
     {
         return;
     }

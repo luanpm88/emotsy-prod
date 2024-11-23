@@ -61,17 +61,7 @@ class SendSingleMessage extends SendMessage
     {
         // Set default connection
         $this->customer->setUserDbConnection();
-
-        try {
-            $this->send();
-        } catch (Throwable $ex) {
-            $this->getAutoTrigger()->withUpdateLock(function ($trigger) use ($ex) {
-                // Mark the related trigger action as done
-                $action = $this->getAction();
-                $action->setError($ex->getMessage());
-                $this->campaign->logger()->info('Error sending trigger email: '.$ex->getMessage());
-            });
-        }
+        $this->send();
     }
 
     public function handleRateLimitExceeded($email, RateLimitExceeded $ex)
@@ -89,5 +79,15 @@ class SendSingleMessage extends SendMessage
 
         $this->release($secondsToDelay); // should be only 60 seconds
         return $secondsToDelay;
+    }
+
+    public function handleUnknownException($ex)
+    {
+        $this->getAutoTrigger()->withUpdateLock(function ($trigger) use ($ex) {
+            // Mark the related trigger action as done
+            $action = $this->getAction();
+            $action->setError($ex->getMessage());
+            $this->campaign->logger()->info('Error sending trigger email: '.$ex->getMessage());
+        });
     }
 }
