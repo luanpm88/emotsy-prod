@@ -54,8 +54,11 @@ class RunCampaign implements ShouldQueue
      */
     public function handle()
     {
-        // Since this is executed in the console, a default db must be set first
-        $this->customer->setUserDbConnection();
+        // Do not use customer->setDbConnection() here, it might mess up with batch!!!!!!!!
+        if ($this->customer->hasLocalDb()) {
+            $this->campaign->logger()->info("Loading campaign object on connection {$this->customer->db_connection}");
+            $this->campaign = \Acelle\Model\Campaign::on($this->customer->db_connection)->find($this->campaign->id);
+        }
 
         if ($this->campaign->isPaused()) {
             return;
