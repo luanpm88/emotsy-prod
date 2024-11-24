@@ -1818,4 +1818,9 @@ class Customer extends Model
         $fullkey = "{$namespace}{$connector}{$key}";
         return $fullkey;
     }
+
+    public function getDbConnection()
+    {
+        return $this->db_connection ?? 'mysql';
+    }
 }
