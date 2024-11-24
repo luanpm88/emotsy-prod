@@ -111,7 +111,8 @@ class AutoTrigger extends Model
 
     public function recordToTimeline($action)
     {
-        if (is_null(Subscriber::find($this->subscriber_id))) {
+        $connection = $this->automation2->customer->getDbConnection();
+        if (is_null(Subscriber::on($connection)->find($this->subscriber_id))) {
             // In case of DELETE/MOVE contact operation, no timeline needed
             return;
         }
