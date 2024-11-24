@@ -65,8 +65,6 @@ class Delay implements ShouldQueue
      */
     public function retryUntil()
     {
-        $this->customer->setUserDbConnection();
-
         // @important: remember that messages might be released over and over
         // if there is any limit setting in place
         // As a result, it is just save to have it retry virtually forever

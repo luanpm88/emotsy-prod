@@ -57,7 +57,8 @@ class LoadCampaign implements ShouldQueue
      */
     public function handle()
     {
-        $this->customer->setUserDbConnection();
+        // Might cause problem with batches
+        // $this->customer->setUserDbConnection();
 
         if ($this->batch()->cancelled()) {
             return;

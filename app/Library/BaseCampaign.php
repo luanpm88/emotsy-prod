@@ -135,6 +135,10 @@ class BaseCampaign extends Model
     // This method is also called by a cronjob which periodically check for campaigns to run
     public function execute($force = false, string $queue = ACM_QUEUE_TYPE_BATCH)
     {
+        if (!empty($this->customer->custom_queue_name)) {
+            $queue = $this->customer->custom_queue_name;
+        }
+
         DB::transaction(function () use ($force, $queue) {
             $now = Carbon::now();
 
@@ -261,7 +265,10 @@ class BaseCampaign extends Model
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
             $queue,
             $campaignLoaders,
-            function ($batch) use ($campaignId, $className, $queue) {
+            function ($batch) use ($campaignId, $className, $queue, $customerId) {
+                $customer = \Acelle\Model\Customer::find($customerId);
+                $customer->setUserDbConnection();
+
                 // THEN callback of a batch
                 //
                 // Important:

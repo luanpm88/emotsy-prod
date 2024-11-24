@@ -103,8 +103,9 @@ class SendMessage implements ShouldQueue
      */
     public function handle()
     {
+        // Might cause problems with batch
         // Set default connection
-        $this->customer->setUserDbConnection();
+        // $this->customer->setUserDbConnection();
 
         // Remember that this job may not belong to a batch
         if ($this->batch() && $this->batch()->cancelled()) {
