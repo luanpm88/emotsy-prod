@@ -93,8 +93,13 @@
         }
 
         rect.operation {
-            fill: #966089;
-            stroke: #d6a6ca;
+            fill: #2fa268;
+            stroke: #a6d6ac;
+        }
+
+        rect.webhook {
+            fill: #cf70ab;
+            stroke: #f1c0f2;
         }
 
         g.wait > g > a tspan {
