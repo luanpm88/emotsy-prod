@@ -43,29 +43,11 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
     public function handle()
     {
         $this->customer->setUserDbConnection();
-        $this->automation->check();
-    }
 
-    /**
-     * The unique ID of the job.
-     *
-     * @return string
-     */
-    public $uniqueFor = 1200; // 30 days
-    public function uniqueId()
-    {
-        // a fixed id, making sure only one job in queue at any given time
-        return $this->automation->uid;
-    }
-
-    // For some reason, cache "redis" does not work
-    public function uniqueVia(): Repository
-    {
-        return Cache::driver('file');
-    }
-
-    public function middleware()
-    {
-        return [(new WithoutOverlapping($this->automation->uid))->dontRelease()->expireAfter(1200)];
+        with_cache_lock("run_automation_{$this->automation->uid}", function() {
+            $this->automation->check();
+        }, $getLockTimeout = 1, $lockTime = 1200, $waitTimeoutCallback = function() {
+            // do nothing, quietly quit, leaving the only one job running
+        });
     }
 }

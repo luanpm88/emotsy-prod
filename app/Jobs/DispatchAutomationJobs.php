@@ -41,7 +41,7 @@ class DispatchAutomationJobs implements ShouldQueue
 
                     $automation->logger()->info(sprintf('Dispatch automation "%s"', $automation->name));
                     $job = new RunAutomation($automation);
-                    dispatch($job->onQueue(ACM_QUEUE_TYPE_HIGH));
+                    safe_dispatch($job->onQueue(ACM_QUEUE_TYPE_HIGH));
 
                 } else {
                     $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
