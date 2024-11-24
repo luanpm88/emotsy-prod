@@ -1030,7 +1030,7 @@ class Automation2 extends Model
         if ($segments->isEmpty()) {
             $query = $this->mailList->subscribers()->select('subscribers.*');
         } else {
-            $query = Subscriber::getByListsAndSegments(...$segments);
+            $query = Subscriber::getByListsAndSegments($this->customer->getDbConnection(), ...$segments);
         }
 
         if (!is_null($actionId)) {

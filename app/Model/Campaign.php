@@ -322,7 +322,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         // create tracking log for message
-        $result = $this->trackingLogs()->create($params);
+        $result = $this->setConnection($this->customer->getDbConnection())->trackingLogs()->create($params);
 
     }
 
@@ -433,7 +433,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 $cl->customer_id = $this->customer_id;
                 $cl->campaign_id = $this->id;
                 $cl->url = $url;
-                $cl->save();
+                $cl->setConnection($this->customer->getDbConnection())->save();
             }
         }
     }
@@ -1192,7 +1192,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         // Save to DB
-        $copy->save();
+        $copy->setConnection($this->customer->getDbConnection())->save();
 
         // Lists segments
         foreach ($this->listsSegments as $listSegment) {
@@ -1204,7 +1204,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $newListSegment->updated_at = $now;
             $newListSegment->customer_id = $this->customer_id;
 
-            $newListSegment->save();
+            $newListSegment->setConnection($this->customer->getDbConnection())->save();
         }
 
         // copy template
@@ -1461,7 +1461,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // Save campaign with default list id
         $campaign = Campaign::find($this->id);
         $campaign->default_mail_list_id = $this->default_mail_list_id;
-        $campaign->save();
+        $campaign->setConnection($this->customer->getDbConnection())->save();
     }
 
     /**
@@ -2217,6 +2217,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // Query subscribers
         $subscribers = $this->subscribersToSend()->whereIn('subscribers.id', $listOfIds)->get();
         $serverPool = $this->getServersPool();
+
         if (sizeof($subscribers) == 0) {
             $this->logger()->info("Page {$page}, no contacts in this page");
         } else {
@@ -2253,7 +2254,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     //           + It guarantees that this method is not called the second time before all SendMessage jobs are already done.
     public function subscribersToSend()
     {
-
         // Notice that if an email already exists in tracking_logs but with status 'duplicate' (skipped) => then a new message to the same email will be allowed
         // Retrieve subscribers to send!
         $query = $this->subscribers([])
@@ -2281,7 +2281,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             }
         }
 
-        $query = Subscriber::getByListsAndSegments(...$listsAndSegments);
+        $query = Subscriber::getByListsAndSegments($this->customer->getDbConnection(), ...$listsAndSegments);
 
         // Filters
         $filters = isset($params['filters']) ? $params['filters'] : null;
@@ -2592,7 +2592,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
             $log->ip_address = $location->ip_address;
             $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
-            $log->save();
+            $log->setConnection($this->customer->getDbConnection())->save();
         }
 
         // Open log
@@ -2613,7 +2613,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $log->ip_address = $location->ip_address;
             $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
             $log->url = 'https://app.clickfunnels.com/signupflow';
-            $result = $log->save();
+            $result = $log->setConnection($this->customer->getDbConnection())->save();
         }
 
         // Unsubscribe log
@@ -2629,7 +2629,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
             $log->ip_address = $location->ip_address;
             $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
-            $log->save();
+            $log->setConnection($this->customer->getDbConnection())->save();
         }
 
 
@@ -2645,7 +2645,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             // SendGrid only notifies in case of HARD bounce
             $bounceLog->bounce_type = BounceLog::HARD;
             $bounceLog->raw = 'RFC308433: mailbox is no longer valid or blocked';
-            $bounceLog->save();
+            $bounceLog->setConnection($this->customer->getDbConnection())->save();
 
             // add subscriber's email to blacklist
             $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
@@ -2663,7 +2663,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $feedback->message_id = $r->message_id;
             $feedback->feedback_type = 'spam';
             $feedback->raw_feedback_content = 'RFC308433: mailbox is no longer valid or blocked';
-            $feedback->save();
+            $feedback->setConnection($this->customer->getDbConnection())->save();
 
             // add subscriber's email to blacklist
             $subscriber = $feedback->findSubscriberByRuntimeMessageId();

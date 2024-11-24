@@ -257,7 +257,7 @@ class BaseCampaign extends Model
             $campaignLoaders[] = new LoadCampaign($this, 0, []);
         }
 
-        $campaignId = $this->uid;
+        $campaignId = $this->id;
         $className = get_called_class(); // Something like App\Model\Campaign (late binding, inherited class name)
         $customerId = $this->customer->id;
         // Dispatch it with a batch monitor
@@ -267,7 +267,6 @@ class BaseCampaign extends Model
             $campaignLoaders,
             function ($batch) use ($campaignId, $className, $queue, $customerId) {
                 $customer = \Acelle\Model\Customer::find($customerId);
-                $customer->setUserDbConnection();
 
                 // THEN callback of a batch
                 //
@@ -277,7 +276,7 @@ class BaseCampaign extends Model
                 // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
                 //
                 // IMPORTANT: refresh() is required!
-                $campaign = $className::findByUid($campaignId);
+                $campaign = $className::on($customer->getDbConnection())->find($campaignId);
 
                 if ($campaign->refresh()->isPaused()) {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
@@ -310,9 +309,8 @@ class BaseCampaign extends Model
             function (Batch $batch, Throwable $e) use ($campaignId, $className, $customerId) {
                 // CATCH callback
                 $customer = \Acelle\Model\Customer::find($customerId);
-                $customer->setUserDbConnection();
 
-                $campaign = $className::findByUid($campaignId);
+                $campaign = $className::on($customer->getDbConnection())->find($campaignId);
                 $errorMsg = "Campaign stopped. ".$e->getMessage()."\n".$e->getTraceAsString();
                 $campaign->logger()->info($errorMsg);
                 $campaign->setError($errorMsg);
@@ -320,9 +318,8 @@ class BaseCampaign extends Model
             function () use ($campaignId, $className, $customerId) {
                 // FINALLY callback
                 $customer = \Acelle\Model\Customer::find($customerId);
-                $customer->setUserDbConnection();
 
-                $campaign = $className::findByUid($campaignId);
+                $campaign = $className::on($customer->getDbConnection())->find($campaignId);
                 $campaign->logger()->info('Finally callback of batch! Updating cache');
                 $campaign->updateCache();
                 if (Setting::isYes('campaign.duplicate')) {

@@ -1248,14 +1248,14 @@ class Subscriber extends Model
         ];
     }
 
-    public static function getByListsAndSegments(...$segmentsOrLists)
+    public static function getByListsAndSegments($connection, ...$segmentsOrLists)
     {
         if (empty($segmentsOrLists)) {
             // this is a trick for returning an empty builder
-            return static::limit(0);
+            return static::on($connection)->limit(0);
         }
 
-        $query = static::select('subscribers.*');
+        $query = static::on($connection)->select('subscribers.*');
 
         // Get subscriber from mailist and segment
         $conditions = [];
