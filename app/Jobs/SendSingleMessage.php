@@ -42,7 +42,13 @@ class SendSingleMessage extends SendMessage
     public function getAutoTrigger()
     {
         if (is_null($this->autoTrigger)) {
-            $this->autoTrigger = AutoTrigger::find($this->autoTriggerId);
+            if ($this->customer->hasLocalDb()) {
+                $connection = $this->customer->db_connection;
+            } else {
+                $connection = 'mysql';
+            }
+
+            $this->autoTrigger = AutoTrigger::on($connection)->find($this->autoTriggerId);
         }
 
         if (is_null($this->autoTrigger)) {
