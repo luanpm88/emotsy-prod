@@ -340,7 +340,6 @@ class SendMessage implements ShouldQueue
             }
 
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
-            LaravelLog::error('ERROR SENDING EMAIL (debug): '.$ex->getMessage()."\n".$ex->getTraceAsString());
             $logger->error($message);
 
             $handled = $this->handleUnknownException($ex);
