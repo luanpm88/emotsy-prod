@@ -260,6 +260,7 @@
   'widget.product_list' => 'Product List',
   'widget.remove' => 'Remove',
   'widget.rss' => 'RSS',
+  'widget.signature' => 'Signature',
   'widget.template_content' => 'Template Content',
   'widget.three_columns' => '3 columns',
   'widget.two_columns' => '2 columns',
@@ -593,6 +594,4 @@
   'youtube.width' => 'Width',
   'youtube_video' => 'YouTube Video',
   'youtube_video.add_button' => 'Click here to add YouTube video',
-
-  'widget.signature' => 'Signature',
 ) ?>
