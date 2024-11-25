@@ -96,8 +96,8 @@ return [
             'name' => 'myEmailVerifier',
             'fields' => [ 'api_key' ],
         ], [
-            'id' => 'athenaevs.com',
-            'name' => 'AthenaEVS',
+            'id' => 'emailevs.com',
+            'name' => 'EmailEVS',
             'fields' => [ 'api_key' ],
         ], [
             'id' => 'verifiedemails.io',
