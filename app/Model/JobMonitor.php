@@ -77,7 +77,8 @@ class JobMonitor extends Model
         $errorMsg = "Error executing job. ".$exception->getMessage();
         $this->error = $errorMsg;
         $this->save();
-        Log::error(sprintf("LOGGED BY JOB MONITOR. %s\n%s", $errorMsg, $exception->getTraceAsString()));
+        // Log::error(sprintf("LOGGED BY JOB MONITOR. %s\n%s", $errorMsg, $exception->getTraceAsString()));
+        Log::error(sprintf("LOGGED BY JOB MONITOR. %s", $errorMsg));
     }
 
     public function setRunning()

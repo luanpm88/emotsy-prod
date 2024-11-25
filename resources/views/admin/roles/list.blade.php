@@ -25,6 +25,17 @@
                     </div>
                 </td>
 
+                <td style="width:30%">
+                    <div class="px-md-4">
+                        <div class="mb-1">
+                            <span class="" href="{{ action('Admin\RoleController@edit', $role->uid) }}">
+                                <span class="badge bg-secondary">{{ $role->users()->count() }}</span>
+                            </span>
+                        </div>
+                        <span class="text-muted">{{ trans("messages.role.user_count") }}</span>
+                    </div>
+                </td>
+
                 <td width="20%">
                     <div class="single-stat-box pull-left">
                         <span class="no-margin stat-num">{{ $role->updated_at->diffForHumans() }}</span>

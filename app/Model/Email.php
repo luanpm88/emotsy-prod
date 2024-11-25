@@ -270,6 +270,8 @@ class Email extends Model implements HasTemplateInterface
             $job->onQueue($queue);
         }
 
+        // @important: the original method dispatch() sometimes returns PendingDispatch object instead of the dispatched JobID
+        // So, here we should use safe_dispatch instead
         $jobId = safe_dispatch($job);
 
         return $jobId;

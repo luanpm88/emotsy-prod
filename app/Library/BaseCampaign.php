@@ -115,27 +115,6 @@ class BaseCampaign extends Model
         return $this;
     }
 
-    public static function checkAndExecuteScheduledCampaigns()
-    {
-        $lockFile = storage_path('tmp/check-and-execute-scheduled-campaign');
-        $lock = new Lockable($lockFile);
-        $timeout = 5; // seconds
-        $timeoutCallback = function () {
-            // pass this to the getExclusiveLock method
-            // to have it silently quit, without throwing an exception
-            return;
-        };
-
-        $lock->getExclusiveLock(function ($f) {
-            foreach (static::scheduled()->get() as $campaign) {
-                // This is called in the console, so a default db connection must be set
-                $campaign->customer->setUserDbConnection();
-
-                $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);
-            }
-        }, $timeout, $timeoutCallback);
-    }
-
     public function deleteAndCleanup()
     {
         if ($this->template) {
@@ -156,6 +135,10 @@ class BaseCampaign extends Model
     // This method is also called by a cronjob which periodically check for campaigns to run
     public function execute($force = false, string $queue = ACM_QUEUE_TYPE_BATCH)
     {
+        if (!empty($this->customer->custom_queue_name)) {
+            $queue = $this->customer->custom_queue_name;
+        }
+
         DB::transaction(function () use ($force, $queue) {
             $now = Carbon::now();
 
@@ -274,7 +257,7 @@ class BaseCampaign extends Model
             $campaignLoaders[] = new LoadCampaign($this, 0, []);
         }
 
-        $campaignId = $this->uid;
+        $campaignId = $this->id;
         $className = get_called_class(); // Something like App\Model\Campaign (late binding, inherited class name)
         $customerId = $this->customer->id;
         // Dispatch it with a batch monitor
@@ -282,7 +265,9 @@ class BaseCampaign extends Model
             $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
             $queue,
             $campaignLoaders,
-            function ($batch) use ($campaignId, $className, $queue) {
+            function ($batch) use ($campaignId, $className, $queue, $customerId) {
+                $customer = \Acelle\Model\Customer::find($customerId);
+
                 // THEN callback of a batch
                 //
                 // Important:
@@ -291,7 +276,7 @@ class BaseCampaign extends Model
                 // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
                 //
                 // IMPORTANT: refresh() is required!
-                $campaign = $className::findByUid($campaignId);
+                $campaign = $className::on($customer->getDbConnection())->find($campaignId);
 
                 if ($campaign->refresh()->isPaused()) {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
@@ -324,9 +309,8 @@ class BaseCampaign extends Model
             function (Batch $batch, Throwable $e) use ($campaignId, $className, $customerId) {
                 // CATCH callback
                 $customer = \Acelle\Model\Customer::find($customerId);
-                $customer->setUserDbConnection();
 
-                $campaign = $className::findByUid($campaignId);
+                $campaign = $className::on($customer->getDbConnection())->find($campaignId);
                 $errorMsg = "Campaign stopped. ".$e->getMessage()."\n".$e->getTraceAsString();
                 $campaign->logger()->info($errorMsg);
                 $campaign->setError($errorMsg);
@@ -334,9 +318,8 @@ class BaseCampaign extends Model
             function () use ($campaignId, $className, $customerId) {
                 // FINALLY callback
                 $customer = \Acelle\Model\Customer::find($customerId);
-                $customer->setUserDbConnection();
 
-                $campaign = $className::findByUid($campaignId);
+                $campaign = $className::on($customer->getDbConnection())->find($campaignId);
                 $campaign->logger()->info('Finally callback of batch! Updating cache');
                 $campaign->updateCache();
                 if (Setting::isYes('campaign.duplicate')) {

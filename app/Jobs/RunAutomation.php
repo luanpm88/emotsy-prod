@@ -2,23 +2,37 @@
 
 namespace Acelle\Jobs;
 
-use Exception;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Contracts\Cache\Repository;
 
-class RunAutomation extends Base
+use Acelle\Model\Automation2;
+
+class RunAutomation implements ShouldQueue, ShouldBeUnique
 {
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+
     protected $automation;
     protected $customer;
 
-    public $timeout = 7200;
-
-    public function __construct($automation)
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct(Automation2 $automation)
     {
         $this->automation = $automation;
-        $this->customer = $this->automation->customer;
-
-        if (!$this->automation->allowApiCall()) {
-            throw new Exception(sprintf('Automation "%s" is not set up to be triggered via API. Cannot start!', $this->automation->name));
-        }
+        $this->customer = $automation->customer;
     }
 
     /**
@@ -30,11 +44,10 @@ class RunAutomation extends Base
     {
         $this->customer->setUserDbConnection();
 
-        if (!$this->automation->allowApiCall()) {
-            $this->automation->logger()->info(sprintf('Automation "%s" is not set up to be triggered via API (job handle)', $this->automation->name));
-            throw new Exception("Automation is not set up to be triggered via API (job handle)");
-        }
-        $this->automation->logger()->info(sprintf('Actually run automation "%s" in response to API call', $this->automation->name));
-        $this->automation->forceTrigger();
+        with_cache_lock("run_automation_{$this->automation->uid}", function() {
+            $this->automation->check();
+        }, $getLockTimeout = 1, $lockTime = 1200, $waitTimeoutCallback = function() {
+            // do nothing, quietly quit, leaving the only one job running
+        });
     }
 }

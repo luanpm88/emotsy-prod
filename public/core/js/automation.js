@@ -35,6 +35,7 @@ class AutomationElement {
                 list[e.id].setPosition(1, 0);
                 trigger = list[e.id];
 
+                // Set onclick, onhover, onadd functions
                 trigger.onclick(events.onclick);
                 trigger.onhover(events.onhover);
                 trigger.onadd(events.onadd);
@@ -60,6 +61,8 @@ class AutomationElement {
                 list[e.id] = new ElementCondition(e);
             } else if (e.type == 'ElementOperation') {
                 list[e.id] = new ElementOperation(e);
+            } else if (e.type == 'ElementWebhook') {
+                list[e.id] = new ElementWebhook(e);
             }
         }
 
@@ -164,7 +167,6 @@ class AutomationElement {
             } catch (err) {
                 console.log('warning: cannot assign event "' + event + '" to element "' + this.title + '"');
             }
-
         }
     }
 
@@ -357,6 +359,9 @@ class AutomationElement {
             text1.innerHTML = '&#xf0e0;&nbsp;&nbsp;';
         } else if (type == 'operation') {
             rect.setAttribute('class', 'element operation');
+            text1.innerHTML = '&#xf2bd;&nbsp;&nbsp;';
+        } else if (type == 'webhook') {
+            rect.setAttribute('class', 'element webhook');
             text1.innerHTML = '&#xf2bd;&nbsp;&nbsp;';
         }
 
@@ -919,6 +924,12 @@ class ElementWait extends ElementAction {
 class ElementOperation extends ElementAction {
     draw(top, left, container = null) {
         this.drawAction(top, left, container, 'operation');
+    }
+}
+
+class ElementWebhook extends ElementAction {
+    draw(top, left, container = null) {
+        this.drawAction(top, left, container, 'webhook');
     }
 }
 

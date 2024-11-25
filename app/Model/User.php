@@ -662,11 +662,13 @@ class User extends Authenticatable
         $locale = app()->getLocale();
         $language = Language::where('code', '=', $locale)->first();
 
-        $customer = \Acelle\Model\Customer::newCustomer();
-        $customer->language_id = $language->id;
-        $customer->status = 'active';
-        $customer->timezone = date_default_timezone_get();
-        $customer->save();
+        // SAVE CUSTOMER
+        list($validator, $customer) = Customer::createCustomer(
+            $name = $params['name'],
+            $timezone = date_default_timezone_get(),
+            $language_id = $language->id,
+            $admin = null
+        );
 
         // assign customer
         $user->customer_id = $customer->id;
@@ -984,8 +986,16 @@ class User extends Authenticatable
             $this->password = bcrypt($password);
         }
 
+        // is_new check
+        $isNew = !$this->id;
+
         // save
         $this->save();
+
+        // Hook
+        if ($isNew) {
+            Hook::execute('user_added', [$this]);
+        }
 
         // Upload and save image
         if ($image) {

@@ -664,6 +664,15 @@ class MailListController extends Controller
      */
     public function embeddedFormSubscribe(Request $request)
     {
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
@@ -744,7 +753,7 @@ class MailListController extends Controller
             return redirect()->away($request->redirect_url);
         } elseif ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
             // tell subscriber to check email for confirmation
-            return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_id' => $subscriber->id]);
+            return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
         } else {
             // All done, confirmed
             return redirect()->action(
@@ -752,7 +761,7 @@ class MailListController extends Controller
                 [
                     'list_uid' => $list->uid,
                     'id' => $subscriber->id,
-                    'code' => 'empty',
+                    'customer_uid' => $list->customer->uid,
                 ]
             );
         }

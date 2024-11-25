@@ -5,7 +5,7 @@
 @section('content')
   <div class="row">
     <div class="col-md-12 tex-center">
-      <form action="{{ action('MailListController@embeddedFormSubscribe', $list->uid) }}" method="POST" class="form-validate-jqueryz">
+      <form action="{{ action('MailListController@embeddedFormSubscribe', [ 'uid' => $list->uid, 'customer_uid' => $list->customer->uid]) }}" method="POST" class="form-validate-jqueryz">
         @foreach (request()->all() as $key => $value)
           @if (is_array($value))
                         @foreach ($value as $cvalue)

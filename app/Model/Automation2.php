@@ -262,7 +262,7 @@ class Automation2 extends Model
             $job->onQueue($queue);
         }
 
-        $jobId = safe_dispatch($job);
+        $jobId = dispatch($job);
 
         return $jobId;
     }
@@ -766,10 +766,6 @@ class Automation2 extends Model
         $now = $this->customer->getCurrentTime();
         $eventDate = Carbon::parse(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')))->timezone($this->customer->timezone);
 
-        echo $now->toString()."\n";
-        echo $eventDate->toString();
-
-
         // Condition same date but after the specified time
         // So, two conditions are required:
         // + After the specified time
@@ -1034,7 +1030,7 @@ class Automation2 extends Model
         if ($segments->isEmpty()) {
             $query = $this->mailList->subscribers()->select('subscribers.*');
         } else {
-            $query = Subscriber::getByListsAndSegments(...$segments);
+            $query = Subscriber::getByListsAndSegments($this->customer->getDbConnection(), ...$segments);
         }
 
         if (!is_null($actionId)) {

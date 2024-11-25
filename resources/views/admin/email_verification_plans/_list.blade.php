@@ -30,7 +30,7 @@
                 </td>
 
                 <td>
-                    <span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($plan->created_at, 'datetime_full') }}</span>
+                    <span class="no-margin stat-num">{{ Auth::user()->admin->formatDateTime($plan->created_at, 'datetime_full') }}</span>
                     <br>
                     <span class="text-muted2">{{ trans('messages.created_at') }}</span>
                 </td>

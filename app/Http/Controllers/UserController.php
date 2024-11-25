@@ -100,7 +100,7 @@ class UserController extends Controller
 
         // Initiate customer object for filling the form
         $customer = Customer::newCustomer();
-        $user = new User();
+        $user = $customer->newUser();
 
         // save posted data
         if ($request->isMethod('post')) {
@@ -207,7 +207,6 @@ class UserController extends Controller
     {
         $customer = $request->user()->customer;
         $user = $customer->newUser();
-        $currentPlan = $customer->getCurrentActiveSubscription()->plan->mapType();
 
         // check quota limit
         if ($customer->getMaxUserQuota() <= $customer->users()->count()) {
@@ -299,7 +298,7 @@ class UserController extends Controller
                         $q->whereCode('organization_admin');
                     })
                     ->exists();
-                
+
                 // check
                 if (!$exists) {
                     return response()->view('users.edit', [

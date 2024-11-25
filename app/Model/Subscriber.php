@@ -467,18 +467,6 @@ class Subscriber extends Model
     public static $itemsPerPage = 25;
 
     /**
-     * Get secure code for updating subscriber.
-     *
-     * @param string $action
-     */
-    public function getSecurityToken($action)
-    {
-        $string = $this->email.$action.config('app.key');
-
-        return md5($string);
-    }
-
-    /**
      * Create customer action log.
      *
      * @param string   $cat
@@ -1149,7 +1137,8 @@ class Subscriber extends Model
         return $query->where('status', '=', self::STATUS_UNSUBSCRIBED);
     }
 
-    public function generateUnsubscribeUrl($messageId = null, $absoluteUrl = true)
+    // ONE CLICK UNSUBSCRIBE
+    public function generateUnsubscribeUrl($messageId, $absoluteUrl = true)
     {
         $url = route('unsubscribeUrl', [
             'message_id' => StringHelper::base64UrlEncode($messageId),
@@ -1159,9 +1148,20 @@ class Subscriber extends Model
         return $url;
     }
 
+    // Load a form, click Submit to actually opt out
+    public function generateUnsubscribeForm($messageId, $absoluteUrl = true)
+    {
+        $url = route('unsubscribeForm', [
+            'message_id' => StringHelper::base64UrlEncode($messageId),
+            'id' => $this->id
+        ], $absoluteUrl);
+
+        return $url;
+    }
+
     public function generateUpdateProfileUrl()
     {
-        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'id' => $this->id, 'code' => $this->getSecurityToken('update-profile')]);
+        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'id' => $this->id, 'customer_uid' => $this->mailList->customer->uid]);
     }
 
     // Change status to SUBSCRIBED
@@ -1248,14 +1248,14 @@ class Subscriber extends Model
         ];
     }
 
-    public static function getByListsAndSegments(...$segmentsOrLists)
+    public static function getByListsAndSegments($connection, ...$segmentsOrLists)
     {
         if (empty($segmentsOrLists)) {
             // this is a trick for returning an empty builder
-            return static::limit(0);
+            return static::on($connection)->limit(0);
         }
 
-        $query = static::select('subscribers.*');
+        $query = static::on($connection)->select('subscribers.*');
 
         // Get subscriber from mailist and segment
         $conditions = [];

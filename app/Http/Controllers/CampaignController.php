@@ -1152,8 +1152,16 @@ class CampaignController extends Controller
      */
     public function unsubscribe(Request $request)
     {
+
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+        $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+        if (!is_null($customer)) {
+            $customer->setUserDbConnection();
+        }
+
         $subscriber = Subscriber::find($request->subscriber);
-        $message_id = StringHelper::base64UrlDecode($request->message_id);
 
         if (is_null($subscriber)) {
             LaravelLog::error('Subscriber does not exist');
@@ -1166,7 +1174,7 @@ class CampaignController extends Controller
 
         // User Tracking Information
         $trackingInfo = [
-            'message_id' => $message_id,
+            'message_id' => $messageId,
             'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null,
         ];
 
@@ -1911,8 +1919,15 @@ class CampaignController extends Controller
      */
     public function webView(Request $request)
     {
-        $message_id = StringHelper::base64UrlDecode($request->message_id);
-        $tracking_log = TrackingLog::where('message_id', '=', $message_id)->first();
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+        $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+        if (!is_null($customer)) {
+            $customer->setUserDbConnection();
+        }
+
+        $tracking_log = TrackingLog::where('message_id', '=', $messageId)->first();
 
         try {
             if (!$tracking_log) {
@@ -1929,7 +1944,7 @@ class CampaignController extends Controller
             return view('campaigns.web_view', [
                 'campaign' => $campaign,
                 'subscriber' => $subscriber,
-                'message_id' => $message_id,
+                'message_id' => $messageId,
             ]);
         } catch (\Exception $e) {
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);

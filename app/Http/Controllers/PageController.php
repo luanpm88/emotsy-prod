@@ -8,6 +8,7 @@ use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Model\MailList;
 use Acelle\Model\IpLocation;
+use Acelle\Library\StringHelper;
 
 class PageController extends Controller
 {
@@ -129,6 +130,15 @@ class PageController extends Controller
      */
     public function signUpForm(Request $request)
     {
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('sign_up_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -164,7 +174,7 @@ class PageController extends Controller
                     if (!$success) {
                         return view('somethingWentWrong', [
                             'message' => trans('messages.list.sign_up.invalid_captcha'),
-                            'redirect_url' => action('PageController@signUpForm', $list->uid, false),
+                            'redirect_url' => action('PageController@signUpForm', ['list_uid' => $list->uid, 'customer_uid' => $list->customer->uid], false),
                         ]);
                     }
                 } else {
@@ -172,7 +182,7 @@ class PageController extends Controller
                     if (!$success) {
                         return view('somethingWentWrong', [
                             'message' => trans('messages.list.sign_up.invalid_captcha'),
-                            'redirect_url' => action('PageController@signUpForm', $list->uid, false),
+                            'redirect_url' => action('PageController@signUpForm', ['list_uid' => $list->uid, 'customer_uid' => $list->customer->uid], false),
                         ]);
                     }
                 }
@@ -195,7 +205,7 @@ class PageController extends Controller
                 return redirect()->away($request->redirect_url);
             } elseif ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
                 // tell subscriber to check email for confirmation
-                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_id' => $subscriber->id]);
+                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
             } else {
                 // All done, confirmed
                 return redirect()->action(
@@ -203,7 +213,7 @@ class PageController extends Controller
                     [
                         'list_uid' => $list->uid,
                         'id' => $subscriber->id,
-                        'code' => 'empty',
+                        'customer_uid' => $list->customer->uid,
                     ]
                 );
             }
@@ -225,6 +235,15 @@ class PageController extends Controller
      */
     public function signUpThankyouPage(Request $request)
     {
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('sign_up_thankyou_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -258,7 +277,15 @@ class PageController extends Controller
      */
     public function signUpConfirmationThankyou(Request $request)
     {
-        $user = $request->user();
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('sign_up_confirmation_thankyou');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -276,10 +303,7 @@ class PageController extends Controller
         }
 
         $page->renderContent(null, $subscriber);
-
-        if ($subscriber->getSecurityToken('subscribe-confirm') == $request->code && $subscriber->status == 'unconfirmed') {
-            $subscriber->confirm();
-        }
+        $subscriber->confirm();
 
         // redirect if use outside url
         if ($page->use_outside_url) {
@@ -301,12 +325,18 @@ class PageController extends Controller
      */
     public function unsubscribeForm(Request $request)
     {
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+        $customerUid = \Acelle\Library\StringHelper::extractCustomerUidFromMessageId($messageId);
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+        if (!is_null($customer)) {
+            $customer->setUserDbConnection();
+        }
+
         // IMPORTANT: it does not create TrackingLog!!!
-        $user = $request->user();
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $subscriber = \Acelle\Model\Subscriber::find($request->id);
+        $list = $subscriber->mailList;
         $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
-        $subscriber = \Acelle\Model\Subscriber::find($request->id);
 
         // Language
         if ($list->customer && $list->customer->language) {
@@ -314,29 +344,27 @@ class PageController extends Controller
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
 
-        $page->renderContent(null, $subscriber);
+        $page->renderContent(null, $subscriber, $messageId);
 
         if ($request->isMethod('post')) {
-            if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-                // User Tracking Information
-                $trackingInfo = [
-                    'message_id' => null,
-                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-                ];
+            // User Tracking Information
+            $trackingInfo = [
+                'message_id' => $messageId,
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            ];
 
-                // GeoIP information
-                $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
-                if (!is_null($location)) {
-                    $trackingInfo['ip_address'] = $location->ip_address;
-                }
-
-                $subscriber->unsubscribe($trackingInfo);
-
-                // Timeline record
-                \Acelle\Model\Timeline::recordUnsubscribedFromListUnsubscribeForm($subscriber);
+            // GeoIP information
+            $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+            if (!is_null($location)) {
+                $trackingInfo['ip_address'] = $location->ip_address;
             }
 
-            return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id]);
+            $subscriber->unsubscribe($trackingInfo);
+
+            // Timeline record
+            \Acelle\Model\Timeline::recordUnsubscribedFromListUnsubscribeForm($subscriber);
+
+            return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
         }
 
         return view('pages.form', [
@@ -354,7 +382,15 @@ class PageController extends Controller
      */
     public function unsubscribeSuccessPage(Request $request)
     {
-        $user = $request->user();
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('unsubscribe_success_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -389,7 +425,15 @@ class PageController extends Controller
      */
     public function profileUpdateForm(Request $request)
     {
-        $user = $request->user();
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('profile_update_form');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -431,17 +475,15 @@ class PageController extends Controller
         $page->renderContent($values, $subscriber);
 
         if ($request->isMethod('post')) {
-            if ($subscriber->getSecurityToken('update-profile') == $request->code) {
-                $rules = $subscriber->getRules();
-                $rules['EMAIL'] .= '|in:'.$subscriber->email;
-                // Validation
-                $this->validate($request, $rules);
+            $rules = $subscriber->getRules();
+            $rules['EMAIL'] .= '|in:'.$subscriber->email;
+            // Validation
+            $this->validate($request, $rules);
 
-                // Update field
-                $subscriber->updateFields($request->all());
+            // Update field
+            $subscriber->updateFields($request->all());
 
-                return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id]);
-            }
+            return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
         }
 
         return view('pages.form', [
@@ -460,7 +502,15 @@ class PageController extends Controller
      */
     public function profileUpdateSuccessPage(Request $request)
     {
-        $user = $request->user();
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('profile_update_success_page');
         $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -495,7 +545,15 @@ class PageController extends Controller
      */
     public function profileUpdateEmailSent(Request $request)
     {
-        $user = $request->user();
+        $customerUid = $request->customer_uid;
+        $customer = \Acelle\Model\Customer::findByUid($customerUid);
+
+        if (is_null($customer)) {
+            throw new \Exception('Cannot find customer');
+        } else {
+            $customer->setUserDbConnection();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::findByAlias('profile_update_email_sent');
         $page = \Acelle\Model\Page::findPage($list, $layout);

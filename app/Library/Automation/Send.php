@@ -56,6 +56,13 @@ class Send extends Action
             sleep(1);
         }
 
+        // @todo @important This is a VERY VERY TEMPORARY fix, to clean up old data
+        // For some reason, the data is [ 'error' => true, 'queued_at' => 'some date'] which is not valid
+        if (!is_null($this->getOption('error')) && $this->getOption('queued_at')) {
+            // If statusu is queued by error flag is there, reset it
+            return $this->retry(true);
+        }
+
         if (is_null($this->getOption('queued_at'))) {
             if ($manually) {
                 $queue = ACM_QUEUE_TYPE_HIGH;
@@ -100,7 +107,13 @@ class Send extends Action
     public function getProgressDescription($timezone = null, $locale = null)
     {
         $email = $this->getEmail();
-        $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
+
+        if ($this->autoTrigger) {
+            $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
+        } else {
+            // In case this element is get from automation->getAction(...), no trigger yet
+            $subscriberEmail = '[email]';
+        }
 
         if (!is_null($this->getLastExecuted())) {
             $queuedAt = Carbon::parse($this->getOption('queued_at'));
@@ -128,7 +141,7 @@ class Send extends Action
                     'c' => $subscriberEmail,
                     'dif' => $queuedAt->diffForHumans(),
                     'dt' => format_datetime($queuedAt, 'datetime_full_with_timezone', $locale),
-                    'id' => $this->getOption('delivery_job_id')
+                    'id' => $this->getOption('delivery_job_id') ?: '#', // temporary hack, to fix previous version issue (delivery_job_id turns out to be an empty array)
                 ]);
 
 
@@ -198,6 +211,7 @@ class Send extends Action
         $jobId = $campaign->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id, $this->getId(), $queue);
         $this->setOption('queued_at', now()->toString()); // Store UTC value
         $this->setOption('error', null); // Store UTC value
+        $this->autoTrigger->setError(false, $save = false); // wait for the save() method below to save
         $this->setOption('delivery_job_id', $jobId); // Store UTC value
 
         // IMPORTANT: update action BEFORE dispatching job. In case job executes so fast! it even write to sent_at field before writing to queue_at
