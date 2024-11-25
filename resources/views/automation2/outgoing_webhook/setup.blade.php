@@ -242,7 +242,7 @@
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input data-control="checker" checked type="radio" name="webhook[header]"
+                                        <input data-control="checker" type="radio" name="webhook[header]"
                                             {{ $options['header'] == 'with_headers' ? 'checked' : '' }}
                                             value="with_headers" id="header-with_headers" class="styled" />
                                         <label class="check-symbol" for="header-with_headers"></label>
@@ -602,15 +602,14 @@
                             <td class="bg-light">
                                 <input list-control="input-key" type="text" name="webhook[body_parameters][` + index +
                         `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.key') }}"
-                                required
+                                data-option-input="required"
                         />
                             </td>
                             <td class="bg-light">
                                 <div data-control="input-with-tag" class="input-group">
-                                    <input tag-control="input" list-control="input-value" type="text" name="webhook[body_parameters][` + index + `][value]"
+                                    <input data-option-input="required" tag-control="input" list-control="input-value" type="text" name="webhook[body_parameters][` + index + `][value]"
                                         value="` + element.value + `" class="form-control"
                                         placeholder="{{ trans('messages.automation.outgoing_webhook.value') }}"
-                                        required
                                     />
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">...</button>
@@ -628,8 +627,7 @@
                                 </div>
                             </td>
                             <td width="1%" class="text-center" style="min-width: 52px;">
-                                <button list-control="remove" type="button" class="btn btn-danger px-2 ` + (index ==
-                            0 ? 'd-none' : '') + `">
+                                <button list-control="remove" type="button" class="btn btn-danger px-2">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-rounded">
                                             delete
@@ -731,7 +729,7 @@
                             <td class="bg-light">
                                 <input list-control="input-key" type="text" name="webhook[headers][` + index +
                         `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_key') }}"
-                                required
+                                 data-option-input="required"
                         />
                             </td>
                             <td class="bg-light">
@@ -739,7 +737,7 @@
                                     <input tag-control="input" list-control="input-value" type="text" name="webhook[headers][` + index + `][value]"
                                         value="` + element.value + `" class="form-control"
                                         placeholder="{{ trans('messages.automation.outgoing_webhook.header_value') }}"
-                                        required
+                                         data-option-input="required"
                                     />
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">...</button>

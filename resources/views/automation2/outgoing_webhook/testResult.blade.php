@@ -12,11 +12,21 @@
         <h4 class="fw-semibold">{{ trans('messages.automation.outgoing_webhook.test_output') }}</h4>
         <div class="p-3 bg-light border">
             <div test-control="output">
-                <div class="my-4">
-                    <div class="d-flex align-items-center justify-content-center">
-                        <pre style="width: 100%;
+                <div class="">
+                    <div>
+                        <div class="">
+                            <div class="">
+                                <p><strong>{{ trans('messages.automation.outgoing_webhook.http_repsonse_code') }}:</strong> {{ $result['http_code'] }}</p>
+                                <p class="mb-2"><strong>{{ trans('messages.automation.outgoing_webhook.repsonse_body') }}:</strong></p>
+                                <pre style="width: 100%;
 height: auto;
-white-space: inherit;">{!! json_encode($result, JSON_PRETTY_PRINT) !!}{!! json_encode($result, JSON_PRETTY_PRINT) !!}{!! json_encode($result, JSON_PRETTY_PRINT) !!}{!! json_encode($result, JSON_PRETTY_PRINT) !!}</pre>
+white-space: inherit;">{{ $result['response'] }}</pre>
+                                @if ($result['error'])
+                                    <p><strong>{{ trans('messages.automation.outgoing_webhook.error') }}:</strong></p>
+                                    <pre class='bg-danger text-white p-3'>{{ $result['error'] }}</pre>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -2924,7 +2924,6 @@ class Automation2Controller extends Controller
 
     public function outgoingWebhookTest(Request $request, $uid)
     {
-        sleep(2);
         $automation = Automation2::findByUid($uid);
         $options = $request->webhook;
         $result = $this->outgoingWebhookTestRun($options);
@@ -2964,12 +2963,13 @@ class Automation2Controller extends Controller
     public function outgoingWebhookTestRun($options) {
         // Prepare cURL initialization
         $ch = curl_init();
-    
+
         // Set the URL from the options
         curl_setopt($ch, CURLOPT_URL, $options['endpoint_url']);
         
         // Set the HTTP method (POST)
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($options['send_method']));
+        $method = strtoupper($options['send_method']);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         
         // Set the Authorization (Basic Auth)
         if ($options['authorization_method'] === 'basic_auth') {
@@ -2977,7 +2977,7 @@ class Automation2Controller extends Controller
             $password = $options['authorization']['password'];
             curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
         }
-    
+
         // Set Headers
         $headers = [];
         if ($options['header'] === 'with_headers' && !empty($options['headers'])) {
@@ -2986,45 +2986,49 @@ class Automation2Controller extends Controller
             }
         }
         
-        // Add the Content-Type header based on the body type
+        // Add Content-Type based on body type
         if ($options['body_type'] === 'key_value_pair') {
             $headers[] = 'Content-Type: application/x-www-form-urlencoded';
         } elseif ($options['body_type'] === 'plain_text') {
             // No special Content-Type needed for plain text
         }
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    
+
         // Set the body type and parameters
+        $body = '';
         if ($options['body_type'] === 'plain_text') {
             $body = $options['plain_text'];
             curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         } elseif ($options['body_type'] === 'key_value_pair') {
-            // Build the body from body_parameters as key=value pairs
-            $body = [];
+            $bodyParams = [];
             foreach ($options['body_parameters'] as $param) {
-                $body[] = urlencode($param['key']) . '=' . urlencode($param['value']);
+                $bodyParams[] = urlencode($param['key']) . '=' . urlencode($param['value']);
             }
-            // Join all key-value pairs with '&' to form a URL-encoded string
-            $body_string = implode('&', $body);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body_string);
+            $body = implode('&', $bodyParams);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         }
-    
+
         // Set additional cURL options
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects if needed
-    
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
         // Execute the cURL request
         $response = curl_exec($ch);
-    
-        // Check for errors
-        if (curl_errno($ch)) {
-            echo 'cURL Error: ' . curl_error($ch);
-        }
-    
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);  // Get HTTP response code
+
+        // Capture cURL errors
+        $curlError = curl_errno($ch) ? curl_error($ch) : null;
+
         // Close the cURL session
         curl_close($ch);
-    
-        // Return response
-        return $response;
+
+        // Display all response aspects
+        return [
+            'methos' => $method,
+            'body' => $body,
+            'error' => $curlError,
+            'http_code' => $httpCode,
+            'response' => $response,
+        ];
     }
 }

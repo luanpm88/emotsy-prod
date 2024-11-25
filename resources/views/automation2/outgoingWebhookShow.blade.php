@@ -36,10 +36,10 @@
                             <tbody>
                                 @foreach ($element->get('options')->headers as $header)
                                     <tr>
-                                        <th width="50%" class="fw-normal border-0 p-0">
-                                            {{ $header->key ?? 'N/A' }}
+                                        <th width="50%" class="fw-normal border-0 py-1 px-2 bg-light">
+                                            {{ $header->key ?? 'N/A' }}:
                                         </th>
-                                        <td width="50%" class="text-uppercase border-0 p-0">
+                                        <td width="50%" class="text-uppercase border-0 py-1 px-2" style="word-break:break-all;">
                                             {{ $header->value ?? 'N/A' }}
                                         </td>
                                     </tr>
@@ -69,10 +69,10 @@
                             <tbody>
                                 @foreach ($element->get('options')->body_parameters as $param)
                                     <tr>
-                                        <th width="50%" class="fw-normal border-0 p-0">
-                                            {{ $param->key ?? 'N/A' }}
+                                        <th width="50%" class="fw-normal border-0 py-1 px-2 bg-light">
+                                            {{ $param->key ?? 'N/A' }}:
                                         </th>
-                                        <td width="50%" class="text-uppercase border-0 p-0">
+                                        <td width="50%" class="text-uppercase border-0 py-1 px-2" style="word-break:break-all;">
                                             {{ $param->value ?? 'N/A' }}
                                         </td>
                                     </tr>

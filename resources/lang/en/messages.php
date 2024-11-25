@@ -3801,4 +3801,7 @@
   'automation.outgoing_webhook.added' => 'Outgoing webhook has been added!',
   'automation.outgoing_webhook' => 'Outgoing Webhook',
   'automation.webhook.edit' => 'Edit',
+  'automation.outgoing_webhook.http_repsonse_code' => 'HTTP Response Code',
+  'automation.outgoing_webhook.repsonse_body' => 'Response Body',
+  'automation.outgoing_webhook.error' => 'Errors',
 ) ?>
