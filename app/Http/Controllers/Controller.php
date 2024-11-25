@@ -20,13 +20,6 @@ class Controller extends BaseController
     use ValidatesRequests;
 
     /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Check if the user is not authorized.
      *
      * @return \Illuminate\Http\Response
