@@ -532,6 +532,14 @@
                 // Open trigger types select list
                 sidebar.load(url);
             }
+            // webhook
+            else if (e.getType() == 'ElementWebhook') {
+                var type = $(this).attr('data-type');
+                var url = '{{ action('Automation2Controller@outgoingWebhookShow', $automation->uid) }}?operation=' + e.getOptions().operation_type + '&id=' + e.getId();
+                
+                // Open trigger types select list
+                sidebar.load(url);
+            }
         }
 
         function getEmailSetupUrl(email_uid) {

@@ -8,9 +8,13 @@
     <div class="row">
         <div class="col-md-12">
             <div class="">
-                <form id="{{ $formId }}" action="{{ action('Automation2Controller@cartWait', $automation->uid) }}"
+                <form id="{{ $formId }}" action="{{ action('Automation2Controller@outgoingWebhookSave', $automation->uid) }}"
                     method="POST">
                     {{ csrf_field() }}
+
+                    @if ($element)
+                        <input type="hidden" name="id" value="{{ request()->id }}" />
+                    @endif
 
                     <h2 class="text-semibold">{{ trans('messages.automation.outgoing_webhook.setup') }}</h2>
 
@@ -23,7 +27,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input type="radio" name="webhook[send_method]" value="get" id="method-get"
+                                        <input {{ $options['send_method'] == 'get' ? 'checked' : '' }} type="radio" name="webhook[send_method]" value="get" id="method-get"
                                             class="styled" />
                                         <label class="check-symbol" for="method-get"></label>
                                     </div>
@@ -34,7 +38,7 @@
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input checked type="radio" name="webhook[send_method]" value="post"
+                                        <input {{ $options['send_method'] == 'post' ? 'checked' : '' }} type="radio" name="webhook[send_method]" value="post"
                                             id="method-post" class="styled" />
                                         <label class="check-symbol" for="method-post"></label>
                                     </div>
@@ -43,7 +47,7 @@
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input type="radio" name="webhook[send_method]" value="put" id="method-put"
+                                        <input {{ $options['send_method'] == 'put' ? 'checked' : '' }} type="radio" name="webhook[send_method]" value="put" id="method-put"
                                             class="styled" />
                                         <label class="check-symbol" for="method-put"></label>
                                     </div>
@@ -52,7 +56,7 @@
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input type="radio" name="webhook[send_method]" value="delete" id="method-delete"
+                                        <input {{ $options['send_method'] == 'delete' ? 'checked' : '' }} type="radio" name="webhook[send_method]" value="delete" id="method-delete"
                                             class="styled" />
                                         <label class="check-symbol" for="method-delete"></label>
                                     </div>
@@ -68,7 +72,7 @@
                             <div class="d-flex align-items-center mb-3">
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input data-control="method" type="radio" name="webhook[authorization_method]"
+                                        <input {{ $options['authorization_method'] == 'bearer_token' ? 'checked' : '' }} data-control="method" type="radio" name="webhook[authorization_method]"
                                             value="bearer_token" id="method-bearer_token" class="styled" />
                                         <label class="check-symbol" for="method-bearer_token"></label>
                                     </div>
@@ -79,7 +83,7 @@
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input data-control="method" checked type="radio"
+                                        <input {{ $options['authorization_method'] == 'basic_auth' ? 'checked' : '' }} data-control="method" checked type="radio"
                                             name="webhook[authorization_method]" value="basic_auth" id="method-basic_auth"
                                             class="styled" />
                                         <label class="check-symbol" for="method-basic_auth"></label>
@@ -89,7 +93,7 @@
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input data-control="method" type="radio" name="webhook[authorization_method]"
+                                        <input {{ $options['authorization_method'] == 'custom' ? 'checked' : '' }} data-control="method" type="radio" name="webhook[authorization_method]"
                                             value="custom" id="method-custom" class="styled" />
                                         <label class="check-symbol" for="method-custom"></label>
                                     </div>
@@ -98,7 +102,7 @@
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
-                                        <input data-control="method" type="radio" name="webhook[authorization_method]"
+                                        <input {{ $options['authorization_method'] == 'no_auth' ? 'checked' : '' }} data-control="method" type="radio" name="webhook[authorization_method]"
                                             value="no_auth" id="method-no_auth" class="styled" />
                                         <label class="check-symbol" for="method-no_auth"></label>
                                     </div>
@@ -118,7 +122,7 @@
                                             {{ trans('messages.automation.outgoing_webhook.bearer_token') }}
                                         </th>
                                         <td>
-                                            <input type="text" name="webhook[authorization][bearer_token]"
+                                            <input data-option-input="required" type="text" name="webhook[authorization][bearer_token]" value="{{ $options['authorization']['bearer_token'] }}"
                                                 class="form-control" />
                                         </td>
                                     </tr>
@@ -136,7 +140,7 @@
                                             {{ trans('messages.automation.outgoing_webhook.username') }}
                                         </th>
                                         <td>
-                                            <input type="text" name="webhook[authorization][username]"
+                                            <input data-option-input="required" type="text" name="webhook[authorization][username]" value="{{ $options['authorization']['username'] }}"
                                                 class="form-control" />
                                         </td>
                                         <th width="10%" valign="middle" class="small bg-light text-nowrap px-3"
@@ -144,7 +148,7 @@
                                             {{ trans('messages.automation.outgoing_webhook.password') }}
                                         </th>
                                         <td>
-                                            <input type="text" name="webhook[authorization][password]"
+                                            <input data-option-input="required" type="text" name="webhook[authorization][password]" value="{{ $options['authorization']['password'] }}"
                                                 class="form-control" />
                                         </td>
                                     </tr>
@@ -161,7 +165,7 @@
                                             {{ trans('messages.automation.outgoing_webhook.custom_key') }}
                                         </th>
                                         <td>
-                                            <input type="text" name="webhook[authorization][custom_key]"
+                                            <input data-option-input="required" type="text" name="webhook[authorization][custom_key]" value="{{ $options['authorization']['custom_key'] }}"
                                                 class="form-control" />
                                         </td>
                                         <th width="10%" valign="middle" class="small bg-light text-nowrap px-3"
@@ -170,7 +174,9 @@
                                         </th>
                                         <td>
                                             <div data-control="input-with-tag" class="input-group">
-                                                <input tag-control="input" type="text" name="webhook[authorization][custom_value]" class="form-control" />
+                                                <input tag-control="input" type="text" name="webhook[authorization][custom_value]"
+                                                    value="{{ $options['authorization']['custom_value'] }}"
+                                                    class="form-control" />
                                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                                     data-bs-toggle="dropdown" aria-expanded="false">...</button>
                                                 <ul class="dropdown-menu">
@@ -201,7 +207,7 @@
                                 class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.endpoint_url') }}</label>
                             <div class="d-flex align-items-center">
                                 <div data-control="input-with-tag" class="input-group">
-                                    <input tag-control="input" type="text" name="webhook[endpoint_url]" class="form-control" />
+                                    <input tag-control="input" type="url" name="webhook[endpoint_url]" value="{{ $options['endpoint_url'] }}" class="form-control" required />
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">...</button>
                                     <ul class="dropdown-menu">
@@ -225,6 +231,7 @@
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
                                         <input data-control="checker" type="radio" name="webhook[header]"
+                                            {{ $options['header'] == 'no_headers' ? 'checked' : '' }}
                                             value="no_headers" id="header-no_headers" class="styled" />
                                         <label class="check-symbol" for="header-no_headers"></label>
                                     </div>
@@ -236,6 +243,7 @@
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
                                         <input data-control="checker" checked type="radio" name="webhook[header]"
+                                            {{ $options['header'] == 'with_headers' ? 'checked' : '' }}
                                             value="with_headers" id="header-with_headers" class="styled" />
                                         <label class="check-symbol" for="header-with_headers"></label>
                                     </div>
@@ -283,11 +291,11 @@
                                 class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.unified_body_configuration') }}</label>
                             <div class="row mb-2">
                                 <div class="col-md-6">
-                                    <select data-control="selector" name="webhook[body-type]" id=""
+                                    <select data-control="selector" name="webhook[body_type]" id=""
                                         class="select">
-                                        <option value="key_value_pair">
+                                        <option {{ $options['body_type'] == 'key_value_pair' ? 'selected' : '' }} value="key_value_pair">
                                             {{ trans('messages.automation.outgoing_webhook.key_value_pair') }}</option>
-                                        <option value="plain_text">
+                                        <option {{ $options['body_type'] == 'plain_text' ? 'selected' : '' }} value="plain_text">
                                             {{ trans('messages.automation.outgoing_webhook.plain_text') }}</option>
                                     </select>
                                 </div>
@@ -332,8 +340,8 @@
                                 <div id="editor" class="rounded shadow-sm" style="height: 200px;width: 100%;"></div>
 
                                 <script src="/ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-                                <textarea id="signatureContent" type="text" name="content" class="form-control required template-editor"
-                                    style="display: none;"></textarea>
+                                <textarea id="signatureContent" type="text" name="webhook[plain_text]" class="form-control required template-editor"
+                                    style="display: none;">{!! $options['plain_text'] !!}</textarea>
                                 <script>
                                     var editor = ace.edit("editor");
                                     // editor.setTheme("ace/theme/monokai");
@@ -366,7 +374,7 @@
                             </span>
                         </button>
                         <span class="mx-2">|</span>
-                        <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+                        <button type="button" data-control="save" class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
                         <a href="javascript:;" onclick="cartWait.hide()" class="btn btn-link me-2"
                             data-dismiss="modal">{{ trans('messages.close') }}</a>
                     </div>
@@ -385,6 +393,7 @@
         var WebhookForm = class {
             constructor(options) {
                 this.form = options.form;
+                this.url = options.form.attr('action');
                 this.testPopup = new Popup({
                     url: '{{ action('Automation2Controller@outgoingWebhookTestPopup', $automation->uid) }}',
                 });
@@ -412,13 +421,13 @@
                 // HeaderListManager
                 this.headerListManager = new HeaderListManager({
                     container: this.form.find('[data-control="header-list-container"]'),
-                    elements: [],
+                    elements: {!! json_encode($options['headers']) !!},
                 });
 
                 // BodyParametersManager
                 this.bodyParametersManager = new BodyParametersManager({
                     container: this.form.find('[data-control="body-parameters-container"]'),
-                    elements: [],
+                    elements: {!! json_encode($options['body_parameters']) !!},
                 });
 
                 //
@@ -429,10 +438,19 @@
                 return this.form.find('[data-control="test-webhook"]');
             }
 
+            getSaveButton() {
+                return this.form.find('[data-control="save"]');
+            }
+
             events() {
                 // test webhook click
                 this.getTestWebhookButton().on('click', () => {
                     this.testWebhook();
+                });
+
+                // save
+                this.getSaveButton().on('click', () => {
+                    this.save();
                 });
             }
 
@@ -442,6 +460,60 @@
 
             getData() {
                 return this.form.serialize();
+            }
+
+            save() {
+                if (!this.form[0].reportValidity()) {
+                    // alert("Form is valid!");
+                    return;
+                }
+
+                $.ajax({
+                    url: this.url,
+                    type: 'POST',
+                    data: this.form.serialize(),
+                }).done((res) => {
+                    @if ($element)
+                        // merge options with reponse options
+                        tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), res.options));
+                        tree.getSelected().validate();
+                            
+                        // save tree
+                        saveData(function() {
+                            // hide popup
+                            automationPopup.hide();
+                            
+                            //
+                            notify({
+                                type: 'success',
+                                title: '{!! trans('messages.notify.success') !!}',
+                                message: '{{ trans('messages.automation.outgoing_webhook.updated') }}'
+                            });
+
+                            //
+                            sidebar.load();
+                        });
+                    @else
+                        var newE = new ElementWebhook(res);
+                        tree.getSelected().insert(newE);
+
+                        // select new element
+                        // doSelect(newE);
+
+                        // save tree
+                        saveData(function() {
+                            // hide popup
+                            automationPopup.hide();
+                            
+                            //
+                            notify({
+                                type: 'success',
+                                title: '{!! trans('messages.notify.success') !!}',
+                                message: '{{ trans('messages.automation.outgoing_webhook.added') }}'
+                            });
+                        });
+                    @endif
+                });
             }
         };
 
@@ -483,7 +555,7 @@
         var BodyParametersManager = class {
             constructor(options) {
                 this.container = options.container;
-                this.elements = [];
+                this.elements = options.elements;
 
                 // init items
                 if (!options.elements) {
@@ -529,13 +601,16 @@
                         <tr>
                             <td class="bg-light">
                                 <input list-control="input-key" type="text" name="webhook[body_parameters][` + index +
-                        `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.key') }}" />
+                        `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.key') }}"
+                                required
+                        />
                             </td>
                             <td class="bg-light">
                                 <div data-control="input-with-tag" class="input-group">
                                     <input tag-control="input" list-control="input-value" type="text" name="webhook[body_parameters][` + index + `][value]"
                                         value="` + element.value + `" class="form-control"
                                         placeholder="{{ trans('messages.automation.outgoing_webhook.value') }}"
+                                        required
                                     />
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">...</button>
@@ -609,7 +684,7 @@
         var HeaderListManager = class {
             constructor(options) {
                 this.container = options.container;
-                this.elements = [];
+                this.elements = options.elements;
 
                 // init items
                 if (!options.elements) {
@@ -655,13 +730,16 @@
                         <tr>
                             <td class="bg-light">
                                 <input list-control="input-key" type="text" name="webhook[headers][` + index +
-                        `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_key') }}" />
+                        `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_key') }}"
+                                required
+                        />
                             </td>
                             <td class="bg-light">
                                 <div data-control="input-with-tag" class="input-group">
                                     <input tag-control="input" list-control="input-value" type="text" name="webhook[headers][` + index + `][value]"
                                         value="` + element.value + `" class="form-control"
                                         placeholder="{{ trans('messages.automation.outgoing_webhook.header_value') }}"
+                                        required
                                     />
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">...</button>
@@ -779,8 +857,14 @@
                 // hide all option boxes
                 this.getOptionBoxes().hide();
 
+                // required input
+                this.getOptionBoxes().find('[data-option-input="required"]').prop('required', false);
+
                 // show selected box
                 this.getOptionBoxByValue(value).fadeIn();
+
+                // required input
+                this.getOptionBoxByValue(value).find('[data-option-input="required"]').prop('required', true);
             }
         };
 
@@ -831,8 +915,14 @@
                 // hide all option boxes
                 this.getOptionBoxes().hide();
 
+                // required input
+                this.getOptionBoxes().find('[data-option-input="required"]').prop('required', false);
+
                 // show selected box
                 this.getOptionBoxByValue(value).fadeIn();
+
+                // required input
+                this.getOptionBoxByValue(value).find('[data-option-input="required"]').prop('required', true);
             }
         };
 
@@ -874,8 +964,14 @@
                 // hide all option boxes
                 this.getOptionBoxes().hide();
 
+                // required input
+                this.getOptionBoxes().find('[data-option-input="required"]').prop('required', false);
+
                 // show selected box
                 this.getOptionBoxByValue(value).fadeIn();
+
+                // required input
+                this.getOptionBoxByValue(value).find('[data-option-input="required"]').prop('required', true);
             }
         };
     </script>

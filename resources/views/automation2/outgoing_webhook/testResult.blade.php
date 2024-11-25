@@ -2,7 +2,7 @@
     <div>
         <h4 class="fw-semibold">{{ trans('messages.automation.outgoing_webhook.test_request') }}</h4>
         <div class="p-3 bg-light border">
-            <pre>{{ json_encode(request()->all(), JSON_PRETTY_PRINT) }}</pre>
+            <pre>{{ json_encode($options, JSON_PRETTY_PRINT) }}</pre>
         </div>
     </div>
 </div>
@@ -14,10 +14,9 @@
             <div test-control="output">
                 <div class="my-4">
                     <div class="d-flex align-items-center justify-content-center">
-                        <div id="webhook-loading"></div>
-                    </div>
-                    <div class="text-center mt-4 fs-5">
-                        {{ trans('messages.automation.outgoing_webhook.testing_webhook') }}
+                        <pre style="width: 100%;
+height: auto;
+white-space: inherit;">{!! json_encode($result, JSON_PRETTY_PRINT) !!}{!! json_encode($result, JSON_PRETTY_PRINT) !!}{!! json_encode($result, JSON_PRETTY_PRINT) !!}{!! json_encode($result, JSON_PRETTY_PRINT) !!}</pre>
                     </div>
                 </div>
             </div>

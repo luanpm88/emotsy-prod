@@ -2884,9 +2884,32 @@ class Automation2Controller extends Controller
     public function outgoingWebhookSetup(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
+        $options = array (
+            'send_method' => 'post',
+            'authorization_method' => 'basic_auth',
+            'authorization' => array (
+                'bearer_token' => NULL,
+                'username' => NULL,
+                'password' => NULL,
+                'custom_key' => NULL,
+                'custom_value' => NULL,
+            ), 'endpoint_url' => NULL,
+            'header' => 'with_headers',
+            'headers' => array (),
+            'body_type' => 'key_value_pair',
+            'body_parameters' => array (),
+            'plain_text' => NULL, 
+        );
+
+        // 
+        if ($request->id) {
+            $options = array_merge($options, json_decode(json_encode($automation->getElement($request->id)->get('options')), true));
+        }
 
         return view('automation2.outgoing_webhook.setup', [
             'automation' => $automation,
+            'element' => $request->id ? $automation->getElement($request->id) : null,
+            'options' => $options,
         ]);
     }
     
@@ -2903,9 +2926,105 @@ class Automation2Controller extends Controller
     {
         sleep(2);
         $automation = Automation2::findByUid($uid);
+        $options = $request->webhook;
+        $result = $this->outgoingWebhookTestRun($options);
 
         return view('automation2.outgoing_webhook.testResult', [
             'automation' => $automation,
+            'options' => $options,
+            'result' => $result,
         ]);
+    }
+
+    public function outgoingWebhookSave(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        //
+        $data = array_merge([
+            'title' => trans('messages.automation.outgoing_webhook'),
+            'options' => $request->webhook,
+        ]);
+
+        return response()->json($data);
+    }
+
+    public function outgoingWebhookShow(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        // var_export(json_decode(json_encode($automation->getElement($request->id)->get('options')), true));
+
+        return view('automation2.outgoingWebhookShow', [
+            'automation' => $automation,
+            'element' => $automation->getElement($request->id),
+        ]);
+    }
+
+    public function outgoingWebhookTestRun($options) {
+        // Prepare cURL initialization
+        $ch = curl_init();
+    
+        // Set the URL from the options
+        curl_setopt($ch, CURLOPT_URL, $options['endpoint_url']);
+        
+        // Set the HTTP method (POST)
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($options['send_method']));
+        
+        // Set the Authorization (Basic Auth)
+        if ($options['authorization_method'] === 'basic_auth') {
+            $username = $options['authorization']['username'];
+            $password = $options['authorization']['password'];
+            curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+        }
+    
+        // Set Headers
+        $headers = [];
+        if ($options['header'] === 'with_headers' && !empty($options['headers'])) {
+            foreach ($options['headers'] as $header) {
+                $headers[] = $header['key'] . ': ' . $header['value'];
+            }
+        }
+        
+        // Add the Content-Type header based on the body type
+        if ($options['body_type'] === 'key_value_pair') {
+            $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+        } elseif ($options['body_type'] === 'plain_text') {
+            // No special Content-Type needed for plain text
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    
+        // Set the body type and parameters
+        if ($options['body_type'] === 'plain_text') {
+            $body = $options['plain_text'];
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        } elseif ($options['body_type'] === 'key_value_pair') {
+            // Build the body from body_parameters as key=value pairs
+            $body = [];
+            foreach ($options['body_parameters'] as $param) {
+                $body[] = urlencode($param['key']) . '=' . urlencode($param['value']);
+            }
+            // Join all key-value pairs with '&' to form a URL-encoded string
+            $body_string = implode('&', $body);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body_string);
+        }
+    
+        // Set additional cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects if needed
+    
+        // Execute the cURL request
+        $response = curl_exec($ch);
+    
+        // Check for errors
+        if (curl_errno($ch)) {
+            echo 'cURL Error: ' . curl_error($ch);
+        }
+    
+        // Close the cURL session
+        curl_close($ch);
+    
+        // Return response
+        return $response;
     }
 }

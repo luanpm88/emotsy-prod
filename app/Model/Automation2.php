@@ -31,6 +31,7 @@ use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
 use Acelle\Library\Automation\Evaluate;
 use Acelle\Library\Automation\Operate;
+use Acelle\Library\Automation\Webhook;
 use Carbon\Carbon;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -1013,6 +1014,9 @@ class Automation2 extends Model
                 break;
             case 'ElementOperation':
                 $instance = new Operate($attributes);
+                break;
+            case 'ElementWebhook':
+                $instance = new Webhook($attributes);
                 break;
             default:
                 throw new \Exception('Unknown Action type '.$attributes['type']);
