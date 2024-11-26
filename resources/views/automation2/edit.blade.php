@@ -257,7 +257,7 @@
                 changeAutomation($(this));
             });
             
-            // quota view
+            // Event: Click quota view on top menu
             $('#AutomationQuotaViewMenu').click(function(e) {
                 e.preventDefault();
 
