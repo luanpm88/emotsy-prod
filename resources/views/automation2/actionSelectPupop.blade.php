@@ -105,8 +105,6 @@
             // select operation element
             $('[action-select="operation"]').on('click', function(e) {
                 e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
 
                 var url = '{!! action('Automation2Controller@operationSelect', $automation->uid) !!}';
                 automationPopup.load(url);
@@ -115,8 +113,6 @@
             // select outgoing-webhook action
             $('[action-select="outgoing-webhook"]').on('click', function(e) {
                 e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
 
                 var url = '{!! action('Automation2Controller@outgoingWebhookSetup', $automation->uid) !!}';
                 automationPopup.load(url);
