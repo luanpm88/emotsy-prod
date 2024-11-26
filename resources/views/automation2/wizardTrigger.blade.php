@@ -9,7 +9,7 @@
             <div class="box-list mt-3">
 				<div class="box-list mt-5">
 					@foreach ($types as $type)
-						<a class="box-item trigger-select-but trigger-{{ $type }} shadow-sm"
+						<a data-control="trigger-select" class="box-item trigger-select-but trigger-{{ $type }} shadow-sm"
 							data-key="{{ $type }}"	
 							href="{{ action('Automation2Controller@wizardTriggerOption', [
 								'trigger_type' => $type,
@@ -24,7 +24,7 @@
 
 	<script>
 		$(function() {
-			$('.trigger-select-but').on('click', function(e) {
+			$('[data-control="trigger-select"]').on('click', function(e) {
 				e.preventDefault();
 				var url = $(this).attr('href');
 				

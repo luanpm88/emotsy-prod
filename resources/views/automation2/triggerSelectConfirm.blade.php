@@ -80,7 +80,7 @@
 						});
 						
 						// Edit Trigger
-						EditTrigger('{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + tree.getOptions().key);
+						loadSidebarEditTrigger(triggerEditUrl + '?key=' + tree.getOptions().key);
 					}, flag);
 				}
 			});

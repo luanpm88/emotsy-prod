@@ -74,7 +74,7 @@
 									</a>
 									<div class="dropdown-divider"></div>
 								@endif
-								<a class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
+								<a id="AutomationQuotaViewMenu" class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
 									<i class="material-symbols-rounded me-2">multiline_chart</i>
 									<span class="">{{ trans('messages.used_quota') }}</span>
 								</a>

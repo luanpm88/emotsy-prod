@@ -38,7 +38,7 @@
 @section('menu_right')
     <li class="d-flex align-items-center">
         <div class="d-flex align-items-center automation-top-actions">
-            <span class="me-4"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
+            <span class="me-4"><i id="LastSavedTimeContent" class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
             <a href="{{ action('Automation2Controller@index') }}" class="action me-4">
                 <i class="material-symbols-rounded me-2">arrow_back</i>
                 {{ trans('messages.automation.go_back') }}
@@ -46,7 +46,7 @@
 
             @if ($automation->getSwitchAutomations(Auth::user()->customer)->count())
                 <div class="switch-automation d-flex me-2">
-                    <select class="select select2 top-menu-select" name="switch_automation">
+                    <select id="AutomationSelector" class="select select2 top-menu-select" name="switch_automation">
                         <option value="--hidden--"></option>
                         @foreach($automation->getSwitchAutomations(Auth::user()->customer)->get() as $auto)
                             <option value='{{ action('Automation2Controller@edit', $auto->uid) }}'>{{ $auto->name }}</option>
@@ -175,7 +175,7 @@
                 </div>
             </div>
             <div class="sidebar scrollbar-inner">
-                <div class="sidebar-content">
+                <div id="SideBarContent" class="sidebar-content">
                     
                 </div>
             </div>
@@ -195,8 +195,8 @@
                 sidebar.load();
             }
         });
-        var sidebar = new Box($('.sidebar-content'));
-        var lastSaved = new Box($('.last_save_time'), $('.last_save_time').attr('data-url'));
+        var sidebar = new Box($('#SideBarContent'));
+        var lastSavedBox = new Box($('#LastSavedTimeContent'), $('#LastSavedTimeContent').attr('data-url'));
         var tree;
         var MyAutomation = {
             // Set the AddElement function
@@ -253,9 +253,9 @@
             });
 
             // Event: switch automation
-            $('[name=switch_automation]').change(function() {
+            $('#AutomationSelector').change(function() {
                 var val = $(this).val();
-                var text = $('[name=switch_automation] option:selected').text();
+                var text = $('#AutomationSelector option:selected').text();
                 var confirm = "{{ trans('messages.automation.switch_automation.confirm') }} <span class='font-weight-semibold'>" + text + "</span>"; 
 
                 var dialog = new Dialog('confirm', {
@@ -264,16 +264,16 @@
                         window.location = val; 
                     },
                     cancel: function() {
-                        $('[name=switch_automation]').val('');
+                        $('#AutomationSelector').val('');
                     },
                     close: function() {
-                        $('[name=switch_automation]').val('');
+                        $('#AutomationSelector').val('');
                     },
                 });
             });
             
             // quota view
-            $('.quota-view').click(function(e) {
+            $('#AutomationQuotaViewMenu').click(function(e) {
                 e.preventDefault();
 
                 var url = $(this).attr('href');
@@ -409,13 +409,13 @@
                 setTimeout(function() {
                     automationPopup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                     function() {
-                        $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
+                        $('[data-control="email-title"]').html('{{ trans('messages.source.abandoned_cart_email') }}');
                     });
                 }, 100);
 
                 automationPopup.onHide = function() {
-                    if (parent && parent.$('.trans_frame')) {
-                        parent.$('.trans_frame').fadeOut();
+                    if (parent && parent.$('#AutomationOutsideFrame')) {
+                        parent.$('#AutomationOutsideFrame').fadeOut();
                     }
                     parent.hidden = true;
 
@@ -426,7 +426,7 @@
                     setTimeout(function() {
                         automationPopup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                         function() {
-                            $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
+                            $('[data-control="email-title"]').html('{{ trans('messages.source.abandoned_cart_email') }}');
                         });
                     }, 100);
 
@@ -448,13 +448,13 @@
         }
 
         function openBuilder(url) {
-            var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder d-none" src="'+url+'"></iframe>');
+            var div = $('<div class="full-iframe-popup">').html('<iframe data-control="email-builder" scrolling="no" class="builder d-none" src="'+url+'"></iframe>');
             
             $('body').append(div);
 
             // open builder effects
             addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
-            $('.builder').on("load", function() {
+            $('[data-control="email-builder"]').on("load", function() {
                 removeMaskLoading();
 
                 $(this).removeClass("d-none");
@@ -462,13 +462,13 @@
         }
 
         function openBuilderClassic(url) {
-            var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="yes" class="builder d-none" src="'+url+'"></iframe>');
+            var div = $('<div class="full-iframe-popup">').html('<iframe data-control="email-builder" scrolling="yes" class="builder d-none" src="'+url+'"></iframe>');
             
             $('body').append(div);
 
             // open builder effects
             addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
-            $('.builder').on("load", function() {
+            $('[data-control="email-builder"]').on("load", function() {
                 removeMaskLoading();
 
                 $(this).removeClass("d-none");
@@ -505,7 +505,7 @@
                 }
 
                 // update last saved
-                lastSaved.load();
+                lastSavedBox.load();
             });
         }
         
@@ -545,17 +545,7 @@
         }
         
         function openTriggerSelectPopup() {
-            automationPopup.load(triggerSelectUrl, function() {
-                console.log('Select trigger popup loaded!');
-                
-                // when click on trigger type
-                automationPopup.popup.find('.trigger-select-but').click(function() {
-                    var key = $(this).attr('data-key');
-                    
-                    // show select trigger confirm box
-                    openSelectTriggerConfirmPopup(key);
-                });
-            });
+            automationPopup.load(triggerSelectUrl);
         }
         
         function openSelectTriggerConfirmPopup(key) {
@@ -659,7 +649,7 @@
         // Document ready initialization
         (function() {
             // Reload last saved information
-            lastSaved.load();
+            lastSavedBox.load();
 
             // Load init sidebar default page (Automation Seetings Page)
             sidebar.load(settingsUrl);

@@ -166,7 +166,7 @@
     <iframe src="{{ action('Automation2Controller@edit', [
         'uid' => $automation->uid,
         'auto_popup' => true,
-    ]) }}" id="trans_frame" class="trans_frame" style="display:none"></iframe>
+    ]) }}" id="AutomationOutsideFrame" class="trans_frame" style="display:none"></iframe>
     
     <script>
         var popup = new Popup();
