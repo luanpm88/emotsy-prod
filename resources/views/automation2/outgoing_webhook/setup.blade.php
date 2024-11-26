@@ -387,6 +387,7 @@
         $(() => {
             window.webhookForm = new WebhookForm({
                 form: $('#{{ $formId }}'),
+                testUrl: '{{ action('Automation2Controller@outgoingWebhookTestPopup', $automation->uid) }}',
             });
         });
 
@@ -395,7 +396,7 @@
                 this.form = options.form;
                 this.url = options.form.attr('action');
                 this.testPopup = new Popup({
-                    url: '{{ action('Automation2Controller@outgoingWebhookTestPopup', $automation->uid) }}',
+                    url: options.testUrl,
                 });
 
                 // input with tag

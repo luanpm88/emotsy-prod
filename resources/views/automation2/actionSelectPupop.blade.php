@@ -68,12 +68,12 @@
         $(() => {
             $('[action-select="wait"]').click(function() {
                 // show select trigger confirm box
-                openSelectActionConfirmPopup('wait');
+                openCreateWaitActionPopup('wait');
             });
 
             $('[action-select="condition"]').click(function() {
                 // show select trigger confirm box
-                openSelectActionConfirmPopup('condition');
+                openCreateConditionActionPopup('condition');
             });
 
             // Select email element

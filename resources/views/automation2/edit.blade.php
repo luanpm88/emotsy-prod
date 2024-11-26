@@ -204,6 +204,26 @@
             addToTree: null
         };
 
+        // URLs
+        var automationSaveUrl = '{{ action('Automation2Controller@saveData', $automation->uid) }}';
+        var waitCreateUrl = '{{ action('Automation2Controller@waitCreate', $automation->uid) }}';
+        var conditionCreateUrl = '{{ action('Automation2Controller@conditionCreate', $automation->uid) }}';
+        var actionSelectUrl = '{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}';
+        var triggerSelectUrl = '{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}';
+        var triggerConfirmUrl = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}';
+        var emailSetupUrl = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}';
+        var settingsUrl = '{{ action('Automation2Controller@settings', $automation->uid) }}';
+        var emailSetupUrlWithUid = `{{ action('Automation2Controller@emailSetup', [
+            'uid' => $automation->uid,
+            'email_uid' => '___email_uid___',
+        ]) }}`;
+        var triggerEditUrl = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}';
+        var waitEditUrl = '{{ action('Automation2Controller@waitEdit', $automation->uid) }}';
+        var conditionEditUrl = '{{ action('Automation2Controller@conditionEdit', $automation->uid) }}';
+        var emailPopupUrl = '{{ action('Automation2Controller@email', $automation->uid) }}';
+        var operationShowUrl = '{{ action('Automation2Controller@operationShow', $automation->uid) }}';
+        var outgoingWebhookShowUrl = '{{ action('Automation2Controller@outgoingWebhookShow', $automation->uid) }}';
+
         // init EVENTs
         function initEvents() {
             // Event: Click on history toogle button
@@ -466,7 +486,7 @@
                 return false;
             }
 
-            var url = '{{ action('Automation2Controller@saveData', $automation->uid) }}';
+            var url = automationSaveUrl;
         
             var postContent = {
                 _token: CSRF_TOKEN,
@@ -493,14 +513,20 @@
             $('.navbar h1').html(name);
         }
 
-        function openSelectActionConfirmPopup(key) {
-            var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
+        function openCreateWaitActionPopup(key) {
+            var url = waitCreateUrl + '?key=' + key;
+            
+            automationPopup.load(url);
+        }
+
+        function openCreateConditionActionPopup(key) {
+            var url = conditionCreateUrl + '?key=' + key;
             
             automationPopup.load(url);
         }
 
         function openEmailSetupPopup(id) {
-            var url = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}' + '?action_id=' + id;
+            var url = emailSetupUrl + '?action_id=' + id;
             
             automationPopup.load(url);
         }
@@ -515,11 +541,11 @@
                 hasChildren = tree.getSelected().hasChildNo();
             }
 
-            automationPopup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + hasChildren);
+            automationPopup.load(actionSelectUrl + '?hasChildren=' + hasChildren);
         }
         
         function openTriggerSelectPopup() {
-            automationPopup.load('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
+            automationPopup.load(triggerSelectUrl, function() {
                 console.log('Select trigger popup loaded!');
                 
                 // when click on trigger type
@@ -533,7 +559,7 @@
         }
         
         function openSelectTriggerConfirmPopup(key) {
-            var url = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}' + '?key=' + key;
+            var url = triggerConfirmUrl + '?key=' + key;
             
             automationPopup.load(url, function() {
                 console.log('Confirm trigger type popup loaded!');
@@ -544,15 +570,12 @@
             sidebar.load(url);
         }
         
-        function loadSidebarEditAction(url) {
+        function loadSidebarByUrl(url) {
             sidebar.load(url);
         }
 
         function getEmailSetupUrl(email_uid) {
-            var url = `{{ action('Automation2Controller@emailSetup', [
-                'uid' => $automation->uid,
-                'email_uid' => '___email_uid___',
-            ]) }}`;
+            var url = emailSetupUrlWithUid;
              
             return url.replace('___email_uid___', email_uid);
         }
@@ -565,7 +588,7 @@
             // Trên server: gọi hàm model: Automation2::getActionInfo(id)
             
             e.select(); // highlight
-            
+
             // if click on a trigger
             if (e.getType() == 'ElementTrigger') {
                 var options = e.getOptions();
@@ -576,7 +599,7 @@
                 }
                 // trigger was init
                 else {
-                    var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
+                    var url = triggerEditUrl + '?key=' + e.getOptions().key + '&id=' + e.getId();
                     
                     // Open trigger types select list
                     loadSidebarEditTrigger(url);
@@ -584,32 +607,32 @@
             }
             // is WAIT
             else if (e.getType() == 'ElementWait') {
-                    var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
+                    var url = waitEditUrl + '?id=' + e.getId();
                     
                     // Open trigger types select list
-                    loadSidebarEditAction(url);
+                    loadSidebarByUrl(url);
             }
             // is Condition
             else if (e.getType() == 'ElementCondition') {
-                    var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
+                    var url = conditionEditUrl + '?id=' + e.getId();
                     
                     // Open trigger types select list
-                    loadSidebarEditAction(url);
+                    loadSidebarByUrl(url);
             }
             // is Email
             else if (e.getType() == 'ElementAction') {
                 if (e.getOptions().init == "true") {
                     var type = $(this).attr('data-type');
-                    var url = '{{ action('Automation2Controller@email', $automation->uid) }}?email_uid=' + e.getOptions().email_uid;
+                    var url = emailPopupUrl + '?email_uid=' + e.getOptions().email_uid;
                     
                     // Open trigger types select list
-                    loadSidebarEditAction(url);
+                    loadSidebarByUrl(url);
                 } else {
                     var type = $(this).attr('data-type');
-                    var url = '{{ action('Automation2Controller@email', $automation->uid) }}?email_uid=' + e.getOptions().email_uid;
+                    var url = emailPopupUrl + '?email_uid=' + e.getOptions().email_uid;
                     
                     // Open trigger types select list
-                    loadSidebarEditAction(url);
+                    loadSidebarByUrl(url);
                     
                     // show select trigger confirm box
                     openEmailSetupPopup(e.getId());
@@ -618,7 +641,7 @@
             // is Operation
             else if (e.getType() == 'ElementOperation') {
                 var type = $(this).attr('data-type');
-                var url = '{{ action('Automation2Controller@operationShow', $automation->uid) }}?operation=' + e.getOptions().operation_type + '&id=' + e.getId();
+                var url = operationShowUrl + '?operation=' + e.getOptions().operation_type + '&id=' + e.getId();
                 
                 // Open trigger types select list
                 sidebar.load(url);
@@ -626,7 +649,7 @@
             // ElementWebhook
             else if (e.getType() == 'ElementWebhook') {
                 var type = $(this).attr('data-type');
-                var url = '{{ action('Automation2Controller@outgoingWebhookShow', $automation->uid) }}?operation=' + e.getOptions().operation_type + '&id=' + e.getId();
+                var url = outgoingWebhookShowUrl + '?id=' + e.getId();
                 
                 // Open trigger types select list
                 sidebar.load(url);
@@ -639,7 +662,7 @@
             lastSaved.load();
 
             // Load init sidebar default page (Automation Seetings Page)
-            sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
+            sidebar.load(settingsUrl);
 
             // events
             initEvents();

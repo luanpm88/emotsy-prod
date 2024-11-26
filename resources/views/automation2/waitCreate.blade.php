@@ -3,14 +3,12 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <form data-control="ActionSelectForm" id="action-select" action="{{ action('Automation2Controller@actionSelect', ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
+            <form data-control="WaitActionForm" id="action-select" action="{{ action('Automation2Controller@waitSave', ['uid' => $automation->uid]) }}" method="POST" class="form-validate-jqueryz">
                 {{ csrf_field() }}
 
-                <input type="hidden" name="key" value="{{ $key }}" />
+                <input type="hidden" name="key" value="wait" />
 
-                @if(View::exists('automation2.action.' . $key))
-                    @include('automation2.action.' . $key)
-                @endif
+                @include('automation2.action.wait')
 
                 <button class="btn btn-secondary select-action-confirm mt-2">
                         {{ trans('messages.automation.trigger.select_confirm') }}
@@ -29,11 +27,7 @@
                 type: 'POST',
                 data: data,
             }).always(function(response) {
-                if (response.options.key == 'wait') {
-                    var newE = new ElementWait({title: response.title, options: response.options});                            
-                } else if (response.options.key == 'condition') {
-                    var newE = new ElementCondition({title: response.title, options: response.options});                            
-                }
+                var newE = new ElementWait({title: response.title, options: response.options});
 
                 MyAutomation.addToTree(newE);
 
@@ -56,7 +50,7 @@
         }
 
         $(() => {
-            $('[data-control="ActionSelectForm"]').submit(function(e) {
+            $('[data-control="WaitActionForm"]').submit(function(e) {
                 e.preventDefault();
 
                 var url = $(this).attr('action');

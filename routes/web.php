@@ -810,10 +810,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid}/confirm', 'Automation2Controller@emailConfirm');
     Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid?}', 'Automation2Controller@email');
     Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');
-    Route::match(['get', 'post'], 'automation/{uid}/action/edit', 'Automation2Controller@actionEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/wait/edit', 'Automation2Controller@waitEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/condition/edit', 'Automation2Controller@conditionEdit');
     Route::match(['get', 'post'], 'automation/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
-    Route::post('automation/{uid}/action/select', 'Automation2Controller@actionSelect');
-    Route::get('automation/{uid}/action/select/confirm', 'Automation2Controller@actionSelectConfirm');
+    Route::post('automation/{uid}/wait/save', 'Automation2Controller@waitSave');
+    Route::post('automation/{uid}/condition/save', 'Automation2Controller@conditionSave');
+    Route::get('automation/{uid}/wait/create', 'Automation2Controller@waitCreate');
+    Route::get('automation/{uid}/condition/create', 'Automation2Controller@conditionCreate');
     Route::get('automation/{uid}/action/select', 'Automation2Controller@actionSelectPupop');
     Route::post('automation/{uid}/trigger/select', 'Automation2Controller@triggerSelect');
     Route::get('automation/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
