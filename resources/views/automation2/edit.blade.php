@@ -290,7 +290,7 @@
         }
 
         // init main automation tree
-        function initAutomationTree() {
+        function loadAutomationWorkflow() {
             var tree;
 
             // INIT/SETUP AUTOMATION TREE
@@ -679,7 +679,7 @@
             initEvents();
 
             // automation tree init
-            tree = initAutomationTree();
+            tree = loadAutomationWorkflow();
         })();
     </script>
 @endsection
