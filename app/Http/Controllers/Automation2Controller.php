@@ -3001,6 +3001,7 @@ class Automation2Controller extends Controller
             curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         } elseif ($options['body_type'] === 'key_value_pair') {
             $bodyParams = [];
+            $options['body_parameters'] = $options['body_parameters'] ?? [];
             foreach ($options['body_parameters'] as $param) {
                 $bodyParams[] = urlencode($param['key']) . '=' . urlencode($param['value']);
             }
