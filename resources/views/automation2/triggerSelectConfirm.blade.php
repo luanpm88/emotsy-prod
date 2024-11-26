@@ -80,7 +80,7 @@
 						});
 						
 						// Edit Trigger
-						loadSidebarEditTrigger(triggerEditUrl + '?key=' + tree.getOptions().key);
+						loadSidebarEditTrigger(tree.getOptions().key);
 					}, flag);
 				}
 			});

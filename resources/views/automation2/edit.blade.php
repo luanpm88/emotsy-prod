@@ -211,7 +211,7 @@
         var actionSelectUrl = '{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}';
         var triggerSelectUrl = '{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}';
         var triggerConfirmUrl = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}';
-        var emailSetupUrl = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}';
+        var createEmailUrl = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}';
         var settingsUrl = '{{ action('Automation2Controller@settings', $automation->uid) }}';
         var emailSetupUrlWithUid = `{{ action('Automation2Controller@emailSetup', [
             'uid' => $automation->uid,
@@ -220,7 +220,7 @@
         var triggerEditUrl = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}';
         var waitEditUrl = '{{ action('Automation2Controller@waitEdit', $automation->uid) }}';
         var conditionEditUrl = '{{ action('Automation2Controller@conditionEdit', $automation->uid) }}';
-        var emailPopupUrl = '{{ action('Automation2Controller@email', $automation->uid) }}';
+        var emailUrl = '{{ action('Automation2Controller@email', $automation->uid) }}';
         var operationShowUrl = '{{ action('Automation2Controller@operationShow', $automation->uid) }}';
         var outgoingWebhookShowUrl = '{{ action('Automation2Controller@outgoingWebhookShow', $automation->uid) }}';
 
@@ -254,22 +254,7 @@
 
             // Event: switch automation
             $('#AutomationSelector').change(function() {
-                var val = $(this).val();
-                var text = $('#AutomationSelector option:selected').text();
-                var confirm = "{{ trans('messages.automation.switch_automation.confirm') }} <span class='font-weight-semibold'>" + text + "</span>"; 
-
-                var dialog = new Dialog('confirm', {
-                    message: confirm,
-                    ok: function(dialog) {
-                        window.location = val; 
-                    },
-                    cancel: function() {
-                        $('#AutomationSelector').val('');
-                    },
-                    close: function() {
-                        $('#AutomationSelector').val('');
-                    },
-                });
+                changeAutomation($(this));
             });
             
             // quota view
@@ -281,6 +266,26 @@
                 automationPopup.load(url, function() {
                     console.log('quota popup loaded!');
                 });
+            });
+        }
+
+        // Change automation
+        function changeAutomation(selector) {
+            var val = selector.val();
+            var currentName = selector.find('option:selected').text();
+            var confirm = "{{ trans('messages.automation.switch_automation.confirm') }} <span class='font-weight-semibold'>" + currentName + "</span>"; 
+
+            var dialog = new Dialog('confirm', {
+                message: confirm,
+                ok: function(dialog) {
+                    window.location = val; 
+                },
+                cancel: function() {
+                    selector.val('');
+                },
+                close: function() {
+                    selector.val('');
+                },
             });
         }
 
@@ -525,8 +530,8 @@
             automationPopup.load(url);
         }
 
-        function openEmailSetupPopup(id) {
-            var url = emailSetupUrl + '?action_id=' + id;
+        function openCreateEmailPopup(id) {
+            var url = createEmailUrl + '?action_id=' + id;
             
             automationPopup.load(url);
         }
@@ -556,11 +561,48 @@
             });
         }
         
-        function loadSidebarEditTrigger(url) {
+        function loadSidebarEditTrigger(key, id) {
+            var url = triggerEditUrl + '?key=' + key;
+
+            if (id) {
+                url = url + '&id=' + id;
+            }
+
             sidebar.load(url);
         }
-        
-        function loadSidebarByUrl(url) {
+
+        function loadSidebarWait(id) {
+            var url = waitEditUrl + '?id=' + id;
+            
+            // load sidebar
+            sidebar.load(url);
+        }
+
+        function loadSidebarCondition(id) {
+            var url = conditionEditUrl + '?id=' + id;
+            
+            // load sidebar
+            sidebar.load(url);
+        }
+
+        function loadSidebarEmail(uid) {
+            var url = emailUrl + '?email_uid=' + uid;
+            
+            // load sidebar
+            sidebar.load(url);
+        }
+
+        function loadSidebarOperation(id) {
+            var url = operationShowUrl + '?operation=' + e.getOptions().operation_type + '&id=' + id;
+            
+            // load sidebar
+            sidebar.load(url);
+        }
+
+        function loadSidebarWebhook(id) {
+            var url = outgoingWebhookShowUrl + '?id=' + id;
+            
+            // load sidebar
             sidebar.load(url);
         }
 
@@ -589,60 +631,39 @@
                 }
                 // trigger was init
                 else {
-                    var url = triggerEditUrl + '?key=' + e.getOptions().key + '&id=' + e.getId();
-                    
                     // Open trigger types select list
-                    loadSidebarEditTrigger(url);
+                    loadSidebarEditTrigger(e.getOptions().key, e.getId());
                 }
             }
             // is WAIT
             else if (e.getType() == 'ElementWait') {
-                    var url = waitEditUrl + '?id=' + e.getId();
-                    
-                    // Open trigger types select list
-                    loadSidebarByUrl(url);
+                    // load sidebar
+                    loadSidebarWait(e.getId());
             }
             // is Condition
             else if (e.getType() == 'ElementCondition') {
-                    var url = conditionEditUrl + '?id=' + e.getId();
-                    
-                    // Open trigger types select list
-                    loadSidebarByUrl(url);
+                    // load sidebar
+                    loadSidebarCondition(e.getId());
             }
             // is Email
             else if (e.getType() == 'ElementAction') {
-                if (e.getOptions().init == "true") {
-                    var type = $(this).attr('data-type');
-                    var url = emailPopupUrl + '?email_uid=' + e.getOptions().email_uid;
-                    
-                    // Open trigger types select list
-                    loadSidebarByUrl(url);
-                } else {
-                    var type = $(this).attr('data-type');
-                    var url = emailPopupUrl + '?email_uid=' + e.getOptions().email_uid;
-                    
-                    // Open trigger types select list
-                    loadSidebarByUrl(url);
-                    
-                    // show select trigger confirm box
-                    openEmailSetupPopup(e.getId());
+                // load sidebar
+                loadSidebarEmail(e.getOptions().email_uid);
+
+                if (e.getOptions().init !== "true") {
+                    // 
+                    openCreateEmailPopup(e.getId());
                 }
             }
             // is Operation
             else if (e.getType() == 'ElementOperation') {
-                var type = $(this).attr('data-type');
-                var url = operationShowUrl + '?operation=' + e.getOptions().operation_type + '&id=' + e.getId();
-                
-                // Open trigger types select list
-                sidebar.load(url);
+                // load sidebar
+                loadSidebarOperation(e.getId(), e.getOptions().operation_type);
             }
             // ElementWebhook
             else if (e.getType() == 'ElementWebhook') {
-                var type = $(this).attr('data-type');
-                var url = outgoingWebhookShowUrl + '?id=' + e.getId();
-                
-                // Open trigger types select list
-                sidebar.load(url);
+                // load sidebar
+                loadSidebarWebhook(e.getId());
             }
         }
         
