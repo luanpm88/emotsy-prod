@@ -495,10 +495,7 @@
                         });
                     @else
                         var newE = new ElementWebhook(res);
-                        tree.getSelected().insert(newE);
-
-                        // select new element
-                        // doSelect(newE);
+                        MyAutomation.addToTree(newE);
 
                         // save tree
                         saveData(function() {
@@ -511,6 +508,9 @@
                                 title: '{!! trans('messages.notify.success') !!}',
                                 message: '{{ trans('messages.automation.outgoing_webhook.added') }}'
                             });
+
+                            // select newly added element
+                            doSelectTreeElement(newE);
                         });
                     @endif
                 });

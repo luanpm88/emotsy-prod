@@ -917,6 +917,13 @@ class Automation2 extends Model
                 'percentage' => ($total != 0) ? (($yes + $no) / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];
+        } elseif ($action->getType() == 'ElementWebhook') {
+            $insight = [
+                'count' => $count,
+                'subtitle' => __('messages.automation.stats.sent', ['count' => $count]),
+                'percentage' => ($total != 0) ? ($count / $total) : 0,
+                'latest_activity' => $this->autoTriggers()->max('created_at'),
+            ];
         }
 
         return $insight;

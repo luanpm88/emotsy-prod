@@ -67,7 +67,7 @@
 					// save tree
 					saveData(function() {
 						// select trigger
-						doSelect(tree);
+						doSelectTreeElement(tree);
 
 						// hide popup
 						automationPopup.hide();

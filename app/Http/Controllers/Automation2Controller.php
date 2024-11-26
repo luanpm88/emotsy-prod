@@ -2954,7 +2954,7 @@ class Automation2Controller extends Controller
 
         // var_export(json_decode(json_encode($automation->getElement($request->id)->get('options')), true));
 
-        return view('automation2.outgoingWebhookShow', [
+        return view('automation2.outgoing_webhook.show', [
             'automation' => $automation,
             'element' => $automation->getElement($request->id),
         ]);
