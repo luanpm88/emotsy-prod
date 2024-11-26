@@ -59,26 +59,28 @@
                     {{ trans('messages.automation.outgoing_webhook.' . $element->get('options')->body_type) }}
                 </td>
             </tr>
-            @if ($element->get('options')->body_type == 'key_value_pair')
+            @if ($element->get('options')->body_type == 'key_value_pair' && isset($element->get('options')->body_parameters))
                 <tr>
                     <th width="50%" class="bg-light fw-normal">
                         {{ trans('messages.automation.outgoing_webhook.body_parameters') }}
                     </th>
                     <td width="50%" class="">
-                        <table class="table m-0">
-                            <tbody>
-                                @foreach ($element->get('options')->body_parameters as $param)
-                                    <tr>
-                                        <th width="50%" class="fw-normal border-0 py-1 px-2 bg-light">
-                                            {{ $param->key ?? 'N/A' }}:
-                                        </th>
-                                        <td width="50%" class="text-uppercase border-0 py-1 px-2" style="word-break:break-all;">
-                                            {{ $param->value ?? 'N/A' }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                        @if(isset($element->get('options')->body_parameters))
+                            <table class="table m-0">
+                                <tbody>
+                                    @foreach ($element->get('options')->body_parameters as $param)
+                                        <tr>
+                                            <th width="50%" class="fw-normal border-0 py-1 px-2 bg-light">
+                                                {{ $param->key ?? 'N/A' }}:
+                                            </th>
+                                            <td width="50%" class="text-uppercase border-0 py-1 px-2" style="word-break:break-all;">
+                                                {{ $param->value ?? 'N/A' }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endif
                     </td>
                 </tr>
             @endif
