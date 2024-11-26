@@ -3633,4 +3633,10 @@
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'your_subscription' => 'Your subscription',
   'zip_postal_code' => 'Zip / Postal code',
+  'signature.enabled' => 'Email Signature',
+  'setting.signature.enabled.help' => 'Enable email signatures, allowing users to create and insert them into their email content.',
+  'notification.on_user_created' => 'User Creation Notification',
+  'setting.notification.on_user_created.help' => 'Enable this option to receive a notification whenever a new user account is created.',
+  'blacklist.use_global_blacklist' => 'User Global Blacklist',
+  'setting.blacklist.use_global_blacklist.help' => '"Enable this option to apply the global email blacklist to all campaigns, preventing emails from being sent to blacklisted addresses."',
 ) ?>
