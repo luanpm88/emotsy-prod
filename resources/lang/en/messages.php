@@ -191,6 +191,7 @@
   'and' => 'and',
   'any' => 'Any',
   'api' => 'API',
+  'api.notification.feedback' => 'Feedback Loop',
   'api.notification' => 'Notification',
   'api_docs' => 'API docs',
   'api_endpoint' => 'API Endpoint',
