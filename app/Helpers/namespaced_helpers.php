@@ -100,7 +100,7 @@ function getAppHost()
 function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false, $deleteTargetKeys = true, $sort = false)
 {
     $source = include $sourceFile;
-    $target = include $targetFile;
+    $target = include $targetFile; // to be written to
 
     if ($overwriteTargetPhrases) {
         // Overwrite $target
