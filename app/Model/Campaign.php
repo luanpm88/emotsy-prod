@@ -1597,6 +1597,10 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             return $this->readCache('SubscriberCount', 0);
         }
 
+        if (config('app.emotsy')) {
+            return $this->subscribers([])->where('status', '!=', [Subscriber::STATUS_UNSUBSCRIBED])->count();
+        }
+
         return $this->subscribers([])->count();
     }
 
