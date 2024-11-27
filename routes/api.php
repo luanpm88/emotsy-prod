@@ -75,8 +75,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => ['auth:api
     // File
     Route::post('automations/{uid}/execute', 'AutomationController@execute')->name('automation_execute');
 
-    // Subscription
-    Route::resource('notification', 'NotificationController');
+    Route::post('notification/bounce', 'NotificationController@bounce');
+    Route::post('notification/feedback', 'NotificationController@feedback');
 });
 
 Route::group(['namespace' => 'Api\Public', 'prefix' => 'v1'], function () {

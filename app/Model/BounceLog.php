@@ -92,17 +92,38 @@ class BounceLog extends Model
         return [$bounceLog, $validator];
     }
 
-    public static function recordHardBounce($runtimeMessageId, $raw, $logCallback)
+    public static function recordHardBounce($runtimeMessageId, $raw, $logCallback = null, $throwMsgNotFoundException = false)
     {
+        if (is_null($runtimeMessageId)) {
+            throw new Exception("message_id must not be null");
+        }
+
         $bounceLog = new static();
         $bounceLog->runtime_message_id = $runtimeMessageId;
 
+        if (is_null($logCallback)) {
+            $logCallback = function($message) {
+                // do nothing
+            };
+        }
+
         // retrieve the associated tracking log in Acelle
         $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
+
+        if (is_null($trackingLog)) {
+            $trackingLog = TrackingLog::where('message_id', $bounceLog->runtime_message_id)->first();
+        }
+
         if ($trackingLog) {
             $bounceLog->message_id = $trackingLog->message_id;
+            $bounceLog->customer_id = $trackingLog->customer_id;
+            $bounceLog->tracking_log_id = $trackingLog->id;
         } else {
-            $logCallback("Cannot find a tracking log record with runtime_message_id of #{$runtimeMessageId}. Record it anyway without runtime_message_id");
+            $logCallback("Cannot find a tracking log record with runtime_message_id of #{$runtimeMessageId}");
+
+            if ($throwMsgNotFoundException) {
+                throw new Exception("Cannot find a tracking log record with runtime_message_id of #{$runtimeMessageId}");
+            }
         }
 
         // SendGrid only notifies in case of HARD bounce
@@ -118,6 +139,8 @@ class BounceLog extends Model
         } else {
             $logCallback("Bounce recorded for runtime_message_id '$bounceLog->runtime_message_id' although it is not associated with any tracking log.");
         }
+
+        return $bounceLog;
     }
 
     /**
