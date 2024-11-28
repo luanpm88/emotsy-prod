@@ -333,9 +333,9 @@ class MailList extends Model
                 $attributes['type'],
                 $attributes['tag'],
                 $attributes['label'],
+                $defaultValue = null,
                 $required = $attributes['required'],
                 $visible = $attributes['visible'],
-                $defaultValue = null,
                 $attributes['is_email'],
             );
         }
