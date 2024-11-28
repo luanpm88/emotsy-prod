@@ -1071,9 +1071,6 @@ class Customer extends Model
 
         // Gallery
         $templates = \Acelle\Model\Template::where('customer_id', '=', $this->id)
-            ->orWhere(function ($query) {
-                $query->notPreserved();
-            })
             ->orderBy('customer_id')
             ->notPreserved()
             ->get();
