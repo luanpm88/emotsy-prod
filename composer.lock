@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/acelle-cashier.git",
-                "reference": "b073fd78474964d8bac0ddfd1161be9b508e8dba"
+                "reference": "5aeff1b44c91c64a1a44553547c9300c90c93142"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/b073fd78474964d8bac0ddfd1161be9b508e8dba",
-                "reference": "b073fd78474964d8bac0ddfd1161be9b508e8dba",
+                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/5aeff1b44c91c64a1a44553547c9300c90c93142",
+                "reference": "5aeff1b44c91c64a1a44553547c9300c90c93142",
                 "shasum": ""
             },
             "require": {
@@ -69,7 +69,7 @@
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
             },
-            "time": "2024-07-12T15:45:46+00:00"
+            "time": "2024-11-29T15:17:50+00:00"
         },
         {
             "name": "apimatic/core",
