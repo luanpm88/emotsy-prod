@@ -322,14 +322,14 @@ class SendMessage implements ShouldQueue
 
                     if ($delayFlag == true) {
                         // just finish the task
-                        $logger->info(sprintf("Delayed [%s] due to rate limit: %s", $email, $ex->getMessage()));
+                        $logger->info(sprintf("Quit [%s] due to rate limit: %s", $email, $ex->getMessage()));
                         return;
                     } else {
                         // Releease the job, have it tried again later on, after 1 minutes
 
                         $delayInSeconds = 60; // reservation stategy, so 60 seconds is good enough
 
-                        $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
+                        $logger->warning(sprintf("DELAY!!! [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
 
                         // set delay flag to true
                         $this->campaign->setDelayFlag(true);
