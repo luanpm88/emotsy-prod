@@ -98,11 +98,11 @@ Route::get('assets/{dirname}/{basename}', [ function ($dirname, $basename) {
 Route::get('setting/{filename}', 'SettingController@file');
 
 // Translation data
-Route::get('/datatable_locale', 'Controller@datatable_locale');
-Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
+Route::get('/datatable_locale', 'AppController@datatable_locale');
+Route::get('/jquery_validate_locale', 'AppController@jquery_validate_locale');
 
 // Term of service
-Route::get('/terms-of-service', 'Controller@termsOfService');
+Route::get('/terms-of-service', 'AppController@termsOfService');
 
 // For visitor with Web UI, loading the right app language
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
@@ -116,19 +116,19 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
     Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
 
-    Route::get('/login/token/{token}', 'Controller@tokenLogin');
+    Route::get('/login/token/{token}', 'AppController@tokenLogin');
 
-    Route::get('/validate-token/{api_token}', 'Controller@validateToken');
+    Route::get('/validate-token/{api_token}', 'AppController@validateToken');
     Route::get('user/activate/{token}', 'UserController@activate');
-    Route::get('/disabled', 'Controller@userDisabled');
-    Route::get('/offline', 'Controller@offline');
-    Route::get('/not-authorized', 'Controller@notAuthorized');
-    Route::get('/demo', 'Controller@demo');
-    Route::get('/demo/go/{view}', 'Controller@demoGo');
-    Route::get('/autologin/{api_token}', 'Controller@autoLogin');
+    Route::get('/disabled', 'AppController@userDisabled');
+    Route::get('/offline', 'AppController@offline');
+    Route::get('/not-authorized', 'AppController@notAuthorized');
+    Route::get('/demo', 'AppController@demo');
+    Route::get('/demo/go/{view}', 'AppController@demoGo');
+    Route::get('/autologin/{api_token}', 'AppController@autoLogin');
     Route::get('/migrate/run', 'Admin\Upgrade@migrate');
 
-    Route::get('/autologin/{api_token}/{email}', 'Controller@autoLoginEmail');
+    Route::get('/autologin/{api_token}/{email}', 'AppController@autoLoginEmail');
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{id?}.jpg', 'SubscriberController@avatar');
     Route::get('assets/images/avatar/subscribe-origin-{id?}.jpg', 'SubscriberController@avatarOrigin');
@@ -225,7 +225,7 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('logout', 'Auth\LoginController@logout')->name('logout');   // use GET for logout, keep compatible with 5.2
 
     // Get Application Key
-    Route::get('appkey', 'Controller@appkey')->name('appkey');
+    Route::get('appkey', 'AppController@appkey')->name('appkey');
 
     // Campaign test links
     Route::get('campaigns/test/{message}', 'CampaignController@notification')->name('campaign_message');
@@ -378,7 +378,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('/search/general', 'SearchController@general');
 
     Route::get('/', 'HomeController@index');
-    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
+    Route::get('frontend/docs/api/v1', 'AppController@docsApiV1');
 
     Route::get('account/api/renew', 'AccountController@renewToken');
     Route::get('account/api', 'AccountController@api');

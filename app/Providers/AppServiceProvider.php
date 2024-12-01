@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot()
+    public function boot(): void
     {
         // Check if the app is in distributed mode and its conditions are met
         distributed_mode_check();
@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(HookManager::class, function ($app) {
             return new HookManager();

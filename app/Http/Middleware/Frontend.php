@@ -26,19 +26,19 @@ class Frontend
 
         // check if user not authorized for customer access
         if (!$user->can("customer_access", User::class)) {
-            return redirect()->action('Controller@notAuthorized');
+            return redirect()->action('AppController@notAuthorized');
         }
 
         // Site offline
         if (\Acelle\Model\Setting::get('site_online') == 'false') {
-            return redirect()->action('Controller@offline');
+            return redirect()->action('AppController@offline');
         }
 
         // If user is disabled
         if (
             (isset($user) && $user->customer && !$user->customer->isActive() && is_null($user->admin))
         ) {
-            return redirect()->action('Controller@userDisabled');
+            return redirect()->action('AppController@userDisabled');
         }
 
         // Language

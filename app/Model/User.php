@@ -680,7 +680,7 @@ class User extends Authenticatable
 
     public function generateOneClickLoginUrl()
     {
-        return action('Controller@autoLogin', [
+        return action('AppController@autoLogin', [
             'api_token' => $this->api_token,
         ]);
     }
