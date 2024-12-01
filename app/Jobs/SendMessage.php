@@ -266,7 +266,7 @@ class SendMessage implements ShouldQueue
 
                 $info['last_message_sent_at'] = $now->toString();
                 $campaignStartAt = $info['start_at'];
-                $timeSinceCampaignStart = $now->diffInSeconds(Carbon::parse($campaignStartAt));
+                $timeSinceCampaignStart = $now->diffInSeconds(Carbon::parse($campaignStartAt), $abs = true);
 
                 // In case it is too fast, avoid DivisionByZero
                 $info['total_time'] = ($timeSinceCampaignStart == 0) ? 1 : $timeSinceCampaignStart;

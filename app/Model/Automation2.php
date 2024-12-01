@@ -574,7 +574,7 @@ class Automation2 extends Model
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
         if ($currentTime < $triggerTime) {
-            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s, wait for %s minutes', $currentTime->format('H:i:s'), $triggerTime->format('H:i:s'), (new Carbon($triggerTime))->diffInMinutes($currentTime)));
+            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s, wait for %s minutes', $currentTime->format('H:i:s'), $triggerTime->format('H:i:s'), (new Carbon($triggerTime))->diffInMinutes($currentTime, $abs = true)));
             return;
         }
 
@@ -615,7 +615,7 @@ class Automation2 extends Model
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
         if ($currentTime < $triggerTime) {
-            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s (%s), wait for %s minutes', $currentTime->format('H:i:s'), $triggerTime->format('H:i:s'), $this->customer->timezone, (new Carbon($triggerTime))->diffInMinutes($currentTime)));
+            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s (%s), wait for %s minutes', $currentTime->format('H:i:s'), $triggerTime->format('H:i:s'), $this->customer->timezone, (new Carbon($triggerTime))->diffInMinutes($currentTime, $abs = true)));
             return;
         }
 

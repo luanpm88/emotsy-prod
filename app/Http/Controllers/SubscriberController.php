@@ -1120,7 +1120,7 @@ class SubscriberController extends Controller
         // Show this warning to user
         $lastExecutedTimeUtc = Carbon::createFromTimestamp(Setting::get('cronjob_last_execution') ?? 0);
         $now = Carbon::now();
-        $lastExecutedTimeDiffInMinutes = $now->diffInMinutes($lastExecutedTimeUtc);
+        $lastExecutedTimeDiffInMinutes = $now->diffInMinutes($lastExecutedTimeUtc, $abs = true);
         $threshold = 20; // 15 minutes
 
         if ($lastExecutedTimeDiffInMinutes > $threshold) {

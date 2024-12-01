@@ -37,7 +37,7 @@ class Wait extends Action
 
         if ($check) {
             usleep(100000); // (0.1 second) to avoid same day with previous action when modifying (n days)
-            $this->logger->info(sprintf('---> It is already %s minutes (or %s hours) due! do save me and move to next action!', $now->diffInMinutes($due), $now->diffInHours($due)));
+            $this->logger->info(sprintf('---> It is already %s minutes (or %s hours) due! do save me and move to next action!', $now->diffInMinutes($due, $abs = true), $now->diffInHours($due, $abs = true)));
         } else {
             $this->logger->info(sprintf('---> Waiting for another %s minutes (or %s hours)...', $now->diffInMinutes($due), $now->diffInHours($due)));
         }

@@ -63,12 +63,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     protected $serversPool = null;
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = ['created_at', 'updated_at', 'run_at', 'delivery_at'];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'run_at' => 'datetime',
+        'delivery_at' => 'datetime',
+    ];
 
     /**
      * Get campaign's default mail list.
@@ -1267,7 +1267,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         if ($now->gte($this->run_at)) {
             return 0;
         } else {
-            return $this->run_at->diffInSeconds($now);
+            return (int)$this->run_at->diffInSeconds($now, $abs = true);
         }
     }
 

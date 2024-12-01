@@ -77,7 +77,7 @@ class Evaluate extends Action
 
         if ($check) {
             sleep(1); // to avoid same day with previous action when modifying (n days)
-            $this->logger->info(sprintf('---> It is already %s minutes (or %s hours) due! proceed next with NO branch', $now->diffInMinutes($due), $now->diffInHours($due)));
+            $this->logger->info(sprintf('---> It is already %s minutes (or %s hours) due! proceed next with NO branch', $now->diffInMinutes($due, $abs = true), $now->diffInHours($due, $abs = true)));
 
             return true;
         } else {

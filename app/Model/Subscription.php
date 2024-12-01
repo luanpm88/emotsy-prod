@@ -36,14 +36,12 @@ class Subscription extends Model
      */
     protected $guarded = [];
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'cancelled_at', 'current_period_ends_at',
-        'created_at', 'updated_at', 'terminated_at'
+    protected $casts = [
+        'cancelled_at' => 'datetime',
+        'current_period_ends_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'terminated_at' => 'datetime',
     ];
 
     /**
@@ -952,8 +950,8 @@ class Subscription extends Model
 
         // amout per day of current plan
         $currentAmount = $this->plan->price;
-        $periodDays = $this->current_period_ends_at->diffInDays($this->periodStartAt()->startOfDay());
-        $remainDays = $this->current_period_ends_at->diffInDays(Carbon::now()->startOfDay());
+        $periodDays = ceil($this->current_period_ends_at->diffInDays($this->periodStartAt(), $abs = true));
+        $remainDays = ceil($this->current_period_ends_at->diffInDays(now(), $abs = true));
         $currentPerDayAmount = ($currentAmount / $periodDays);
         $newAmount = ($plan->price / $periodDays) * $remainDays;
         $remainAmount = $currentPerDayAmount * $remainDays;
