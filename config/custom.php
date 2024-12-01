@@ -10,7 +10,7 @@ return [
     // Timeformat for storing
     'time_format' => 'H:i',
 
-    // Minimum recommended PHP version to upgrade (if PHP version does not satisfy, upgrade is disabled
+    // Recommended PHP version to upgrade (if PHP version does not satisfy, upgrade is disabled)
     'php_recommended' => '8.2.0',
 
     // Minimum supported PHP version
