@@ -1270,9 +1270,6 @@ class Automation2 extends Model
             }
             $this->logger()->info(sprintf('Finish Triggering %s contacts', $subscribersCount));
         });
-
-
-
     }
 
     public function notTriggeredSubscribers()
