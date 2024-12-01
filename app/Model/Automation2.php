@@ -730,11 +730,17 @@ class Automation2 extends Model
             $trigger->check();
         }*/
 
-        foreach ($this->pendingAutoTriggers as $trigger) {
-            $trigger->check();
-        }
+        $pageCount = 0;
+        paginate_query($this->pendingAutoTriggers(), $perPage = 100, $orderBy = 'auto_triggers.id', function ($pageNumber, $autoTriggers) use (&$pageCount) {
+            $pageCount += 1;
 
-        $this->logger()->info(sprintf('UPDATE > Finish checking for trigger update'));
+            $this->logger()->info(sprintf("Checking page {$pageCount}"));
+            foreach ($autoTriggers as $trigger) {
+                $trigger->check();
+            }
+        });
+
+        $this->logger()->info(sprintf('Finish checking for trigger update'));
     }
 
     /**
