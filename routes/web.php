@@ -1,5 +1,9 @@
 <?php
 
+namespace Acelle\Http\Controllers;
+use Route;
+use Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -12,7 +16,7 @@
 */
 
 // Installation
-Route::group(['middleware' => ['installed']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['installed']], function () {
     // Installation
     Route::get('install', 'InstallController@starting');
     Route::get('install/site-info', 'InstallController@siteInfo');
@@ -95,17 +99,17 @@ Route::get('assets/{dirname}/{basename}', [ function ($dirname, $basename) {
 }])->name('public_assets');
 
 // Setting upload path
-Route::get('setting/{filename}', 'SettingController@file');
+Route::get('setting/{filename}', [SettingController::class, 'file']);
 
 // Translation data
-Route::get('/datatable_locale', 'AppController@datatable_locale');
-Route::get('/jquery_validate_locale', 'AppController@jquery_validate_locale');
+Route::get('/datatable_locale', [AppController::class, 'datatable_locale']);
+Route::get('/jquery_validate_locale', [AppController::class, 'jquery_validate_locale']);
 
 // Term of service
-Route::get('/terms-of-service', 'AppController@termsOfService');
+Route::get('/terms-of-service', [AppController::class, 'termsOfService']);
 
 // For visitor with Web UI, loading the right app language
-Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
     Auth::routes();
     // Google OAuth 2.0
@@ -183,7 +187,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 });
 
 // Without authentication
-Route::group(['middleware' => ['not_installed']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed']], function () {
     // Form
     Route::post('frontend/forms/{uid}/save', 'FormController@frontendSave');
     Route::get('frontend/forms/{uid}/popup.js', 'FormController@frontendPopup');
@@ -260,13 +264,13 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
     Route::post('2fa/google-authenticator/check', 'Google2FAController@check');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', '2fa']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'auth', '2fa']], function () {
     // 2fa
     Route::post('2fa/google-authenticator/secret-key/save', 'Google2FAController@saveKey');
     Route::get('2fa/google-authenticator/secret-key/generate', 'Google2FAController@generateSecretKey');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
     // Signature
     Route::get('signatures/select-box', 'SignatureController@selectBox');
     Route::post('signatures/{uid}/set-default', 'SignatureController@setDefault');
@@ -362,7 +366,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], fun
     Route::match(['get', 'post'], 'account/billing/edit', 'AccountController@editBillingAddress');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription', '2fa']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'auth', 'frontend', 'subscription', '2fa']], function () {
     // 2FA settings
     Route::get('account/2fa', 'TwoFAController@index');
     Route::post('account/2fa/save', 'TwoFAController@save');
@@ -990,7 +994,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 });
 
 // ADMIN AREA
-Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend', '2fa']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => ['not_installed', 'auth', 'backend', '2fa']], function () {
     // 2FA settings
     Route::get('admin/2fa', 'TwoFAController@index');
     Route::post('admin/2fa/save', 'TwoFAController@save');
