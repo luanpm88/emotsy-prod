@@ -187,13 +187,39 @@ class SendMessage implements ShouldQueue
                         'status' => 'failed',
                     ];
                 } else {
-                    $delayFlag = $this->campaign->checkDelayFlag();
 
+                    /*
+                     *
+                     * It would be a flaw to evaluate DELAY FLAG here. Why?
+                     *
+                     * Suppose job-100 passes all rate checks, proceeding with SEND...
+                     *
+                     * Then job-101 comes, it does not pass one of the rate checks and proceeds with setting a DELAY FLAG
+                     * The problem: what if job-101 finish setting the delay flags even before job-100 actually SEND?
+                     * ==> job-100 will unexpectedly be delayed although it has passed the rate checks
+                     *
+                     * The root cause here is: in a distributed setup, there is no guarantee that job-100 finishes SEND
+                     * before job-101 sets the DELAY flag, even though job-001 comes first!
+                     *
+                     * So, DELAY FLAG checking must be executed before RATE checking (if it is ever needed)
+                     *
+                     * Illustration of the concurrency issue:
+                     *
+                     *     job-100 -------------------- PASS RATE CHECKS ----------------------------------------- CHECK DELAY FLAG, BREAK!!! ----------- SEND
+                     *                                                                                           /
+                     *                                                                                          /
+                     *     job-101 ----------------------------FAILED RATE CHECKS --------- SET DELAY FLAG -----
+                     *
+                     */
+
+                    /*
+                    $delayFlag = $this->campaign->checkDelayFlag();
                     if ($delayFlag == true) {
                         // just finish the task
                         $logger->info(sprintf("Delayed [%s] due to rate limit (RIGHT BEFORE SENDING)", $email));
                         return;
                     }
+                    */
 
                     if (config('custom.dryrun') || $this->campaign->name == '_DRYRUN') {
                         $sent = $this->selectedServer->dryrun($message);
@@ -296,14 +322,14 @@ class SendMessage implements ShouldQueue
 
                     if ($delayFlag == true) {
                         // just finish the task
-                        $logger->info(sprintf("Delayed [%s] due to rate limit: %s", $email, $ex->getMessage()));
+                        $logger->info(sprintf("Quit [%s] due to rate limit: %s", $email, $ex->getMessage()));
                         return;
                     } else {
                         // Releease the job, have it tried again later on, after 1 minutes
 
                         $delayInSeconds = 60; // reservation stategy, so 60 seconds is good enough
 
-                        $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
+                        $logger->warning(sprintf("DELAY!!! [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
 
                         // set delay flag to true
                         $this->campaign->setDelayFlag(true);

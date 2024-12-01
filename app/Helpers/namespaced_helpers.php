@@ -441,16 +441,18 @@ function with_rate_limits(array $rateTrackers, $rateTrackersPool, $rateExceeding
         }
 
         // pool
+        $notes = "All {$rateTrackersPool->count()} server(s) exceeded limits";
+        $lastCheckMsg = null;
         do {
             if (is_null($rateTrackersPool)) {
-                // Okay, don't care about it, just move forward
+                // OK, no server rate limits
                 break;
             }
 
             $selectedServer = $rateTrackersPool->select($removeFromList = true);
 
             if (is_null($selectedServer)) {
-                throw new \Acelle\Library\Exception\RateLimitExceeded('No server available to pickup in pool!');
+                throw new \Acelle\Library\Exception\RateLimitExceeded($notes);
             }
 
             $serverRateLimitTracker = $selectedServer->getRateLimitTracker();
@@ -464,6 +466,7 @@ function with_rate_limits(array $rateTrackers, $rateTrackersPool, $rateExceeding
 
                 $passed = true;
             } catch(\Acelle\Library\Exception\RateLimitExceeded $rateException) {
+                $notes = $notes." | EXCEEDED ".$serverRateLimitTracker->getLimitsDescription();
                 $passed = false;
             }
         } while(false == $passed);
