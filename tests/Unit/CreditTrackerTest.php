@@ -43,7 +43,7 @@ test('Credit tracker with unlimited credits', function () {
     expect($tracker->isUnlimited())->toBe(true);
 
     // Test with execute_with_limits() helper
-    $task = fn () => execute_with_limits([  ], [ $tracker ]);
+    $task = fn () => execute_with_limits([  ], null, [ $tracker ]);
 
     $task();
     expect($tracker->getRemainingCredits())->toBe(CreditTracker::UNLIMITED);

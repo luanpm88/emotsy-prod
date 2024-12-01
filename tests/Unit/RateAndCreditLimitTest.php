@@ -16,7 +16,7 @@ test('CreditLimit just works', function () {
     $creditTracker2->setCredits(2);
 
     // Execute 1st time -> ok
-    $task = fn () => execute_with_limits([  ], [ $creditTracker1, $creditTracker2 ]);
+    $task = fn () => execute_with_limits([  ], null, [ $creditTracker1, $creditTracker2 ]);
 
     // First execution OK
     $task();
@@ -48,7 +48,7 @@ test('CreditLimit just works with task exception', function () {
     $creditTracker2->setCredits(100);
 
     // Task
-    $task = fn () => execute_with_limits([  ], [ $creditTracker1, $creditTracker2 ], function () {
+    $task = fn () => execute_with_limits([  ], null, [ $creditTracker1, $creditTracker2 ], function () {
         throw new \Exception();
     });
 

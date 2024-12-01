@@ -64,7 +64,7 @@ class SendMessage implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($campaign, Subscriber $subscriber, RouletteWheel $servers, Subscription $subscription = null, $triggerId = null)
+    public function __construct($campaign, Subscriber $subscriber, ?RouletteWheel $servers, Subscription $subscription = null, $triggerId = null)
     {
         $this->campaign = $campaign;
         $this->subscriber = $subscriber;
