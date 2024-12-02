@@ -882,7 +882,7 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        $subscriber->removeTag($request->tag);
+        $subscriber->removeTags([$request->tag]);
 
         return response()->json([
             'status' => 'success',
