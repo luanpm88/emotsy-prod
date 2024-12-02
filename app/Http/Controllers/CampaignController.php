@@ -2526,6 +2526,16 @@ class CampaignController extends Controller
             if (is_null($log)) {
                 throw new \Exception("Cannot find open log with message_id: ".$request->message_id);
             }
+        } elseif ($webhook->isClick()) {
+            $log = ClickLog::where('message_id', $request->message_id)->first();
+            if (is_null($log)) {
+                throw new \Exception("Cannot find click log with message_id: ".$request->message_id);
+            }
+        } elseif ($webhook->isUnsubscribe()) {
+            $log = UnsubscribeLog::where('message_id', $request->message_id)->first();
+            if (is_null($log)) {
+                throw new \Exception("Cannot find unsubscribe log with message_id: ".$request->message_id);
+            }
         }
 
         //$webhook->endpoint = 'http://adsfasdfasd.asfdasdf.vn';
