@@ -837,10 +837,11 @@ class MailListController extends Controller
         $job = $list->verificationJobs()->where('uid', $request->job_uid)->first();
 
         if (is_null($job)) {
-            throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
+            // throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
+        } else {
+            $job->cancel();
         }
 
-        $job->cancel();
         return response()->json();
     }
 
