@@ -2538,15 +2538,13 @@ class CampaignController extends Controller
             }
         }
 
-        //$webhook->endpoint = 'http://adsfasdfasd.asfdasdf.vn';
-
         // authorize
         if (\Gate::denies('read', $webhook->campaign)) {
             return $this->notAuthorized();
         }
 
         try {
-            $response = $webhook->execute($log);
+            $response = $webhook->execute($log); // make HTTP request
 
             $result = [
                 'code' => $response->status(),
