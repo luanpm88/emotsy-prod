@@ -100,7 +100,7 @@ function getAppHost()
 function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false, $deleteTargetKeys = true, $sort = false)
 {
     $source = include $sourceFile;
-    $target = include $targetFile;
+    $target = include $targetFile; // to be written to
 
     if ($overwriteTargetPhrases) {
         // Overwrite $target
@@ -440,15 +440,16 @@ function with_rate_limits(array $rateTrackers, $rateTrackersPool, $rateExceeding
             $rateCounted[] = $t;
         }
 
-        // pool
+        // Return null here is acceptable if $rateTrackersPool is not passed
+        if (is_null($rateTrackersPool)) {
+            return;
+        }
+
+        // However, if the $rateTrackersPool is available but no sending server selected ==> throw
+        $selectedServer = null;
         $notes = "All {$rateTrackersPool->count()} server(s) exceeded limits";
         $lastCheckMsg = null;
         do {
-            if (is_null($rateTrackersPool)) {
-                // OK, no server rate limits
-                break;
-            }
-
             $selectedServer = $rateTrackersPool->select($removeFromList = true);
 
             if (is_null($selectedServer)) {
