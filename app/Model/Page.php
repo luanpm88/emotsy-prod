@@ -28,7 +28,6 @@ use Acelle\Library\Traits\HasUid;
 class Page extends Model
 {
     use HasUid;
-    protected $connection = 'mysql';
 
     /**
      * The attributes that are mass assignable.
@@ -51,7 +50,8 @@ class Page extends Model
 
     public function layout()
     {
-        return $this->belongsTo('Acelle\Model\Layout');
+        throw new \Exception('Cross-db reference: page -> layout');
+        // return $this->belongsTo('Acelle\Model\Layout');
     }
 
     /**
@@ -205,9 +205,15 @@ class Page extends Model
      */
     public function log($name, $customer, $add_datas = [])
     {
+        $layout = Layout::find($this->layout_id);
+
+        if (is_null($layout)) {
+            throw new \Exception('Cannot find layout with id: '.$this->layout_id);
+        }
+
         $data = [
             'id' => $this->id,
-            'alias' => $this->layout->alias,
+            'alias' => $layout->alias,
             'list_id' => $this->mail_list_id,
             'list_name' => $this->mailList->name,
         ];
@@ -227,7 +233,13 @@ class Page extends Model
      */
     public function canHasOutsideUrl()
     {
-        return in_array($this->layout->alias, array(
+        $layout = Layout::find($this->layout_id);
+
+        if (is_null($layout)) {
+            throw new \Exception('Cannot find layout with id: '.$this->layout_id);
+        }
+
+        return in_array($layout->alias, array(
             'sign_up_thankyou_page',
             'sign_up_confirmation_thankyou',
             'unsubscribe_success_page',
