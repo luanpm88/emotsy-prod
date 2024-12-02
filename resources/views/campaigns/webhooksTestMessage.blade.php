@@ -1,13 +1,13 @@
-@if ($result['status'] == 'error')
+@if (isset($result['error']))
     <div class="alert alert-danger">
-        {{ $result['message'] }}
+        {{ $result['error'] }}
     </div>
-@elseif ($result['status'] == 'sent')
+@else
     @php
-        $status = $result['code'] < 200 ? 'info' : ($result['code'] < 300 ? 'success' : ($result['code'] < 400 ? 'info' : ($result['code'] < 600 ? 'danger' : '')));
+        $status = $result['code'] == 200 ? 'info' : 'danger';
     @endphp
     <div class="mb-4">
         <span class="badge rounded badge-lg py-1 badge-{{ $status }}">{{ $result['code'] }}</span>
-        <span class=""><code class="text-primary">{{ $result['message'] }}</code></span>
+        <span class="" style="display:none"><code class="text-primary">{{ $result['responseBody'] }}</code></span>
     </div>
 @endif

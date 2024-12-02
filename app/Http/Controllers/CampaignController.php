@@ -2517,42 +2517,34 @@ class CampaignController extends Controller
         ]);
     }
 
-    public function webhooksTestMessage(Request $request, $webhook_uid, $message_id)
+    public function webhooksTestMessage(Request $request)
     {
         $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
-        $result = null;
+
+        if ($webhook->isOpen()) {
+            $log = OpenLog::where('message_id', $request->message_id)->first();
+            if (is_null($log)) {
+                throw new \Exception("Cannot find open log with message_id: ".$request->message_id);
+            }
+        }
+
+        //$webhook->endpoint = 'http://adsfasdfasd.asfdasdf.vn';
 
         // authorize
         if (\Gate::denies('read', $webhook->campaign)) {
             return $this->notAuthorized();
         }
 
-        $client = new \GuzzleHttp\Client();
-
         try {
-            $response = $client->request('GET', $webhook->endpoint, [
-                'headers' => [
-                    "content-type" => "application/json"
-                ],
-                'body' => '{hello: "world"}',
-                'http_errors' => false,
-            ]);
+            $response = $webhook->execute($log);
 
             $result = [
-                'status' => 'sent',
-                'code' => $response->getStatusCode(),
-                'message' => $response->getReasonPhrase(),
-                'message_id' => $message_id,
-                'endpoint' => $webhook->endpoint,
-                'responseBody' => $response->getBody(),
+                'code' => $response->status(),
+                'responseBody' => $response->body(),
             ];
         } catch (\Exception $e) {
             $result = [
-                'status' => 'error',
-                'message' => $e->getMessage(),
-                'message_id' => $message_id,
-                'endpoint' => $webhook->endpoint,
-                'responseBody' => $response->getBody(),
+                'error' => "HTTP request error: ".$e->getMessage(),
             ];
         }
 
