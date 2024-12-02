@@ -18,9 +18,22 @@ class UpdateAutoTriggersSetSubscriberIdNullable extends Migration
             $table->integer('subscriber_id')->unsigned()->nullable()->change();
         });
 
-        Schema::table('auto_triggers', function (Blueprint $table) {
-            $table->dropForeign(['subscriber_id']);
-        });
+        try {
+            Schema::table('auto_triggers', function (Blueprint $table) {
+                $table->dropForeign(['subscriber_id']);
+            });
+        } catch (\Exception $ex) {
+            //
+        }
+
+        try {
+            Schema::table('auto_triggers', function (Blueprint $table) {
+                $table->dropForeign('auto_triggers_subscriber_id_foreign');
+            });
+        } catch (\Exception $ex) {
+            //
+        }
+
 
         Schema::table('auto_triggers', function (Blueprint $table) {
             $table->foreign('subscriber_id')->references('id')->on('subscribers')->onDelete('SET NULL');

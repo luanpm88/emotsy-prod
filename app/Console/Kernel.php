@@ -62,11 +62,8 @@ class Kernel extends ConsoleKernel
             event(new \Acelle\Events\CronJobExecuted());
         })->name('cronjob_event:log')->everyMinute();
 
-        // Automation2
-        $schedule->call(function () {
-            // Make sure connection is properly set in this method
-            Automation2::run();
-        })->name('automation:run')->everyFiveMinutes();
+        // Echo okie
+        $schedule->command('automation:dispatch')->everyMinute();
 
         // Bounce/feedback handler
         $schedule->command('handler:run')->everyThirtyMinutes();
@@ -90,9 +87,7 @@ class Kernel extends ConsoleKernel
         })->name('subscription:monitor')->everyFiveMinutes();
 
         // Check for scheduled campaign to execute
-        $schedule->call(function () {
-            Campaign::checkAndExecuteScheduledCampaigns();
-        })->name('check_and_execute_scheduled_campaigns')->everyMinute();
+        $schedule->command('campaign:schedule')->everyMinute();
 
         $licenseTask = $schedule->call(function () {
             Notification::recordIfFails(
@@ -116,10 +111,8 @@ class Kernel extends ConsoleKernel
             $licenseTask->weeklyOn(rand(1, 6), '10:'.rand(10, 59)); // randomly from Mon to Sat, at 10:10 - 10:59
         }
 
-        // Auto (force) resume pending campaigns (those are in "sending" status but not actually running)
-        $schedule->call(function () {
-            Campaign::checkAndForceRerunCampaigns();
-        })->name('campaign:force-rerun-pending-campaigns')->everyTenMinutes();
+        // Rerun "sending" campaigns that are stuck for too long
+        $schedule->command('campaign:rerun')->everyTenMinutes();
 
         /*
         // Update list/user cache every 30 minutes

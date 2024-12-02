@@ -464,7 +464,10 @@ class SubscriberController extends Controller
         $job = JobMonitor::findByUid($request->job_uid);
 
         try {
-            $job->cancel();
+            if ($job) {
+                $job->cancel();
+            }
+
             return response()->json(['status' => 'done']);
         } catch (\Exception $ex) {
             $job->delete(); // delete anyway if already done or failed, to make it simple to user
@@ -884,7 +887,7 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        $subscriber->removeTag($request->tag);
+        $subscriber->removeTags([$request->tag]);
 
         return response()->json([
             'status' => 'success',

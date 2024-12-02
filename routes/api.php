@@ -79,6 +79,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => ['auth:api
 
     // User
     Route::match(['get','post'], 'login-token', 'UserController@loginToken');
+    Route::post('notification/bounce', 'NotificationController@bounce');
+    Route::post('notification/feedback', 'NotificationController@feedback');
 });
 
 Route::group(['namespace' => 'Api\Public', 'prefix' => 'v1'], function () {

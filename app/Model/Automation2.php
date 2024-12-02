@@ -730,11 +730,17 @@ class Automation2 extends Model
             $trigger->check();
         }*/
 
-        foreach ($this->pendingAutoTriggers as $trigger) {
-            $trigger->check();
-        }
+        $pageCount = 0;
+        paginate_query($this->pendingAutoTriggers(), $perPage = 100, $orderBy = 'auto_triggers.id', function ($pageNumber, $autoTriggers) use (&$pageCount) {
+            $pageCount += 1;
 
-        $this->logger()->info(sprintf('UPDATE > Finish checking for trigger update'));
+            $this->logger()->info(sprintf("Checking page {$pageCount}"));
+            foreach ($autoTriggers as $trigger) {
+                $trigger->check();
+            }
+        });
+
+        $this->logger()->info(sprintf('Finish checking for trigger update'));
     }
 
     /**
@@ -765,10 +771,6 @@ class Automation2 extends Model
         $trigger = $this->getTriggerAction();
         $now = $this->customer->getCurrentTime();
         $eventDate = Carbon::parse(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')))->timezone($this->customer->timezone);
-
-        echo $now->toString()."\n";
-        echo $eventDate->toString();
-
 
         // Condition same date but after the specified time
         // So, two conditions are required:
@@ -1034,7 +1036,7 @@ class Automation2 extends Model
         if ($segments->isEmpty()) {
             $query = $this->mailList->subscribers()->select('subscribers.*');
         } else {
-            $query = Subscriber::getByListsAndSegments(...$segments);
+            $query = Subscriber::getByListsAndSegments($this->customer->getDbConnection(), ...$segments);
         }
 
         if (!is_null($actionId)) {
@@ -1257,12 +1259,17 @@ class Automation2 extends Model
     public function forceTriggerAll($session)
     {
         // Triggers active contacts
-        $subscribers = $this->subscribersToSend()->get();
-        $this->logger()->info(sprintf('Triggering %s contacts', sizeof($subscribers)));
-        foreach ($subscribers as $subscriber) {
-            $this->initTrigger($subscriber, $force = false, $session);
-        }
-        $this->logger()->info(sprintf('Finish Triggering %s contacts', sizeof($subscribers)));
+        $pageCount = 0;
+        paginate_query($this->subscribersToSend(), $perPage = 1000, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$pageCount) {
+            $pageCount += 1;
+
+            $subscribersCount = $subscribers->count();
+            $this->logger()->info(sprintf('Force triggering page %s with %s contacts', $pageNumber, $subscribersCount));
+            foreach ($subscribers as $subscriber) {
+                $this->initTrigger($subscriber, $force = false, $session);
+            }
+            $this->logger()->info(sprintf('Finish Triggering %s contacts', $subscribersCount));
+        });
     }
 
     public function notTriggeredSubscribers()

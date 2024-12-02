@@ -13,8 +13,23 @@ class DropContactIdFromMailListsTable extends Migration
      */
     public function up()
     {
+        try {
+            Schema::table('mail_lists', function (Blueprint $table) {
+                $table->dropForeign(['contact_id']);
+            });
+        } catch (\Exception $ex) {
+            //
+        }
+
+        try {
+            Schema::table('mail_lists', function (Blueprint $table) {
+                $table->dropForeign('mail_lists_contact_id_foreign');
+            });
+        } catch (\Exception $ex) {
+            //
+        }
+
         Schema::table('mail_lists', function (Blueprint $table) {
-            $table->dropForeign(['contact_id']);
             $table->dropColumn('contact_id');
         });
     }

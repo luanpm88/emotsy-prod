@@ -27,6 +27,7 @@ use Acelle\Model\MailList;
 use Acelle\Model\Setting;
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUnsubscription;
+use Acelle\Events\SubscriberTagsRemoved;
 use Acelle\Library\StringHelper;
 use DB;
 use Exception;
@@ -467,18 +468,6 @@ class Subscriber extends Model
     public static $itemsPerPage = 25;
 
     /**
-     * Get secure code for updating subscriber.
-     *
-     * @param string $action
-     */
-    public function getSecurityToken($action)
-    {
-        $string = $this->email.$action.config('app.key');
-
-        return md5($string);
-    }
-
-    /**
      * Create customer action log.
      *
      * @param string   $cat
@@ -859,16 +848,6 @@ class Subscriber extends Model
         SubscribersTagsUpdate::dispatch($this);
     }
 
-    public function removeTags($arr)
-    {
-        $tags = $this->getTags();
-
-        $nTags = array_values(array_unique(array_diff($tags, $arr)));
-
-        $this->tags = json_encode($nTags);
-        $this->save();
-    }
-
     /**
      * Add tags.
      */
@@ -910,21 +889,26 @@ class Subscriber extends Model
     /**
      * Remove tag.
      */
-    public function removeTag($tag)
+    public function removeTags(array $tagsToRemove = [])
     {
-        $tags = $this->getTags();
+        $oldTags = $this->getTags();
+        $tags = $oldTags;
 
-        if (($key = array_search($tag, $tags)) !== false) {
-            unset($tags[$key]);
+        $removedTags = [];
+        foreach ( $tagsToRemove as $tag ) {
+            if (($key = array_search($tag, $tags)) !== false) {
+                unset($tags[$key]);
+                $this->tags = json_encode($tags);
+                $removedTags[] = $tag;
+            }
         }
 
-        $before = $this->getCustomAttributes();
-
-        $this->tags = json_encode($tags);
-        $this->save();
-
-        $changes = $this->findDifferentCustomAttributes($before);
-        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
+        if (!empty($removedTags)) {
+            $this->save();
+            SubscriberTagsRemoved::dispatch($this, $removedTags);
+        } else {
+            // nothing change
+        }
     }
 
     /**
@@ -1173,7 +1157,7 @@ class Subscriber extends Model
 
     public function generateUpdateProfileUrl()
     {
-        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'id' => $this->id, 'code' => $this->getSecurityToken('update-profile')]);
+        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'id' => $this->id, 'customer_uid' => $this->mailList->customer->uid]);
     }
 
     // Change status to SUBSCRIBED
@@ -1260,14 +1244,14 @@ class Subscriber extends Model
         ];
     }
 
-    public static function getByListsAndSegments(...$segmentsOrLists)
+    public static function getByListsAndSegments($connection, ...$segmentsOrLists)
     {
         if (empty($segmentsOrLists)) {
             // this is a trick for returning an empty builder
-            return static::limit(0);
+            return static::on($connection)->limit(0);
         }
 
-        $query = static::select('subscribers.*');
+        $query = static::on($connection)->select('subscribers.*');
 
         // Get subscriber from mailist and segment
         $conditions = [];

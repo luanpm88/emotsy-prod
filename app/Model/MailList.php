@@ -74,7 +74,7 @@ class MailList extends Model
      *
      */
     protected $fillable = [
-        'name', 'from_email', 'from_name',
+        'is_email', 'name', 'from_email', 'from_name',
         'remind_message', 'send_to', 'email_daily', 'email_subscribe',
         'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification',
         'subscribe_confirmation', 'all_sending_servers',
@@ -315,12 +315,14 @@ class MailList extends Model
                 'type' => 'text',
                 'label' => trans('messages.first_name'),
                 'tag' => 'FIRST_NAME',
+                'is_email' => false,
                 'required' => false,
                 'visible' => true,
             ], [
                 'type' => 'text',
                 'label' => trans('messages.last_name'),
                 'tag' => 'LAST_NAME',
+                'is_email' => false,
                 'required' => false,
                 'visible' => true,
             ]
@@ -329,11 +331,12 @@ class MailList extends Model
         foreach($defaultFields as $attributes) {
             $this->createField(
                 $attributes['type'],
-                $attributes['label'],
                 $attributes['tag'],
+                $attributes['label'],
+                $defaultValue = null,
                 $required = $attributes['required'],
                 $visible = $attributes['visible'],
-                $defaultValue = null,
+                $attributes['is_email'],
             );
         }
     }
@@ -2297,7 +2300,7 @@ class MailList extends Model
         return $list;
     }
 
-    public function createField($type, $tag, $label, $default_value, $required, $visible)
+    public function createField($type, $tag, $label, $default_value, $required, $visible, $isEmail = false)
     {
         $exist = \Acelle\Model\Field::where('mail_list_id', '=', $this->id)
             ->where('tag', '=', $tag)
@@ -2319,6 +2322,7 @@ class MailList extends Model
         $field->required = $required;
         $field->visible = $visible;
         $field->custom_field_name = $this->getAvailableField();
+        $field->is_email = $isEmail;
         $field->save();
 
         Subscriber::addCustomFieldIfNotExist($field->custom_field_name);
