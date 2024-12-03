@@ -113,16 +113,34 @@ class UserController extends Controller
                     $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
                     $success = $hcaptcha->check($request);
                     if (!$success) {
-                        $rules['captcha_invalid'] = 'required';
+                        // validation
+                        $validator = \Validator::make([], [
+                            'captcha_invalid' => 'required',
+                        ]);
+
+                        return view('users.register', [
+                            'customer' => $customer,
+                            'user' => $user,
+                            'errors' => $validator->errors(),
+                        ]);
                     }
                 } else {
                     $success = \Acelle\Library\Tool::checkReCaptcha($request);
                     if (!$success) {
-                        $rules['recaptcha_invalid'] = 'required';
+                        // validation
+                        $validator = \Validator::make([], [
+                            'recaptcha_invalid' => 'required',
+                        ]);
+
+                        return view('users.register', [
+                            'customer' => $customer,
+                            'user' => $user,
+                            'errors' => $validator->errors(),
+                        ]);
                     }
                 }
             }
-
+            
             // validation
             list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
                 $admin = null,
