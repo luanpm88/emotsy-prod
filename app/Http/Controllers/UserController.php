@@ -104,6 +104,7 @@ class UserController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
+            // Just for refilling the form (UI)
             $user->fill($request->all());
             $customer->fill($request->all());
 
