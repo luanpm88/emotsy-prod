@@ -105,6 +105,7 @@ class UserController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $user->fill($request->all());
+            $customer->fill($request->all());
 
             // Captcha check
             if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
