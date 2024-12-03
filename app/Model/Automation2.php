@@ -1261,7 +1261,7 @@ class Automation2 extends Model
     {
         // Triggers active contacts
         $pageCount = 0;
-        paginate_query($this->subscribersToSend(), $perPage = 1000, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$pageCount) {
+        paginate_query($this->subscribersToSend(), $perPage = 1000, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$pageCount, $session) {
             $pageCount += 1;
 
             $subscribersCount = $subscribers->count();
