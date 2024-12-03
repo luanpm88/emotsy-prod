@@ -10,7 +10,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Cache\Repository;
-
 use Acelle\Model\Customer;
 
 class DispatchAutomationJobs implements ShouldQueue
@@ -22,9 +21,9 @@ class DispatchAutomationJobs implements ShouldQueue
 
     public function handle()
     {
-        with_cache_lock('lock_run_all_automations', function() {
+        with_cache_lock('lock_run_all_automations', function () {
             $this->run();
-        }, $getLockTimeout = 5, $lockExpiresAfter = 120, $timeoutCallback = function() {
+        }, $getLockTimeout = 5, $lockExpiresAfter = 120, $timeoutCallback = function () {
             // do nothing, do not throw exception
         });
     }

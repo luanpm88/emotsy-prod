@@ -1330,7 +1330,7 @@ function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, 
                 $out = $task();
                 $lock->release();
                 return $out;
-            } catch(\Exception $ex) {
+            } catch (\Exception $ex) {
                 $lock->release();
                 throw $ex;
 

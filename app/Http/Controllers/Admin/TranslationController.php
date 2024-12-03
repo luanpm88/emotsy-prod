@@ -17,7 +17,7 @@ class TranslationController extends Controller
     public function phrasesSave(Request $request)
     {
         // done | auto save | done & write tạm thời call chung cái này
-        foreach($request->phrases as $key => $ja) {
+        foreach ($request->phrases as $key => $ja) {
             $phrase = TranslationPhrase::findByKey($key);
             $phrase->ja = $ja;
             $phrase->save();

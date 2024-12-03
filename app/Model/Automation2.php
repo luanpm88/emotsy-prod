@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-
 use DB;
 use Acelle\Library\Automation\Action;
 use Acelle\Library\Automation\Trigger;

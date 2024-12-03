@@ -113,7 +113,7 @@ class MailListFieldMapping
         }, $this->getCustomFields());
 
         // Also create columsn for preserved fields like 'tags'
-        foreach($this->preservedFields as $fieldName) {
+        foreach ($this->preservedFields as $fieldName) {
             $tmpFields[] = "`{$fieldName}` MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
         }
 

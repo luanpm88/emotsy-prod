@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use Validator;
 use Acelle\Http\Requests;
 use Acelle\Model\Automation2;
@@ -1324,7 +1323,7 @@ class Automation2Controller extends Controller
     public function enable(Request $request)
     {
         // Japan + not license
-        if(config('custom.japan') && !\Acelle\Helpers\LicenseHelper::hasActiveLicense()) {
+        if (config('custom.japan') && !\Acelle\Helpers\LicenseHelper::hasActiveLicense()) {
             return response()->json([
                 'status' => 'error',
                 'message' => trans('messages.license.required'),

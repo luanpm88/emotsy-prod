@@ -245,7 +245,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
         try {
             curl_download($response['file_path'], $tmpResultFile);
-        } catch(Exception $ex) {
+        } catch (Exception $ex) {
             throw new Exception('Cannot download result from MyEmailVerifier: '.$ex->getMessage());
         }
 

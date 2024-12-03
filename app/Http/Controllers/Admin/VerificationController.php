@@ -4,7 +4,6 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Acelle\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use SMTPValidateEmail\Validator as SmtpEmailValidator;
 
 class VerificationController extends Controller
@@ -24,9 +23,9 @@ class VerificationController extends Controller
 
             // Get MX records to print out
             $mxs = '';
-            foreach($results['domains'] as $key => $info) {
+            foreach ($results['domains'] as $key => $info) {
                 $mxs .= "<br><strong>{$key}</strong><br>";
-                foreach($info['mxs'] as $name => $num) {
+                foreach ($info['mxs'] as $name => $num) {
                     $mxs .= "+ {$name} - {$num}<br>";
                 }
             }

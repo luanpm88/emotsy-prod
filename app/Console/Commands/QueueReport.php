@@ -3,7 +3,7 @@
 namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
-use  Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Redis;
 use Acelle\Model\Customer;
 
 class QueueReport extends Command

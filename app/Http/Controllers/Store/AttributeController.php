@@ -202,7 +202,7 @@ class AttributeController extends Controller
                             'status' => 'Active',
                         ]);
                     $mesenger   =   " Active sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }
@@ -212,7 +212,7 @@ class AttributeController extends Controller
                 try {
                     Attribute::destroy($request->ids);
                     $mesenger   =   " Delete sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }

@@ -670,7 +670,7 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // Japan + not license
-            if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+            if (config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.license.required'),
@@ -1574,7 +1574,7 @@ class CampaignController extends Controller
         $campaigns = Campaign::whereIn('uid', $request->uids)->get();
 
         // Japan + not license
-        if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+        if (config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
             return response()->json([
                 'status' => 'error',
                 'message' => trans('messages.license.required'),
@@ -1788,7 +1788,7 @@ class CampaignController extends Controller
 
         if ($request->isMethod('post')) {
             // Japan + not license
-            if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+            if (config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.license.required'),
@@ -2051,7 +2051,7 @@ class CampaignController extends Controller
         // do resend with option: $request->option : not_receive|not_open|not_click
         if ($request->isMethod('post')) {
             // Japan + not license
-            if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+            if (config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.license.required'),

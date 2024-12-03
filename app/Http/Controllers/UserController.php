@@ -126,7 +126,7 @@ class UserController extends Controller
                             'errors' => $validator->errors(),
                         ]);
                     }
-                // @reCaptcha: default
+                    // @reCaptcha: default
                 } else {
                     $success = \Acelle\Library\Tool::checkReCaptcha($request);
                     if (!$success) {
@@ -143,7 +143,7 @@ class UserController extends Controller
                     }
                 }
             }
-            
+
             // validation
             list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
                 $admin = null,

@@ -102,7 +102,7 @@ class BounceLog extends Model
         $bounceLog->runtime_message_id = $runtimeMessageId;
 
         if (is_null($logCallback)) {
-            $logCallback = function($message) {
+            $logCallback = function ($message) {
                 // do nothing
             };
         }

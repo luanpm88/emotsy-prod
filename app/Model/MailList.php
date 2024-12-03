@@ -328,7 +328,7 @@ class MailList extends Model
             ]
         ];
 
-        foreach($defaultFields as $attributes) {
+        foreach ($defaultFields as $attributes) {
             $this->createField(
                 $attributes['type'],
                 $attributes['tag'],
@@ -795,7 +795,7 @@ class MailList extends Model
         cursorIterate($query, $orderBy = 'subscribers.id', $pageSize, function ($subscribers, $page) use ($writer, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
             $records = collect($subscribers)->map(function ($subscriber) {
                 $attributes = [];
-                foreach($this->fields as $field) {
+                foreach ($this->fields as $field) {
                     $attributes[$field->label] = $subscriber->getValueByField($field);
                 }
 

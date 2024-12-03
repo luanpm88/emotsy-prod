@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 use Acelle\Model\SendingServer;
 use Acelle\Library\Facades\Hook;
 use Acelle\Model\SendingDomain;
-
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Library\StringHelper;
 

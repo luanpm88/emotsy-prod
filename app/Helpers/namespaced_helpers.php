@@ -466,11 +466,11 @@ function with_rate_limits(array $rateTrackers, $rateTrackersPool, $rateExceeding
                 }
 
                 $passed = true;
-            } catch(\Acelle\Library\Exception\RateLimitExceeded $rateException) {
+            } catch (\Acelle\Library\Exception\RateLimitExceeded $rateException) {
                 $notes = $notes." | EXCEEDED ".$serverRateLimitTracker->getLimitsDescription();
                 $passed = false;
             }
-        } while(false == $passed);
+        } while (false == $passed);
 
         // MUST return
         return $selectedServer;

@@ -11,7 +11,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Cache\Repository;
-
 use Acelle\Model\Automation2;
 
 class RunAutomation implements ShouldQueue, ShouldBeUnique
@@ -44,9 +43,9 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
     {
         $this->customer->setUserDbConnection();
 
-        with_cache_lock("run_automation_{$this->automation->uid}", function() {
+        with_cache_lock("run_automation_{$this->automation->uid}", function () {
             $this->automation->check();
-        }, $getLockTimeout = 2, $lockTime = 1200, $waitTimeoutCallback = function() {
+        }, $getLockTimeout = 2, $lockTime = 1200, $waitTimeoutCallback = function () {
             $this->automation->logger()->info('Cannot get lock, silently quit');
         });
     }
