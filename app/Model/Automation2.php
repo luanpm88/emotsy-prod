@@ -735,7 +735,8 @@ class Automation2 extends Model
             $pageCount += 1;
 
             $this->logger()->info(sprintf("Checking page {$pageCount}"));
-            foreach ($autoTriggers as $trigger) {
+            foreach ($autoTriggers->get() as $trigger) {
+                $this->logger()->info("Checking trigger ID #{$trigger->id}");
                 $trigger->check();
             }
         });
@@ -1265,7 +1266,7 @@ class Automation2 extends Model
 
             $subscribersCount = $subscribers->count();
             $this->logger()->info(sprintf('Force triggering page %s with %s contacts', $pageNumber, $subscribersCount));
-            foreach ($subscribers as $subscriber) {
+            foreach ($subscribers->get() as $subscriber) {
                 $this->initTrigger($subscriber, $force = false, $session);
             }
             $this->logger()->info(sprintf('Finish Triggering %s contacts', $subscribersCount));
