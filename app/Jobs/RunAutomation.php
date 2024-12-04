@@ -53,8 +53,9 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
         $this->customer->setUserDbConnection();
 
         with_cache_lock("run_automation_{$this->automation->uid}", function () {
+            $this->automation->logger()->info("Got RunAutomation lock ".getmypid());
             $this->automation->check();
-        }, $getLockTimeout = 2, $lockTime = 36000, $waitTimeoutCallback = function () {
+        }, $getLockTimeout = 2, $lockTime = 7200, $waitTimeoutCallback = function () {
             $this->automation->logger()->info('Cannot get lock, silently quit');
         });
     }
