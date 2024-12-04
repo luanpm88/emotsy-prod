@@ -730,7 +730,7 @@ class Automation2 extends Model
         }*/
 
         $pageCount = 0;
-        paginate_query($this->pendingAutoTriggers(), $perPage = 100, $orderBy = 'auto_triggers.id', function ($pageNumber, $autoTriggers) use (&$pageCount) {
+        paginate_query($this->pendingAutoTriggers(), $perPage = 1000, $orderBy = 'auto_triggers.id', function ($pageNumber, $autoTriggers) use (&$pageCount) {
             $pageCount += 1;
 
             $this->logger()->info(sprintf("Checking page {$pageCount}"));
