@@ -23,6 +23,16 @@ class DispatchAutomationJobs implements ShouldQueue
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
 
+    /**
+     * Determine the time at which the job should timeout.
+     *
+     * @return \DateTime
+     */
+    public function retryUntil()
+    {
+        return now()->addDays(7);
+    }
+
     public function handle()
     {
         with_cache_lock('lock_run_all_automations', function () {
