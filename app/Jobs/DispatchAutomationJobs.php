@@ -44,6 +44,7 @@ class DispatchAutomationJobs implements ShouldQueue
 
     private function run()
     {
+        applog('automation-dispatch')->info('Start dispatching automation jobs');
         $customers = Customer::all();
         foreach ($customers as $customer) {
             if (config('app.saas') && is_null($customer->getCurrentActiveGeneralSubscription())) {
@@ -58,7 +59,9 @@ class DispatchAutomationJobs implements ShouldQueue
 
                 $msg = sprintf('Dispatch automation "%s", Job #%s', $automation->name, $jobId);
                 $automation->logger()->info($msg);
+                applog('automation-dispatch')->info('- '.$msg);
             }
         }
+        applog('automation-dispatch')->info('Finish!');
     }
 }
