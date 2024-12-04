@@ -20,8 +20,17 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
     use Queueable;
     use SerializesModels;
 
+    public $timeout = 28800;
+    public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
+    public $failOnTimeout = true;
+
     protected $automation;
     protected $customer;
+
+    public function retryUntil()
+    {
+        return now()->addDays(7);
+    }
 
     /**
      * Create a new job instance.
