@@ -36,9 +36,10 @@ class DispatchAutomationJobs implements ShouldQueue
     public function handle()
     {
         with_cache_lock('lock_run_all_automations', function () {
+            applog('automation-dispatch')->info('Got lock, running...');
             $this->run();
-        }, $getLockTimeout = 5, $lockExpiresAfter = 120, $timeoutCallback = function () {
-            echo "Safely quit";
+        }, $getLockTimeout = 5, $lockExpiresAfter = 1200, $timeoutCallback = function () {
+            applog('automation-dispatch')->info('Abort: cannot get lock after 5 seconds');
         });
     }
 
