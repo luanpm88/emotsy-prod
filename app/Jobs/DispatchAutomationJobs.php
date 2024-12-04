@@ -32,17 +32,16 @@ class DispatchAutomationJobs implements ShouldQueue
     {
         $customers = Customer::all();
         foreach ($customers as $customer) {
+            if (config('app.saas') || is_null($activeSubscription)) {
+                continue;
+            }
 
             $automations = $customer->local()->activeAutomation2s;
 
             foreach ($automations as $automation) {
-                if (!config('app.saas') || $customer->getCurrentActiveGeneralSubscription()) {
-                    $job = new RunAutomation($automation);
-                    $jobId = safe_dispatch($job->onQueue(ACM_QUEUE_TYPE_HIGH));
-                    $automation->logger()->info(sprintf('Dispatch {$jobId} automation "%s"', $automation->name));
-                } else {
-                    $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
-                }
+                $job = new RunAutomation($automation);
+                $jobId = safe_dispatch($job->onQueue(ACM_QUEUE_TYPE_HIGH));
+                $automation->logger()->info(sprintf('Dispatch {$jobId} automation "%s"', $automation->name));
             }
         }
     }
