@@ -19,6 +19,10 @@ class DispatchAutomationJobs implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    public $timeout = 1200;
+    public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
+    public $failOnTimeout = true;
+
     public function handle()
     {
         with_cache_lock('lock_run_all_automations', function () {
