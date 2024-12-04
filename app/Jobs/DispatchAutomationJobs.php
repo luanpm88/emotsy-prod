@@ -24,7 +24,7 @@ class DispatchAutomationJobs implements ShouldQueue
         with_cache_lock('lock_run_all_automations', function () {
             $this->run();
         }, $getLockTimeout = 5, $lockExpiresAfter = 120, $timeoutCallback = function () {
-            // do nothing, do not throw exception
+            echo "Safely quit";
         });
     }
 
@@ -32,7 +32,7 @@ class DispatchAutomationJobs implements ShouldQueue
     {
         $customers = Customer::all();
         foreach ($customers as $customer) {
-            if (config('app.saas') || is_null($activeSubscription)) {
+            if (config('app.saas') && is_null($customer->getCurrentActiveGeneralSubscription())) {
                 continue;
             }
 
