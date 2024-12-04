@@ -1388,3 +1388,19 @@ function groupPermissionsByPrefix($permissions)
 
     return $grouped;
 }
+
+
+function applog($name)
+{
+    $formatter = new \Monolog\Formatter\LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+
+    $logfile = storage_path(join_paths('logs', php_sapi_name(), $name.'.log'));
+    $stream = new \Monolog\Handler\RotatingFileHandler($logfile, 0, config('custom.log_level'));
+    $stream->setFormatter($formatter);
+
+    $pid = getmypid();
+    $logger = new \Monolog\Logger($pid);
+    $logger->pushHandler($stream);
+
+    return $logger;
+}
