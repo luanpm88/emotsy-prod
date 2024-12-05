@@ -5,36 +5,49 @@ namespace Acelle\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\BounceLog;
+use Acelle\Model\FeedbackLog;
 use Response;
 use Auth;
+use Exception;
 
 class NotificationController extends Controller
 {
-    /**
-     * Display all notifications.
-     *
-     * GET /api/v1/plans
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-    {
-        $user = Auth::guard('api')->user();
-
-        return Response::json(['message' => 'Comming...'], 200);
-    }
-
-    public function store(Request $request)
+    public function bounce(Request $request)
     {
         $user = Auth::guard('api')->user();
         $params = $request->all();
 
-        list($log, $validator) = BounceLog::createFromRequest($request->all());
+        try {
+            $bounceLog = BounceLog::recordHardBounce(
+                $params['message_id'],
+                $params['description'] ?? 'N/A',
+                $logCallback = null,
+                $throwMsgNotFoundException = true
+            );
 
-        if ($validator->fails()) {
-            return Response::json($validator->errors(), 400);
-        } else {
-            return Response::json($log, 200);
+            return Response::json($bounceLog, 200);
+        } catch (Exception $ex) {
+            return Response::json(['error' => $ex->getMessage()], 400);
+        }
+    }
+
+    public function feedback(Request $request)
+    {
+        $user = Auth::guard('api')->user();
+        $params = $request->all();
+
+        try {
+            $feedbackLog = FeedbackLog::recordFeedback(
+                $params['message_id'] ?? null,
+                $params['type'] ?? null,
+                $params['description'] ?? 'N/A',
+                $logCallback = null,
+                $throwMsgNotFoundException = true
+            );
+
+            return Response::json($feedbackLog, 200);
+        } catch (Exception $ex) {
+            return Response::json(['error' => $ex->getMessage()], 400);
         }
     }
 }

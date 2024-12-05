@@ -5,13 +5,12 @@ namespace Acelle\Listeners;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Exception;
-
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUnsubscription;
 use Acelle\Events\SubscribersTagsUpdate;
 use Acelle\Events\SubscribersAttributesUpdate;
+use Acelle\Events\SubscriberTagsRemoved;
 use Acelle\Model\Field;
-
 use Acelle\Model\Automation2;
 
 class TriggerAutomation
@@ -119,6 +118,7 @@ class TriggerAutomation
 
     public function handleSubscribersAttributesUpdate(SubscribersAttributesUpdate $event)
     {
+
         $automations = $event->subscriber->mailList->automations;
         $automations = $automations->filter(function ($auto, $key) {
             return $auto->isActive() && (
@@ -160,8 +160,10 @@ class TriggerAutomation
                 $auto->logger()->info("Condition to trigger automation '{$auto->name}': field {$field->tag} = '{$requiredValue}', however, the new value of {$event->subscriber->email} it is actually {$field->tag} = '{$fieldNewValue}'");
             }
         }
+    }
 
-
+    public function handleSubscriberTagsRemoved(SubscriberTagsRemoved $event)
+    {
         // Now check for tag
         $automations = $event->subscriber->mailList->automations;
         $automations = $automations->filter(function ($auto, $key) {
@@ -172,35 +174,27 @@ class TriggerAutomation
 
         foreach ($automations as $auto) {
             $tagsToCheck = $auto->getTriggerAction()->getOption('tags');
-            $tagsChange = $event->changes['tags'] ?? [];
 
-            if (empty($tagsChange)) {
-                continue;
-            }
-
-            foreach ($tagsToCheck as $tag) {
-                $existsBefore = in_array($tag, $event->oldAttributes['tags']);
-                if ($existsBefore) {
-                    $auto->logger()->info("Tag '{$tag}' was once available for this contact {$event->subscriber->email}, checking if it is dropped or not...");
-                } else {
-                    $auto->logger()->info("Tag '{$tag}' never exists for this contact {$event->subscriber->email}");
+            foreach ($event->removedTags as $tag) {
+                if (!in_array($tag, $tagsToCheck)) {
+                    $auto->logger()->info("Tag '{$tag}' was removed, but it is not monitored by automation {$auto->name} (".implode(",", $tagsToCheck)."), checking next tag");
                     continue;
                 }
 
-                $isDroppedNow = in_array($tag, $event->subscriber->getTags());
-                if (!$isDroppedNow) {
-                    $existingTrigger = $auto->getAutoTriggerFor($event->subscriber);
-
-                    if (is_null($existingTrigger)) {
-                        $auto->logger()->info("Hey, tag '{$tag}' was recently dropped for this contact {$event->subscriber->email}, triggering");
-                        $trigger = $auto->initTrigger($event->subscriber);
-                        $trigger->check($manually = true);
-                    } else {
-                        $auto->logger()->info("Tag '{$tag}' was recently dropped for this contact {$event->subscriber->email}, but a trigger already exists");
-                    }
+                // Ok, at least one removed tag is monitored
+                $existingTrigger = $auto->getAutoTriggerFor($event->subscriber);
+                if (is_null($existingTrigger)) {
+                    $auto->logger()->info("Hey, tag '{$tag}' was recently dropped for this contact {$event->subscriber->email}, triggering");
+                    $trigger = $auto->initTrigger($event->subscriber);
+                    $trigger->check($manually = true);
                 } else {
-                    // echo "It is still there";
+                    $auto->logger()->info("Tag '{$tag}' was recently dropped for this contact {$event->subscriber->email}, but a trigger already exists");
                 }
+
+                $auto->logger()->info("OK, tags were removed (".implode(",", $event->removedTags).") automation was triggered");
+
+                // no need to check the remaining tags of the same automation
+                break;
             }
         }
     }
@@ -226,6 +220,11 @@ class TriggerAutomation
         $events->listen(
             SubscribersAttributesUpdate::class,
             [TriggerAutomation::class, 'handleSubscribersAttributesUpdate']
+        );
+
+        $events->listen(
+            SubscriberTagsRemoved::class,
+            [TriggerAutomation::class, 'handleSubscriberTagsRemoved']
         );
     }
 }

@@ -429,7 +429,7 @@ class PageController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($customerUid);
 
         if (is_null($customer)) {
-            throw new \Exception('Cannot find customer');
+            throw new \Exception("Cannot find customer: '{$customerUid}'");
         } else {
             $customer->setUserDbConnection();
         }

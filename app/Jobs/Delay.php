@@ -109,7 +109,7 @@ class Delay implements ShouldQueue
                 return $info;
             });
 
-            $this->campaign->logger()->warning(sprintf("Resume evaludation failed! Delay for another %s seconds! %s", $this->wait, $ex->getMessage()));
+            $this->campaign->logger()->warning(sprintf("TRY RESUMING BUT rate limits not released! Delay for another %s seconds! %s", $this->wait, $ex->getMessage()));
             $this->release($this->wait);
 
         } catch (Throwable $ex) {

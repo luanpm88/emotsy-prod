@@ -245,7 +245,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
         try {
             curl_download($response['file_path'], $tmpResultFile);
-        } catch(Exception $ex) {
+        } catch (Exception $ex) {
             throw new Exception('Cannot download result from MyEmailVerifier: '.$ex->getMessage());
         }
 
@@ -267,7 +267,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
                 throw new Exception('Unknown status code returned from MyEmailVerifier.com: '.$raw['Result']);
             }
 
-            $email = $raw[''];
+            $email = $raw['Email'];
             $verificationResult = $this->resultMap[$raw['Result']];
             $callback($email, $verificationResult, json_encode($raw));
         }

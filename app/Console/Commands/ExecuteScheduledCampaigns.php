@@ -48,7 +48,7 @@ class ExecuteScheduledCampaigns extends Command
         };
 
         $lock->getExclusiveLock(function ($f) {
-            $this->withScheduledCampaigns(function($customer, $campaigns) {
+            $this->withScheduledCampaigns(function ($customer, $campaigns) {
                 foreach ($campaigns as $campaign) {
                     // This is called in the console, so a default db connection must be set
                     $campaign->execute($force = false, ACM_QUEUE_TYPE_BATCH);

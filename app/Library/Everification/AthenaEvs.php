@@ -61,7 +61,7 @@ class AthenaEvs implements VerifyInterface, BulkVerifyInterface
             // fetch results
             $response = $this->getClient()->getBatchResult($batchId);
 
-            foreach($response['result'] as $emailRaw) {
+            foreach ($response['result'] as $emailRaw) {
                 $email = $emailRaw['email'];
                 $status = $emailRaw['status'];
                 $doneCallback($email, $status, json_encode($emailRaw));

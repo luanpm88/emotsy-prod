@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-
 use DB;
 use Acelle\Library\Automation\Action;
 use Acelle\Library\Automation\Trigger;
@@ -731,11 +730,18 @@ class Automation2 extends Model
             $trigger->check();
         }*/
 
-        foreach ($this->pendingAutoTriggers as $trigger) {
-            $trigger->check();
-        }
+        $pageCount = 0;
+        paginate_query($this->pendingAutoTriggers(), $perPage = 500, $orderBy = 'auto_triggers.id', function ($pageNumber, $autoTriggers) use (&$pageCount) {
+            $pageCount += 1;
 
-        $this->logger()->info(sprintf('UPDATE > Finish checking for trigger update'));
+            $this->logger()->info(sprintf("Checking page {$pageCount}"));
+            foreach ($autoTriggers->get() as $trigger) {
+                $this->logger()->info("Checking trigger ID #{$trigger->id}");
+                $trigger->check();
+            }
+        });
+
+        $this->logger()->info(sprintf('Finish checking for trigger update'));
     }
 
     /**
@@ -1264,12 +1270,17 @@ class Automation2 extends Model
     public function forceTriggerAll($session)
     {
         // Triggers active contacts
-        $subscribers = $this->subscribersToSend()->get();
-        $this->logger()->info(sprintf('Triggering %s contacts', sizeof($subscribers)));
-        foreach ($subscribers as $subscriber) {
-            $this->initTrigger($subscriber, $force = false, $session);
-        }
-        $this->logger()->info(sprintf('Finish Triggering %s contacts', sizeof($subscribers)));
+        $pageCount = 0;
+        paginate_query($this->subscribersToSend(), $perPage = 1000, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$pageCount, $session) {
+            $pageCount += 1;
+
+            $subscribersCount = $subscribers->count();
+            $this->logger()->info(sprintf('Force triggering page %s with %s contacts', $pageNumber, $subscribersCount));
+            foreach ($subscribers->get() as $subscriber) {
+                $this->initTrigger($subscriber, $force = false, $session);
+            }
+            $this->logger()->info(sprintf('Finish Triggering %s contacts', $subscribersCount));
+        });
     }
 
     public function notTriggeredSubscribers()

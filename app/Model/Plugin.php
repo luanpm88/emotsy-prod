@@ -611,7 +611,7 @@ class Plugin extends Model
             if ($status == self::STATUS_ACTIVE || self::STATUS_INACTIVE) {
                 try {
                     self::loadPluginByName($name);
-                } catch(\Throwable $t) {
+                } catch (\Throwable $t) {
                     // Important: this block cannot catch exception in plugin's service provider itself
                     // It is because the service is registered at this time with App::register(...)
                     // but shall be executed later on, not immediately

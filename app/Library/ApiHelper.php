@@ -800,110 +800,48 @@ class ApiHelper
 
         // NOTIFICATION
         $docs[] = [
-            'view' => 'backend',
-            'title' => trans('messages.api.notification'),
-            'functions' => [
-                [
-                    'method' => 'POST',
-                    'uri' => '/api/v1/notification',
-                    'description' => 'Send a delivery or abuse report to the application. It could be a success / bounce / feedback or abuse report',
-                    'parameters' => [
-                        ['name' => '$message_id', 'description' => 'Message\'s id'],
-                        ['name' => '$type', 'description' => 'One of 4 types: sent | bounced | reported | failed'],
-                        ['name' => '$bounce_type', 'description' => 'Required if type is bounced'],
-                        ['name' => '$report_type', 'description' => 'Required if type is reported'],
-                        ['name' => '$description', 'description' => 'Notification message'],
-                    ],
-                    'returns' => 'Action messages in json',
-                    'example' => [
-                        'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=sent',
-                        'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=bounced \
--d bounce_type=hard \
--d description=Email+address+does+not+exist',
-                        'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=abuse \
--d report_type=hard \
--d description=Email+address+does+not+exist',
-                        'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=spam \
--d report_type=hard \
--d description=Email+address+does+not+exist',
-                        'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=failed \
--d description=Email+address+does+not+exist',
-                    ],
-                ],
-            ],
-        ];
-
-        // NOTIFICATION
-        $docs[] = [
             'view' => 'frontend',
             'title' => trans('messages.api.notification'),
             'functions' => [
                 [
                     'method' => 'POST',
-                    'uri' => '/api/v1/notification',
-                    'description' => 'Send a delivery or abuse report to the application. It could be a success / bounce / feedback or abuse report',
+                    'uri' => '/api/v1/notification/bounce',
+                    'description' => 'Send a HARD bounce to the application. Notice that it is not needed to inform the application of SOFT bounces',
                     'parameters' => [
                         ['name' => '$message_id', 'description' => 'Message\'s id'],
-                        ['name' => '$type', 'description' => 'One of 4 types: sent | bounced | reported | failed'],
-                        ['name' => '$bounce_type', 'description' => 'Required if type is bounced'],
-                        ['name' => '$report_type', 'description' => 'Required if type is reported'],
                         ['name' => '$description', 'description' => 'Notification message'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => [
                         'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
+' .action("Api\NotificationController@bounce").' \
 -d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=sent',
-                        'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=bounced \
--d bounce_type=hard \
--d description=Email+address+does+not+exist',
-                        'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=abuse \
--d report_type=hard \
--d description=Email+address+does+not+exist',
-                        'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=spam \
--d report_type=hard \
--d description=Email+address+does+not+exist',
-                        'curl -X POST -H "accept:application/json" -G \
-' .action("Api\NotificationController@index").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d message_id=201637442604422402.6199642caf7f3@example.com  \
--d type=failed \
--d description=Email+address+does+not+exist',
+-d message_id=201637442604422402.6199642caf7f3@example.com',
                     ],
+                ],
+            ],
+        ];
+
+        $docs[] = [
+            'view' => 'frontend',
+            'title' => trans('messages.api.notification.feedback'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/notification/feedback',
+                    'description' => 'Send a bounce or abuse report to the application. It could be a success / bounce / feedback or abuse report',
+                    'parameters' => [
+                        ['name' => '$message_id', 'description' => 'Message\'s id'],
+                        ['name' => '$type', 'description' => 'Poassible values include: spam | abuse'],
+                        ['name' => '$description', 'description' => 'Notification message'],
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => [
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@feedback").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=abuse'],
                 ],
             ],
         ];

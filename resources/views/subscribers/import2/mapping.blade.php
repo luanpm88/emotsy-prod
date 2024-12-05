@@ -461,7 +461,7 @@
 
                 // hide close link
                 this.hideCloseLink();
-console.log('validate');
+
                 // run validate to mark error
                 this.manager.validate();
             }
@@ -784,8 +784,6 @@ console.log('validate');
                         });
                     }
                 );
-
-                    
             }
 
             getData() {
