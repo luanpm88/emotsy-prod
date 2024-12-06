@@ -286,7 +286,7 @@ class Segment extends Model
                         break;
                     case 'less':
                         if ($type == 'number') {
-                            $cond = sprintf('CAST(sf%s.value AS SIGNED) < CAST(%s AS SIGNED)', $number, db_quote($keyword));
+                            $cond = sprintf('CAST(sf%s.value AS SIGNED) < CAST(%s AS SIGNED)', $field, db_quote($keyword));
                         } else {
                             $cond = "{$field} < ".db_quote($keyword);
                         }
