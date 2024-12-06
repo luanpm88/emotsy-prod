@@ -72,6 +72,7 @@ class PageController extends Controller
             }
 
             // save
+            $page->customer_id = $list->customer->id;
             $page->save();
 
             // Log
