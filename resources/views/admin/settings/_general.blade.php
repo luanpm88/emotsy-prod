@@ -7,56 +7,96 @@
             </div>
         </div>
         <div class="row">
-            <?php $count = 0; ?>
-            @foreach ($settings as $name => $setting)
-                @if (isset($setting['cat']) && $setting['cat'] == 'general')
-                    <div class="col-md-6">
-
-                        @if (in_array($name, ['site_logo_light','site_logo_dark','site_favicon']))
-                            @include('admin.settings.general.' . $name)
-                        @else
-                            @if ($setting['type'] == 'checkbox')
-                                <div class="form-group">
-                                    <div class="d-flex" style="width:100%">
-                                        <div class="me-5">
-                                            <label class="text-semibold">
-                                                {{ trans('messages.' . $name) }}
-                                            </label>
-                                            <p class="checkbox-description mt-1 mb-0">
-                                                {{ trans('messages.setting.' . $name . '.help') }}
-                                            </p>
-                                        </div>
-                                            
-                                        <div class="d-flex align-items-top">
-                                            @include('helpers.switch', [
-                                                'name' => $name,
-                                                'option' => $setting['options'][1],
-                                                'unchecked_option' => (($setting['options'][0] == false) ? 0 : $setting['options'][0]),
-                                                'value' => $setting['value'],
-                                            ])
-                                        </div>
-                                    </div>
-                                </div>
-                            @else
-                                @include('helpers.form_control', [
-                                    'type' => $setting['type'],
-                                    'class' => (isset($setting['class']) ? $setting['class'] : "" ),
-                                    'name' => $name,
-                                    'value' => ($setting['type'] == 'image' ? (!empty($setting['value']) ? action('SettingController@file', $setting['value']) : '') : $setting['value']),
-                                    'label' => trans('messages.' . $name),
-                                    'help_class' => 'setting',
-                                    'options' => (isset($setting['options']) ? $setting['options'] : "" ),
-                                    'rules' => Acelle\Model\Setting::rules(),
-                                ])
-                            @endif
-                        @endif
-                    </div>
-                    @if ($count%2 == 1)
-        </div><div class="row">
-                    @endif
-                    <?php ++$count; ?>
-                @endif
-            @endforeach
+            <div class="col-md-6">
+                @include('admin.settings.general.site_name')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.site_keyword')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.site_logo_light')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.site_logo_dark')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.site_favicon')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.site_online')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.site_offline_message')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.site_description')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.default_language')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.frontend_scheme')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.backend_scheme')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.captcha_engine')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.login_recaptcha')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.embedded_form_recaptcha')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.list_sign_up_captcha')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.enable_user_registration')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.registration_recaptcha')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.custom_script')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.builder')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.invoice-current')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.invoice-format')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.2fa_enable')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.tracking_domain-enable_https')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.email-enable_one_click_unsubscribe_headers')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.campaign-duplicate')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.list-default-double_optin')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.email-default-skip_failed_message')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.notification-on_user_created')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.signature-enabled')
+            </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.blacklist-use_global_blacklist')
+            </div>
         </div>
         <div class="row">
             <div class="col-md-12"><p align="right"><a href="{{ action('Admin\SettingController@advanced') }}">{{ trans('messages.configuration.settings') }}</a></p></div>

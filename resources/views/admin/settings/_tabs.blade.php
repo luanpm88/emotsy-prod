@@ -9,11 +9,6 @@
 			<a class="nav-link {{ $action == "mailer" ? "active" : "" }}" href="{{ action('Admin\SettingController@mailer') }}">
 			<span class="material-symbols-rounded">email</span> {{ trans('messages.system_email') }}</a></li>
 	@endif
-	@if (Auth::user()->admin->getPermission("setting_sending") == 'yes' && false)
-		<li class="nav-item text-semibold">
-			<a class="nav-link {{ $action == "sending" ? "active" : "" }}" href="{{ action('Admin\SettingController@sending') }}">
-			<span class="material-symbols-rounded">forward_to_inbox</span> {{ trans('messages.sending') }}</a></li>
-	@endif
 	@if (Auth::user()->admin->getPermission("setting_system_urls") == 'yes')
 		<li class="nav-item text-semibold">
 			<a class="nav-link {{ $action == "urls" ? "active" : "" }}" href="{{ action('Admin\SettingController@urls') }}">

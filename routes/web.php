@@ -1149,8 +1149,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/settings/cronjob', 'SettingController@cronjob');
     Route::post('admin/settings/cronjob', 'SettingController@cronjob');
     Route::get('admin/settings/urls', 'SettingController@urls');
-    Route::get('admin/settings/sending', 'SettingController@sending');
-    Route::post('admin/settings/sending', 'SettingController@sending');
     Route::get('admin/settings/general', 'SettingController@general');
     Route::post('admin/settings/general', 'SettingController@general');
     Route::get('admin/settings/logs', 'SettingController@logs');
