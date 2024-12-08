@@ -59,7 +59,7 @@ return [
     ],
     'frontend_scheme' => [
         'value' => 'default',
-        'type' => 'select',
+        'type' => 'enum',
         'options' => [
             'default',
             'blue',
@@ -72,7 +72,7 @@ return [
     ],
     'backend_scheme' => [
         'value' => 'default',
-        'type' => 'select',
+        'type' => 'enum',
         'options' => [
             'default',
             'blue',
@@ -118,7 +118,7 @@ return [
     ],
     'builder' => [
         'value' => 'both',
-        'type' => 'select',
+        'type' => 'enum',
         'options' => [
             'both',
             'pro',
