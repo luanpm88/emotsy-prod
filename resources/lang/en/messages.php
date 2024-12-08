@@ -3811,5 +3811,5 @@
   'automation.outgoing_webhook.http_repsonse_code' => 'HTTP Response Code',
   'automation.outgoing_webhook.repsonse_body' => 'Response Body',
   'automation.outgoing_webhook.error' => 'Errors',
-  'setting.automation.outgoing_webhook.help' => 'Enable webhooks to trigger external services during email automation events.',
+  'setting.automation.outgoing_webhook.help' => 'Include an outgoing webhook as one of the available actions in the automation’s actions list, allowing seamless integration with external services.',
 ) ?>
