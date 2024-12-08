@@ -180,6 +180,9 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     // Email Verification
     Route::get('email-verification/checkout/{api_token}/redirect', 'EmailVerificationController@redirect');
+
+    // 
+    Route::get('popup/support/renew', 'PopupController@supportRenew');
 });
 
 // Without authentication
