@@ -154,38 +154,38 @@ class SubscriberController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Acelle\Model\Subscriber::where('id', '=', $id)
+        $subscriber = \Acelle\Model\Subscriber::where('id', '=', $id)
             ->first();
 
-        $list = $item->mailList;
+        $list = $subscriber->mailList;
 
         // check if item exists
-        if (!$item) {
+        if (!$subscriber) {
             return \Response::json(array('message' => 'Subscriber not found'), 404);
         }
 
         // authorize
-        if (!$user->can('read', $item)) {
+        if (!$user->can('read', $subscriber)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
-        // subscriber
-        $subscriber = [
-            'uid' => $item->uid,
-            'email' => $item->email,
-            'status' => $item->status,
-            'source' => $item->from,
-            'ip_address' => $item->ip,
-            'tags' => $item->getTags(),
+        // result
+        $result = [
+            'id' => $subscriber->id,
+            'email' => $subscriber->email,
+            'status' => $subscriber->status,
+            'source' => $subscriber->from,
+            'ip_address' => $subscriber->ip,
+            'tags' => $subscriber->getTags(),
         ];
 
         foreach ($list->fields as $field) {
             if ($field->tag != 'EMAIL') {
-                $subscriber[$field->tag] = $item->getValueByField($field);
+                $subscriber[$field->tag] = $subscriber->getValueByField($field);
             }
         }
 
-        return \Response::json(['subscriber' => $subscriber], 200);
+        return \Response::json(['subscriber' => $result], 200);
     }
 
     /**
