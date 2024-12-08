@@ -378,25 +378,17 @@ class FormController extends Controller
         // Language for frontend
         $this->frontendLanguage($form);
 
-        try {
-            // Create subscriber
-            list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
-
-            // Trigger updating related campaigns cache
-            event(new \Acelle\Events\MailListUpdated($list));
-
-            // Timeline record
-            \Acelle\Model\Timeline::recordPopupFormOptIn($subscriber, $form);
-        } catch (\Exception $ex) {
-            return response()->json([
-                'message' => $ex->getMessage()
-            ], 400);
-        }
+        list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
 
         // if fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
+
+        event(new \Acelle\Events\MailListUpdated($list));
+
+        // Timeline record
+        \Acelle\Model\Timeline::recordPopupFormOptIn($subscriber, $form);
 
         return response()->json([
             'message' => 'OK',

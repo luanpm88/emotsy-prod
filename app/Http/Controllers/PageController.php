@@ -191,9 +191,6 @@ class PageController extends Controller
 
             try {
                 list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_WEB);
-
-                // Timeline record
-                \Acelle\Model\Timeline::recordSignUpFormOptIn($subscriber);
             } catch (\Exception $ex) {
                 return view('somethingWentWrong', ['message' => $ex->getMessage()]);
             }
@@ -201,6 +198,9 @@ class PageController extends Controller
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
+
+            // Timeline record
+            \Acelle\Model\Timeline::recordSignUpFormOptIn($subscriber);
 
             if ($request->redirect_url) {
                 return redirect()->away($request->redirect_url);
