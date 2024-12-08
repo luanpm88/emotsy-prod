@@ -2,7 +2,7 @@
     <div class="d-flex" style="width:100%">
         <div class="me-5">
             <label class="fw-semibold">
-                {{ trans('messages.automation.outgoing_webhook') }}
+                {{ trans('messages.setting.automation.outgoing_webhook') }}
             </label>
             <p class="checkbox-description mt-1 mb-0">
                 {{ trans('messages.setting.automation.outgoing_webhook.help') }}
