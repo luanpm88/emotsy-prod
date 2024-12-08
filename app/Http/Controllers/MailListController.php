@@ -668,7 +668,7 @@ class MailListController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($customerUid);
 
         if (is_null($customer)) {
-            throw new \Exception('Cannot find customer');
+            throw new \Exception('Cannot find customer: '.$customerUid);
         } else {
             $customer->setUserDbConnection();
         }
@@ -714,16 +714,7 @@ class MailListController extends Controller
             ]);
         }
 
-        try {
-            // Create subscriber
-            list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
-
-            // Timeline record
-            \Acelle\Model\Timeline::recordEmbeddedFormOptIn($subscriber);
-        } catch (\Exception $ex) {
-            return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-        }
-
+        list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
 
         if ($validator->fails()) {
             $url = $request->session()->pull('form_url');
@@ -747,6 +738,8 @@ class MailListController extends Controller
                 'back_link' => $url,
             ]);
         }
+
+        \Acelle\Model\Timeline::recordEmbeddedFormOptIn($subscriber);
 
         // custom redirect
         if ($request->redirect_url) {
