@@ -2100,7 +2100,7 @@ class MailList extends Model
                 $field->label = $item['label'] ?? null;
                 $field->default_value = $item['default_value'] ?? null;
                 $field->required = $item['required'] ?? false;
-                $field->visible = $item['visible'] ?? true;
+                $field['visible'] = $item['visible'] ?? true;
                 $field->save();
             }
 
@@ -2320,7 +2320,7 @@ class MailList extends Model
         $field->label = $label;
         $field->default_value = $default_value;
         $field->required = $required;
-        $field->visible = $visible;
+        $field['visible'] = $visible;
         $field->custom_field_name = $this->getAvailableField();
         $field->is_email = $isEmail;
         $field->save();
