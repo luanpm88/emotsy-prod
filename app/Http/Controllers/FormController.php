@@ -384,9 +384,6 @@ class FormController extends Controller
 
             // Trigger updating related campaigns cache
             event(new \Acelle\Events\MailListUpdated($list));
-
-            // Timeline record
-            \Acelle\Model\Timeline::recordPopupFormOptIn($subscriber, $form);
         } catch (\Exception $ex) {
             return response()->json([
                 'message' => $ex->getMessage()
@@ -397,6 +394,9 @@ class FormController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
+
+        // Timeline record
+        \Acelle\Model\Timeline::recordPopupFormOptIn($subscriber, $form);
 
         return response()->json([
             'message' => 'OK',
