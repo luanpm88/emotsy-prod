@@ -44,28 +44,28 @@ class SubscriberController extends Controller
             $per_page = \Acelle\Model\Subscriber::$itemsPerPage;
         }
 
-        $items = \Acelle\Model\Subscriber::search($request, $user->customer)
+        $subscribers = \Acelle\Model\Subscriber::search($request, $user->customer)
             ->where('mail_list_id', '=', $list->id)
             ->paginate($per_page);
 
-        $subscribers = [];
-        foreach ($items as $item) {
+        $result = [];
+        foreach ($subscribers as $subscriber) {
             $row = [
-                'uid' => $item->uid,
-                'email' => $item->email,
-                'status' => $item->status,
+                'id' => $subscriber->id,
+                'email' => $subscriber->email,
+                'status' => $subscriber->status,
             ];
 
             foreach ($list->fields as $field) {
                 if ($field->tag != 'EMAIL') {
-                    $row[$field->tag] = $item->getValueByField($field);
+                    $row[$field->tag] = $subscriber->getValueByField($field);
                 }
             }
 
-            $subscribers[] = $row;
+            $result[] = $row;
         }
 
-        return \Response::json($subscribers, 200);
+        return \Response::json($result, 200);
     }
 
     /**
