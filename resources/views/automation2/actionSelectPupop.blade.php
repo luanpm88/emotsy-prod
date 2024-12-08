@@ -52,15 +52,17 @@
                     </div>
                 </div>
 
-                <div action-select="outgoing-webhook" data-key="outgoing-webhook" class="d-flex align-items-center line-item action-select-but action-select-send-an-email">
-                    <div class="line-icon">
-                        <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/webhook.svg') }}" />
+                @if (\Acelle\Model\Setting::get('automation.outgoing_webhook') == 'yes')
+                    <div action-select="outgoing-webhook" data-key="outgoing-webhook" class="d-flex align-items-center line-item action-select-but action-select-send-an-email">
+                        <div class="line-icon">
+                            <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/webhook.svg') }}" />
+                        </div>
+                        <div class="line-body">
+                            <h5>{{ trans('messages.automation.action.outgoing-webhook') }}</h5>
+                            <p>{{ trans('messages.automation.action.outgoing-webhook.desc') }}</p>
+                        </div>
                     </div>
-                    <div class="line-body">
-                        <h5>{{ trans('messages.automation.action.outgoing-webhook') }}</h5>
-                        <p>{{ trans('messages.automation.action.outgoing-webhook.desc') }}</p>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>

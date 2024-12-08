@@ -97,6 +97,9 @@
             <div class="col-md-6">
                 @include('admin.settings.general.blacklist-use_global_blacklist')
             </div>
+            <div class="col-md-6">
+                @include('admin.settings.general.automation-outgoing_webhook')
+            </div>
         </div>
         <div class="row">
             <div class="col-md-12"><p align="right"><a href="{{ action('Admin\SettingController@advanced') }}">{{ trans('messages.configuration.settings') }}</a></p></div>

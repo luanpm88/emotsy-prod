@@ -401,6 +401,11 @@ return [
         'type' => 'boolean',
         'options' => ['no', 'yes'],
     ],
+    'automation.outgoing_webhook' => [
+        'value' => 'yes',
+        'type' => 'boolean',
+        'options' => ['no', 'yes'],
+    ],
 ];
 
 
