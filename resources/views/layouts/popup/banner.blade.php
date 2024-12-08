@@ -1,4 +1,4 @@
-<div class="modal-dialog shadow modal-xl">
+<div class="modal-dialog shadow modal-lg">
     <div class="modal-content">
         <div class="modal-header border-bottom-0">
             <a href="javascript:;" class="material-symbols-rounded back">keyboard_backspace</a>
