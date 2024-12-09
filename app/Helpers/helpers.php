@@ -30,6 +30,7 @@ define('ACM_QUEUE_TYPE_HIGH', 'high');        // For campaigns that are manually
 define('ACM_QUEUE_TYPE_BATCH', 'batch');
 define('ACM_QUEUE_TYPE_SINGLE', 'single');
 define('ACM_QUEUE_TYPE_AUTOMATION', 'automation');
+define('ACM_QUEUE_TYPE_AUTOMATION_DISPATCH', 'automation-dispatch');
 
 /**
  * Get full table name by adding the DB prefix.

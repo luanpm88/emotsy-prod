@@ -41,7 +41,7 @@ class DispatchAutomationJobs extends Command
      */
     public function handle()
     {
-        $job = (new TheJob())->onQueue('default');
+        $job = (new TheJob())->onQueue(ACM_QUEUE_TYPE_AUTOMATION_DISPATCH);
         safe_dispatch($job);
 
         return 0;
