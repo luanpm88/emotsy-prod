@@ -76,10 +76,8 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
             $running[$this->automation->uid] = [
                 'name' => $this->automation->name,
                 'started_at' => now()->toString(),
-                'finished_at' => null,
                 'pid' => getmypid(),
                 'server' => gethostname() ?: 'Unknown',
-                'time' => null,
             ];
 
             Cache::put($this->logkey, $running);
@@ -93,26 +91,7 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
     {
         with_cache_lock($this->lock, function() {
             $running = Cache::get($this->logkey, []);
-            $log = $running[$this->automation->uid] ?? null;
-
-            if ($log) {
-                $now = now();
-                $started = Carbon::parse($log['started_at']);
-                $diff = $started->diffInMinutes($now, $abs = true);
-
-                $running[$this->automation->uid]['finished_at'] = $now->toString();
-                $running[$this->automation->uid]['time'] = $diff;
-
-            } else {
-                $running[$this->automation->uid] = [
-                    'name' => $this->automation->name,
-                    'started_at' => null, // When did it start? I dont know.
-                    'finished_at' => now()->toString(),
-                    'time' => null, // dont know!!!!
-                    'pid' => getmypid(),
-                    'server' => gethostname() ?: 'Unknown',
-                ];
-            }
+            unset($running[$this->automation->uid]);
 
             Cache::put($this->logkey, $running);
         }, $getLockTimeout = 5, $lockTime = 10, $waitTimeoutCallback = function() {
