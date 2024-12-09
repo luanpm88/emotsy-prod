@@ -385,7 +385,7 @@
                     tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), {init: "true"}));
                     tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), response.options));
 
-                    doSelect(tree.getSelected());
+                    doSelectTreeElement(tree.getSelected());
 
                     // validate
 					tree.getSelected().validate();

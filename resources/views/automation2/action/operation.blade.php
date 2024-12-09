@@ -6,7 +6,7 @@
         <div class="box-list mt-3">
             <div class="box-list mt-5">
                 @foreach ($types as $type)
-                    <a class="box-item trigger-select-but
+                    <a data-control="trigger-select" class="box-item trigger-select-but
                             {{ $trigger->getOption('key') == $type ? 'current' : '' }}
                         "
                         data-key="{{ $type }}"						

@@ -116,6 +116,42 @@
                     </span>
                 </label>
             </div>
+
+            <div class="form-group">
+                <label for="" class="form-label fw-semibold">Radios</label>
+                <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center me-4">
+                        <div class="me-2">
+                            <input type="radio" name="webhook[method]" value="get" id="method-get" class="styled" />
+                            <label class="check-symbol" for="method-get"></label>
+                        </div>
+                        <div>
+                            <label for="method-get" class="mb-0">{{ trans('messages.automation.outgoing_webhook.get_method') }}</label>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center me-4">
+                        <div class="me-2">
+                            <input type="radio" name="webhook[method]" value="post" id="method-post" class="styled" />
+                            <label class="check-symbol" for="method-post"></label>
+                        </div>
+                        <label for="method-post" class="mb-0">{{ trans('messages.automation.outgoing_webhook.post_method') }}</label>
+                    </div>
+                    <div class="d-flex align-items-center me-4">
+                        <div class="me-2">
+                            <input type="radio" name="webhook[method]" value="put" id="method-put" class="styled" />
+                            <label class="check-symbol" for="method-put"></label>
+                        </div>
+                        <label for="method-put" class="mb-0">{{ trans('messages.automation.outgoing_webhook.put_method') }}</label>
+                    </div>
+                    <div class="d-flex align-items-center me-4">
+                        <div class="me-2">
+                            <input type="radio" name="webhook[method]" value="delete" id="method-delete" class="styled" />
+                            <label class="check-symbol" for="method-delete"></label>
+                        </div>
+                        <label for="method-delete" class="mb-0">{{ trans('messages.automation.outgoing_webhook.delete_method') }}</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

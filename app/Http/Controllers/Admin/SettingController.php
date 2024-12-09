@@ -27,8 +27,6 @@ class SettingController extends Controller
     {
         if ($request->user()->admin->getPermission('setting_general') == 'yes') {
             return redirect()->action('Admin\SettingController@general');
-            //} elseif ($request->user()->admin->getPermission('setting_sending') == 'yes') {
-            //   return redirect()->action('Admin\SettingController@sending');
         } elseif ($request->user()->admin->getPermission('setting_system_urls') == 'yes') {
             return redirect()->action('Admin\SettingController@urls');
         } elseif ($request->user()->admin->getPermission('setting_background_job') == 'yes') {
@@ -47,16 +45,6 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // Setting::updateAll();
-        $settings = Setting::getAll();
-        if (null !== $request->old()) {
-            foreach ($request->old() as $name => $value) {
-                if (isset($settings[$name])) {
-                    $settings[$name]['value'] = $value;
-                }
-            }
-        }
-
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
@@ -64,38 +52,23 @@ class SettingController extends Controller
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $rules = [
-                'site_name' => 'required',
-                'site_keyword' => 'required',
-                'site_online' => 'required',
-                'site_offline_message' => 'required',
-                'site_description' => 'required',
-                'frontend_scheme' => 'required',
-                'backend_scheme' => 'required',
-                'license' => 'license',
-            ];
-            $this->validate($request, $rules);
+            // authorize
+            if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+                return $this->notAuthorized();
+            }
 
             // Save settings
-            foreach ($request->all() as $name => $value) {
-                if (in_array($name, [
-                    'invoice_current',
-                    'invoice_format',
-                ])) {
-                    $name = str_replace('_', '.', $name);
+            foreach ($request->general as $name => $value) {
+                // setting not found
+                if (!isset(config('default')[$name])) {
+                    throw new \Exception("The setting $name not found in default configs!");
                 }
 
-                if ($name != '_token' && isset($settings[$name])) {
-                    // Upload and save image
-                    if ($name == 'site_logo_light' || $name == 'site_logo_dark' || $name == 'site_favicon') {
-                        if ($request->hasFile($name) && $request->file($name)->isValid()) {
-                            Setting::uploadFile($request->file($name), $name, false);
-                        }
-                    } else {
-                        if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {
-                            Setting::set($name, $value);
-                        }
-                    }
+                // save
+                if ($request->hasFile('general.' . $name) && $request->file('general.' . $name)->isValid()) {
+                    Setting::uploadFile($request->file('general.' . $name), $name, false);
+                } else {
+                    Setting::set($name, $value);
                 }
             }
 
@@ -106,66 +79,7 @@ class SettingController extends Controller
         }
 
         return view('admin.settings.general', [
-            'settings' => $settings,
             'action' => 'general',
-        ]);
-    }
-
-    /**
-     * Sending settings.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sending(Request $request)
-    {
-        if ($request->user()->admin->getPermission('setting_sending') != 'yes') {
-            return $this->notAuthorized();
-        }
-
-        // Setting::updateAll();
-        $settings = Setting::getAll();
-        if (null !== $request->old()) {
-            foreach ($request->old() as $name => $value) {
-                if (isset($settings[$name])) {
-                    $settings[$name]['value'] = $value;
-                }
-            }
-        }
-
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            // Prenvent save from demo mod
-            if (config('app.demo')) {
-                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
-            }
-
-            $rules = [
-                'sending_campaigns_at_once' => 'required',
-                'sending_change_server_time' => 'required',
-                'sending_emails_per_minute' => 'required',
-                'sending_pause' => 'required',
-                'sending_at_once' => 'required',
-                'sending_subscribers_at_once' => 'required',
-            ];
-            $this->validate($request, $rules);
-
-            // Save settings
-            foreach ($request->all() as $name => $value) {
-                if ($name != '_token' && isset($settings[$name])) {
-                    if ($settings[$name]['cat'] == 'sending' && $request->user()->admin->getPermission('setting_sending') == 'yes') {
-                        Setting::set($name, $value);
-                    }
-                }
-            }
-
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.setting.updated'));
-
-            return redirect()->action('Admin\SettingController@sending');
-        }
-
-        return view('admin.settings.sending', [
-            'settings' => $settings,
         ]);
     }
 
@@ -180,7 +94,16 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        $settings = Setting::getAll();
+        $settings = array_filter(Setting::getAll(), function($setting, $key) {
+            return in_array($key, [
+                'url_unsubscribe',
+                'url_open_track',
+                'url_click_track',
+                'url_delivery_handler',
+                'url_update_profile',
+                'url_web_view',
+            ]);
+        }, ARRAY_FILTER_USE_BOTH);
 
         // Check URL
         $current = url('/');
@@ -624,47 +547,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // Setting::updateAll();
+        // 
         $settings = Setting::getAll();
-        if (null !== $request->old()) {
-            foreach ($request->old() as $name => $value) {
-                if (isset($settings[$name])) {
-                    $settings[$name]['value'] = $value;
-                }
-            }
-        }
-
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            // Prenvent save from demo mod
-            if (config('app.demo')) {
-                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
-            }
-
-            $rules = [];
-            $this->validate($request, $rules);
-
-            // Save settings
-            foreach ($request->all() as $name => $value) {
-                if ($name != '_token' && isset($settings[$name])) {
-                    // Upload and save image
-                    if ($name == 'site_logo_light' || $name == 'site_logo_dark') {
-                        if ($request->hasFile($name) && $request->file($name)->isValid()) {
-                            Setting::uploadSiteLogo($request->file($name), $name);
-                        }
-                    } else {
-                        if ($settings[$name]['cat'] == 'advanced' && $request->user()->admin->getPermission('setting_general') == 'yes') {
-                            Setting::set($name, $value);
-                        }
-                    }
-                }
-            }
-
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.setting.updated'));
-
-            return redirect()->action('Admin\SettingController@advanced');
-        }
 
         return view('admin.settings.advanced', [
             'settings' => $settings,

@@ -1,19 +1,13 @@
 @include('automation2._back')
 
-<form id="ActionEditForm" class="action-edit" action="{{ action("Automation2Controller@actionEdit", ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
+<form id="ActionEditForm" class="action-edit" action="{{ action("Automation2Controller@waitEdit", ['uid' => $automation->uid]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     
-    <input type="hidden" name="key" value="{{ $key }}" />
-    
-    @if(View::exists('automation2.action.' . $key))
-        @include('automation2.action.' . $key)
-    @endif
+    @include('automation2.action.wait')
     
     <div class="trigger-action mt-2">    
-        <button class="btn btn-secondary action-save-change mr-1 mt-2"
-            data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'key' => $key]) }}"
-        >
-                {{ trans('messages.automation.action.save_change') }}
+        <button class="btn btn-secondary action-save-change mr-1 mt-2">
+            {{ trans('messages.automation.action.save_change') }}
         </button>
     </div>
 </form>

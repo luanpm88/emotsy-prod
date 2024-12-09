@@ -30,6 +30,7 @@ use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
 use Acelle\Library\Automation\Evaluate;
 use Acelle\Library\Automation\Operate;
+use Acelle\Library\Automation\Webhook;
 use Carbon\Carbon;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -922,6 +923,13 @@ class Automation2 extends Model
                 'percentage' => ($total != 0) ? (($yes + $no) / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];
+        } elseif ($action->getType() == 'ElementWebhook') {
+            $insight = [
+                'count' => $count,
+                'subtitle' => __('messages.automation.stats.sent', ['count' => $count]),
+                'percentage' => ($total != 0) ? ($count / $total) : 0,
+                'latest_activity' => $this->autoTriggers()->max('created_at'),
+            ];
         }
 
         return $insight;
@@ -1019,6 +1027,9 @@ class Automation2 extends Model
                 break;
             case 'ElementOperation':
                 $instance = new Operate($attributes);
+                break;
+            case 'ElementWebhook':
+                $instance = new Webhook($attributes);
                 break;
             default:
                 throw new \Exception('Unknown Action type '.$attributes['type']);
@@ -1763,5 +1774,20 @@ class Automation2 extends Model
         });
 
         return [$validator, $newAutomation];
+    }
+
+    public function getAvailableOutgoingWebhookTags()
+    {
+        $tags = [];
+
+        // List field tags
+        foreach ($this->mailList->fields as $field) {
+            $tags[] = [
+                'label' => $field->label,
+                'tag' => '{{' . $field->tag . '}}',
+            ];
+        }
+
+        return $tags;
     }
 }

@@ -41,7 +41,6 @@
 				<i class="material-symbols-rounded automation-head-icon ml-2">alarm</i>
 			</div>
 			<div class="automation-top-menu">
-				{{-- <span class="mr-3 last_save_time"><i>{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span> --}}
 				<a href="{{ action('Automation2Controller@index') }}" class="action">
 					<i class="material-symbols-rounded me-2">arrow_back</i>
 					{{ trans('messages.automation.go_back') }}
@@ -75,7 +74,7 @@
 									</a>
 									<div class="dropdown-divider"></div>
 								@endif
-								<a class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
+								<a id="AutomationQuotaViewMenu" class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
 									<i class="material-symbols-rounded me-2">multiline_chart</i>
 									<span class="">{{ trans('messages.used_quota') }}</span>
 								</a>
