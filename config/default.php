@@ -2,7 +2,7 @@
 
 return [
     'site_name' => [
-        'value' => config('app.name'),
+        'value' => env('APP_NAME', '© Acelle Mail'),
         'type' => 'string',
     ],
     'site_keyword' => [
