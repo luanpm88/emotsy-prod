@@ -23,7 +23,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         'Invalid' => 'undeliverable',
         'Catch-all' => 'unknown',
         'Grey-listed' => 'unknown',
-        'Unknown' => 'unknown',
+        '' => 'unknown',
     ];
 
     public function __construct($apiKey)
