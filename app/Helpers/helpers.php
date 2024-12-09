@@ -29,6 +29,7 @@ define('ACM_QUEUE_TYPE_IMPORT', 'import');    // must be executed on the same se
 define('ACM_QUEUE_TYPE_HIGH', 'high');        // For campaigns that are manually rerun by users (Run at high priority), also for bulk verification
 define('ACM_QUEUE_TYPE_BATCH', 'batch');
 define('ACM_QUEUE_TYPE_SINGLE', 'single');
+define('ACM_QUEUE_TYPE_AUTOMATION', 'automation');
 
 /**
  * Get full table name by adding the DB prefix.

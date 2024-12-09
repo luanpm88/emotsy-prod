@@ -264,6 +264,8 @@ class Email extends Model implements HasTemplateInterface
             $queue = ACM_QUEUE_TYPE_SINGLE;
             // $queue is currently determined by Automation/Send action
             // in which priority is determined by trigger type
+        } else {
+            // use the $queue passed to
         }
 
         if ($connection) {
