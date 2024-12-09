@@ -22,22 +22,18 @@ return [
         'type' => 'image',
     ],
     'license' => [
-        'cat' => 'license',
         'value' => '',
         'type' => 'string',
     ],
     'license_type' => [
-        'cat' => 'license',
         'value' => '',
         'type' => 'string',
     ],
     'license_status' => [
-        'cat' => 'license',
         'value' => '',
         'type' => 'string',
     ],
     'license_supported_until' => [
-        'cat' => 'license',
         'value' => '',
         'type' => 'string',
     ],
@@ -155,42 +151,34 @@ return [
         'type' => 'string',
     ],
     'php_bin_path' => [
-        'cat' => 'cronjob',
         'value' => '',
         'type' => 'string',
     ],
     'remote_job_token' => [
-        'cat' => 'cronjob',
         'value' => '',
         'type' => 'string',
     ],
     'cronjob_last_execution' => [
-        'cat' => 'monitor',
         'value' => 0,
         'type' => 'string',
     ],
     'cronjob_min_interval' => [
-        'cat' => 'monitor',
         'value' => '15 minutes',
         'type' => 'string',
     ],
     'spf_record' => [
-        'cat' => 'dns',
         'value' => null,
         'type' => 'string',
     ],
     'spf_host' => [
-        'cat' => 'dns',
         'value' => null,
         'type' => 'string',
     ],
     'verification_hostname' => [
-        'cat' => 'dns',
         'value' => 'emarketing',
         'type' => 'string',
     ],
     'dkim_selector' => [
-        'cat' => 'dns',
         'value' => 'mailer',
         'type' => 'string',
     ],
@@ -247,17 +235,14 @@ return [
         'type' => 'string',
     ],
     'subscription.expiring_period' => [
-        'cat' => 'payment',
         'value' => '7',
         'type' => 'string',
     ],
     'subscription.auto_billing_period' => [
-        'cat' => 'payment',
         'value' => '3',
         'type' => 'string',
     ],
     'allowed_due_subscription' => [
-        'cat' => 'payment',
         'value' => 'no',
         'type' => 'string',
     ],
