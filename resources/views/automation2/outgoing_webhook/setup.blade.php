@@ -456,6 +456,11 @@
             }
 
             testWebhook() {
+                if (!this.form[0].reportValidity()) {
+                    // alert("Form is valid!");
+                    return;
+                }
+                
                 this.testPopup.load();
             }
 
