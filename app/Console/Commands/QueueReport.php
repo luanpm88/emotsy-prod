@@ -51,7 +51,7 @@ class QueueReport extends Command
         echo $headers."\n";
         echo "---------------------------------------------\n";
 
-        $defaultQueues = ['default', 'high', 'import', 'batch', 'single'];
+        $defaultQueues = ['default', 'high', 'import', 'automation', 'batch', 'single'];
 
         foreach ($defaultQueues as $queue) {
             $print($queue);
