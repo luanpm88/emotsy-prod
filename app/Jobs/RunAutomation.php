@@ -12,6 +12,7 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Cache\Repository;
 use Acelle\Model\Automation2;
+use Illuminate\Support\Carbon;
 
 class RunAutomation implements ShouldQueue, ShouldBeUnique
 {
@@ -26,6 +27,8 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
 
     protected $automation;
     protected $customer;
+    protected $logkey = 'running_automations';
+    protected $lock = 'manage-automations';
 
     public function retryUntil()
     {
@@ -54,9 +57,66 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
 
         with_cache_lock("run_automation_{$this->automation->uid}", function () {
             $this->automation->logger()->info("Got RunAutomation lock ".getmypid());
+            $this->markAsStarted();
+            $this->automation->logger()->info("Logged starting information");
+
             $this->automation->check();
+
+            $this->markAsFinished();
+            $this->automation->logger()->info('Logged finish information');
         }, $getLockTimeout = 2, $lockTime = 7200, $waitTimeoutCallback = function () {
             $this->automation->logger()->info('Cannot get lock, silently quit');
+        });
+    }
+
+    public function markAsStarted()
+    {
+        with_cache_lock($this->lock, function() {
+            $running = Cache::get($this->logkey, []);
+            $running[$this->automation->uid] = [
+                'name' => $this->automation->name,
+                'started_at' => now()->toString(),
+                'finished_at' => null,
+                'pid' => getmypid(),
+                'server' => gethostname() ?: 'Unknown',
+                'time' => null,
+            ];
+
+            Cache::put($this->logkey, $running);
+        }, $getLockTimeout = 5, $lockTime = 10, $waitTimeoutCallback = function() {
+            applog('automation-dispatch')->info('Cannot log automation start: '.$this->automation->uid);
+        });
+
+    }
+
+    public function markAsFinished()
+    {
+        with_cache_lock($this->lock, function() {
+            $running = Cache::get($this->logkey, []);
+            $log = $running[$this->automation->uid] ?? null;
+
+            if ($log) {
+                $now = now();
+                $started = Carbon::parse($log['started_at']);
+                $diff = $started->diffInMinutes($now, $abs = true);
+
+                $running[$this->automation->uid]['finished_at'] = $now->toString();
+                $running[$this->automation->uid]['time'] = $diff;
+
+            } else {
+                $running[$this->automation->uid] = [
+                    'name' => $this->automation->name,
+                    'started_at' => null, // When did it start? I dont know.
+                    'finished_at' => now()->toString(),
+                    'time' => null, // dont know!!!!
+                    'pid' => getmypid(),
+                    'server' => gethostname() ?: 'Unknown',
+                ];
+            }
+
+            Cache::put($this->logkey, $running);
+        }, $getLockTimeout = 5, $lockTime = 10, $waitTimeoutCallback = function() {
+            applog('automation-dispatch')->info('Cannot log automation finish: '.$this->automation->uid);
         });
     }
 }

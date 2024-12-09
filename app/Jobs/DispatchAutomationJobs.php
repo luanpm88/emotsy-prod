@@ -56,7 +56,7 @@ class DispatchAutomationJobs implements ShouldQueue
 
             foreach ($automations as $automation) {
                 $job = new RunAutomation($automation);
-                $jobId = safe_dispatch($job->onQueue(ACM_QUEUE_TYPE_HIGH));
+                $jobId = safe_dispatch($job->onQueue(ACM_QUEUE_TYPE_AUTOMATION));
 
                 $msg = sprintf('Dispatch automation "%s", Job #%s', $automation->name, $jobId);
                 $automation->logger()->info($msg);
