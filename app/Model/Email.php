@@ -243,6 +243,10 @@ class Email extends Model implements HasTemplateInterface
             $subscription = null;
         }
 
+        if (is_null($subscription)) {
+            throw new Exception("Customer {$this->customer->name} has no active subscription, quit sending");
+        }
+
         $job = new SendSingleMessage(
             $this,
             $subscriber,
