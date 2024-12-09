@@ -10,16 +10,12 @@
         </div>
             
         <div class="d-flex align-items-top ms-auto">
-            <label class="checker">
-                <input type="hidden" name="general[email.enable_one_click_unsubscribe_headers]" value="no" />
-                <input
-                    type="checkbox"
-                    name="general[email.enable_one_click_unsubscribe_headers]"
-                    value="yes" class="styled4"
-                    {{ Acelle\Model\Setting::get('email.enable_one_click_unsubscribe_headers') == 'yes' ? 'checked' : '' }}
-                >
-                <span class="checker-symbol"></span>
-            </label>
+            @include('helpers.form_control.switcher', [
+                'name' => 'general[email.enable_one_click_unsubscribe_headers]',
+                'value' => Acelle\Model\Setting::get('email.enable_one_click_unsubscribe_headers'),
+                'on_value' => 'yes',
+                'off_value' => 'no',
+            ])
         </div>
     </div>
 </div>

@@ -10,16 +10,12 @@
         </div>
             
         <div class="d-flex align-items-top ms-auto">
-            <label class="checker">
-                <input type="hidden" name="general[tracking_domain.enable_https]" value="no" />
-                <input
-                    type="checkbox"
-                    name="general[tracking_domain.enable_https]"
-                    value="yes" class="styled4"
-                    {{ Acelle\Model\Setting::get('tracking_domain.enable_https') == 'yes' ? 'checked' : '' }}
-                >
-                <span class="checker-symbol"></span>
-            </label>
+            @include('helpers.form_control.switcher', [
+                'name' => 'general[tracking_domain.enable_https]',
+                'value' => Acelle\Model\Setting::get('tracking_domain.enable_https'),
+                'on_value' => 'yes',
+                'off_value' => 'no',
+            ])
         </div>
     </div>
 </div>

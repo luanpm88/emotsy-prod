@@ -43,7 +43,8 @@ return [
     ],
     'site_online' => [
         'value' => 'true',
-        'type' => 'boolean',
+        'type' => 'enum',
+        'options' => ['false', 'true'],
     ],
     'site_offline_message' => [
         'value' => 'Application currently offline. We will come back soon!',
@@ -89,27 +90,27 @@ return [
     ],
     'login_recaptcha' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'embedded_form_recaptcha' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'list_sign_up_captcha' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'enable_user_registration' => [
         'value' => 'yes',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'registration_recaptcha' => [
         'value' => 'yes',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'custom_script' => [
@@ -338,72 +339,72 @@ return [
     ],
     'customer_can_change_language' => [
         'value' => 'yes',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'customer_can_change_personality' => [
         'value' => 'yes',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'campaign.stop_on_error' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'not_require_card_for_trial' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     '2fa_enable' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'tracking_domain.enable_https' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'email.enable_one_click_unsubscribe_headers' => [
         'value' => 'yes',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'campaign.duplicate' => [
         'value' => 'yes',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'list.default.double_optin' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'email.default.skip_failed_message' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'notification.on_user_created' => [
         'value' => '',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'signature.enabled' => [
         'value' => 'no',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'blacklist.use_global_blacklist' => [
         'value' => 'yes',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
     'automation.outgoing_webhook' => [
         'value' => 'yes',
-        'type' => 'boolean',
+        'type' => 'enum',
         'options' => ['no', 'yes'],
     ],
 ];

@@ -10,16 +10,12 @@
         </div>
             
         <div class="d-flex align-items-top ms-auto">
-            <label class="checker">
-                <input type="hidden" name="general[list_sign_up_captcha]" value="no" />
-                <input
-                    type="checkbox"
-                    name="general[list_sign_up_captcha]"
-                    value="yes" class="styled4"
-                    {{ Acelle\Model\Setting::get('list_sign_up_captcha') == 'yes' ? 'checked' : '' }}
-                >
-                <span class="checker-symbol"></span>
-            </label>
+            @include('helpers.form_control.switcher', [
+                'name' => 'general[list_sign_up_captcha]',
+                'value' => Acelle\Model\Setting::get('list_sign_up_captcha'),
+                'on_value' => 'yes',
+                'off_value' => 'no',
+            ])
         </div>
     </div>
 </div>

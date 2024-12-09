@@ -10,16 +10,12 @@
         </div>
             
         <div class="d-flex align-items-top ms-auto">
-            <label class="checker">
-                <input type="hidden" name="general[enable_user_registration]" value="no" />
-                <input
-                    type="checkbox"
-                    name="general[enable_user_registration]"
-                    value="yes" class="styled4"
-                    {{ Acelle\Model\Setting::get('enable_user_registration') == 'yes' ? 'checked' : '' }}
-                >
-                <span class="checker-symbol"></span>
-            </label>
+            @include('helpers.form_control.switcher', [
+                'name' => 'general[enable_user_registration]',
+                'value' => Acelle\Model\Setting::get('enable_user_registration'),
+                'on_value' => 'yes',
+                'off_value' => 'no',
+            ])
         </div>
     </div>
 </div>

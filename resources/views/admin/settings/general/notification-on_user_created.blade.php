@@ -10,16 +10,12 @@
         </div>
             
         <div class="d-flex align-items-top ms-auto">
-            <label class="checker">
-                <input type="hidden" name="general[notification.on_user_created]" value="no" />
-                <input
-                    type="checkbox"
-                    name="general[notification.on_user_created]"
-                    value="yes" class="styled4"
-                    {{ Acelle\Model\Setting::get('notification.on_user_created') == 'yes' ? 'checked' : '' }}
-                >
-                <span class="checker-symbol"></span>
-            </label>
+            @include('helpers.form_control.switcher', [
+                'name' => 'general[notification.on_user_created]',
+                'value' => Acelle\Model\Setting::get('notification.on_user_created'),
+                'on_value' => 'yes',
+                'off_value' => 'no',
+            ])
         </div>
     </div>
 </div>

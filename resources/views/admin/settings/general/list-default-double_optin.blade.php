@@ -10,16 +10,12 @@
         </div>
             
         <div class="d-flex align-items-top ms-auto">
-            <label class="checker">
-                <input type="hidden" name="general[list.default.double_optin]" value="no" />
-                <input
-                    type="checkbox"
-                    name="general[list.default.double_optin]"
-                    value="yes" class="styled4"
-                    {{ Acelle\Model\Setting::get('list.default.double_optin') == 'yes' ? 'checked' : '' }}
-                >
-                <span class="checker-symbol"></span>
-            </label>
+            @include('helpers.form_control.switcher', [
+                'name' => 'general[list.default.double_optin]',
+                'value' => Acelle\Model\Setting::get('list.default.double_optin'),
+                'on_value' => 'yes',
+                'off_value' => 'no',
+            ])
         </div>
     </div>
 </div>

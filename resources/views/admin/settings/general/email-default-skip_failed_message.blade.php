@@ -10,16 +10,12 @@
         </div>
             
         <div class="d-flex align-items-top ms-auto">
-            <label class="checker">
-                <input type="hidden" name="general[email.default.skip_failed_message]" value="no" />
-                <input
-                    type="checkbox"
-                    name="general[email.default.skip_failed_message]"
-                    value="yes" class="styled4"
-                    {{ Acelle\Model\Setting::get('email.default.skip_failed_message') == 'yes' ? 'checked' : '' }}
-                >
-                <span class="checker-symbol"></span>
-            </label>
+            @include('helpers.form_control.switcher', [
+                'name' => 'general[email.default.skip_failed_message]',
+                'value' => Acelle\Model\Setting::get('email.default.skip_failed_message'),
+                'on_value' => 'yes',
+                'off_value' => 'no',
+            ])
         </div>
     </div>
 </div>

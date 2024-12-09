@@ -10,16 +10,12 @@
         </div>
             
         <div class="d-flex align-items-top ms-auto">
-            <label class="checker">
-                <input type="hidden" name="general[embedded_form_recaptcha]" value="no" />
-                <input
-                    type="checkbox"
-                    name="general[embedded_form_recaptcha]"
-                    value="yes" class="styled4"
-                    {{ Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes' ? 'checked' : '' }}
-                >
-                <span class="checker-symbol"></span>
-            </label>
+            @include('helpers.form_control.switcher', [
+                'name' => 'general[embedded_form_recaptcha]',
+                'value' => Acelle\Model\Setting::get('embedded_form_recaptcha'),
+                'on_value' => 'yes',
+                'off_value' => 'no',
+            ])
         </div>
     </div>
 </div>
