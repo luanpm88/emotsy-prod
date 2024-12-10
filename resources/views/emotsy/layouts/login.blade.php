@@ -67,8 +67,8 @@
                                         <!-- Footer -->
                                         <div class="small">
                                             <div class="login-footer-toolbar pb-1 mt-5 d-flex justify-content-between">
-                                                <a class="toolbar-item" href="#">Terms & Condition</a>
-                                                <a class="toolbar-item" href="#">Privacy Polic</a>
+                                                <a class="toolbar-item" href="https://emotsy.com/legal/">Terms & Condition</a>
+                                                <a class="toolbar-item" href="https://emotsy.com/legal/">Privacy Policy</a>
                                                 <div class="dropdown">
                                                     <a class=" toolbar-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                         {{ Acelle\Model\Language::where('code', language_code())->first()->name }}
