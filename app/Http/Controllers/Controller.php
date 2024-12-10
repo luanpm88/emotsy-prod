@@ -215,7 +215,6 @@ class Controller extends BaseController
      */
     public function userDisabled()
     {
-        \Auth::logout();
         return view('isDisabled');
     }
 
@@ -254,5 +253,10 @@ class Controller extends BaseController
 
         // return to home
         return redirect()->action('HomeController@index');
+    }
+
+    public function somethingWentWrong(Request $request)
+    {
+        return view('somethingWentWrong', ['message' => $request->message]);
     }
 }

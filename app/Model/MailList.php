@@ -2085,11 +2085,10 @@ class MailList extends Model
             $visible = $item['visible'] ?? true;
             $required = $item['required'] ?? false;
 
-            if ($field->tag == 'EMAIL') {
+            if (isset($item['tag']) && $item['tag'] == 'EMAIL') {
                 $visible = true;
                 $required = true;
             }
-
 
             if (!$field) {
                 $field = $this->createField(
