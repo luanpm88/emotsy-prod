@@ -13,8 +13,8 @@
             @include('helpers.form_control.switcher', [
                 'name' => 'general[site_online]',
                 'value' => Acelle\Model\Setting::get('site_online'),
-                'on_value' => 'true',
-                'off_value' => 'false',
+                'on_value' => 'yes',
+                'off_value' => 'no',
             ])
         </div>
     </div>
