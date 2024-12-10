@@ -83,9 +83,9 @@ class Sender extends Model
         return $this->belongsTo('Acelle\Model\SendingServer');
     }
 
-    public static function pending()
+    public static function scopePending($query)
     {
-        return self::where('status', self::STATUS_PENDING);
+        return $query->where('status', self::STATUS_PENDING);
     }
 
     public function scopeVerified($query)

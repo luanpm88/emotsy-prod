@@ -106,40 +106,6 @@
                             </div>
                         </div>
                     </div>
-                    <hr>
-                    <div class="radio_box pe-none" style="opacity: 0.6;" data-popup='tooltip' title="">
-                        <label class="main-control">
-                            <input {{ ($plan->getOption('sending_server_option') == \Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_SUBACCOUNT ? 'checked' : '') }} type="radio"
-                                name="plan[options][sending_server_option]"
-                                value="{{ \Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_SUBACCOUNT }}" class="styled" />  <rtitle>{{ trans('messages.plan_option.sub_account') }}</rtitle>
-                            <div class="desc text-normal mb-10">
-                                {{ trans('messages.plan_option.sub_account.intro') }}
-                            </div>
-                        </label>
-                        <div class="radio_more_box">
-                            @if (Auth()->user()->admin->getSubaccountSendingServers()->count())
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        @include('helpers.form_control', [
-                                            'type' => 'select',
-                                            'class' => 'numeric',
-                                            'name' => 'plan[options][sending_server_subaccount_uid]',
-                                            'value' => $plan->getOption('sending_server_subaccount_uid'),
-                                            'label' => '',
-                                            'help_class' => 'plan',
-                                            'include_blank' => trans('messages.select_sending_server_with_subaccount'),
-                                            'options' => Auth()->user()->admin->getSubaccountSendingServersSelectOptions(),
-                                            'rules' => $plan->validationRules()['options'],
-                                        ])
-                                    </div>
-                                </div>
-                            @else
-                                <div class="alert alert-danger">
-                                    {!! trans('messages.plan_option.there_no_subaccount_sending_server') !!}
-                                </div>
-                            @endif
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

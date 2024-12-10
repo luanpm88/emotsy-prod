@@ -60,7 +60,7 @@ class PlanController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $plan = new \Acelle\Model\PlanGeneral();
+        $plan = \Acelle\Model\PlanGeneral::newGeneral();
 
         // authorize
         if (!$user->can('create', $plan)) {

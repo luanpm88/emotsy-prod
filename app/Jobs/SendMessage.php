@@ -103,8 +103,9 @@ class SendMessage implements ShouldQueue
      */
     public function handle()
     {
+        // Might cause problems with batch
         // Set default connection
-        $this->customer->setUserDbConnection();
+        // $this->customer->setUserDbConnection();
 
         // Remember that this job may not belong to a batch
         if ($this->batch() && $this->batch()->cancelled()) {
@@ -186,13 +187,39 @@ class SendMessage implements ShouldQueue
                         'status' => 'failed',
                     ];
                 } else {
-                    $delayFlag = $this->campaign->checkDelayFlag();
 
+                    /*
+                     *
+                     * It would be a flaw to evaluate DELAY FLAG here. Why?
+                     *
+                     * Suppose job-100 passes all rate checks, proceeding with SEND...
+                     *
+                     * Then job-101 comes, it does not pass one of the rate checks and proceeds with setting a DELAY FLAG
+                     * The problem: what if job-101 finish setting the delay flags even before job-100 actually SEND?
+                     * ==> job-100 will unexpectedly be delayed although it has passed the rate checks
+                     *
+                     * The root cause here is: in a distributed setup, there is no guarantee that job-100 finishes SEND
+                     * before job-101 sets the DELAY flag, even though job-001 comes first!
+                     *
+                     * So, DELAY FLAG checking must be executed before RATE checking (if it is ever needed)
+                     *
+                     * Illustration of the concurrency issue:
+                     *
+                     *     job-100 -------------------- PASS RATE CHECKS ----------------------------------------- CHECK DELAY FLAG, BREAK!!! ----------- SEND
+                     *                                                                                           /
+                     *                                                                                          /
+                     *     job-101 ----------------------------FAILED RATE CHECKS --------- SET DELAY FLAG -----
+                     *
+                     */
+
+                    /*
+                    $delayFlag = $this->campaign->checkDelayFlag();
                     if ($delayFlag == true) {
                         // just finish the task
                         $logger->info(sprintf("Delayed [%s] due to rate limit (RIGHT BEFORE SENDING)", $email));
                         return;
                     }
+                    */
 
                     if (config('custom.dryrun') || $this->campaign->name == '_DRYRUN') {
                         $sent = $this->selectedServer->dryrun($message);
@@ -295,14 +322,14 @@ class SendMessage implements ShouldQueue
 
                     if ($delayFlag == true) {
                         // just finish the task
-                        $logger->info(sprintf("Delayed [%s] due to rate limit: %s", $email, $ex->getMessage()));
+                        $logger->info(sprintf("Quit [%s] due to rate limit: %s", $email, $ex->getMessage()));
                         return;
                     } else {
                         // Releease the job, have it tried again later on, after 1 minutes
 
                         $delayInSeconds = 60; // reservation stategy, so 60 seconds is good enough
 
-                        $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
+                        $logger->warning(sprintf("DELAY!!! [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
 
                         // set delay flag to true
                         $this->campaign->setDelayFlag(true);
@@ -339,8 +366,9 @@ class SendMessage implements ShouldQueue
             }
 
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
-            LaravelLog::error('ERROR SENDING EMAIL (debug): '.$ex->getMessage()."\n".$ex->getTraceAsString());
             $logger->error($message);
+
+            $handled = $this->handleUnknownException($ex);
 
             // In case of these exceptions, stop campaign immediately even if stopOnError is currently false
             // This is helpful in certain cases: for example, when credits runs out, then it does not make sense to keep sending (and failing)
@@ -355,17 +383,23 @@ class SendMessage implements ShouldQueue
             // Option 1: throw an exception and show it to users as the campaign status
             //     throw new Exception($message);
             // Option 2: just skip the error, log it and proceed with the next subscriber
-            if ($this->stopOnError || $forceEndCampaign || is_null($this->selectedServer)) {
+
+            if ($handled) {
+                $this->campaign->trackMessage(['status' => 'failed', 'error' => $message], $this->subscriber, $this->selectedServer, $this->msgId, $this->triggerId);
+            } elseif ($this->stopOnError || $forceEndCampaign || is_null($this->selectedServer)) {
                 throw new Exception($message);
             } else {
                 $this->campaign->trackMessage(['status' => 'failed', 'error' => $message], $this->subscriber, $this->selectedServer, $this->msgId, $this->triggerId);
             }
-        } finally {
-            //
         }
     }
 
     public function afterSuccess()
+    {
+        return;
+    }
+
+    public function handleUnknownException($ex)
     {
         return;
     }

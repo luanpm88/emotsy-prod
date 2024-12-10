@@ -31,5 +31,4 @@ interface CampaignInterface
 
     // MISC
     public function extractErrorMessage();
-    public static function checkAndExecuteScheduledCampaigns();
 }

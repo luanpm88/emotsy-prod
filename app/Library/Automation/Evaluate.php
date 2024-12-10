@@ -76,7 +76,7 @@ class Evaluate extends Action
         $check = $now->gte($due);
 
         if ($check) {
-            sleep(1); // to avoid same day with previous action when modifying (n days)
+            usleep(1000); // to avoid same day with previous action when modifying (n days)
             $this->logger->info(sprintf('---> It is already %s minutes (or %s hours) due! proceed next with NO branch', $now->diffInMinutes($due), $now->diffInHours($due)));
 
             return true;

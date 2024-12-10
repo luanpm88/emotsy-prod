@@ -23,10 +23,13 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Exception;
 
 class FeedbackLog extends Model
 {
     public const FEEDBACK_TYPE_ABUSE = 'abuse';
+    public const FEEDBACK_TYPE_SPAM = 'spam';
+
     /**
      * Associations.
      *
@@ -101,19 +104,47 @@ class FeedbackLog extends Model
         }
     }
 
-    public static function recordFeedback($runtimeMessageId, $raw, $logCallback)
+    public static function recordFeedback($runtimeMessageId, $type, $raw, $logCallback = null, $throwMessageNotFoundException = false)
     {
+        if (is_null($runtimeMessageId)) {
+            throw new Exception("message_id must not be null");
+        }
+
+        if (is_null($type)) {
+            throw new Exception("'type' is required, its value should be either 'abuse' or 'spam'");
+        }
+
+        if ($type != self::FEEDBACK_TYPE_ABUSE && $type != self::FEEDBACK_TYPE_SPAM) {
+            throw new Exception("Feedback type must be either 'abuse' or 'spam'");
+        }
+
+        if (is_null($logCallback)) {
+            $logCallback = function ($message) {
+                // do nothing
+            };
+        }
+
         $feedbackLog = new static();
         $feedbackLog->runtime_message_id = $runtimeMessageId;
 
         // retrieve the associated tracking log in Acelle
         $trackingLog = TrackingLog::where('runtime_message_id', $feedbackLog->runtime_message_id)->first();
+
+        if (is_null($trackingLog)) {
+            $trackingLog = TrackingLog::where('message_id', $bounceLog->runtime_message_id)->first();
+        }
+
         if ($trackingLog) {
             $feedbackLog->message_id = $trackingLog->message_id;
             $feedbackLog->customer_id = $trackingLog->customer_id;
             $feedbackLog->tracking_log_id = $trackingLog->id;
         } else {
-            $logCallback("Cannot find a tracking log record with runtime_message_id of #{$runtimeMessageId}. Record it anyway without runtime_message_id");
+
+            $logCallback("Cannot find a tracking log record with runtime_message_id of #{$runtimeMessageId}");
+
+            if ($throwMsgNotFoundException) {
+                throw new Exception("Cannot find a tracking log record with runtime_message_id of #{$runtimeMessageId}");
+            }
         }
 
         $feedbackLog->feedback_type = self::FEEDBACK_TYPE_ABUSE;
@@ -128,6 +159,8 @@ class FeedbackLog extends Model
         } else {
             $logCallback("Feedback recorded for runtime_message_id '$feedbackLog->runtime_message_id' although it is not associated with any tracking log.");
         }
+
+        return $feedbackLog;
     }
 
     /**

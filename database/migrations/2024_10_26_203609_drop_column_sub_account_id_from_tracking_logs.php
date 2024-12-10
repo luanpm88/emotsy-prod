@@ -13,8 +13,23 @@ class DropColumnSubAccountIdFromTrackingLogs extends Migration
      */
     public function up()
     {
+        try {
+            Schema::table('tracking_logs', function (Blueprint $table) {
+                $table->dropForeign(['sub_account_id']);
+            });
+        } catch (\Exception $ex) {
+            //
+        }
+
+        try {
+            Schema::table('tracking_logs', function (Blueprint $table) {
+                $table->dropForeign('tracking_logs_sub_account_id_foreign');
+            });
+        } catch (\Exception $ex) {
+            //
+        }
+
         Schema::table('tracking_logs', function (Blueprint $table) {
-            $table->dropForeign(['sub_account_id']);
             $table->dropColumn('sub_account_id');
         });
     }

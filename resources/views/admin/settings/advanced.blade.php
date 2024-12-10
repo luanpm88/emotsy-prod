@@ -18,7 +18,7 @@
 @endsection
 
 @section('content')
-    <form action="{{ action('Admin\SettingController@advanced') }}" method="POST" class="form-validate-jqueryz">
+    <form action="" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
         <div class="tabbable">

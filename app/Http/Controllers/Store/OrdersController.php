@@ -5,7 +5,6 @@ namespace Acelle\Http\Controllers\Store;
 use Acelle\Model\Order;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
-
 use Acelle\Model\Product;
 use Acelle\Model\Category;
 use Illuminate\Support\Facades\Storage;
@@ -264,7 +263,7 @@ class OrdersController extends Controller
                             'status' => $status,
                         ]);
                     $mesenger   =   " Active sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }
@@ -274,7 +273,7 @@ class OrdersController extends Controller
                 try {
                     Order::destroy($request->ids);
                     $mesenger   =   " Delete sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }

@@ -23,6 +23,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         'Invalid' => 'undeliverable',
         'Catch-all' => 'unknown',
         'Grey-listed' => 'unknown',
+        '' => 'unknown',
     ];
 
     public function __construct($apiKey)
@@ -245,7 +246,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
 
         try {
             curl_download($response['file_path'], $tmpResultFile);
-        } catch(Exception $ex) {
+        } catch (Exception $ex) {
             throw new Exception('Cannot download result from MyEmailVerifier: '.$ex->getMessage());
         }
 
@@ -254,7 +255,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         /* Sample result
 
             [
-                "" => "nghi@b-teka.com",
+                "" => "user@example.com", // or somecase "Email" => 'user@example.com'
                 "Result" => "Valid",
                 "RoleBased" => "false",
                 "FreeDomain" => "false",
@@ -267,7 +268,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
                 throw new Exception('Unknown status code returned from MyEmailVerifier.com: '.$raw['Result']);
             }
 
-            $email = $raw[''];
+            $email = $raw['Email'] ?? $raw['Email'];
             $verificationResult = $this->resultMap[$raw['Result']];
             $callback($email, $verificationResult, json_encode($raw));
         }

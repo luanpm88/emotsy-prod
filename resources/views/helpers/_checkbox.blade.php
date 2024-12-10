@@ -16,7 +16,7 @@
 			</label></div>
 		@endif
 	
-	<div class="d-flex align-items-top">
+	<div class="d-flex align-items-top ms-auto">
 		<label class="checker">
 			<input{{ $value == $options[1] ? " checked" : "" }}
 			{{ isset($disabled) && $disabled == true ? ' disabled="disabled"' : "" }}

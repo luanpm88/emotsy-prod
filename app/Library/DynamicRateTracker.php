@@ -235,7 +235,7 @@ class DynamicRateTracker
     {
         $shortest = null;
         $now = now();
-        foreach($this->limits as $limit) {
+        foreach ($this->limits as $limit) {
             $d = $now->copy()->add($limit->getPeriod());
             if (is_null($shortest) || $now->copy()->add($shortest->getPeriod())->gte($d)) {
                 $shortest = $limit;
@@ -248,7 +248,7 @@ class DynamicRateTracker
     public function getMinCredits()
     {
         $min = null;
-        foreach($this->limits as $limit) {
+        foreach ($this->limits as $limit) {
             if (is_null($min) || $limit->getAmount() < $min) {
                 $min = $limit->getAmount();
             }

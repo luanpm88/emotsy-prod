@@ -67,7 +67,7 @@
 					// save tree
 					saveData(function() {
 						// select trigger
-						doSelect(tree);
+						doSelectTreeElement(tree);
 
 						// hide popup
 						automationPopup.hide();
@@ -80,7 +80,7 @@
 						});
 						
 						// Edit Trigger
-						EditTrigger('{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + tree.getOptions().key);
+						loadSidebarEditTrigger(tree.getOptions().key);
 					}, flag);
 				}
 			});

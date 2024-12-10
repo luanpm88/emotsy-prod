@@ -1105,9 +1105,6 @@ class Customer extends Model
 
         // Gallery
         $templates = \Acelle\Model\Template::where('customer_id', '=', $this->id)
-            ->orWhere(function ($query) {
-                $query->notPreserved();
-            })
             ->orderBy('customer_id')
             ->notPreserved()
             ->get();
@@ -1832,8 +1829,10 @@ class Customer extends Model
 
     public function setUserDbConnection()
     {
-        if (config('sharding.enabled') && $this->hasLocalDb()) {
-            \Acelle\Helpers\set_userdb_connection($this->db_connection);
+        if (config('sharding.enabled')) {
+            if ($this->hasLocalDb()) {
+                \Acelle\Helpers\set_userdb_connection($this->db_connection);
+            }
         }
     }
 
@@ -1880,5 +1879,10 @@ class Customer extends Model
         $connector = '_';
         $fullkey = "{$namespace}{$connector}{$key}";
         return $fullkey;
+    }
+
+    public function getDbConnection()
+    {
+        return $this->db_connection ?? 'mysql';
     }
 }

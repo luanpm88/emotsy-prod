@@ -12,7 +12,7 @@
 						@if (!Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('multiple_automation_trigger') && $type == 'api-3-0')
 +
 +                       @else
-							<a class="box-item trigger-select-but trigger-{{ $type }} shadow-sm
+							<a data-control="trigger-select" class="box-item trigger-select-but trigger-{{ $type }} shadow-sm
 									{{ $trigger->getOption('key') == $type ? 'current' : '' }}
 								"
 								data-key="{{ $type }}"						
@@ -24,4 +24,16 @@
             </div>
         </div>
     </div>
+
+	<script>
+		$(() => {
+			$('[data-control="trigger-select"]').on('click', function(e) {
+				e.preventDefault();
+				var key = $(this).attr('data-key');
+                    
+				// show select trigger confirm box
+				openSelectTriggerConfirmPopup(key);
+			});
+		});
+	</script>
 @endsection

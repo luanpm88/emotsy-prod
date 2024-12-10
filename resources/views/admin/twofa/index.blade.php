@@ -20,7 +20,7 @@
 
 @section('content')
 
-    @include("account._menu", [
+    @include("admin.account._menu", [
         'menu' => '2fa',
     ])
 
@@ -35,7 +35,7 @@
 
                 <div class="form-group">
                     <div class="d-flex">
-                        <div class="me-3">
+                        <div class="me-3 ps-2">
                             <label class="checker">
                                 <input type="hidden" name="enable_2fa" value="0" class="styled4">
                                 <input data-control="2fa-checker" {{ Auth::user()->enable_2fa ? 'checked' : '' }} type="checkbox" name="enable_2fa" value="1" class="styled4">

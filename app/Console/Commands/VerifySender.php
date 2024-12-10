@@ -38,11 +38,22 @@ class VerifySender extends Command
      */
     public function handle()
     {
-        $senders = Sender::pending()->get();
-        foreach ($senders as $sender) {
-            $sender->customer->setUserDbConnection();
-            $sender->updateVerificationStatus();
-        }
+        $this->withPendingSenders(function ($customer, $senders) {
+            foreach ($senders as $sender) {
+                $sender->customer->setUserDbConnection();
+                $sender->updateVerificationStatus();
+            }
+        });
+
         return 0;
+    }
+
+    private function withPendingSenders($callback)
+    {
+        $customers = \Acelle\Model\Customer::all();
+        foreach ($customers as $customer) {
+            $senders = $customer->local()->senders()->pending()->get();
+            $callback($customer, $senders);
+        }
     }
 }

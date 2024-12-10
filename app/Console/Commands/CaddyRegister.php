@@ -38,10 +38,11 @@ class CaddyRegister extends Command
      */
     public function handle()
     {
-        $domains = TrackingDomain::autoSsl()->get();
-        foreach($domains as $domain) {
-            $this->createCaddyConfigFile($domain->name);
-        }
+        $this->withAutoSslTrackingDomains(function ($customer, $domains) {
+            foreach ($domains as $domain) {
+                $this->createCaddyConfigFile($domain->name);
+            }
+        });
 
         return 0;
     }
@@ -59,6 +60,16 @@ class CaddyRegister extends Command
 END;
         if (!file_exists($path)) {
             file_put_contents($path, $config);
+        }
+    }
+
+    private function withAutoSslTrackingDomains($callback)
+    {
+        $customers = \Acelle\Model\Customer::all();
+        foreach ($customers as $customer) {
+            $customer->setUserDbConnection();
+            $domains = $customer->local()->trackingDomains()->autoSsl()->get();
+            $callback($customer, $domains);
         }
     }
 }

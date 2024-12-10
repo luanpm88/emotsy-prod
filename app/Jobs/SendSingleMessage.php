@@ -42,7 +42,17 @@ class SendSingleMessage extends SendMessage
     public function getAutoTrigger()
     {
         if (is_null($this->autoTrigger)) {
-            $this->autoTrigger = AutoTrigger::find($this->autoTriggerId);
+            if ($this->customer->hasLocalDb()) {
+                $connection = $this->customer->db_connection;
+            } else {
+                $connection = 'mysql';
+            }
+
+            $this->autoTrigger = AutoTrigger::on($connection)->find($this->autoTriggerId);
+        }
+
+        if (is_null($this->autoTrigger)) {
+            throw new \Exception("Cannot find trigger {$this->autoTriggerId} (DB connection ".\DB::connection()->getName().")");
         }
 
         return $this->autoTrigger;
@@ -61,17 +71,7 @@ class SendSingleMessage extends SendMessage
     {
         // Set default connection
         $this->customer->setUserDbConnection();
-
-        try {
-            $this->send();
-        } catch (Throwable $ex) {
-            $this->getAutoTrigger()->withUpdateLock(function ($trigger) use ($ex) {
-                // Mark the related trigger action as done
-                $action = $this->getAction();
-                $action->setError($ex->getMessage());
-                $this->campaign->logger()->info('Error sending trigger email: '.$ex->getMessage());
-            });
-        }
+        $this->send();
     }
 
     public function handleRateLimitExceeded($email, RateLimitExceeded $ex)
@@ -89,5 +89,18 @@ class SendSingleMessage extends SendMessage
 
         $this->release($secondsToDelay); // should be only 60 seconds
         return $secondsToDelay;
+    }
+
+    public function handleUnknownException($ex)
+    {
+        $this->getAutoTrigger()->withUpdateLock(function ($trigger) use ($ex) {
+            // Mark the related trigger action as done
+            $action = $this->getAction();
+            $action->setError($ex->getMessage());
+            $this->campaign->logger()->info('Error sending trigger email: '.$ex->getMessage());
+        });
+
+        // Return true is important, telling the caller not to throw exception
+        return true;
     }
 }

@@ -52,8 +52,9 @@ class Send extends Action
         if (config('app.demo') == 'true') {
             // do not wait
         } else {
+            // important: set it to very very low, otherwise it may cause big delays if millions of jobs are on queue
             // to avoid same date/time with previous wait, wrong timeline order
-            sleep(1);
+            usleep(1000); // 1/1000 seconds
         }
 
         // @todo @important This is a VERY VERY TEMPORARY fix, to clean up old data
@@ -107,7 +108,13 @@ class Send extends Action
     public function getProgressDescription($timezone = null, $locale = null)
     {
         $email = $this->getEmail();
-        $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
+
+        if ($this->autoTrigger) {
+            $subscriberEmail = $this->autoTrigger->getSubscriberCachedInfo('email', $fallback = true, $default = '[email]');
+        } else {
+            // In case this element is get from automation->getAction(...), no trigger yet
+            $subscriberEmail = '[email]';
+        }
 
         if (!is_null($this->getLastExecuted())) {
             $queuedAt = Carbon::parse($this->getOption('queued_at'));
@@ -135,7 +142,7 @@ class Send extends Action
                     'c' => $subscriberEmail,
                     'dif' => $queuedAt->diffForHumans(),
                     'dt' => format_datetime($queuedAt, 'datetime_full_with_timezone', $locale),
-                    'id' => $this->getOption('delivery_job_id')
+                    'id' => $this->getOption('delivery_job_id') ?: '#', // temporary hack, to fix previous version issue (delivery_job_id turns out to be an empty array)
                 ]);
 
 

@@ -15,6 +15,7 @@ return [
 
     'default' => env('QUEUE_CONNECTION', 'database'),
 
+    // This is a must for db_sharding mode
     'batching' => [
         'database' => 'mysql', // this is actually a connection
     ],

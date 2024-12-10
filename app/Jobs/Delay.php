@@ -65,8 +65,6 @@ class Delay implements ShouldQueue
      */
     public function retryUntil()
     {
-        $this->customer->setUserDbConnection();
-
         // @important: remember that messages might be released over and over
         // if there is any limit setting in place
         // As a result, it is just save to have it retry virtually forever
@@ -99,7 +97,7 @@ class Delay implements ShouldQueue
 
         } catch (RateLimitExceeded $ex) {
 
-            // Record last activity. Otherwise, this job shall be erase when running Campaign::checkAndForceRerunCampaigns()
+            // Record last activity. Otherwise, this job shall be erase when running "campaign::rerun"
             $this->campaign->debug(function ($info) use ($ex) {
                 $info['last_activity_at'] = Carbon::now()->toString();
 
@@ -111,7 +109,7 @@ class Delay implements ShouldQueue
                 return $info;
             });
 
-            $this->campaign->logger()->warning(sprintf("Resume evaludation failed! Delay for another %s seconds! %s", $this->wait, $ex->getMessage()));
+            $this->campaign->logger()->warning(sprintf("TRY RESUMING BUT rate limits not released! Delay for another %s seconds! %s", $this->wait, $ex->getMessage()));
             $this->release($this->wait);
 
         } catch (Throwable $ex) {

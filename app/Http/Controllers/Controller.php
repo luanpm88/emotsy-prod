@@ -7,7 +7,6 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
@@ -221,7 +220,6 @@ class Controller extends BaseController
      */
     public function userDisabled()
     {
-        \Auth::logout();
         return view('isDisabled');
     }
 
@@ -276,5 +274,10 @@ class Controller extends BaseController
 
         // return to home
         return redirect()->action('HomeController@index');
+    }
+
+    public function somethingWentWrong(Request $request)
+    {
+        return view('somethingWentWrong', ['message' => $request->message]);
     }
 }

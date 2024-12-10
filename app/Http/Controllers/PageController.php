@@ -72,6 +72,7 @@ class PageController extends Controller
             }
 
             // save
+            $page->customer_id = $list->customer->id;
             $page->save();
 
             // Log
@@ -190,9 +191,6 @@ class PageController extends Controller
 
             try {
                 list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_WEB);
-
-                // Timeline record
-                \Acelle\Model\Timeline::recordSignUpFormOptIn($subscriber);
             } catch (\Exception $ex) {
                 return view('somethingWentWrong', ['message' => $ex->getMessage()]);
             }
@@ -200,6 +198,9 @@ class PageController extends Controller
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
+
+            // Timeline record
+            \Acelle\Model\Timeline::recordSignUpFormOptIn($subscriber);
 
             if ($request->redirect_url) {
                 return redirect()->away($request->redirect_url);
@@ -435,7 +436,7 @@ class PageController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($customerUid);
 
         if (is_null($customer)) {
-            throw new \Exception('Cannot find customer');
+            throw new \Exception("Cannot find customer: '{$customerUid}'");
         } else {
             $customer->setUserDbConnection();
         }
@@ -481,17 +482,15 @@ class PageController extends Controller
         $page->renderContent($values, $subscriber);
 
         if ($request->isMethod('post')) {
-            if ($subscriber->getSecurityToken('update-profile') == $request->code) {
-                $rules = $subscriber->getRules();
-                $rules['EMAIL'] .= '|in:'.$subscriber->email;
-                // Validation
-                $this->validate($request, $rules);
+            $rules = $subscriber->getRules();
+            $rules['EMAIL'] .= '|in:'.$subscriber->email;
+            // Validation
+            $this->validate($request, $rules);
 
-                // Update field
-                $subscriber->updateFields($request->all());
+            // Update field
+            $subscriber->updateFields($request->all());
 
-                return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
-            }
+            return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, 'id' => $subscriber->id, 'customer_uid' => $list->customer->uid]);
         }
 
         return view('pages.form', [

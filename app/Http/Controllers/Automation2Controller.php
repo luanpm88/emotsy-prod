@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use Validator;
 use Acelle\Http\Requests;
 use Acelle\Model\Automation2;
@@ -457,6 +456,7 @@ class Automation2Controller extends Controller
             'wait',
             'condition',
             'operation',
+            'outgoing-webhook'
         ];
 
         if ($automation->stepsCount() >= \Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_step')) {
@@ -470,12 +470,7 @@ class Automation2Controller extends Controller
         ]);
     }
 
-    /**
-     * Select action type confirm.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function actionSelectConfirm(Request $request, $uid)
+    public function waitCreate(Request $request, $uid)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
@@ -485,8 +480,23 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        return view('automation2.actionSelectConfirm', [
-            'key' => $request->key,
+        return view('automation2.waitCreate', [
+            'automation' => $automation,
+            'element' => $automation->getElement(),
+        ]);
+    }
+
+    public function conditionCreate(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.conditionCreate', [
             'automation' => $automation,
             'element' => $automation->getElement(),
         ]);
@@ -513,12 +523,7 @@ class Automation2Controller extends Controller
         ]);
     }
 
-    /**
-     * Select trigger type.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function actionSelect(Request $request, $uid)
+    public function waitSave(Request $request, $uid)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
@@ -528,88 +533,87 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        if ($request->key == 'wait') {
-            $delayOptions = \Acelle\Model\Automation2::getDelayOptions();
-            $parts = explode(' ', $request->time);
-            $title = trans('messages.time.wait_for') . ' ' . $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], $parts[0]);
+        $delayOptions = \Acelle\Model\Automation2::getDelayOptions();
+        $parts = explode(' ', $request->time);
+        $title = trans('messages.time.wait_for') . ' ' . $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], $parts[0]);
 
-            foreach ($delayOptions as $deplayOption) {
-                if ($deplayOption['value'] == $request->time) {
-                    $title = trans('messages.automation.wait.delay.' . $request->time);
-                }
+        foreach ($delayOptions as $deplayOption) {
+            if ($deplayOption['value'] == $request->time) {
+                $title = trans('messages.automation.wait.delay.' . $request->time);
             }
+        }
 
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.action.added'),
+            'title' => $title,
+            'options' => [
+                'key' => $request->key,
+                'time' => $request->time,
+            ],
+        ]);
+    }
+
+    public function conditionSave(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->type == 'open') {
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.action.added'),
-                'title' => $title,
+                'title' => trans('messages.automation.action.condition.read_email.title'),
                 'options' => [
                     'key' => $request->key,
-                    'time' => $request->time,
+                    'type' => $request->type,
+                    'email' => empty($request->email) ? null : $request->email,
+                    'wait' => $request->wait,
                 ],
             ]);
-        } elseif ($request->key == 'condition') {
-            if ($request->type == 'open') {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => trans('messages.automation.action.added'),
-                    'title' => trans('messages.automation.action.condition.read_email.title'),
-                    'options' => [
-                        'key' => $request->key,
-                        'type' => $request->type,
-                        'email' => empty($request->email) ? null : $request->email,
-                        'wait' => $request->wait,
-                    ],
-                ]);
-            } elseif ($request->type == 'click') {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => trans('messages.automation.action.added'),
-                    'title' => trans('messages.automation.action.condition.click_link.title'),
-                    'options' => [
-                        'key' => $request->key,
-                        'type' => $request->type,
-                        'email_link' => empty($request->email_link) ? null : $request->email_link,
-                        'wait' => $request->wait,
-                    ],
-                ]);
-            } elseif ($request->type == 'cart_buy_anything') {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => trans('messages.automation.action.updated'),
-                    'title' => trans('messages.automation.action.condition.cart_buy_anything.title'),
-                    'options' => [
-                        'key' => $request->key,
-                        'type' => $request->type,
-                    ],
-                ]);
-            } elseif ($request->type == 'cart_buy_item') {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => trans('messages.automation.action.updated'),
-                    'title' => trans('messages.automation.action.condition.cart_buy_item.title', [
-                        'item' => $request->item_title,
-                    ]),
-                    'options' => [
-                        'key' => $request->key,
-                        'type' => $request->type,
-                        'item_id' => $request->item_id,
-                        'item_title' => $request->item_title,
-                    ],
-                ]);
-            }
-        } else {
+        } elseif ($request->type == 'click') {
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.action.added'),
-                'title' => trans('messages.automation.action.title', [
-                    'title' => trans('messages.automation.action.' . $request->key)
+                'title' => trans('messages.automation.action.condition.click_link.title'),
+                'options' => [
+                    'key' => $request->key,
+                    'type' => $request->type,
+                    'email_link' => empty($request->email_link) ? null : $request->email_link,
+                    'wait' => $request->wait,
+                ],
+            ]);
+        } elseif ($request->type == 'cart_buy_anything') {
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.action.updated'),
+                'title' => trans('messages.automation.action.condition.cart_buy_anything.title'),
+                'options' => [
+                    'key' => $request->key,
+                    'type' => $request->type,
+                ],
+            ]);
+        } elseif ($request->type == 'cart_buy_item') {
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.action.updated'),
+                'title' => trans('messages.automation.action.condition.cart_buy_item.title', [
+                    'item' => $request->item_title,
                 ]),
                 'options' => [
                     'key' => $request->key,
-                    'after' => $request->after,
+                    'type' => $request->type,
+                    'item_id' => $request->item_id,
+                    'item_title' => $request->item_title,
                 ],
             ]);
+        } else {
+            throw new \Exception("Condition type {$request->type} not found!");
         }
     }
 
@@ -661,12 +665,7 @@ class Automation2Controller extends Controller
         ]);
     }
 
-    /**
-     * Edit action.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function actionEdit(Request $request, $uid)
+    public function waitEdit(Request $request, $uid)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
@@ -678,93 +677,101 @@ class Automation2Controller extends Controller
 
         // saving
         if ($request->isMethod('post')) {
-            if ($request->key == 'wait') {
-                $delayOptions = \Acelle\Model\Automation2::getDelayOptions();
-                $parts = explode(' ', $request->time);
-                $title = trans('messages.time.wait_for') . ' ' . $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], $parts[0]);
+            $delayOptions = \Acelle\Model\Automation2::getDelayOptions();
+            $parts = explode(' ', $request->time);
+            $title = trans('messages.time.wait_for') . ' ' . $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], $parts[0]);
 
-                foreach ($delayOptions as $deplayOption) {
-                    if ($deplayOption['value'] == $request->time) {
-                        $title = trans('messages.automation.wait.delay.' . $request->time);
-                    }
+            foreach ($delayOptions as $deplayOption) {
+                if ($deplayOption['value'] == $request->time) {
+                    $title = trans('messages.automation.wait.delay.' . $request->time);
                 }
+            }
 
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.action.updated'),
+                'title' => $title,
+                'options' => [
+                    'key' => $request->key,
+                    'time' => $request->time,
+                ],
+            ]);
+        }
+
+        return view('automation2.waitEdit', [
+            'key' => $request->key,
+            'automation' => $automation,
+            'element' => $automation->getElement($request->id),
+        ]);
+    }
+
+    public function conditionEdit(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        // saving
+        if ($request->isMethod('post')) {
+            if ($request->type == 'open') {
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.automation.action.updated'),
-                    'title' => $title,
+                    'title' => trans('messages.automation.action.condition.read_email.title'),
                     'options' => [
                         'key' => $request->key,
-                        'time' => $request->time,
+                        'type' => $request->type,
+                        'email' => empty($request->email) ? null : $request->email,
+                        'wait' => $request->wait,
                     ],
                 ]);
-            } elseif ($request->key == 'condition') {
-                if ($request->type == 'open') {
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => trans('messages.automation.action.updated'),
-                        'title' => trans('messages.automation.action.condition.read_email.title'),
-                        'options' => [
-                            'key' => $request->key,
-                            'type' => $request->type,
-                            'email' => empty($request->email) ? null : $request->email,
-                            'wait' => $request->wait,
-                        ],
-                    ]);
-                } elseif ($request->type == 'click') {
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => trans('messages.automation.action.updated'),
-                        'title' => trans('messages.automation.action.condition.click_link.title'),
-                        'options' => [
-                            'key' => $request->key,
-                            'type' => $request->type,
-                            'email_link' => empty($request->email_link) ? null : $request->email_link,
-                            'wait' => $request->wait,
-                        ],
-                    ]);
-                } elseif ($request->type == 'cart_buy_anything') {
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => trans('messages.automation.action.updated'),
-                        'title' => trans('messages.automation.action.condition.cart_buy_anything.title'),
-                        'options' => [
-                            'key' => $request->key,
-                            'type' => $request->type,
-                            'wait' => $request->wait,
-                        ],
-                    ]);
-                } elseif ($request->type == 'cart_buy_item') {
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => trans('messages.automation.action.updated'),
-                        'title' => trans('messages.automation.action.condition.cart_buy_item.title', [
-                            'item' => $request->item_title,
-                        ]),
-                        'options' => [
-                            'key' => $request->key,
-                            'type' => $request->type,
-                            'item_id' => $request->item_id,
-                            'item_title' => $request->item_title,
-                        ],
-                    ]);
-                }
-            } else {
+            } elseif ($request->type == 'click') {
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.automation.action.updated'),
-                    'title' => trans('messages.automation.action.title', [
-                        'title' => trans('messages.automation.action.' . $request->key)
+                    'title' => trans('messages.automation.action.condition.click_link.title'),
+                    'options' => [
+                        'key' => $request->key,
+                        'type' => $request->type,
+                        'email_link' => empty($request->email_link) ? null : $request->email_link,
+                        'wait' => $request->wait,
+                    ],
+                ]);
+            } elseif ($request->type == 'cart_buy_anything') {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.automation.action.updated'),
+                    'title' => trans('messages.automation.action.condition.cart_buy_anything.title'),
+                    'options' => [
+                        'key' => $request->key,
+                        'type' => $request->type,
+                        'wait' => $request->wait,
+                    ],
+                ]);
+            } elseif ($request->type == 'cart_buy_item') {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.automation.action.updated'),
+                    'title' => trans('messages.automation.action.condition.cart_buy_item.title', [
+                        'item' => $request->item_title,
                     ]),
                     'options' => [
                         'key' => $request->key,
-                        'after' => $request->after,
+                        'type' => $request->type,
+                        'item_id' => $request->item_id,
+                        'item_title' => $request->item_title,
                     ],
                 ]);
+            } else {
+                throw new \Exception("Condition type {$request->type} not found!");
             }
         }
 
-        return view('automation2.actionEdit', [
+        return view('automation2.conditionEdit', [
             'key' => $request->key,
             'automation' => $automation,
             'element' => $automation->getElement($request->id),
@@ -1328,7 +1335,7 @@ class Automation2Controller extends Controller
     public function enable(Request $request)
     {
         // Japan + not license
-        if(config('custom.japan') && !\Acelle\Helpers\LicenseHelper::hasActiveLicense()) {
+        if (config('custom.japan') && !\Acelle\Helpers\LicenseHelper::hasActiveLicense()) {
             return response()->json([
                 'status' => 'error',
                 'message' => trans('messages.license.required'),
@@ -2891,5 +2898,157 @@ class Automation2Controller extends Controller
         $signature = \Acelle\Model\Signature::findByUid($request->signature_uid);
 
         $email->setSignature($signature);
+    }
+
+    public function outgoingWebhookSetup(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $options = array (
+            'send_method' => 'post',
+            'authorization_method' => 'basic_auth',
+            'authorization' => array (
+                'bearer_token' => NULL,
+                'username' => NULL,
+                'password' => NULL,
+                'custom_key' => NULL,
+                'custom_value' => NULL,
+            ), 'endpoint_url' => NULL,
+            'header' => 'with_headers',
+            'headers' => array (),
+            'body_type' => 'key_value_pair',
+            'body_parameters' => array (),
+            'plain_text' => NULL, 
+        );
+
+        // 
+        if ($request->id) {
+            $options = array_merge($options, json_decode(json_encode($automation->getElement($request->id)->get('options')), true));
+        }
+
+        return view('automation2.outgoing_webhook.setup', [
+            'automation' => $automation,
+            'element' => $request->id ? $automation->getElement($request->id) : null,
+            'options' => $options,
+        ]);
+    }
+    
+    public function outgoingWebhookTestPopup(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        return view('automation2.outgoing_webhook.testPopup', [
+            'automation' => $automation,
+        ]);
+    }
+
+    public function outgoingWebhookTest(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $options = $request->webhook;
+        $result = $this->outgoingWebhookTestRun($options);
+
+        return view('automation2.outgoing_webhook.testResult', [
+            'automation' => $automation,
+            'options' => $options,
+            'result' => $result,
+        ]);
+    }
+
+    public function outgoingWebhookSave(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        //
+        $data = array_merge([
+            'title' => trans('messages.automation.outgoing_webhook'),
+            'options' => $request->webhook,
+        ]);
+
+        return response()->json($data);
+    }
+
+    public function outgoingWebhookShow(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        // var_export(json_decode(json_encode($automation->getElement($request->id)->get('options')), true));
+
+        return view('automation2.outgoing_webhook.show', [
+            'automation' => $automation,
+            'element' => $automation->getElement($request->id),
+        ]);
+    }
+
+    public function outgoingWebhookTestRun($options) {
+        // Prepare cURL initialization
+        $ch = curl_init();
+
+        // Set the URL from the options
+        curl_setopt($ch, CURLOPT_URL, $options['endpoint_url']);
+        
+        // Set the HTTP method (POST)
+        $method = strtoupper($options['send_method']);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        
+        // Set the Authorization (Basic Auth)
+        if ($options['authorization_method'] === 'basic_auth') {
+            $username = $options['authorization']['username'];
+            $password = $options['authorization']['password'];
+            curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+        }
+
+        // Set Headers
+        $headers = [];
+        if ($options['header'] === 'with_headers' && !empty($options['headers'])) {
+            foreach ($options['headers'] as $header) {
+                $headers[] = $header['key'] . ': ' . $header['value'];
+            }
+        }
+        
+        // Add Content-Type based on body type
+        if ($options['body_type'] === 'key_value_pair') {
+            $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+        } elseif ($options['body_type'] === 'plain_text') {
+            // No special Content-Type needed for plain text
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        // Set the body type and parameters
+        $body = '';
+        if ($options['body_type'] === 'plain_text') {
+            $body = $options['plain_text'];
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        } elseif ($options['body_type'] === 'key_value_pair') {
+            $bodyParams = [];
+            $options['body_parameters'] = $options['body_parameters'] ?? [];
+            foreach ($options['body_parameters'] as $param) {
+                $bodyParams[] = urlencode($param['key']) . '=' . urlencode($param['value']);
+            }
+            $body = implode('&', $bodyParams);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        }
+
+        // Set additional cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+        // Execute the cURL request
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);  // Get HTTP response code
+
+        // Capture cURL errors
+        $curlError = curl_errno($ch) ? curl_error($ch) : null;
+
+        // Close the cURL session
+        curl_close($ch);
+
+        // Display all response aspects
+        return [
+            'methos' => $method,
+            'body' => $body,
+            'error' => $curlError,
+            'http_code' => $httpCode,
+            'response' => $response,
+        ];
     }
 }

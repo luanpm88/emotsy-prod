@@ -15,7 +15,6 @@ use Acelle\Library\RateTracker;
 use Acelle\Library\InMemoryRateTracker;
 use Acelle\Library\DynamicRateTracker;
 use Acelle\Library\RateLimit;
-
 // Services
 use Acelle\Library\Everification\Emailable;
 use Acelle\Library\Everification\ZeroBounce;

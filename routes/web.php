@@ -124,6 +124,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/validate-token/{api_token}', 'Controller@validateToken');
     Route::get('user/activate/{token}', 'UserController@activate');
     Route::get('/disabled', 'Controller@userDisabled');
+    Route::get('/something-went-wrong', 'Controller@somethingWentWrong');
     Route::get('/offline', 'Controller@offline');
     Route::get('/not-authorized', 'Controller@notAuthorized');
     Route::get('/user-does-not-have-role', 'Controller@userDoesNotHaveRole');
@@ -184,6 +185,9 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     // Email Verification
     Route::get('email-verification/checkout/{api_token}/redirect', 'EmailVerificationController@redirect');
+
+    // 
+    Route::get('popup/support/renew', 'PopupController@supportRenew');
 });
 
 // Without authentication
@@ -746,6 +750,12 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::get('automation/{uid}/outgoing-webhook/show', 'Automation2Controller@outgoingWebhookShow');
+    Route::post('automation/{uid}/outgoing-webhook/save', 'Automation2Controller@outgoingWebhookSave');
+    Route::post('automation/{uid}/outgoing-webhook/test', 'Automation2Controller@outgoingWebhookTest');
+    Route::get('automation/{uid}/outgoing-webhook/test-popup', 'Automation2Controller@outgoingWebhookTestPopup');
+    Route::get('automation/{uid}/outgoing-webhook/setup', 'Automation2Controller@outgoingWebhookSetup');
+
     Route::get('automation/{email_uid}/save-signature', 'Automation2Controller@emailSaveSignature');
     Route::get('automation/{email_uid}/overview', 'Automation2Controller@emailOverview');
     Route::post('automation/{uid}/trigger-all', 'Automation2Controller@triggerAll');
@@ -823,10 +833,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid}/confirm', 'Automation2Controller@emailConfirm');
     Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid?}', 'Automation2Controller@email');
     Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');
-    Route::match(['get', 'post'], 'automation/{uid}/action/edit', 'Automation2Controller@actionEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/wait/edit', 'Automation2Controller@waitEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/condition/edit', 'Automation2Controller@conditionEdit');
     Route::match(['get', 'post'], 'automation/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
-    Route::post('automation/{uid}/action/select', 'Automation2Controller@actionSelect');
-    Route::get('automation/{uid}/action/select/confirm', 'Automation2Controller@actionSelectConfirm');
+    Route::post('automation/{uid}/wait/save', 'Automation2Controller@waitSave');
+    Route::post('automation/{uid}/condition/save', 'Automation2Controller@conditionSave');
+    Route::get('automation/{uid}/wait/create', 'Automation2Controller@waitCreate');
+    Route::get('automation/{uid}/condition/create', 'Automation2Controller@conditionCreate');
     Route::get('automation/{uid}/action/select', 'Automation2Controller@actionSelectPupop');
     Route::post('automation/{uid}/trigger/select', 'Automation2Controller@triggerSelect');
     Route::get('automation/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
@@ -1169,8 +1182,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/settings/cronjob', 'SettingController@cronjob');
     Route::post('admin/settings/cronjob', 'SettingController@cronjob');
     Route::get('admin/settings/urls', 'SettingController@urls');
-    Route::get('admin/settings/sending', 'SettingController@sending');
-    Route::post('admin/settings/sending', 'SettingController@sending');
     Route::get('admin/settings/general', 'SettingController@general');
     Route::post('admin/settings/general', 'SettingController@general');
     Route::get('admin/settings/logs', 'SettingController@logs');

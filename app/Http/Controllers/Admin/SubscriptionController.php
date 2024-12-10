@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Subscription;
 use Acelle\Model\SubscriptionLog;

@@ -243,6 +243,10 @@ class Email extends Model implements HasTemplateInterface
             $subscription = null;
         }
 
+        if (is_null($subscription)) {
+            throw new Exception("Customer {$this->customer->name} has no active subscription, quit sending");
+        }
+
         $job = new SendSingleMessage(
             $this,
             $subscriber,
@@ -260,6 +264,8 @@ class Email extends Model implements HasTemplateInterface
             $queue = ACM_QUEUE_TYPE_SINGLE;
             // $queue is currently determined by Automation/Send action
             // in which priority is determined by trigger type
+        } else {
+            // use the $queue passed to
         }
 
         if ($connection) {
@@ -270,7 +276,9 @@ class Email extends Model implements HasTemplateInterface
             $job->onQueue($queue);
         }
 
-        $jobId = dispatch($job);
+        // @important: the original method dispatch() sometimes returns PendingDispatch object instead of the dispatched JobID
+        // So, here we should use safe_dispatch instead
+        $jobId = safe_dispatch($job);
 
         return $jobId;
     }
