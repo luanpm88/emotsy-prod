@@ -788,7 +788,7 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // Japan + not license
-            if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+            if (config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.license.required'),
@@ -2099,7 +2099,7 @@ class CampaignController extends Controller
         $campaigns = Campaign::whereIn('uid', $request->uids)->get();
 
         // Japan + not license
-        if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+        if (config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
             return response()->json([
                 'status' => 'error',
                 'message' => trans('messages.license.required'),
@@ -2322,7 +2322,7 @@ class CampaignController extends Controller
 
         if ($request->isMethod('post')) {
             // Japan + not license
-            if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+            if (config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.license.required'),
@@ -2594,7 +2594,7 @@ class CampaignController extends Controller
         // do resend with option: $request->option : not_receive|not_open|not_click
         if ($request->isMethod('post')) {
             // Japan + not license
-            if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+            if (config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.license.required'),
@@ -3081,42 +3081,42 @@ class CampaignController extends Controller
         ]);
     }
 
-    public function webhooksTestMessage(Request $request, $webhook_uid, $message_id)
+    public function webhooksTestMessage(Request $request)
     {
         $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
-        $result = null;
+
+        if ($webhook->isOpen()) {
+            $log = OpenLog::where('message_id', $request->message_id)->first();
+            if (is_null($log)) {
+                throw new \Exception("Cannot find open log with message_id: ".$request->message_id);
+            }
+        } elseif ($webhook->isClick()) {
+            $log = ClickLog::where('message_id', $request->message_id)->first();
+            if (is_null($log)) {
+                throw new \Exception("Cannot find click log with message_id: ".$request->message_id);
+            }
+        } elseif ($webhook->isUnsubscribe()) {
+            $log = UnsubscribeLog::where('message_id', $request->message_id)->first();
+            if (is_null($log)) {
+                throw new \Exception("Cannot find unsubscribe log with message_id: ".$request->message_id);
+            }
+        }
 
         // authorize
         if (\Gate::denies('read', $webhook->campaign)) {
             return $this->notAuthorized();
         }
 
-        $client = new \GuzzleHttp\Client();
-
         try {
-            $response = $client->request('GET', $webhook->endpoint, [
-                'headers' => [
-                    "content-type" => "application/json"
-                ],
-                'body' => '{hello: "world"}',
-                'http_errors' => false,
-            ]);
+            $response = $webhook->execute($log); // make HTTP request
 
             $result = [
-                'status' => 'sent',
-                'code' => $response->getStatusCode(),
-                'message' => $response->getReasonPhrase(),
-                'message_id' => $message_id,
-                'endpoint' => $webhook->endpoint,
-                'responseBody' => $response->getBody(),
+                'code' => $response->status(),
+                'responseBody' => $response->body(),
             ];
         } catch (\Exception $e) {
             $result = [
-                'status' => 'error',
-                'message' => $e->getMessage(),
-                'message_id' => $message_id,
-                'endpoint' => $webhook->endpoint,
-                'responseBody' => $response->getBody(),
+                'error' => "HTTP request error: ".$e->getMessage(),
             ];
         }
 

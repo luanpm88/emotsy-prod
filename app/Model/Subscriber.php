@@ -519,7 +519,7 @@ class Subscriber extends Model
         $copy->save();
 
 
-        foreach($this->mailList->fields as $field) {
+        foreach ($this->mailList->fields as $field) {
             $copy->setFieldValue($field, $this->getValueByField($field));
         }
 
@@ -895,7 +895,7 @@ class Subscriber extends Model
         $tags = $oldTags;
 
         $removedTags = [];
-        foreach ( $tagsToRemove as $tag ) {
+        foreach ($tagsToRemove as $tag) {
             if (($key = array_search($tag, $tags)) !== false) {
                 unset($tags[$key]);
                 $this->tags = json_encode($tags);

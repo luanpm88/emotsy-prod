@@ -1,6 +1,6 @@
 <div class="d-flex align-items-center mb-4">
     <div style="width: 70%" class="mr-auto">
-        <h2 class="mb-2 email_title">{{ trans('messages.automation.automation_email') }}</h2>
+        <h2 data-control="email-title" class="mb-2 email_title">{{ trans('messages.automation.automation_email') }}</h2>
         <p>{{ trans('messages.automation.automation_email.intro') }}</p>
     </div>    
     <div class="header-action">

@@ -38,7 +38,7 @@ class VerifySender extends Command
      */
     public function handle()
     {
-        $this->withPendingSenders(function($customer, $senders) {
+        $this->withPendingSenders(function ($customer, $senders) {
             foreach ($senders as $sender) {
                 $sender->customer->setUserDbConnection();
                 $sender->updateVerificationStatus();

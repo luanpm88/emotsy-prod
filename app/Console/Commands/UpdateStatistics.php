@@ -41,7 +41,7 @@ class UpdateStatistics extends Command
 
         $customers = Customer::all();
 
-        foreach($customers as $customer) {
+        foreach ($customers as $customer) {
             if (is_null($customer->getCurrentActiveGeneralSubscription())) {
                 continue;
             }

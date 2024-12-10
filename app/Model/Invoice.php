@@ -3,7 +3,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Acelle\Model\Subscription;
 use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;

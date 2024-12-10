@@ -241,7 +241,7 @@ abstract class Action
             }
         }
 
-        foreach($json['options'] as $key => $value) {
+        foreach ($json['options'] as $key => $value) {
             if (!in_array($key, $keep)) {
                 $this->setOption($key, $value);
             }

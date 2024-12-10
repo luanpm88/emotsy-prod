@@ -576,8 +576,8 @@ class ApiHelper
 -d frequency_unit=month \
 -d price=20 \
 -d color=red \
--d options[sending_server_option]=' .\Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_OWN.' \
--d options[email_max]=10000',
+-d "options[sending_server_option]=' .\Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_OWN.'" \
+-d "options[email_max]=10000"',
                 ],
             ],
         ];

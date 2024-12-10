@@ -209,7 +209,7 @@ class CategoryController extends Controller
                             'status' => 'Active',
                         ]);
                     $mesenger   =   " Active sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }
@@ -219,7 +219,7 @@ class CategoryController extends Controller
                 try {
                     Category::destroy($request->ids);
                     $mesenger   =   " Delete sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }

@@ -104,7 +104,9 @@ class UserController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
+            // Just for refilling the form (UI)
             $user->fill($request->all());
+            $customer->fill($request->all());
 
             // Captcha check
             if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
@@ -113,12 +115,31 @@ class UserController extends Controller
                     $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
                     $success = $hcaptcha->check($request);
                     if (!$success) {
-                        $rules['captcha_invalid'] = 'required';
+                        // validation
+                        $validator = \Validator::make([], [
+                            'captcha_invalid' => 'required',
+                        ]);
+
+                        return view('users.register', [
+                            'customer' => $customer,
+                            'user' => $user,
+                            'errors' => $validator->errors(),
+                        ]);
                     }
+                    // @reCaptcha: default
                 } else {
                     $success = \Acelle\Library\Tool::checkReCaptcha($request);
                     if (!$success) {
-                        $rules['recaptcha_invalid'] = 'required';
+                        // validation
+                        $validator = \Validator::make([], [
+                            'recaptcha_invalid' => 'required',
+                        ]);
+
+                        return view('users.register', [
+                            'customer' => $customer,
+                            'user' => $user,
+                            'errors' => $validator->errors(),
+                        ]);
                     }
                 }
             }

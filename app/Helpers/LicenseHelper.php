@@ -68,7 +68,7 @@ class LicenseHelper
             $responseBody = $response->getBody();
             $responseJson = json_decode($responseBody, true);
             return $responseJson;
-        } catch(\GuzzleHttp\Exception\ClientException $ex) { // 400 error
+        } catch (\GuzzleHttp\Exception\ClientException $ex) { // 400 error
             $response = $ex->getResponse();
 
             if (config('custom.japan')) {

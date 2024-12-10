@@ -119,7 +119,7 @@ class FeedbackLog extends Model
         }
 
         if (is_null($logCallback)) {
-            $logCallback = function($message) {
+            $logCallback = function ($message) {
                 // do nothing
             };
         }

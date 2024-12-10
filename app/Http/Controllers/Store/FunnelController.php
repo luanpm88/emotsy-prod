@@ -205,7 +205,7 @@ class FunnelController extends Controller
                             'status' => 'Active',
                         ]);
                     $mesenger   =   " Active sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }
@@ -215,7 +215,7 @@ class FunnelController extends Controller
                 try {
                     Funnel::destroy($request->ids);
                     $mesenger   =   " Delete sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }

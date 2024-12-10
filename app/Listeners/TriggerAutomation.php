@@ -5,14 +5,12 @@ namespace Acelle\Listeners;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Exception;
-
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUnsubscription;
 use Acelle\Events\SubscribersTagsUpdate;
 use Acelle\Events\SubscribersAttributesUpdate;
 use Acelle\Events\SubscriberTagsRemoved;
 use Acelle\Model\Field;
-
 use Acelle\Model\Automation2;
 
 class TriggerAutomation

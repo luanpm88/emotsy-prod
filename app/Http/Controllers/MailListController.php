@@ -723,13 +723,9 @@ class MailListController extends Controller
         try {
             // Create subscriber
             list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
-
-            // Timeline record
-            \Acelle\Model\Timeline::recordEmbeddedFormOptIn($subscriber);
         } catch (\Exception $ex) {
             return view('somethingWentWrong', ['message' => $ex->getMessage()]);
         }
-
 
         if ($validator->fails()) {
             $url = $request->session()->pull('form_url');
@@ -753,6 +749,9 @@ class MailListController extends Controller
                 'back_link' => $url,
             ]);
         }
+
+        // Timeline record
+        \Acelle\Model\Timeline::recordEmbeddedFormOptIn($subscriber);
 
         // custom redirect
         if ($request->redirect_url) {
@@ -843,10 +842,11 @@ class MailListController extends Controller
         $job = $list->verificationJobs()->where('uid', $request->job_uid)->first();
 
         if (is_null($job)) {
-            throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
+            // throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
+        } else {
+            $job->cancel();
         }
 
-        $job->cancel();
         return response()->json();
     }
 

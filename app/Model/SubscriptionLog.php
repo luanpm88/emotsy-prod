@@ -83,7 +83,7 @@ class SubscriptionLog extends Model
     {
         $data = $this->getData();
 
-        switch($this->type) {
+        switch ($this->type) {
             case self::TYPE_SELECT_PLAN:
                 return trans('messages.subscription.log.select_plan', [
                     'invoice' => $this->invoice_uid,

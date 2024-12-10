@@ -190,7 +190,7 @@ class ProductController extends Controller
                             'status' => $status,
                         ]);
                     $mesenger   =   " Active sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }
@@ -200,7 +200,7 @@ class ProductController extends Controller
                 try {
                     Product::destroy($request->ids);
                     $mesenger   =   " Delete sucessful";
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     report($e);
                 }
             }
