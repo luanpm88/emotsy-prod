@@ -103,7 +103,16 @@ return [
             'id' => 'verifiedemails.io',
             'name' => 'VerifiedEmails.io',
             'fields' => [ 'username', 'api_token' ],
+        ], [
+            'id' => 'reoon.com',
+            'name' => 'Reoon.com',
+            'fields' => [ 'api_key' ],
         ]
+        // , [
+        //     'id' => 'emaillistverify.com',
+        //     'name' => 'EmailListVerify.io',
+        //     'fields' => [ 'api_key' ],
+        // ]
 
     ]
 ];

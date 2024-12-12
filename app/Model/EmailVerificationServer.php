@@ -23,6 +23,8 @@ use Acelle\Library\Everification\MyEmailVerifier;
 use Acelle\Library\Everification\Bouncify;
 use Acelle\Library\Everification\AthenaEvs;
 use Acelle\Library\Everification\VerifiedEmails;
+use Acelle\Library\Everification\Reoon;
+use Acelle\Library\Everification\EmailListVerify;
 
 class EmailVerificationServer extends Model
 {
@@ -100,6 +102,14 @@ class EmailVerificationServer extends Model
                 $username = $this->getOptions()['username'];
                 $apiToken = $this->getOptions()['api_token'];
                 $this->service = new VerifiedEmails($username, $apiToken);
+                return $this->service;
+            case 'reoon.com':
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new Reoon($apiKey);
+                return $this->service;
+            case 'emaillistverify.com':
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new EmailListVerify($apiKey);
                 return $this->service;
 
             default:
