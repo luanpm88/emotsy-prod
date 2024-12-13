@@ -107,12 +107,11 @@ return [
             'id' => 'reoon.com',
             'name' => 'Reoon.com',
             'fields' => [ 'api_key' ],
+        ], [
+            'id' => 'emaillistverify.com',
+            'name' => 'EmailListVerify.com',
+            'fields' => [ 'api_key' ],
         ]
-        // , [
-        //     'id' => 'emaillistverify.com',
-        //     'name' => 'EmailListVerify.io',
-        //     'fields' => [ 'api_key' ],
-        // ]
 
     ]
 ];
