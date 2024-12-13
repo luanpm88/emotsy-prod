@@ -25,6 +25,7 @@ use Acelle\Library\Everification\AthenaEvs;
 use Acelle\Library\Everification\VerifiedEmails;
 use Acelle\Library\Everification\Reoon;
 use Acelle\Library\Everification\EmailListVerify;
+use Acelle\Library\Everification\NerverBounce;
 
 class EmailVerificationServer extends Model
 {
@@ -110,6 +111,10 @@ class EmailVerificationServer extends Model
             case 'emaillistverify.com':
                 $apiKey = $this->getOptions()['api_key'];
                 $this->service = new EmailListVerify($apiKey);
+                return $this->service;
+            case 'nerverbounce.com':
+                $apiKey = $this->getOptions()['api_key'];
+                $this->service = new NerverBounce($apiKey);
                 return $this->service;
 
             default:

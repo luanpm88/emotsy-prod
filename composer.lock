@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d44f763a7859ec1fc606afb81937007",
+    "content-hash": "4d4e2921607c2e20d9357484f53e8312",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -4976,6 +4976,64 @@
                 "source": "https://github.com/nette/utils/tree/v4.0.3"
             },
             "time": "2023-10-29T21:02:13+00:00"
+        },
+        {
+            "name": "neverbounce/neverbounce-php",
+            "version": "v4.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NeverBounce/NeverBounceAPI-PHP.git",
+                "reference": "052058512e58f1641ac24a2a139b42f5b3e2f788"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NeverBounce/NeverBounceAPI-PHP/zipball/052058512e58f1641ac24a2a139b42f5b3e2f788",
+                "reference": "052058512e58f1641ac24a2a139b42f5b3e2f788",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.11.6",
+                "phpunit/phpunit": "^7.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NeverBounce\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Mollick",
+                    "email": "mike@neverbounce.com"
+                },
+                {
+                    "name": "Ankur Pandit",
+                    "email": "ankur@neverbounce.com"
+                }
+            ],
+            "description": "This package provides convenient methods to integrate the NeverBounce API into your project.",
+            "homepage": "https://neverbounce.com",
+            "keywords": [
+                "email",
+                "email validation",
+                "validation",
+                "verification"
+            ],
+            "support": {
+                "issues": "https://github.com/NeverBounce/NeverBounceAPI-PHP/issues",
+                "source": "https://github.com/NeverBounce/NeverBounceAPI-PHP/tree/master"
+            },
+            "time": "2020-08-03T20:56:09+00:00"
         },
         {
             "name": "nikic/php-parser",
