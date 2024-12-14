@@ -33,12 +33,22 @@ class EmailListVerify implements VerifyInterface, BulkVerifyInterface
 
     public function getCredits(): ?int
     {
-        return null;
+        $email = "test@example.com";
+        $key = $this->apiKey;
+        $url = "https://apps.emaillistverify.com/api/getCredit?secret=".$key;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true );
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return $response;
     }
 
     public function verify($email)
     {
-        $email = "test@example.com";
         $key = $this->apiKey;
         $url = "https://apps.emaillistverify.com/api/verifyEmail?secret=".$key."&email=".$email;
         $ch = curl_init();
@@ -57,8 +67,10 @@ class EmailListVerify implements VerifyInterface, BulkVerifyInterface
         $key = $this->apiKey;
         $filename = "bulkVerify_" . uniqid() . ".txt";
         $emails = $subscriberQuery->pluck('email')->toArray();
-        $filePath = '/Users/luan/Downloads/' . $filename;
-        
+        $filePath = '/tmp/' . $filename;
+
+        // header
+        array_unshift($emails, 'Email');
 
         // Open the file in append mode
         $file = fopen($filePath, 'a');
@@ -70,38 +82,85 @@ class EmailListVerify implements VerifyInterface, BulkVerifyInterface
 
         // Close the file
         fclose($file);
-        $settings['file_contents'] = "$filePath";
-        $url = 'https://apps.emaillistverify.com/api/verifyApiFile?secret='.$key.'&filename=my_emails.txt';
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $settings);
-        $file_id = curl_exec($ch); //you need to save this FILE ID for get file status and download reports in future
-        curl_close($ch);
 
-        return $file_id;
+        $url = 'https://api.emaillistverify.com/api/verifyApiFile?secret=' . $key.'&filename=my_emails.txt';
+
+        $curl = curl_init();
+
+        // Set the options for the cURL request
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                'accept: text/html',
+                'Content-Type: multipart/form-data',
+                "Authorization: Bearer $key",
+            ],
+            CURLOPT_POSTFIELDS => [
+                'key' => $key,
+                'file_contents' => new \CURLFile($filePath, 'text/plain'),
+                'quality' => 'high',
+            ],
+        ]);
+
+        // Execute the request and capture the response
+        $response = curl_exec($curl);
+
+        // Check for errors
+        if (curl_errno($curl)) {
+            echo 'cURL Error: ' . curl_error($curl);
+        } else {
+            echo 'Response: ' . $response;
+        }
+
+        // Close the cURL session
+        curl_close($curl);
+
+        return $response;
     }
 
     public function bulkCheck(string $batchId, Closure $doneCallback, Closure $waitCallback): bool
     {
         // 1438667
-        $response = $this->makeRequest('GET', 'get-result-bulk-verification-task/', [
-            'task_id' => $batchId,
-        ]); 
+        $key = $this->apiKey;
+        $url = 'https://apps.emaillistverify.com/api/getApiFileInfo?secret='.$key.'&id='.$batchId;
+        $string = file_get_contents($url);
+        list($file_id,$filename,$unique,$lines,$lines_processed,$status,$timestamp,$link1,$link2) = explode('|',$string); //parse data
 
-        $raw = (string)$response->getBody();
-        $response = json_decode($raw, true);
+        $data = [$file_id,$filename,$unique,$lines,$lines_processed,$status,$timestamp,$link1,$link2];
 
-        if ($response['status'] != 'completed') {
+        if ($status != 'finished') {
             if ($waitCallback) {
-                $waitCallback(json_encode($response));
+                $waitCallback(json_encode($data));
             }
 
             return false;
         } else {
-            foreach ($response['results'] as $email => $result) {
-                $email = $email;
-                $status = $this->map[$result['status']];
+            // fetch result
+            $url = $link2;
+
+            // Open the file and read the contents into an array
+            if (($handle = fopen($url, 'r')) !== false) {
+                $csvData = [];
+                while (($row = fgetcsv($handle)) !== false) {
+                    $csvData[] = $row;
+                }
+                fclose($handle);
+
+                // Remove the first element
+                array_shift($csvData);
+
+                // Output the array
+                print_r($csvData);
+            } else {
+                throw new \Exception('Failed to open the URL: ' . $link2);
+            }
+
+            foreach ($csvData as $result) {
+                // var_dump($result[0], $result[1]);
+                $email = $result[1];
+                $status = $this->map[$result[0]];
                 $doneCallback($email, $status, json_encode($result));
             }
 
