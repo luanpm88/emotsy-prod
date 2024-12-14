@@ -943,7 +943,7 @@ class User extends Authenticatable
         $last_name,
         $image,
         $role_uid,
-        $phone=null
+        $phone = null
     ) {
         $rules = [
             'email' => 'required|email|unique:users,email,'.$this->id.',id',

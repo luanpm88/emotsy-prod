@@ -71,7 +71,7 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
 
     public function markAsStarted()
     {
-        with_cache_lock($this->lock, function() {
+        with_cache_lock($this->lock, function () {
             $running = Cache::get($this->logkey, []);
             $running[$this->automation->uid] = [
                 'name' => $this->automation->name,
@@ -81,7 +81,7 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
             ];
 
             Cache::put($this->logkey, $running);
-        }, $getLockTimeout = 5, $lockTime = 10, $waitTimeoutCallback = function() {
+        }, $getLockTimeout = 5, $lockTime = 10, $waitTimeoutCallback = function () {
             applog('automation-dispatch')->info('Cannot log automation start: '.$this->automation->uid);
         });
 
@@ -89,12 +89,12 @@ class RunAutomation implements ShouldQueue, ShouldBeUnique
 
     public function markAsFinished()
     {
-        with_cache_lock($this->lock, function() {
+        with_cache_lock($this->lock, function () {
             $running = Cache::get($this->logkey, []);
             unset($running[$this->automation->uid]);
 
             Cache::put($this->logkey, $running);
-        }, $getLockTimeout = 5, $lockTime = 10, $waitTimeoutCallback = function() {
+        }, $getLockTimeout = 5, $lockTime = 10, $waitTimeoutCallback = function () {
             applog('automation-dispatch')->info('Cannot log automation finish: '.$this->automation->uid);
         });
     }

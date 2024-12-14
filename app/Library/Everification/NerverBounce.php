@@ -77,7 +77,7 @@ class NerverBounce implements VerifyInterface, BulkVerifyInterface
 
     public function bulkSubmit(Builder $subscriberQuery): string
     {
-        $json = $subscriberQuery->select('id', 'email')->get()->map(function($sub) {
+        $json = $subscriberQuery->select('id', 'email')->get()->map(function ($sub) {
             return [
                 'id' => $sub->id,
                 'email' => $sub->email,

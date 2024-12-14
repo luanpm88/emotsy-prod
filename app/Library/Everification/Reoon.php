@@ -21,7 +21,7 @@ class Reoon implements VerifyInterface, BulkVerifyInterface
         'spamtrap' => 'unknown',
     ];
 
-    const BASE_URI = 'https://emailverifier.reoon.com/api/v1/';
+    public const BASE_URI = 'https://emailverifier.reoon.com/api/v1/';
 
     public function __construct($apiKey)
     {
@@ -65,7 +65,7 @@ class Reoon implements VerifyInterface, BulkVerifyInterface
             // If the method is POST, add form_params
             if (strtoupper($method) == 'POST') {
                 $options['json'] = $params;
-            } else if (strtoupper($method) == 'GET') {
+            } elseif (strtoupper($method) == 'GET') {
                 $options['query'] = $params;
             }
 
@@ -146,7 +146,7 @@ class Reoon implements VerifyInterface, BulkVerifyInterface
         // 1438667
         $response = $this->makeRequest('GET', 'get-result-bulk-verification-task/', [
             'task_id' => $batchId,
-        ]); 
+        ]);
 
         $raw = (string)$response->getBody();
         $response = json_decode($raw, true);

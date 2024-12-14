@@ -40,7 +40,7 @@ class EmailListVerify implements VerifyInterface, BulkVerifyInterface
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true );
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $response = curl_exec($ch);
         curl_close($ch);
 
@@ -55,7 +55,7 @@ class EmailListVerify implements VerifyInterface, BulkVerifyInterface
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true );
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $response = curl_exec($ch);
         curl_close($ch);
 
@@ -126,7 +126,7 @@ class EmailListVerify implements VerifyInterface, BulkVerifyInterface
         $key = $this->apiKey;
         $url = 'https://apps.emaillistverify.com/api/getApiFileInfo?secret='.$key.'&id='.$batchId;
         $string = file_get_contents($url);
-        list($file_id,$filename,$unique,$lines,$lines_processed,$status,$timestamp,$link1,$link2) = explode('|',$string); //parse data
+        list($file_id, $filename, $unique, $lines, $lines_processed, $status, $timestamp, $link1, $link2) = explode('|', $string); //parse data
 
         $data = [$file_id,$filename,$unique,$lines,$lines_processed,$status,$timestamp,$link1,$link2];
 

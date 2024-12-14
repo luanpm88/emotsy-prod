@@ -1634,7 +1634,7 @@ class Customer extends Model
         $last_name,
         $image,
         $role_uid,
-        $phone=null,
+        $phone = null,
     ) {
         // init
         $customer = static::newCustomer();
