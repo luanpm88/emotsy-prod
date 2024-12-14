@@ -8521,3 +8521,7 @@ label.check-symbol {
 .styled[type="radio"]:checked ~ label.check-symbol:after {
     top: 5px;
 }
+.form-group .iti.iti--allow-dropdown {
+    height: auto;
+    width: 100%;
+}

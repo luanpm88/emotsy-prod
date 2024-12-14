@@ -372,6 +372,10 @@ return [
         'value' => 'yes',
         'type' => 'boolean',
     ],
+    'user.require_mobile_phone' => [
+        'value' => 'no',
+        'type' => 'boolean',
+    ],
 ];
 
 

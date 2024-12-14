@@ -4,7 +4,7 @@
 
 @section('content')
     
-    <form enctype="multipart/form-data" action="{{ action('UserController@register') }}" method="POST" class="form-validate-jqueryz subscription-form">
+    <form enctype="multipart/form-data" action="{{ action('UserController@register') }}" method="POST" class="form-validate-jqueryz register-form">
         {{ csrf_field() }}
 
         <input type="hidden" name="plan_uid" value="{{ request()->plan_uid }}" />
@@ -41,6 +41,20 @@
                     'help_class' => 'profile',
                     'rules' => $user->registerRules()
                 ])
+
+                <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
+                    <label>
+                        {{ trans('messages.phone') }}
+                        @if (Acelle\Model\Setting::get('user.require_mobile_phone') == 'yes')
+                            <span class="text-danger">*</span>
+                        @endif
+                    </label>
+                    @include('helpers.form_control.phone', [
+                        'name' => 'phone',
+                        'value' => $user->phone,
+                        'attributes' => Acelle\Model\Setting::get('user.require_mobile_phone') == 'yes' ? ['required' => 'required'] : [],
+                    ])
+                </div>
 
                 @if (get_localization_config('show_last_name_first', config('app.locale')))
 
