@@ -117,7 +117,13 @@ class DeliveryHandler extends Model
             $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/{$this->encryption}}INBOX";
 
             // try to connect
-            $inbox = @imap_open($imapPath, $this->username, $this->password);
+            try {
+                $inbox = @imap_open($imapPath, $this->username, $this->password);
+            } catch (\Exception $ex) {
+                $this->logger()->info("Failed imap_open: ".$ex->getMessage().":\n".$ex->getTraceAsString());
+                $inbox = false;
+            }
+
 
             // try again with ssl/novalidate-cert
             if ($inbox == false) {
