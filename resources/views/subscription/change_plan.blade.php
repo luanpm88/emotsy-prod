@@ -28,18 +28,42 @@
                                         class="new-price-item mb-3 d-inline-block plan-item select-plan-item"
                                         data-control="plan"
                                     >
-                                        <h2 class="mb-3 mt-1 fw-semibold" style='
-                                            font-family: "Poppins", "Open Sans","Helvetica Neue",Arial,Helvetica,Verdana,sans-serif
-                                        '>{{ $planGroup->name }}</h2>
-                                        <label for="" class="small mb-1 fw-semibold">{{ trans('messages.plan_group.select_tier') }}</label>
-                                        <select data-control="tier-select" name="select_tier" class="select w-100">
-                                            @foreach ($planGroup->plans()->general()->active()->available()->get() as $key => $plan)
-                                                <option value="{{ $plan->uid }}">{{ $plan->name }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        <div  data-control="tier-details">
+                                        <div class="top-info">
+                                            <div class="d-flex align-items-center mb-4">
+                                                <h2 class="mb-0 mt-1 fw-semibold me-4" style='
+                                                    padding: 12px 25px 12px 25px;
+                                                    border-radius: 40px;
+                                                    background-color: #EAF1FB;
+                                                    font-size: 26px;
+                                                    font-family: "Poppins", "Open Sans","Helvetica Neue",Arial,Helvetica,Verdana,sans-serif
+                                                '>{{ $planGroup->name }}</h2>
+                                                <div>
+                                                    <p class="mt-0 mb-0 small">{{ $planGroup->description }}</p>
+                                                </div>
+                                            </div>
                                             
+                                            <div class="d-flex align-items-center select-tier-box"  style="
+                                                border: solid 1px #5AC4DF;  
+                                                padding: 0px 20px 0px 16px;  
+                                                border-radius: 40px;
+                                            ">
+                                                <label for="" class="small mb-0 fw-semibold me-3 text-nowrap">{{ trans('messages.plan_group.select_tier') }}:</label>
+                                                <select data-control="tier-select" name="select_tier" class="select w-100"
+                                                    style=""
+                                                >
+                                                    @foreach ($planGroup->plans()->general()->active()->available()->get() as $key => $plan)
+                                                        <option value="{{ $plan->uid }}">{{ $plan->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div data-control="tier-info">
+                                                
+                                            </div>
+                                        </div>
+
+                                        <div data-control="tier-details" class="tier-details">
+                                                
                                         </div>
                                     </div>
                                 @endforeach
@@ -47,15 +71,40 @@
                             </div>
                         </div>
                     @endif
-
+                    
                     <script>
+                        var SubscriptionSelectPlan = {
+                        }
+                
                         $(function() {
+                            var manager = new GroupManager();
+                            $('.plan-item').each(function() {
+                                manager.add({
+                                    box: $(this),
+                                    url: $(this).attr('data-url')
+                                });
+                            });
+                
+                            manager.bind(function(group, others) {
+                                group.box.on('click', function() {
+                                    group.box.addClass('current');
+                
+                                    others.forEach(function(other) {
+                                        other.box.removeClass('current');
+                                    });
+                
+                                    // load order
+                                    // SubscriptionSelectPlan.getOrderBox().load(group.url);
+                                })
+                            });
+                
                             // TierSelector
                             $('[data-control="plan"]').each(function(e) {
                                 new TierSelector({
                                     url: '{{ action('SubscriptionController@selectTierChange') }}',
                                     selector: $(this).find('[data-control="tier-select"]'),
-                                    content: $(this).find('[data-control="tier-details"]'),
+                                    tierInfo: $(this).find('[data-control="tier-info"]'),
+                                    tierDetails: $(this).find('[data-control="tier-details"]'),
                                 }); 
                             });
                                 
@@ -65,7 +114,8 @@
                             constructor(options) {
                                 this.url = options.url;
                                 this.selector = options.selector;
-                                this.content = options.content;
+                                this.tierInfo = options.tierInfo;
+                                this.tierDetails = options.tierDetails;
                 
                                 // 
                                 this.load();
@@ -97,9 +147,11 @@
                                     }
                                 })
                                 .done(function( response ) {
-                                    _this.content.html(response);
+                                    _this.tierInfo.html($('<div>').html(response).find('[data-control="tier-info"]').html());
+                                    _this.tierDetails.html($('<div>').html(response).find('[data-control="tier-details"]').html());
                 
-                                    initJs(_this.content);
+                                    initJs(_this.tierInfo);
+                                    initJs(_this.tierDetails);
                                 });
                             }
                         }
