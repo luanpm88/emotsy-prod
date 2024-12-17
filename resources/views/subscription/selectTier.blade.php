@@ -13,7 +13,7 @@
         <label class="plan-title fs-5 fw-600 mt-0">{{ $plan->name }}</label>
     </div>
 
-    <span class="time-box d-block text-start small py-4 px-4 fw-600 mb-5" style="">
+    <span class="time-box d-block text-start small py-4 px-4 fw-600 mb-5 plan-tier-info-box">
         <div class="mb-2">
             <span>{{ $plan->displayTotalQuota() }} {{ trans('messages.sending_total_quota_label') }}</span>
         </div>

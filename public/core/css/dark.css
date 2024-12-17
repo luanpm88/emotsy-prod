@@ -927,3 +927,6 @@ body.mode-dark .popup-bg-emo {
 body.mode-dark .select-tier-box .select2 {
     background-color: transparent;
 }
+.new-price-item .plan-tier-info-box {
+    background-color: rgba(255, 255, 255, 0.2);
+}
