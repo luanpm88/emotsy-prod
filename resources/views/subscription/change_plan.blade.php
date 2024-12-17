@@ -1,4 +1,6 @@
-@extends('layouts.popup.full')
+@extends('layouts.popup.full', [
+    'backgroundColor' => '#F4FEFF',
+])
 
 @section('content')
     <div class="">
@@ -71,7 +73,7 @@
                             </div>
                         </div>
                     @endif
-                    
+
                     <script>
                         var SubscriptionSelectPlan = {
                         }
