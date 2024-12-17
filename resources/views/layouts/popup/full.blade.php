@@ -1,5 +1,5 @@
 <div class="modal-dialog modal-fullscreen">
-    <div class="modal-content" style="background-color:{{ $backgroundColor }}">
+    <div class="modal-content {{ $class }}">
         <div class="modal-header">
             <a href="javascript:;" class="material-symbols-rounded back">keyboard_backspace</a>
             <h5 class="modal-title text-center" style="width:100%">

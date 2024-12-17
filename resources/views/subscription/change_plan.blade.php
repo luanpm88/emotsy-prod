@@ -1,5 +1,5 @@
 @extends('layouts.popup.full', [
-    'backgroundColor' => '#F4FEFF',
+    'class' => 'popup-bg-emo',
 ])
 
 @section('content')
@@ -32,13 +32,7 @@
                                     >
                                         <div class="top-info">
                                             <div class="d-flex align-items-center mb-4">
-                                                <h2 class="mb-0 mt-1 fw-semibold me-4" style='
-                                                    padding: 12px 25px 12px 25px;
-                                                    border-radius: 40px;
-                                                    background-color: #EAF1FB;
-                                                    font-size: 26px;
-                                                    font-family: "Poppins", "Open Sans","Helvetica Neue",Arial,Helvetica,Verdana,sans-serif
-                                                '>{{ $planGroup->name }}</h2>
+                                                <h2 class="mb-0 mt-1 fw-semibold me-4 plan-group-label">{{ $planGroup->name }}</h2>
                                                 <div>
                                                     <p class="mt-0 mb-0 small">{{ $planGroup->description }}</p>
                                                 </div>

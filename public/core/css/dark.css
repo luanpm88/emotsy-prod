@@ -906,6 +906,24 @@ body.mode-dark input.disabled {
 body.mode-dark .radio-label {
     color: rgba(255,255,255,0.9)!important;
 }
-.radio-label:hover {
+body.mode-dark .radio-label:hover {
     border-color: rgba(255, 255, 255, 0.2);
+}
+body.mode-dark .plan-feature-section {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+body.mode-dark .current-subscription-plans .plan-feature-section {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+body.mode-dark .new-price-item .top-info {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+body.mode-dark .plan-group-label {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+body.mode-dark .popup-bg-emo {
+    background-color: #0C1318;
+}
+body.mode-dark .select-tier-box .select2 {
+    background-color: transparent;
 }

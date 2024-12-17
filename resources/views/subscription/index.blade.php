@@ -138,7 +138,7 @@
 
             @if (!config('app.brand'))
                 <div class="sub-section">
-                    <div class="">
+                    <div class="current-subscription-plans">
                         <div class="">
                             <h2 class="text-semibold">{{ trans('messages.plan_details') }} </h2>
                             <p>{{ trans('messages.plan_details.intro') }}</p>
