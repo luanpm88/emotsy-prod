@@ -1529,3 +1529,20 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .plan-feature-section.closed .plan-feature-item {
     display: none!important;
 }
+.current-subscription-plans .plan-feature-section {
+    background-color: #FFF;
+}
+.plan-group-label {
+    
+    padding: 12px 25px 12px 25px;
+    border-radius: 40px;
+    background-color: #EAF1FB;
+    font-size: 26px;
+    font-family: "Poppins", "Open Sans","Helvetica Neue",Arial,Helvetica,Verdana,sans-serif
+}
+.new-price-item .plan-tier-info-box {
+    background-color: #EBF1FA;border-radius:18px;
+}
+.popup-bg-emo {
+    background-color: #F4FEFF;
+}
