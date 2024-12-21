@@ -1742,14 +1742,6 @@ class Customer extends Model
         return LocalCustomer::sync($this);
     }
 
-    public function newSignature()
-    {
-        $signature = Signature::newDefault();
-        $signature->customer_id = $this->id;
-
-        return $signature;
-    }
-
     public function newMailList()
     {
         $list = new MailList(['all_sending_servers' => true]);

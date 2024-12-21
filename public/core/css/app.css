@@ -284,7 +284,8 @@ h3 {
 .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     border-color: #ddd;
     background-color: #ddd;
-    height: 35px;
+    height: auto;
+    min-height: 35px;
     display: flex;
     align-items: center;
 }
@@ -1103,7 +1104,7 @@ input.disabled:hover {
     border-color: #ccc !important;
 }
 .text-trans {
-    color: rgba(0,0,0,0);
+    color: rgba(0,0,0,0)!important;
 }
 .checkbox-box-group {
     height: 60px;

@@ -3702,4 +3702,6 @@
   'site.type.landing_page.wording' => 'Create a single page',
   'site.type.website.wording' => 'Create a collection of pages with a navigation menu',
   'site.save_and_continue' => 'Save & continue',
+  'plan.select_email_verification_server' => 'Choose a verification server to use for this plan',
+  'plan.no_email_verification_server.msg' => 'There are no active email verification servers available. <a href=":link">Click here</a> to add one.',
 ) ?>
