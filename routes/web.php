@@ -271,6 +271,12 @@ Route::group(['middleware' => ['not_installed', 'auth', '2fa']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
+    //
+    Route::get('sites/{id}/template', 'SiteController@template');
+    Route::post('sites', 'SiteController@store');
+    Route::get('sites/create', 'SiteController@create');
+    Route::get('sites', 'SiteController@index');
+
     // Signature
     Route::get('signatures/select-box', 'SignatureController@selectBox');
     Route::post('signatures/{uid}/set-default', 'SignatureController@setDefault');

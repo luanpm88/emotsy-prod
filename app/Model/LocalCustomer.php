@@ -445,4 +445,17 @@ class LocalCustomer extends Customer
 
         return $automation;
     }
+
+    public function sites()
+    {
+        return $this->hasMany(Site::class, 'customer_id');
+    }
+
+    public function newSite()
+    {
+        $site = $this->sites()->make()->newDefault();
+        $site->customer_id = $this->id;
+
+        return $site;
+    }
 }
