@@ -272,7 +272,11 @@ Route::group(['middleware' => ['not_installed', 'auth', '2fa']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
     //
-    Route::get('sites/{id}/template', 'SiteController@template');
+    Route::post('sites/update', 'SiteController@update');
+    Route::get('sites/{id}/edit', 'SiteController@edit');
+    Route::get('sites/{id}/settings', 'SiteController@settings');
+    Route::post('sites/{id}/content/select/{template_uid}', 'SiteController@contentSelect');
+    Route::get('sites/{id}/content', 'SiteController@content');
     Route::post('sites', 'SiteController@store');
     Route::get('sites/create', 'SiteController@create');
     Route::get('sites', 'SiteController@index');
