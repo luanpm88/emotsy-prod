@@ -86,6 +86,32 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Email Verification Selection -->
+                                <div class="form-group">
+                                    <label class="fw-semibold">{{ trans('messages.plan.select_email_verification_server') }}</label>
+                                    
+                                    @include('helpers.form_control.select', [
+                                        'name' => 'plan[email_verification_server_uid]',
+                                        'value' => $plan->getItsOnlyEmailVerificationServer() ? $plan->getItsOnlyEmailVerificationServer()->uid : null,
+                                        'options' => Acelle\Model\EmailVerificationServer::getAllAdminActive()->get()->map(function($server) {
+                                            return ['value' => $server->uid, 'text' => $server->name . '|||' . trans('messages.rate_limit.speed', ['limit' => $server->getSpeedLimitString()])];
+                                        })->prepend(['value' => null, 'text' => trans('messages.choose')])->toArray(),
+                                        'attributes' => [
+                                            'required' => 'required',
+                                        ],
+                                    ])
+
+                                    @if (!Acelle\Model\EmailVerificationServer::getAllAdminActive()->count())
+                                        <div class="alert alert-warning mt-3">
+                                            <span class="line-1">
+                                                {!! trans('messages.plan.no_email_verification_server.msg', [
+                                                    'link' => action('Admin\EmailVerificationServerController@index'),
+                                                ]) !!}
+                                            </span>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>                        
                     </div>
