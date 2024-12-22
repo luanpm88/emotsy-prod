@@ -180,6 +180,23 @@
                     </div>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="fw-semibold">Control: Select</label>
+                
+                @include('helpers.form_control.select', [
+                    'name' => 'name',
+                    'value' => 2,
+                    'options' => [
+                        ['value' => null, 'text' => 'Select none'],
+                        ['value' => 2, 'text' => 'Title #1|||Description #1'],
+                        ['value' => 3, 'text' => 'Title #2|||Description #2'],
+                    ],
+                    'attributes' => [
+                        'required' => 'required',
+                    ],
+                ])
+            </div>
         </div>
     </div>
 @endsection

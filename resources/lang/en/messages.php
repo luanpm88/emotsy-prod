@@ -3731,4 +3731,6 @@
   'site.site_indexing' => 'Page indexing',
   'site.site_indexing.wording' => 'Allow search engines to index this landing page.',
   'site.url.custom_need_upgrade' => 'Custom domain is not available in <span class="fw-semibold">:plan</span> plan <a href=":link">Upgrade</a> your plan.',
+  'plan.select_email_verification_server' => 'Choose a verification server to use for this plan',
+  'plan.no_email_verification_server.msg' => 'There are no active email verification servers available. <a href=":link">Click here</a> to add one.',
 ) ?>
