@@ -27,6 +27,9 @@
     const phoneInputFieldHelper{{ $phoneInputId }} = document.querySelector("#{{ $phoneInputId }}_Helper");
     const phoneInputField{{ $phoneInputId }} = document.querySelector("#{{ $phoneInputId }}");
     const phoneInput{{ $phoneInputId }} = window.intlTelInput(phoneInputFieldHelper{{ $phoneInputId }}, {
+        @if(config('app.locale') == 'ja')
+            initialCountry: "jp", // Set Japan as the default country
+        @endif
         initialValue: '{{ $value }}',
         utilsScript: "{{ AppUrl::asset('core/phoneinput/utils.js') }}",
     });
