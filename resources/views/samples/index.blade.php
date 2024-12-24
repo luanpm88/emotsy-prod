@@ -197,6 +197,16 @@
                     ],
                 ])
             </div>
+
+            <div class="form-group">
+                <label>
+                    {{ trans('messages.phone') }}
+                </label>
+                @include('helpers.form_control.phone', [
+                    'name' => 'phone',
+                    'value' => '',
+                ])
+            </div>
         </div>
     </div>
 @endsection
