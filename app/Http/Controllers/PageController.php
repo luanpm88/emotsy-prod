@@ -116,7 +116,7 @@ class PageController extends Controller
         // render content
         $page->renderContent();
 
-        return view('pages.preview_'.$page->layout->type, [
+        return view('pages.preview_'.$layout->type, [
             'list' => $list,
             'page' => $page,
         ]);
