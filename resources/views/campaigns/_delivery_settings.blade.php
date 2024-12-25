@@ -18,7 +18,7 @@
                 ] as $status)
                     <div data-control="option-container" class="d-flex mb-2">
                         <label class="me-3">
-                            <input {{ in_array($status, $campaign->getOnlyDeliveryStatuses()) ? 'checked' : '' }} type="checkbox" name="delivery_statuses[]" value="{{ $status }}" id="{{ $status }}_status" class="styled"><span class="check-symbol"></span>
+                            <input {{ in_array($status, $campaign->getDeliveryStatuses()) ? 'checked' : '' }} type="checkbox" name="delivery_statuses[]" value="{{ $status }}" id="{{ $status }}_status" class="styled"><span class="check-symbol"></span>
                         </label>
                         <div>
                             <label for="{{ $status }}_status" class="mb-0 radio-label d-inline-block">{{ trans('messages.delivery_settings.status.' . $status) }}</label>

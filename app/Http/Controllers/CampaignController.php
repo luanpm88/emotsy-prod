@@ -207,7 +207,7 @@ class CampaignController extends Controller
 
             // save delivery settings
             if ($request->delivery_statuses) {
-                $campaign->setOnlyDeliveryStatuses($request->delivery_statuses);
+                $campaign->setDeliveryStatuses($request->delivery_statuses);
             }
 
             // Trigger the CampaignUpdate event to update the campaign cache information

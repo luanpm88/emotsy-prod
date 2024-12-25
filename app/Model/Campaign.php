@@ -2835,7 +2835,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         return $this->use_default_sending_server_from_email == true;
     }
 
-    public function fillOnlyDeliveryStatuses(array $array)
+    public function fillDeliveryStatuses(array $array)
     {
         $array = array_map(function($status) {
             $status = trim($status);
@@ -2859,24 +2859,24 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             return $status;
         }, $array);
 
-        $this->only_delivery_statuses = json_encode($array);
+        $this->delivery_statuses = json_encode($array);
     }
 
-    public function setOnlyDeliveryStatuses(array $array)
+    public function setDeliveryStatuses(array $array)
     {
-        $this->fillOnlyDeliveryStatuses($array);
+        $this->fillDeliveryStatuses($array);
         $this->save();
     }
 
-    public function getOnlyDeliveryStatuses()
+    public function getDeliveryStatuses()
     {
-        if ($this->only_delivery_statuses == null) {
+        if ($this->delivery_statuses == null) {
             return [
                 \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
                 \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
             ];
         }
 
-        return json_decode($this->only_delivery_statuses, true);
+        return json_decode($this->delivery_statuses, true);
     }
 }

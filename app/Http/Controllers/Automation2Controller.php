@@ -832,7 +832,7 @@ class Automation2Controller extends Controller
 
             // save delivery settings
             if ($request->delivery_statuses) {
-                $email->fillOnlyDeliveryStatuses($request->delivery_statuses);
+                $email->fillDeliveryStatuses($request->delivery_statuses);
             }
 
             // pass validation and save
