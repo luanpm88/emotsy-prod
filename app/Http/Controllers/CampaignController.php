@@ -205,6 +205,11 @@ class CampaignController extends Controller
 
             $campaign->saveRecipients($request->all());
 
+            // save delivery settings
+            if ($request->delivery_statuses) {
+                $campaign->setOnlyDeliveryStatuses($request->delivery_statuses);
+            }
+
             // Trigger the CampaignUpdate event to update the campaign cache information
             // The second parameter of the constructor function is false, meanining immediate update
             event(new \Acelle\Events\CampaignUpdated($campaign));

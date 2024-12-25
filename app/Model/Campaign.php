@@ -1423,8 +1423,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     public function saveRecipients($params = [])
     {
-        // Empty current data
-        $this->listsSegments = collect([]);
         // Fill params
         $this->fillRecipients($params);
 
@@ -2835,5 +2833,50 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public function useSendingServerDefaultFromEmailAddress()
     {
         return $this->use_default_sending_server_from_email == true;
+    }
+
+    public function fillOnlyDeliveryStatuses(array $array)
+    {
+        $array = array_map(function($status) {
+            $status = trim($status);
+
+            //
+            if (empty($status)) {
+                throw new \Exception("Status can not be empty");
+            }
+
+            //
+            if (!in_array($status, [
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNDELIVERABLE,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNKNOWN,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_RISKY,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
+            ])) {
+                throw new \Exception("Status $status is invalid!");
+            }
+
+            return $status;
+        }, $array);
+
+        $this->only_delivery_statuses = json_encode($array);
+    }
+
+    public function setOnlyDeliveryStatuses(array $array)
+    {
+        $this->fillOnlyDeliveryStatuses($array);
+        $this->save();
+    }
+
+    public function getOnlyDeliveryStatuses()
+    {
+        if ($this->only_delivery_statuses == null) {
+            return [
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
+            ];
+        }
+
+        return json_decode($this->only_delivery_statuses, true);
     }
 }

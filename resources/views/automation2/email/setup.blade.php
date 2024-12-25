@@ -260,6 +260,8 @@
 						</div>
 					@endif
                 </div>
+
+                @include('automation2.email._delivery_settings')
             </div>
         </div>
         
