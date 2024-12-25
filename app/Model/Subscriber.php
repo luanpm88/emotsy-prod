@@ -60,7 +60,6 @@ class Subscriber extends Model
     public const VERIFICATION_STATUS_UNKNOWN = 'unknown';
     public const VERIFICATION_STATUS_RISKY = 'risky';
     public const VERIFICATION_STATUS_UNVERIFIED = 'unverified';
-    public const VERIFICATION_STATUS_NO_VERIFICATION = 'no-verification';
 
     protected $dates = ['unsubscribed_at'];
 
