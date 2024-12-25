@@ -2871,6 +2871,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public function getDeliveryStatuses()
     {
         if ($this->delivery_statuses == null) {
+            // Default delivery statuses
             return [
                 \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
                 \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
