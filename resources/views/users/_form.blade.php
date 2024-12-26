@@ -72,6 +72,20 @@
                 'rules' => $user->rules()
             ])
 
+            <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
+                <label>
+                    {{ trans('messages.phone') }}
+                    @if (Acelle\Model\Setting::get('user.require_mobile_phone') == 'yes')
+                        <span class="text-danger">*</span>
+                    @endif
+                </label>
+                @include('helpers.form_control.phone', [
+                    'name' => 'phone',
+                    'value' => $user->phone,
+                    'attributes' => Acelle\Model\Setting::get('user.require_mobile_phone') == 'yes' ? ['required' => 'required'] : [],
+                ])
+            </div>
+
             @include('helpers.form_control', [
                 'type' => 'password',
                 'label'=> trans('messages.new_password'),

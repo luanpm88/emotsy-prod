@@ -18,7 +18,9 @@
 
                     <h2 class="text-semibold">{{ trans('messages.automation.outgoing_webhook.setup') }}</h2>
 
-                    <p>{!! trans('messages.automation.outgoing_webhook.wording') !!}</p>
+                    <p>{!! trans('messages.automation.outgoing_webhook.wording', [
+                        'app_name' => Acelle\Model\Setting::get('site_name'),
+                    ]) !!}</p>
 
                     <div class="p-3 border bg-light">
                         <div class="mb-4 p-3 border rounded shadow-sm bg-white">

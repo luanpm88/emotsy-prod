@@ -1,4 +1,4 @@
-<label class="checker">
+<label class="checker ms-2">
     <input type="hidden" name="{{ $name }}" value="{{ $off_value }}" />
     <input
         type="checkbox"

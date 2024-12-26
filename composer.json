@@ -44,6 +44,7 @@
         "louis/spfcheck": "1.1.8",
         "mailgun/mailgun-php": "^3.5",
         "mews/purifier": "^3.2",
+        "neverbounce/neverbounce-php": "~4.5.0",
         "nyholm/psr7": "^1.4",
         "orhanerday/open-ai": "^4.7",
         "paypal/paypal-checkout-sdk": "1.0.1",

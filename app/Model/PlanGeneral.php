@@ -226,6 +226,16 @@ class PlanGeneral extends Plan implements PlanInterface
         return $this->hasMany('Acelle\Model\PlansEmailVerificationServer', 'plan_id');
     }
 
+    public function emailVerificationServers()
+    {
+        return $this->belongsToMany(
+            'Acelle\Model\EmailVerificationServer',
+            'plans_email_verification_servers',
+            'plan_id',
+            'server_id'
+        );
+    }
+
     /**
      * Items per page.
      *
@@ -869,9 +879,15 @@ class PlanGeneral extends Plan implements PlanInterface
 
         $this->save();
 
-        // For email verification servers
-        if (isset($request->plan['email_verification_servers'])) {
-            $this->updateEmailVerificationServers($request->plan['email_verification_servers']);
+        // // For email verification servers
+        // if (isset($request->plan['email_verification_servers'])) {
+        //     $this->updateEmailVerificationServers($request->plan['email_verification_servers']);
+        // }
+
+        // For email verification server
+        if (isset($request->plan['email_verification_server_uid'])) {
+            $emailVerificationServer = EmailVerificationServer::findByUid($request->plan['email_verification_server_uid']);
+            $this->setItsOnlyEmailVerificationServer($emailVerificationServer);
         }
 
         return $validator;
@@ -1282,4 +1298,22 @@ class PlanGeneral extends Plan implements PlanInterface
         $this->setFeatures($features);
     }
     
+    public function getItsOnlyEmailVerificationServer()
+    {
+        // check if there are more than one server
+        if ($this->emailVerificationServers()->count() > 1) {
+            throw new \Exception("There are more than on one email verification server of the plan {$this->name}");
+        }
+
+        return $this->emailVerificationServers()->first();
+    }
+
+    public function setItsOnlyEmailVerificationServer($emailVerificationServer)
+    {
+        // remove all
+        $this->emailVerificationServers()->detach();
+
+        // add new server
+        $this->emailVerificationServers()->attach($emailVerificationServer->id);
+    }
 }

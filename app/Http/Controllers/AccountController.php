@@ -30,11 +30,13 @@ class AccountController extends Controller
                 'timezone' => 'required',
                 'language_id' => 'required',
                 'image' => 'nullable|image',
+                'phone' => [(\Acelle\Model\Setting::get('user.require_mobile_phone') == 'yes' ? 'required' : 'nullable'), 'regex:/^[\+0-9]{10,15}$/'],
             ]);
 
             // Update user attributes
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
+            $user->phone = $request->phone;
 
             // Update password
             if (!empty($request->password)) {

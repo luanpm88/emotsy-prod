@@ -38,9 +38,8 @@ return [
         'type' => 'string',
     ],
     'site_online' => [
-        'value' => 'true',
-        'type' => 'enum',
-        'options' => ['false', 'true'],
+        'value' => 'yes',
+        'type' => 'boolean',
     ],
     'site_offline_message' => [
         'value' => 'Application currently offline. We will come back soon!',
@@ -86,28 +85,23 @@ return [
     ],
     'login_recaptcha' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'embedded_form_recaptcha' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'list_sign_up_captcha' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'enable_user_registration' => [
         'value' => 'yes',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'registration_recaptcha' => [
         'value' => 'yes',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'custom_script' => [
         'value' => '',
@@ -184,23 +178,23 @@ return [
     ],
     'allow_turning_off_dkim_signing' => [
         'value' => 'yes',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'escape_dkim_dns_value' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'verify_subscriber_email' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'send_notification_email_for_list_subscription' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'aws_verification_server' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'geoip.engine' => [
         'value' => 'sqlite', # available values are sqlite|nekudo|mysql
@@ -208,7 +202,7 @@ return [
     ],
     'geoip.enabled' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'geoip.last_message' => [
         'value' => null,
@@ -228,11 +222,11 @@ return [
     ],
     'delivery.sendmail' => [
         'value' => 'yes',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'delivery.phpmail' => [
         'value' => 'yes',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'subscription.expiring_period' => [
         'value' => '7',
@@ -244,23 +238,23 @@ return [
     ],
     'allowed_due_subscription' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'theme.beta' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'spamassassin.command' => [
         'value' => 'spamc -R',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'spamassassin.required' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'spamassassin.enabled' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'mta.api_endpoint' => [
         'value' => null,
@@ -276,11 +270,11 @@ return [
     ],
     'rss.enabled' => [
         'value' => 'yes',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'list.clone_for_others' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'gateways' => [
         'value' => '["direct"]',
@@ -288,7 +282,7 @@ return [
     ],
     'automation.trigger_imported_contacts' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'campaign.bcc' => [
         'value' => '',
@@ -300,15 +294,15 @@ return [
     ],
     'campaign.tracking_domain' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'list.allow_single_optin' => [
         'value' => 'yes',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'campaign.enforce_unsubscribe_url_check' => [
         'value' => 'no',
-        'type' => 'string',
+        'type' => 'boolean',
     ],
     'layout.menu_bar' => [
         'value' => 'left',
@@ -324,73 +318,63 @@ return [
     ],
     'customer_can_change_language' => [
         'value' => 'yes',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'customer_can_change_personality' => [
         'value' => 'yes',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'campaign.stop_on_error' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'not_require_card_for_trial' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     '2fa_enable' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'tracking_domain.enable_https' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'email.enable_one_click_unsubscribe_headers' => [
         'value' => 'yes',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'campaign.duplicate' => [
         'value' => 'yes',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'list.default.double_optin' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'email.default.skip_failed_message' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'notification.on_user_created' => [
         'value' => '',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'string',
     ],
     'signature.enabled' => [
         'value' => 'no',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'blacklist.use_global_blacklist' => [
         'value' => 'yes',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
     ],
     'automation.outgoing_webhook' => [
         'value' => 'yes',
-        'type' => 'enum',
-        'options' => ['no', 'yes'],
+        'type' => 'boolean',
+    ],
+    'user.require_mobile_phone' => [
+        'value' => 'no',
+        'type' => 'boolean',
     ],
 ];
 

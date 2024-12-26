@@ -79,7 +79,8 @@ class UserController extends Controller
             $first_name = $request->first_name,
             $last_name = $request->last_name,
             $image = $request->image,
-            $role_uid = $request->role_uid
+            $role_uid = $request->role_uid,
+            $phone = $request->phone
         );
 
         // redirect if fails
@@ -135,7 +136,8 @@ class UserController extends Controller
             $first_name = $request->first_name,
             $last_name = $request->last_name,
             $image = $request->image,
-            $role_uid = $request->role_uid
+            $role_uid = $request->role_uid,
+            $phone = $request->phone
         );
 
         // redirect if fails

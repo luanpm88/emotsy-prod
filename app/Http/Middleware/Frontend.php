@@ -30,7 +30,7 @@ class Frontend
         }
 
         // Site offline
-        if (\Acelle\Model\Setting::get('site_online') == 'false') {
+        if (\Acelle\Model\Setting::get('site_online') == 'no') {
             return redirect()->action('Controller@offline');
         }
 
