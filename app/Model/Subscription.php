@@ -298,11 +298,11 @@ class Subscription extends Model
     {
         //
         if ($this->getItsOnlyUnpaidRenewInvoice()) {
-            throw new \Exception("Hey, đang có 1 unpaid renew invoice khác. Không thể tạo renew invoice nữa! " . $this->getUnpaidInvoice()->toJson());
+            throw new \Exception("Cannot create renew invoice because there is already another unpaid invoice: " . $this->getUnpaidInvoice()->toJson());
         }
 
         if ($this->status != self::STATUS_ACTIVE) {
-            throw new \Exception("Hey, subscription này đâu có active đâu mà đòi renew???");
+            throw new \Exception("Cannot renew an inactive subscription");
         }
 
         // create init invoice
@@ -352,12 +352,12 @@ class Subscription extends Model
     public function createChangePlanInvoice($newPlan)
     {
         if ($this->status != self::STATUS_ACTIVE) {
-            throw new \Exception("Hey, subscription này đâu có active đâu mà đòi change plan???");
+            throw new \Exception("Cannot change plan for an inactive subscription");
         }
 
         // already has change plan invoice
         if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
-            throw new \Exception("Hey, subscription này đã có unpaid change plan invoice rồi???");
+            throw new \Exception("An unpaid change plan invoice already existed");
         }
 
         // calculate change plan amout ends at
@@ -566,7 +566,7 @@ class Subscription extends Model
 
             // already have active subscription
             if ($this->customer->getCurrentActiveSubscription()) {
-                throw new \Exception("Customer already has active subscription!");
+                throw new \Exception("Customer already has an active subscription!");
             }
 
             if ($this->plan->hasTrial()) {
