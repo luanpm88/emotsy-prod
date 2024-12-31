@@ -10,20 +10,23 @@
 <body>
     <section class="py-3 py-md-5 min-vh-100 d-flex justify-content-center align-items-center">
         <div class="container">
-        <div class="row">
-            <div class="col-12">
-            <div class="text-center">
-                <h2 class="d-flex justify-content-center align-items-center gap-2 mb-4">
-                <span class="display-1 fw-bold">500</span>
-                </h2>
-                <h3 class="h2 mb-2">{{ trans('messages.something_went_wrong') }}</h3>
-                <p class="mb-5 text-danger">{!! $message !!}</p>
-                <a href="javascript:;" onclick="history.back()" class="btn bsb-btn-5xl btn-dark rounded-pill px-5 fs-6 m-0" role="button">
-                    {{ trans('messages.go_back') }}
-                </a>
+            <div class="row">
+                <div class="col-12">
+                <div class="text-center">
+                    <h2 class="d-flex justify-content-center align-items-center gap-2 mb-4">
+                    <span class="display-1 fw-bold">500</span>
+                    </h2>
+                    <h3 class="h2 mb-2">{{ trans('messages.something_went_wrong') }}</h3>
+                    <p class="mb-5 text-danger">{!! $message !!}</p>
+                    <a href="javascript:;" onclick="history.back()" class="btn bsb-btn-5xl btn-dark rounded-pill px-5 fs-6 me-3" role="button">
+                        {{ trans('messages.go_back') }}
+                    </a>
+                    @if (\Auth::check())
+                        <a href="{{ url("/logout") }}"  class='text-dark ml-4'><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a>
+                    @endif
+                </div>
+                </div>
             </div>
-            </div>
-        </div>
         </div>
     </section>
 </body>

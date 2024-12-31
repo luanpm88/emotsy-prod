@@ -58,7 +58,7 @@
                             automationPopup.hide();
 
                             setTimeout(function() {
-                                doSelect(newE);
+                                doSelectTreeElement(newE);
                             }, 200);
                             
                             notify({

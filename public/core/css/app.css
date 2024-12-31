@@ -284,7 +284,8 @@ h3 {
 .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     border-color: #ddd;
     background-color: #ddd;
-    height: 35px;
+    height: auto;
+    min-height: 35px;
     display: flex;
     align-items: center;
 }
@@ -1103,7 +1104,7 @@ input.disabled:hover {
     border-color: #ccc !important;
 }
 .text-trans {
-    color: rgba(0,0,0,0);
+    color: rgba(0,0,0,0)!important;
 }
 .checkbox-box-group {
     height: 60px;
@@ -6073,7 +6074,7 @@ a {
     text-decoration: none;
 }
 .small, small {
-    font-size: 0.84rem;
+    font-size: 0.84rem!important;
 }
 body {
     padding-top: 53px;
@@ -6677,7 +6678,6 @@ h5 {
 }
 .nav-underline .nav-item .nav-link [class^="material-"] {
     margin-right: .3rem;
-    font-size: 16px;
 }
 h1 [class^="material-"] {
     margin-right: .5rem;
@@ -8514,4 +8514,14 @@ body.mode-dark .phrase-list .inline-editable.mode-view:hover {
 }
 .avatar-layer .avatar-img:hover {
     border: solid 2px #efefef;
+}
+label.check-symbol {
+    margin: 0;
+}
+.styled[type="radio"]:checked ~ label.check-symbol:after {
+    top: 5px;
+}
+.form-group .iti.iti--allow-dropdown {
+    height: auto;
+    width: 100%;
 }

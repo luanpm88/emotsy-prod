@@ -365,7 +365,7 @@ class SendMessage implements ShouldQueue
                 return $exceptionCallback($ex);
             }
 
-            $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
+            $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage().": \n".$ex->getTraceAsString());
             $logger->error($message);
 
             $handled = $this->handleUnknownException($ex);

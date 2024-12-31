@@ -5,7 +5,6 @@ namespace Acelle\Listeners;
 use Acelle\Events\MailListImported;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-
 use Acelle\Model\Automation2;
 use Acelle\Model\Setting;
 

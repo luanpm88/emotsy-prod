@@ -38,7 +38,7 @@ class RerunCampaigns extends Command
      */
     public function handle()
     {
-        $this->withSendingCampaigns(function($customer, $campaigns) {
+        $this->withSendingCampaigns(function ($customer, $campaigns) {
             // Check if they are actually running!
             foreach ($campaigns as $campaign) {
                 $info = $campaign->debug();

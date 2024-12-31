@@ -233,6 +233,7 @@ trait HasTemplate
             }
         }
         $message->setSubject($this->getSubject($subscriber, $msgId));
+        $message->setTo($subscriber->email);
 
         if ($this->useSendingServerDefaultFromEmailAddress()) {
             if (is_null($server->default_from_email)) {
@@ -240,11 +241,11 @@ trait HasTemplate
             }
 
             $message->setFrom($server->default_from_email);
+            $message->setReplyTo($server->default_from_email);
         } else {
             $message->setFrom(array($this->from_email => $this->from_name));
+            $message->setReplyTo($this->reply_to);
         }
-
-        $message->setTo($subscriber->email);
 
         if (!empty(Setting::get('campaign.bcc'))) {
             $addresses = array_filter(preg_split('/\s*,\s*/', Setting::get('campaign.bcc')));
@@ -256,7 +257,6 @@ trait HasTemplate
             $message->setCc($addresses);
         }
 
-        $message->setReplyTo($this->reply_to);
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
             $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds);

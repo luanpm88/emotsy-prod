@@ -91,7 +91,8 @@ class CampaignWebhook extends Model
     public function execute($log) # OpenLog | ClickLog | UnsubscribeLog
     {
         $attributes = $this->makePostData4Callback($log);
-        $response = Http::post('http://example.com/users', $attributes);
+        $response = Http::post($this->endpoint, $attributes);
+        return $response;
     }
 
     public function makePostData4Callback($log, $test = false) # OpenLog | ClickLog | UnsubscribeLog

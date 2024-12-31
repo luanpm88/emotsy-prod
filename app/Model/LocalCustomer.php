@@ -438,11 +438,32 @@ class LocalCustomer extends Customer
         return $localCustomer->setConnection($masterCustomer->db_connection)->save();
     }
 
+    public function newSignature()
+    {
+        $signature = Signature::newDefault();
+        $signature->customer_id = $this->id;
+
+        return $signature;
+    }
+
     public function newDefaultAutomation2()
     {
         $automation = $this->automation2s()->make()->newDefault();
         $automation->customer_id = $this->id;
 
         return $automation;
+    }
+
+    public function sites()
+    {
+        return $this->hasMany(Site::class, 'customer_id');
+    }
+
+    public function newSite()
+    {
+        $site = $this->sites()->make()->newDefault();
+        $site->customer_id = $this->id;
+
+        return $site;
     }
 }

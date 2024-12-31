@@ -143,7 +143,7 @@ class Emailable implements VerifyInterface, BulkVerifyInterface
             return false;
         } else {
             // fetch results
-            foreach($json['emails'] as $emailRaw) {
+            foreach ($json['emails'] as $emailRaw) {
                 $email = $emailRaw['email'];
                 $status = $this->getVerificationStatus($emailRaw);
                 $doneCallback($email, $status, json_encode($emailRaw));

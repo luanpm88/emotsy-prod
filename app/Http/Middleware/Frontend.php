@@ -30,15 +30,22 @@ class Frontend
         }
 
         // Site offline
-        if (\Acelle\Model\Setting::get('site_online') == 'false') {
-            return redirect()->action('AppController@offline');
+        if (\Acelle\Model\Setting::get('site_online') == 'no') {
+            return redirect()->action('Controller@offline');
         }
 
-        // If user is disabled
-        if (
-            (isset($user) && $user->customer && !$user->customer->isActive() && is_null($user->admin))
-        ) {
-            return redirect()->action('AppController@userDisabled');
+        // User does not have customer account
+        if (!$user->customer) {
+            return redirect()->action('Controller@somethingWentWrong', [
+                'message' => "User {$user->email} does not have a customer account!",
+            ]);
+        }
+
+        // Customer account is not active & user is not admin
+        if (!$user->customer->isActive()) {
+            return redirect()->action('Controller@somethingWentWrong', [
+                'message' => "Customer account {$user->customer->name} is not active!",
+            ]);
         }
 
         // Language

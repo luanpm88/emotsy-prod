@@ -328,7 +328,7 @@ class MailList extends Model
             ]
         ];
 
-        foreach($defaultFields as $attributes) {
+        foreach ($defaultFields as $attributes) {
             $this->createField(
                 $attributes['type'],
                 $attributes['tag'],
@@ -795,7 +795,7 @@ class MailList extends Model
         cursorIterate($query, $orderBy = 'subscribers.id', $pageSize, function ($subscribers, $page) use ($writer, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
             $records = collect($subscribers)->map(function ($subscriber) {
                 $attributes = [];
-                foreach($this->fields as $field) {
+                foreach ($this->fields as $field) {
                     $attributes[$field->label] = $subscriber->getValueByField($field);
                 }
 
@@ -2082,6 +2082,13 @@ class MailList extends Model
         $saved_ids = [];
         foreach ($request->fields as $uid => $item) {
             $field = \Acelle\Model\Field::findByUid($item['uid']);
+            $visible = $item['visible'] ?? true;
+            $required = $item['required'] ?? false;
+
+            if (isset($item['tag']) && $item['tag'] == 'EMAIL') {
+                $visible = true;
+                $required = true;
+            }
 
             if (!$field) {
                 $field = $this->createField(
@@ -2089,8 +2096,8 @@ class MailList extends Model
                     \Acelle\Model\Field::formatTag($item['tag']),
                     $item['label'] ?? null,
                     $defaultValue = $item['default_value'] ?? null,
-                    $required = $item['required'] ?? false,
-                    $visible = $item['visible'] ?? true,
+                    $required = $required,
+                    $visible = $visible,
                 );
             } else {
                 $field->type = $item['type'];
@@ -2099,8 +2106,8 @@ class MailList extends Model
                 }
                 $field->label = $item['label'] ?? null;
                 $field->default_value = $item['default_value'] ?? null;
-                $field->required = $item['required'] ?? false;
-                $field->visible = $item['visible'] ?? true;
+                $field->required = $required;
+                $field['visible'] = $visible;
                 $field->save();
             }
 
@@ -2320,7 +2327,7 @@ class MailList extends Model
         $field->label = $label;
         $field->default_value = $default_value;
         $field->required = $required;
-        $field->visible = $visible;
+        $field['visible'] = $visible;
         $field->custom_field_name = $this->getAvailableField();
         $field->is_email = $isEmail;
         $field->save();

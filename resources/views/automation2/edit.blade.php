@@ -38,7 +38,7 @@
 @section('menu_right')
     <li class="d-flex align-items-center">
         <div class="d-flex align-items-center automation-top-actions">
-            <span class="me-4"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
+            <span class="me-4"><i id="LastSavedTimeContent" class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
             <a href="{{ action('Automation2Controller@index') }}" class="action me-4">
                 <i class="material-symbols-rounded me-2">arrow_back</i>
                 {{ trans('messages.automation.go_back') }}
@@ -46,7 +46,7 @@
 
             @if ($automation->getSwitchAutomations(Auth::user()->customer)->count())
                 <div class="switch-automation d-flex me-2">
-                    <select class="select select2 top-menu-select" name="switch_automation">
+                    <select id="AutomationSelector" class="select select2 top-menu-select" name="switch_automation">
                         <option value="--hidden--"></option>
                         @foreach($automation->getSwitchAutomations(Auth::user()->customer)->get() as $auto)
                             <option value='{{ action('Automation2Controller@edit', $auto->uid) }}'>{{ $auto->name }}</option>
@@ -125,16 +125,16 @@
                 </svg>
 
                 <div class="history">
-                    <a class="history-action history-undo" href="javascript:;">
+                    <a id="HistoryUndoButton" class="history-action history-undo" href="javascript:;">
                         <i class="material-symbols-rounded">undo</i>
                     </a>
-                    <a class="history-action history-redo disabled" href="javascript:;">
+                    <a id="HistoryRedoButton" class="history-action history-redo disabled" href="javascript:;">
                         <i class="material-symbols-rounded">redo</i>
                     </a>
-                    <a class="history-action history-list" href="javascript:;">
+                    <a id="HistoryListButton" class="history-action history-list" href="javascript:;">
                         <i class="material-symbols-rounded">history</i>
                     </a>
-                    <ul class="history-list-items">
+                    <ul id="HistoryListItems" class="history-list-items">
                         <li>
                             <a href="" class="d-flex align-items-center current">
                                 <i class="material-symbols-rounded me-2">refresh</i>
@@ -175,7 +175,7 @@
                 </div>
             </div>
             <div class="sidebar scrollbar-inner">
-                <div class="sidebar-content">
+                <div id="SideBarContent" class="sidebar-content">
                     
                 </div>
             </div>
@@ -236,231 +236,61 @@
                 // sidebar.load();
             }
         });
-
-        // popup
+        // Automation main popup
         var automationPopup = new Popup(undefined, undefined, {
             onclose: function() {
                 sidebar.load();
             }
         });
+        var sidebar = new Box($('#SideBarContent'));
+        var lastSavedBox = new Box($('#LastSavedTimeContent'), $('#LastSavedTimeContent').attr('data-url'));
+        var tree;
+        var MyAutomation = {
+            // Set the AddElement function
+            // It depends on the currently selected element
+            addToTree: null
+        };
 
-        var sidebar = new Box($('.sidebar-content'));
-        var lastSaved = new Box($('.last_save_time'), $('.last_save_time').attr('data-url'));
+        // URLs
+        var automationSaveUrl = '{{ action('Automation2Controller@saveData', $automation->uid) }}';
+        var waitCreateUrl = '{{ action('Automation2Controller@waitCreate', $automation->uid) }}';
+        var conditionCreateUrl = '{{ action('Automation2Controller@conditionCreate', $automation->uid) }}';
+        var actionSelectUrl = '{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}';
+        var triggerSelectUrl = '{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}';
+        var triggerConfirmUrl = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}';
+        var createEmailUrl = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}';
+        var settingsUrl = '{{ action('Automation2Controller@settings', $automation->uid) }}';
+        var emailSetupUrlWithUid = `{{ action('Automation2Controller@emailSetup', [
+            'uid' => $automation->uid,
+            'email_uid' => '___email_uid___',
+        ]) }}`;
+        var triggerEditUrl = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}';
+        var waitEditUrl = '{{ action('Automation2Controller@waitEdit', $automation->uid) }}';
+        var conditionEditUrl = '{{ action('Automation2Controller@conditionEdit', $automation->uid) }}';
+        var emailUrl = '{{ action('Automation2Controller@email', $automation->uid) }}';
+        var operationShowUrl = '{{ action('Automation2Controller@operationShow', $automation->uid) }}';
+        var outgoingWebhookShowUrl = '{{ action('Automation2Controller@outgoingWebhookShow', $automation->uid) }}';
 
-        function toggleHistory() {
-            var his = $('.history .history-list-items');
-
-            if (his.is(":visible")) {
-                his.fadeOut();
-            } else {
-                his.fadeIn();
-            }
-        }
-
-        function openBuilder(url) {
-            var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder d-none" src="'+url+'"></iframe>');
-            
-            $('body').append(div);
-
-            // open builder effects
-            addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
-            $('.builder').on("load", function() {
-                removeMaskLoading();
-
-                $(this).removeClass("d-none");
+        // init EVENTs
+        function initEvents() {
+            // Event: Click on history toogle button
+            $('#HistoryListButton').click(function() {
+                toggleHistoryPanel();
             });
-        }
 
-        function openBuilderClassic(url) {
-            var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="yes" class="builder d-none" src="'+url+'"></iframe>');
-            
-            $('body').append(div);
+            // Event: Click on history undo button
+            $('#HistoryListItems a, #HistoryUndoButton').click(function(e) {
+                e.preventDefault();
 
-            // open builder effects
-            addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
-            $('.builder').on("load", function() {
-                removeMaskLoading();
-
-                $(this).removeClass("d-none");
-            });
-        }
-        
-        function saveData(callback, extra = {}) {
-            if (!(extra instanceof Object)) {
-                alert("A hash is required");
-                return false;
-            }
-
-            if ('data' in extra) {
-                alert("data key is not allowed");
-                return false;
-            }
-
-            var url = '{{ action('Automation2Controller@saveData', $automation->uid) }}';
-        
-            var postContent = {
-                _token: CSRF_TOKEN,
-                data: JSON.stringify(tree.toJson()),
-            }
-
-            postContent = {...extra, ...postContent};
-
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: postContent
-            }).always(function() {
-                if (callback != null) {
-                    callback();
-                }
-
-                // update last saved
-                lastSaved.load();
-            });
-        }
-        
-        function setAutomationName(name) {
-            $('.navbar h1').html(name);
-        }
-
-        function SelectActionConfirm(key) {
-            var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
-            
-            automationPopup.load(url, function() {                
-                // when click confirm select trigger type
-                automationPopup.popup.find('#action-select').submit(function(e) {
-                    e.preventDefault();
-                
-                    var url = $(this).attr('action');
-                    var data = $(this).serialize();
-                    
-                    // show loading effect
-                    automationPopup.loading();
-                    $.ajax({
-                        url: url,
-                        type: 'POST',
-                        data: data,
-                    }).always(function(response) {
-                        if (response.options.key == 'wait') {
-                            var newE = new ElementWait({title: response.title, options: response.options});                            
-                        } else if (response.options.key == 'condition') {
-                            var newE = new ElementCondition({title: response.title, options: response.options});                            
-                        }
-
-                        MyAutomation.addToTree(newE);
-
-                        newE.validate();
-                        
-                        // save tree
-                        saveData(function() {
-                            // hide popup
-                            automationPopup.hide();
-
-                            doSelect(newE);
-                            
-                            notify({
-                                type: 'success',
-                                title: '{!! trans('messages.notify.success') !!}',
-                                message: response.message
-                            });
-                        });
-                    });
+                var dialog = new Dialog('alert', {
+                    message: '{{ trans('messages.automation.rollback.warning') }}',
                 });
             });
-        }
 
-        function EmailSetup(id) {
-            var url = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}' + '?action_id=' + id;
-            
-            automationPopup.load(url, function() {
-            });
-        }
-
-        function OpenActionSelectPopup(conditionBranch = null) {
-            var hasChildren = false;
-            if (conditionBranch == null) {
-                hasChildren = tree.getSelected().hasChildren();
-            } else if (conditionBranch == 'yes') {
-                hasChildren = tree.getSelected().hasChildYes();
-            } else if (conditionBranch == 'no') {
-                hasChildren = tree.getSelected().hasChildNo();
-            }
-
-            automationPopup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + hasChildren, function() {
-                console.log('Select action popup loaded!');
-                
-                // when click on action type
-                automationPopup.popup.find('.action-select-but').click(function() {
-                    var key = $(this).attr('data-key');
-                    // EMAIL
-                    if (key == 'send-an-email') {
-                        // new action as email
-                        var newE = new ElementAction({
-                            title: '{{ trans('messages.automation.tree.action_not_set') }}',
-                            options: {init: "false"}
-                        });
-                        
-                        // add email to tree
-                        MyAutomation.addToTree(newE);
-
-                        // validate
-                        newE.validate();
-
-                        // save tree
-                        saveData(function() {
-                            notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.created') }}');
-                        });
-                    } else {
-                        // show select trigger confirm box
-                        SelectActionConfirm(key);
-                    }
-                });
-            });
-        }
-        
-        function OpenTriggerSelectPopup() {
-            automationPopup.load('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
-                console.log('Select trigger popup loaded!');
-                
-                // when click on trigger type
-                automationPopup.popup.find('.trigger-select-but').click(function() {
-                    var key = $(this).attr('data-key');
-                    
-                    // show select trigger confirm box
-                    SelectTriggerConfirm(key);
-                });
-            });
-        }
-        
-        function SelectTriggerConfirm(key) {
-            var url = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}' + '?key=' + key;
-            
-            automationPopup.load(url, function() {
-                console.log('Confirm trigger type popup loaded!');
-            });
-        }
-        
-        function EditTrigger(url) {
-            sidebar.load(url);
-        }
-        
-        function EditAction(url) {
-            sidebar.load(url);
-        }
-    
-        $(document).ready(function() {
-            lastSaved.load();
-
-            // load sidebar
-            sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
-
-            // history toggle
-            $('.diagram .history .history-list').click(function() {
-                toggleHistory();
-            });
+            // Event: Hide history items when click outside
             $(document).mouseup(function(e) 
             {
-                var container = $(".history .history-list-items");
+                var container = $("#HistoryListItems");
 
                 // if the target of the click isn't the container nor a descendant of the container
                 if (!container.is(e.target) && container.has(e.target).length === 0) 
@@ -469,38 +299,13 @@
                 }
             });
 
-            // switch automation
-            $('[name=switch_automation]').change(function() {
-                var val = $(this).val();
-                var text = $('[name=switch_automation] option:selected').text();
-                var confirm = "{{ trans('messages.automation.switch_automation.confirm') }} <span class='font-weight-semibold'>" + text + "</span>"; 
-
-                var dialog = new Dialog('confirm', {
-                    message: confirm,
-                    ok: function(dialog) {
-                        window.location = val; 
-                    },
-                    cancel: function() {
-                        $('[name=switch_automation]').val('');
-                    },
-                    close: function() {
-                        $('[name=switch_automation]').val('');
-                    },
-                });
-            });
-            $('.select2-results__option').each
-
-            // fake history
-            $('.diagram .history .history-list-items a, .history .history-undo').click(function(e) {
-                e.preventDefault();
-
-                var dialog = new Dialog('alert', {
-                    message: '{{ trans('messages.automation.rollback.warning') }}',
-                });
+            // Event: switch automation
+            $('#AutomationSelector').change(function() {
+                changeAutomation($(this));
             });
             
-            // quota view
-            $('.quota-view').click(function(e) {
+            // Event: Click quota view on top menu
+            $('#AutomationQuotaViewMenu').click(function(e) {
                 e.preventDefault();
 
                 var url = $(this).attr('href');
@@ -509,98 +314,33 @@
                     console.log('quota popup loaded!');
                 });
             });
-        });
-
-        var tree;
-
-        function doSelect(e) {
-            // TODO 1:
-            // Gọi Ajax to Automation2@action
-            // Prams: e.getId()
-            // Trả về thông tin chi tiết của action để load nội dung bên phải
-            // Trên server: gọi hàm model: Automation2::getActionInfo(id)
-            
-            e.select(); // highlight
-            
-            // if click on a trigger
-            if (e.getType() == 'ElementTrigger') {
-                var options = e.getOptions();
-                
-                // check if trigger is not init
-                if (options.init == "false") {
-                    OpenTriggerSelectPopup();
-                }
-                // trigger was init
-                else {
-                    var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
-                    
-                    // Open trigger types select list
-                    EditTrigger(url);
-                }
-            }
-            // is WAIT
-            else if (e.getType() == 'ElementWait') {
-                    var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
-                    
-                    // Open trigger types select list
-                    EditAction(url);
-            }
-            // is Condition
-            else if (e.getType() == 'ElementCondition') {
-                    var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
-                    
-                    // Open trigger types select list
-                    EditAction(url);
-            }
-            // is Email
-            else if (e.getType() == 'ElementAction') {
-                if (e.getOptions().init == "true") {
-                    var type = $(this).attr('data-type');
-                    var url = '{{ action('Automation2Controller@email', $automation->uid) }}?email_uid=' + e.getOptions().email_uid;
-                    
-                    // Open trigger types select list
-                    EditAction(url);
-                } else {
-                    var type = $(this).attr('data-type');
-                    var url = '{{ action('Automation2Controller@email', $automation->uid) }}?email_uid=' + e.getOptions().email_uid;
-                    
-                    // Open trigger types select list
-                    EditAction(url);
-                    
-                    // show select trigger confirm box
-                    EmailSetup(e.getId());
-                }
-            }
-            // is Email
-            else if (e.getType() == 'ElementOperation') {
-                var type = $(this).attr('data-type');
-                var url = '{{ action('Automation2Controller@operationShow', $automation->uid) }}?operation=' + e.getOptions().operation_type + '&id=' + e.getId();
-                
-                // Open trigger types select list
-                sidebar.load(url);
-            }
         }
 
-        function getEmailSetupUrl(email_uid) {
-            var url = `{{ action('Automation2Controller@emailSetup', [
-                'uid' => $automation->uid,
-                'email_uid' => '___email_uid___',
-            ]) }}`;
-             
-            return url.replace('___email_uid___', email_uid);
+        // Change automation
+        function changeAutomation(selector) {
+            var val = selector.val();
+            var currentName = selector.find('option:selected').text();
+            var confirm = "{{ trans('messages.automation.switch_automation.confirm') }} <span class='font-weight-semibold'>" + currentName + "</span>"; 
+
+            var dialog = new Dialog('confirm', {
+                message: confirm,
+                ok: function(dialog) {
+                    window.location = val; 
+                },
+                cancel: function() {
+                    selector.val('');
+                },
+                close: function() {
+                    selector.val('');
+                },
+            });
         }
 
-        var MyAutomation = {
-            // Set the AddElement function
-            // It depends on the currently selected element
-            addToTree: null
-        };
+        // init main automation tree
+        function loadAutomationWorkflow() {
+            var tree;
 
-        (function() {
-            //var json = [
-            //    {title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: false}}
-            //];
-            
+            // INIT/SETUP AUTOMATION TREE
             @if ($automation->data)
                 var json = {!! $automation->getData() !!};
             @else
@@ -608,12 +348,10 @@
                     {title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: "false"}}
                 ];
             @endif
-
-            var container = document.getElementById('svg');
-
-            tree = AutomationElement.fromJson(json, container, {
+            // init tree
+            tree = AutomationElement.fromJson(json, document.getElementById('svg'), {
                 onclick: function(e) {
-                    doSelect(e);
+                    doSelectTreeElement(e);
                 },
 
                 onhover: function(e) {
@@ -628,10 +366,10 @@
                         e.getTrigger().organize();
 
                         // select new element
-                        doSelect(element);
+                        // doSelectTreeElement(element);
                     };
 
-                    OpenActionSelectPopup();
+                    openActionSelectPopup();
                 },
 
                 onaddyes: function(e) {
@@ -642,10 +380,10 @@
                         e.getTrigger().organize();
 
                         // select new element
-                        doSelect(element);
+                        // doSelectTreeElement(element);
                     };
 
-                    OpenActionSelectPopup('yes');
+                    openActionSelectPopup('yes');
                 },
 
                 onaddno: function(e) {
@@ -656,10 +394,10 @@
                         e.getTrigger().organize();
 
                         // select new element
-                        doSelect(element);
+                        // doSelectTreeElement(element);
                     };
 
-                    OpenActionSelectPopup('no');
+                    openActionSelectPopup('no');
                 },
 
                 validate: function(e) {
@@ -719,28 +457,28 @@
             });
 
             @if (request()->auto_popup)
-                doSelect(tree.child);
+                doSelectTreeElement(tree.child);
                 setTimeout(function() {
                     automationPopup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                     function() {
-                        $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
+                        $('[data-control="email-title"]').html('{{ trans('messages.source.abandoned_cart_email') }}');
                     });
                 }, 100);
 
                 automationPopup.onHide = function() {
-                    if (parent && parent.$('.trans_frame')) {
-                        parent.$('.trans_frame').fadeOut();
+                    if (parent && parent.$('#AutomationOutsideFrame')) {
+                        parent.$('#AutomationOutsideFrame').fadeOut();
                     }
                     parent.hidden = true;
 
                     // parent
                     parent.$('html').css('overflow', 'auto');
 
-                    doSelect(tree.child);
+                    doSelectTreeElement(tree.child);
                     setTimeout(function() {
                         automationPopup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                         function() {
-                            $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
+                            $('[data-control="email-title"]').html('{{ trans('messages.source.abandoned_cart_email') }}');
                         });
                     }, 100);
 
@@ -748,6 +486,247 @@
                 };
             @endif
 
+            return tree;
+        }
+
+        function toggleHistoryPanel() {
+            var his = $('#HistoryListItems');
+
+            if (his.is(":visible")) {
+                his.fadeOut();
+            } else {
+                his.fadeIn();
+            }
+        }
+
+        function openBuilder(url) {
+            var div = $('<div class="full-iframe-popup">').html('<iframe data-control="email-builder" scrolling="no" class="builder d-none" src="'+url+'"></iframe>');
+            
+            $('body').append(div);
+
+            // open builder effects
+            addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+            $('[data-control="email-builder"]').on("load", function() {
+                removeMaskLoading();
+
+                $(this).removeClass("d-none");
+            });
+        }
+
+        function openBuilderClassic(url) {
+            var div = $('<div class="full-iframe-popup">').html('<iframe data-control="email-builder" scrolling="yes" class="builder d-none" src="'+url+'"></iframe>');
+            
+            $('body').append(div);
+
+            // open builder effects
+            addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+            $('[data-control="email-builder"]').on("load", function() {
+                removeMaskLoading();
+
+                $(this).removeClass("d-none");
+            });
+        }
+        
+        function saveData(callback, extra = {}) {
+            if (!(extra instanceof Object)) {
+                alert("A hash is required");
+                return false;
+            }
+
+            if ('data' in extra) {
+                alert("data key is not allowed");
+                return false;
+            }
+
+            var url = automationSaveUrl;
+        
+            var postContent = {
+                _token: CSRF_TOKEN,
+                data: JSON.stringify(tree.toJson()),
+            }
+
+            postContent = {...extra, ...postContent};
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: postContent
+            }).always(function() {
+                if (callback != null) {
+                    callback();
+                }
+
+                // update last saved
+                lastSavedBox.load();
+            });
+        }
+        
+        function setAutomationName(name) {
+            $('.navbar h1').html(name);
+        }
+
+        function openCreateWaitActionPopup(key) {
+            var url = waitCreateUrl + '?key=' + key;
+            
+            automationPopup.load(url);
+        }
+
+        function openCreateConditionActionPopup(key) {
+            var url = conditionCreateUrl + '?key=' + key;
+            
+            automationPopup.load(url);
+        }
+
+        function openCreateEmailPopup(id) {
+            var url = createEmailUrl + '?action_id=' + id;
+            
+            automationPopup.load(url);
+        }
+
+        function openActionSelectPopup(conditionBranch = null) {
+            var hasChildren = false;
+            if (conditionBranch == null) {
+                hasChildren = tree.getSelected().hasChildren();
+            } else if (conditionBranch == 'yes') {
+                hasChildren = tree.getSelected().hasChildYes();
+            } else if (conditionBranch == 'no') {
+                hasChildren = tree.getSelected().hasChildNo();
+            }
+
+            automationPopup.load(actionSelectUrl + '?hasChildren=' + hasChildren);
+        }
+        
+        function openTriggerSelectPopup() {
+            automationPopup.load(triggerSelectUrl);
+        }
+        
+        function openSelectTriggerConfirmPopup(key) {
+            var url = triggerConfirmUrl + '?key=' + key;
+            
+            automationPopup.load(url, function() {
+                console.log('Confirm trigger type popup loaded!');
+            });
+        }
+        
+        function loadSidebarEditTrigger(key, id) {
+            var url = triggerEditUrl + '?key=' + key;
+
+            if (id) {
+                url = url + '&id=' + id;
+            }
+
+            sidebar.load(url);
+        }
+
+        function loadSidebarWait(id) {
+            var url = waitEditUrl + '?id=' + id;
+            
+            // load sidebar
+            sidebar.load(url);
+        }
+
+        function loadSidebarCondition(id) {
+            var url = conditionEditUrl + '?id=' + id;
+            
+            // load sidebar
+            sidebar.load(url);
+        }
+
+        function loadSidebarEmail(uid) {
+            var url = emailUrl + '?email_uid=' + uid;
+            
+            // load sidebar
+            sidebar.load(url);
+        }
+
+        function loadSidebarOperation(id) {
+            var url = operationShowUrl + '?operation=' + e.getOptions().operation_type + '&id=' + id;
+            
+            // load sidebar
+            sidebar.load(url);
+        }
+
+        function loadSidebarWebhook(id) {
+            var url = outgoingWebhookShowUrl + '?id=' + id;
+            
+            // load sidebar
+            sidebar.load(url);
+        }
+
+        function getEmailSetupUrl(email_uid) {
+            var url = emailSetupUrlWithUid;
+             
+            return url.replace('___email_uid___', email_uid);
+        }
+
+        function doSelectTreeElement(e) {
+            // TODO 1:
+            // Gọi Ajax to Automation2@action
+            // Prams: e.getId()
+            // Trả về thông tin chi tiết của action để load nội dung bên phải
+            // Trên server: gọi hàm model: Automation2::getActionInfo(id)
+            
+            e.select(); // highlight
+
+            // if click on a trigger
+            if (e.getType() == 'ElementTrigger') {
+                var options = e.getOptions();
+                
+                // check if trigger is not init
+                if (options.init == "false") {
+                    openTriggerSelectPopup();
+                }
+                // trigger was init
+                else {
+                    // Open trigger types select list
+                    loadSidebarEditTrigger(e.getOptions().key, e.getId());
+                }
+            }
+            // is WAIT
+            else if (e.getType() == 'ElementWait') {
+                    // load sidebar
+                    loadSidebarWait(e.getId());
+            }
+            // is Condition
+            else if (e.getType() == 'ElementCondition') {
+                    // load sidebar
+                    loadSidebarCondition(e.getId());
+            }
+            // is Email
+            else if (e.getType() == 'ElementAction') {
+                // load sidebar
+                loadSidebarEmail(e.getOptions().email_uid);
+
+                if (e.getOptions().init !== "true") {
+                    // 
+                    openCreateEmailPopup(e.getId());
+                }
+            }
+            // is Operation
+            else if (e.getType() == 'ElementOperation') {
+                // load sidebar
+                loadSidebarOperation(e.getId(), e.getOptions().operation_type);
+            }
+            // ElementWebhook
+            else if (e.getType() == 'ElementWebhook') {
+                // load sidebar
+                loadSidebarWebhook(e.getId());
+            }
+        }
+        
+        // Document ready initialization
+        (function() {
+            // Reload last saved information
+            lastSavedBox.load();
+
+            // Load init sidebar default page (Automation Seetings Page)
+            sidebar.load(settingsUrl);
+
+            // events
+            initEvents();
+
+            // automation tree init
+            tree = loadAutomationWorkflow();
         })();
     </script>
 @endsection

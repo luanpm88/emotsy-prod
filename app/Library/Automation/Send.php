@@ -52,8 +52,9 @@ class Send extends Action
         if (config('app.demo') == 'true') {
             // do not wait
         } else {
+            // important: set it to very very low, otherwise it may cause big delays if millions of jobs are on queue
             // to avoid same date/time with previous wait, wrong timeline order
-            sleep(1);
+            usleep(1000); // 1/1000 seconds
         }
 
         // @todo @important This is a VERY VERY TEMPORARY fix, to clean up old data

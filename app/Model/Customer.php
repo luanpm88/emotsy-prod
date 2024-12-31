@@ -1633,7 +1633,8 @@ class Customer extends Model
         $first_name,
         $last_name,
         $image,
-        $role_uid
+        $role_uid,
+        $phone = null,
     ) {
         // init
         $customer = static::newCustomer();
@@ -1649,6 +1650,7 @@ class Customer extends Model
         $user->password = $password;
         $user->first_name = $first_name;
         $user->last_name = $last_name;
+        $user->phone = $phone;
 
         // rules
         $rules = [
@@ -1661,6 +1663,7 @@ class Customer extends Model
             'last_name' => 'required',
             'image' => 'nullable|image',
             'role_uid' => 'required',
+            'phone' => [(Setting::get('user.require_mobile_phone') == 'yes' ? 'required' : 'nullable'), 'regex:/^[\+0-9]{10,15}$/'],
         ];
 
         // validation
@@ -1675,6 +1678,7 @@ class Customer extends Model
             'last_name' => $last_name,
             'image' => $image,
             'role_uid' => $role_uid,
+            'phone' => $phone,
         ], $rules);
 
         // errors
@@ -1690,7 +1694,8 @@ class Customer extends Model
             $first_name,
             $last_name,
             $image,
-            $role_uid
+            $role_uid,
+            $phone
         );
 
         // SAVE CUSTOMER
@@ -1735,14 +1740,6 @@ class Customer extends Model
     public function createLocalInstance()
     {
         return LocalCustomer::sync($this);
-    }
-
-    public function newSignature()
-    {
-        $signature = Signature::newDefault();
-        $signature->customer_id = $this->id;
-
-        return $signature;
     }
 
     public function newMailList()

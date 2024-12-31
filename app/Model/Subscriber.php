@@ -27,6 +27,7 @@ use Acelle\Model\MailList;
 use Acelle\Model\Setting;
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUnsubscription;
+use Acelle\Events\SubscriberTagsRemoved;
 use Acelle\Library\StringHelper;
 use DB;
 use Exception;
@@ -520,7 +521,7 @@ class Subscriber extends Model
         $copy->save();
 
 
-        foreach($this->mailList->fields as $field) {
+        foreach ($this->mailList->fields as $field) {
             $copy->setFieldValue($field, $this->getValueByField($field));
         }
 
@@ -849,16 +850,6 @@ class Subscriber extends Model
         SubscribersTagsUpdate::dispatch($this);
     }
 
-    public function removeTags($arr)
-    {
-        $tags = $this->getTags();
-
-        $nTags = array_values(array_unique(array_diff($tags, $arr)));
-
-        $this->tags = json_encode($nTags);
-        $this->save();
-    }
-
     /**
      * Add tags.
      */
@@ -900,21 +891,26 @@ class Subscriber extends Model
     /**
      * Remove tag.
      */
-    public function removeTag($tag)
+    public function removeTags(array $tagsToRemove = [])
     {
-        $tags = $this->getTags();
+        $oldTags = $this->getTags();
+        $tags = $oldTags;
 
-        if (($key = array_search($tag, $tags)) !== false) {
-            unset($tags[$key]);
+        $removedTags = [];
+        foreach ($tagsToRemove as $tag) {
+            if (($key = array_search($tag, $tags)) !== false) {
+                unset($tags[$key]);
+                $this->tags = json_encode($tags);
+                $removedTags[] = $tag;
+            }
         }
 
-        $before = $this->getCustomAttributes();
-
-        $this->tags = json_encode($tags);
-        $this->save();
-
-        $changes = $this->findDifferentCustomAttributes($before);
-        SubscribersAttributesUpdate::dispatch($this, $changes, $before);
+        if (!empty($removedTags)) {
+            $this->save();
+            SubscriberTagsRemoved::dispatch($this, $removedTags);
+        } else {
+            // nothing change
+        }
     }
 
     /**

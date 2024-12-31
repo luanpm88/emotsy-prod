@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-
 use DB;
 use Acelle\Library\Automation\Action;
 use Acelle\Library\Automation\Trigger;
@@ -31,6 +30,7 @@ use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
 use Acelle\Library\Automation\Evaluate;
 use Acelle\Library\Automation\Operate;
+use Acelle\Library\Automation\Webhook;
 use Carbon\Carbon;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -730,11 +730,18 @@ class Automation2 extends Model
             $trigger->check();
         }*/
 
-        foreach ($this->pendingAutoTriggers as $trigger) {
-            $trigger->check();
-        }
+        $pageCount = 0;
+        paginate_query($this->pendingAutoTriggers(), $perPage = 500, $orderBy = 'auto_triggers.id', function ($pageNumber, $autoTriggers) use (&$pageCount) {
+            $pageCount += 1;
 
-        $this->logger()->info(sprintf('UPDATE > Finish checking for trigger update'));
+            $this->logger()->info(sprintf("Checking page {$pageCount}"));
+            foreach ($autoTriggers->get() as $trigger) {
+                $this->logger()->info("Checking trigger ID #{$trigger->id}");
+                $trigger->check();
+            }
+        });
+
+        $this->logger()->info(sprintf('Finish checking for trigger update'));
     }
 
     /**
@@ -916,6 +923,13 @@ class Automation2 extends Model
                 'percentage' => ($total != 0) ? (($yes + $no) / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];
+        } elseif ($action->getType() == 'ElementWebhook') {
+            $insight = [
+                'count' => $count,
+                'subtitle' => __('messages.automation.stats.sent', ['count' => $count]),
+                'percentage' => ($total != 0) ? ($count / $total) : 0,
+                'latest_activity' => $this->autoTriggers()->max('created_at'),
+            ];
         }
 
         return $insight;
@@ -1013,6 +1027,9 @@ class Automation2 extends Model
                 break;
             case 'ElementOperation':
                 $instance = new Operate($attributes);
+                break;
+            case 'ElementWebhook':
+                $instance = new Webhook($attributes);
                 break;
             default:
                 throw new \Exception('Unknown Action type '.$attributes['type']);
@@ -1253,12 +1270,17 @@ class Automation2 extends Model
     public function forceTriggerAll($session)
     {
         // Triggers active contacts
-        $subscribers = $this->subscribersToSend()->get();
-        $this->logger()->info(sprintf('Triggering %s contacts', sizeof($subscribers)));
-        foreach ($subscribers as $subscriber) {
-            $this->initTrigger($subscriber, $force = false, $session);
-        }
-        $this->logger()->info(sprintf('Finish Triggering %s contacts', sizeof($subscribers)));
+        $pageCount = 0;
+        paginate_query($this->subscribersToSend(), $perPage = 1000, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$pageCount, $session) {
+            $pageCount += 1;
+
+            $subscribersCount = $subscribers->count();
+            $this->logger()->info(sprintf('Force triggering page %s with %s contacts', $pageNumber, $subscribersCount));
+            foreach ($subscribers->get() as $subscriber) {
+                $this->initTrigger($subscriber, $force = false, $session);
+            }
+            $this->logger()->info(sprintf('Finish Triggering %s contacts', $subscribersCount));
+        });
     }
 
     public function notTriggeredSubscribers()
@@ -1752,5 +1774,20 @@ class Automation2 extends Model
         });
 
         return [$validator, $newAutomation];
+    }
+
+    public function getAvailableOutgoingWebhookTags()
+    {
+        $tags = [];
+
+        // List field tags
+        foreach ($this->mailList->fields as $field) {
+            $tags[] = [
+                'label' => $field->label,
+                'tag' => '{{' . $field->tag . '}}',
+            ];
+        }
+
+        return $tags;
     }
 }

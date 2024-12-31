@@ -72,6 +72,7 @@ class PageController extends Controller
             }
 
             // save
+            $page->customer_id = $list->customer->id;
             $page->save();
 
             // Log
@@ -115,7 +116,7 @@ class PageController extends Controller
         // render content
         $page->renderContent();
 
-        return view('pages.preview_'.$page->layout->type, [
+        return view('pages.preview_'.$layout->type, [
             'list' => $list,
             'page' => $page,
         ]);
@@ -190,9 +191,6 @@ class PageController extends Controller
 
             try {
                 list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_WEB);
-
-                // Timeline record
-                \Acelle\Model\Timeline::recordSignUpFormOptIn($subscriber);
             } catch (\Exception $ex) {
                 return view('somethingWentWrong', ['message' => $ex->getMessage()]);
             }
@@ -200,6 +198,9 @@ class PageController extends Controller
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
+
+            // Timeline record
+            \Acelle\Model\Timeline::recordSignUpFormOptIn($subscriber);
 
             if ($request->redirect_url) {
                 return redirect()->away($request->redirect_url);
@@ -429,7 +430,7 @@ class PageController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($customerUid);
 
         if (is_null($customer)) {
-            throw new \Exception('Cannot find customer');
+            throw new \Exception("Cannot find customer: '{$customerUid}'");
         } else {
             $customer->setUserDbConnection();
         }

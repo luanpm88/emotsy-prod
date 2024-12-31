@@ -10,6 +10,8 @@ function initJs(container)
     // select2
     if (container.find('.select').select2) {
         container.find('.select').select2({
+            templateResult: formatSelect2TextSelected,
+            templateSelection: formatSelect2TextSelected,
             dropdownAutoWidth: true,
             minimumResultsForSearch: 30,
             escapeMarkup: function(markup) {
@@ -297,7 +299,11 @@ function formatSelect2TextSelected(d) {
     var text = d.text;
     var parts = text.split('|||');
 
-    return parts[0];
+    if (parts.length == 1) {
+        return parts[0];
+    } else {
+        return '<div class="select2_title fw-600">' + parts[0] + '</div>' + '<div class="select2_sub_line">' + parts[1] + '</div>';
+    }
 }
 
 function formatSelect2TextOption(d) {

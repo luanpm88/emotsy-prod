@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Signature;
 use Acelle\Library\Facades\Hook;
 use Acelle\Model\SendingDomain;
-
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Library\StringHelper;
 
@@ -67,7 +66,7 @@ class SignatureController extends Controller
         }
 
         //
-        $signature = $request->user()->customer->newSignature();
+        $signature = $request->user()->customer->local()->newSignature();
 
         return view('signatures.create', [
             'signature' => $signature,
@@ -89,7 +88,7 @@ class SignatureController extends Controller
         }
 
         //
-        $signature = $request->user()->customer->newSignature();
+        $signature = $request->user()->customer->local()->newSignature();
 
         // try to save
         list($result, $errors) = $signature->saveSignature(

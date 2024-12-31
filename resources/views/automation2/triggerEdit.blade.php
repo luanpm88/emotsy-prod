@@ -22,7 +22,7 @@
             </button>
         @endif
 
-        <a href="javascript:;" class="btn btn-secondary change-trigger-but">
+        <a data-control="change-trigger" href="javascript:;" class="btn btn-secondary change-trigger-but">
             {{ trans('messages.automation.trigger.change') }}
         </a>
     </div>
@@ -75,7 +75,7 @@
         });
     });
 
-    $('.change-trigger-but').click(function() {
-        OpenTriggerSelectPopup();
+    $('[data-control="change-trigger"]').click(function() {
+        openTriggerSelectPopup();
     });
 </script>

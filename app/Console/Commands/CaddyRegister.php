@@ -38,8 +38,8 @@ class CaddyRegister extends Command
      */
     public function handle()
     {
-        $this->withAutoSslTrackingDomains(function($customer, $domains) {
-            foreach($domains as $domain) {
+        $this->withAutoSslTrackingDomains(function ($customer, $domains) {
+            foreach ($domains as $domain) {
                 $this->createCaddyConfigFile($domain->name);
             }
         });

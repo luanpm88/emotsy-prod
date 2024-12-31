@@ -116,6 +116,97 @@
                     </span>
                 </label>
             </div>
+
+            <div class="form-group">
+                <label for="" class="form-label fw-semibold">Radios</label>
+                <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center me-4">
+                        <div class="me-2">
+                            <input type="radio" name="webhook[method]" value="get" id="method-get" class="styled" />
+                            <label class="check-symbol" for="method-get"></label>
+                        </div>
+                        <div>
+                            <label for="method-get" class="mb-0">{{ trans('messages.automation.outgoing_webhook.get_method') }}</label>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center me-4">
+                        <div class="me-2">
+                            <input type="radio" name="webhook[method]" value="post" id="method-post" class="styled" />
+                            <label class="check-symbol" for="method-post"></label>
+                        </div>
+                        <label for="method-post" class="mb-0">{{ trans('messages.automation.outgoing_webhook.post_method') }}</label>
+                    </div>
+                    <div class="d-flex align-items-center me-4">
+                        <div class="me-2">
+                            <input type="radio" name="webhook[method]" value="put" id="method-put" class="styled" />
+                            <label class="check-symbol" for="method-put"></label>
+                        </div>
+                        <label for="method-put" class="mb-0">{{ trans('messages.automation.outgoing_webhook.put_method') }}</label>
+                    </div>
+                    <div class="d-flex align-items-center me-4">
+                        <div class="me-2">
+                            <input type="radio" name="webhook[method]" value="delete" id="method-delete" class="styled" />
+                            <label class="check-symbol" for="method-delete"></label>
+                        </div>
+                        <label for="method-delete" class="mb-0">{{ trans('messages.automation.outgoing_webhook.delete_method') }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="fw-semibold mb-2">{{ trans('messages.site.type') }}</label>
+                <div>
+                    <div data-control="option-container" class="d-flex">
+                        <label class="me-3">
+                            <input type="radio" name="site[type]" value="1" id="udesfe_true" class="styled"><span class="check-symbol"></span>
+                        </label>
+                        <div>
+                            <label for="udesfe_true" class="mb-0 radio-label">{{ trans('messages.site.type.landing_page') }}</label>
+                            <p class="text-muted mb-2 small fst-italic">
+                                {{ trans('messages.site.type.landing_page.wording') }}
+                            </p>
+                        </div>
+                    </div>
+                    <div data-control="option-container" class="d-flex mt-2">
+                        <label class="me-3">
+                            <input checked="" type="radio" name="site[type]" value="0" id="udesfe_false" class="styled"><span class="check-symbol"></span>
+                        </label>
+                        <div>
+                            <label for="udesfe_false" class="mb-0 radio-label">{{ trans('messages.site.type.website') }}</label>
+                            <p class="text-muted mb-2 small fst-italic">
+                                {{ trans('messages.site.type.website.wording') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="fw-semibold">Control: Select</label>
+                
+                @include('helpers.form_control.select', [
+                    'name' => 'name',
+                    'value' => 2,
+                    'options' => [
+                        ['value' => null, 'text' => 'Select none'],
+                        ['value' => 2, 'text' => 'Title #1|||Description #1'],
+                        ['value' => 3, 'text' => 'Title #2|||Description #2'],
+                    ],
+                    'attributes' => [
+                        'required' => 'required',
+                    ],
+                ])
+            </div>
+
+            <div class="form-group">
+                <label>
+                    {{ trans('messages.phone') }}
+                </label>
+                @include('helpers.form_control.phone', [
+                    'name' => 'phone',
+                    'value' => '',
+                ])
+            </div>
         </div>
     </div>
 @endsection
