@@ -284,7 +284,7 @@
                 'insertdatetime media paste code'
                 ],
                 setup: function(editor) {
-                    editor.on('input', function(e) {
+                    editor.on('input keyup change', function(e) {
                         editor.save();
                     });
                 },

@@ -24,6 +24,7 @@
         <table class="table table-box table-box-head field-list"
             current-page="1"
         >
+            <tr>
                 <th width="1%"></th>
                 <th>{{ trans('messages.field_label_and_type') }}</th>
                 <th width="100px">{{ trans('messages.required?') }}</th>
@@ -31,6 +32,7 @@
                 <th>{{ trans('messages.tag') }}</th>
                 <th>{{ trans('messages.default_value') }}</th>
                 <th></th>
+            </tr>
             @foreach ($fields as $key => $item)
                 <tr class="draggable" rel="{{ $item->uid }}">
                     <td>
@@ -44,11 +46,11 @@
                             name="fields[{{ $item->uid }}][type]"
                         />
                     </td>
-                    <td class="text-nowrap">
-                        @include('helpers.form_control', ['disabled' => $item->tag == 'EMAIL', 'type' => 'checkbox', 'name' => 'fields[' . $item->uid . '][required]', 'label' => '', 'value' => $item->required, 'options' => [false,true], 'help_class' => 'field'])
+                    <td class="text-nowrap {{ $item->tag == 'EMAIL' ? 'pe-none opacity-50' : '' }}">
+                        @include('helpers.form_control', ['readonly' => $item->tag == 'EMAIL', 'type' => 'checkbox', 'name' => 'fields[' . $item->uid . '][required]', 'label' => '', 'value' => $item->required, 'options' => [false,true], 'help_class' => 'field'])
                     </td>
-                    <td class="text-nowrap">
-                        @include('helpers.form_control', ['disabled' => $item->tag == 'EMAIL', 'type' => 'checkbox', 'name' => 'fields[' . $item->uid . '][visible]', 'label' => '', 'value' => $item->visible, 'options' => [false,true], 'help_class' => 'field'])
+                    <td class="text-nowrap {{ $item->tag == 'EMAIL' ? 'pe-none opacity-50' : '' }}">
+                        @include('helpers.form_control', ['readonly' => $item->tag == 'EMAIL', 'type' => 'checkbox', 'name' => 'fields[' . $item->uid . '][visible]', 'label' => '', 'value' => $item->visible, 'options' => [false,true], 'help_class' => 'field'])
                     </td>
                     <td class="text-nowrap">
                         <div class="d-flex align-items-center">
