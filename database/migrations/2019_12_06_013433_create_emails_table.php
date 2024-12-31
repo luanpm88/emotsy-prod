@@ -21,7 +21,6 @@ class CreateEmailsTable extends Migration
             $table->string('from');
             $table->string('from_name');
             $table->string('reply_to');
-            $table->text('content');
 
             $table->timestamps();
 

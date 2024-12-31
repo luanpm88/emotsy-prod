@@ -19,10 +19,6 @@ use Carbon\Carbon;
 
 class CampaignController extends Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     private function setUserDbConnection($request)
     {
