@@ -299,7 +299,7 @@ class BaseCampaign extends Model
                         $startAt = $info['start_at'];
                         $finishAt = Carbon::now();
                         $info['finish_at'] = $finishAt->toString();
-                        $info['total_time'] = $finishAt->diffInSeconds(Carbon::parse($startAt));
+                        $info['total_time'] = $finishAt->diffInSeconds(Carbon::parse($startAt), $abs = true);
                         return $info;
                     });
                 }

@@ -3,6 +3,8 @@
 namespace Acelle\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class NotLoggedIn
 {
@@ -14,7 +16,7 @@ class NotLoggedIn
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
         if (isset($_COOKIE['last_language_code'])) {

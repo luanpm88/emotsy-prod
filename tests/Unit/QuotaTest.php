@@ -20,6 +20,7 @@ use Acelle\Library\RateTracker;
 use Acelle\Library\RateLimit;
 use Acelle\Library\CreditTracker;
 use Carbon\Carbon;
+use Acelle\Library\RouletteWheel;
 
 use function Acelle\Helpers\withQuota;
 
@@ -109,8 +110,11 @@ class QuotaTest extends TestCase
         // Record exception to test
         $outcome = null;
 
+        $pool = new RouletteWheel();
+        $pool->add($server, 100);
+
         // 1st execution
-        $sendMsgJob = new SendMessage($campaign, $subscriber, $server, $subscription);
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $pool, $subscription);
         $sendMsgJob->send(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
@@ -123,7 +127,7 @@ class QuotaTest extends TestCase
 
 
         // 2st execution, hit subscription rate limit
-        $sendMsgJob = new SendMessage($campaign, $subscriber, $server, $subscription);
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $pool, $subscription);
         $sendMsgJob->send(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
@@ -165,8 +169,11 @@ class QuotaTest extends TestCase
 
         $outcome = null;
 
+        $pool = new RouletteWheel();
+        $pool->add($server, 100);
+
         // SendMessage job 1st time
-        $sendMsgJob = new SendMessage($campaign, $subscriber, $server, $subscription);
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $pool, $subscription);
         $sendMsgJob->send(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
@@ -178,7 +185,7 @@ class QuotaTest extends TestCase
         $this->assertNull($outcome);
 
         // SendMessage job 2nd time
-        $sendMsgJob = new SendMessage($campaign, $subscriber, $server, $subscription);
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $pool, $subscription);
         $sendMsgJob->send(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
@@ -194,7 +201,11 @@ class QuotaTest extends TestCase
         // Server
         $server = $this->initEmailVerificationServer();
         $subscription = $this->initSubscription();
+        $list = Mockery::mock(new MailList());
+        $customer = Mockery::mock(new Customer());
+        $list->customer = $customer;
         $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->mailList = $list;
         $subscriber->shouldReceive('verify')->andReturn(null);
 
         $subscription->getVerifyEmailCreditTracker()->setCredits(100);

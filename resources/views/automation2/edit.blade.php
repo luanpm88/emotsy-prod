@@ -183,6 +183,53 @@
     </main>
         
     <script>
+
+        // Khai báo ALL CLICK events
+        $.on('#btn-add-action').click(function() { ... });
+        $.on('#btn-add-.....').click(function() { ... });
+        $.on('#btn-add-......').click(function() { ... });
+        $.on('#btn-add-action').click(function() { ... });
+        $.on('#btn-add-action').click(function() { ... });
+        $.on('#btn-add-action').click(function() { ... });
+        $.on('#btn-add-action').click(function() { ... });
+        $.on('#btn-add-action').click(function() { ... });
+
+        // Khai báo URL
+        $editWaitUrl = '{{ action(Controller) }}';
+        $editSendUrl = '{{ action(Controller) }}';
+        $editSendUrl = '{{ action(Controller) }}';
+        $editSendUrl = '{{ action(Controller) }}';
+        $editSendUrl = '{{ action(Controller) }}';
+
+        // Khai báo hàm
+        function loadAutomationWorkflow() {
+            // ...
+        }
+
+        function other() {
+            // ...
+        }
+
+        // Khởi tạo
+
+        $.ready(function() {
+            tree = loadAutomationWorkflow();
+
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // timeline popup
         var timelinePopup = new Popup(undefined, undefined, {
             onclose: function() {

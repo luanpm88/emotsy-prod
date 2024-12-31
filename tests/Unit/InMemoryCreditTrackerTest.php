@@ -22,7 +22,7 @@ class InMemoryCreditTrackerTest extends TestCase
         $creditTracker2->setCredits(2);
 
         // Execute 1st time -> ok
-        $task = fn () => execute_with_limits([  ], [ $creditTracker1, $creditTracker2 ]);
+        $task = fn () => execute_with_limits([  ], null, [ $creditTracker1, $creditTracker2 ]);
 
         // First execution OK
         $task();
@@ -52,7 +52,7 @@ class InMemoryCreditTrackerTest extends TestCase
         expect($creditTracker2->isUnlimited())->toBe(false);
 
         // Second execution results in exception
-        $task = fn () => execute_with_limits([  ], [ $creditTracker1, $creditTracker2 ]);
+        $task = fn () => execute_with_limits([  ], null, [ $creditTracker1, $creditTracker2 ]);
 
         try {
             $task();
@@ -80,7 +80,7 @@ class InMemoryCreditTrackerTest extends TestCase
         $creditTracker2->setCredits(100);
 
         // Task
-        $task = fn () => execute_with_limits([  ], [ $creditTracker1, $creditTracker2 ], function () {
+        $task = fn () => execute_with_limits([  ], null, [ $creditTracker1, $creditTracker2 ], function () {
             throw new Exception();
         });
 
@@ -105,7 +105,7 @@ class InMemoryCreditTrackerTest extends TestCase
         $creditTracker1 = InMemoryCreditTracker::load($key1);
         $creditTracker1->setCredits(-1);
 
-        $task = fn () => execute_with_limits([  ], [ $creditTracker1 ]);
+        $task = fn () => execute_with_limits([  ], null, [ $creditTracker1 ]);
 
         $task();
         expect($creditTracker1->getRemainingCredits())->toBe(InMemoryCreditTracker::UNLIMITED);

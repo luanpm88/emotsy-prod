@@ -93,7 +93,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------
@@ -106,7 +106,7 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
     /*
     |--------------------------------------------------------------------------
@@ -122,6 +122,30 @@ return [
     'key' => env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
+
+    'previous_keys' => [
+        ...array_filter(
+            explode(',', env('APP_PREVIOUS_KEYS', ''))
+        ),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Maintenance Mode Driver
+    |--------------------------------------------------------------------------
+    |
+    | These configuration options determine the driver used to determine and
+    | manage Laravel's "maintenance mode" status. The "cache" driver will
+    | allow maintenance mode to be controlled across multiple machines.
+    |
+    | Supported drivers: "file", "cache"
+    |
+    */
+
+    'maintenance' => [
+        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
+        'store' => env('APP_MAINTENANCE_STORE', 'database'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -176,78 +200,6 @@ return [
 
     'recaptcha_sitekey' => env('RECAPTCHA_SITEKEY', '6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw'),
     'recaptcha_secret' => env('RECAPTCHA_SECRET', '6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Autoloaded Service Providers
-    |--------------------------------------------------------------------------
-    |
-    | The service providers listed here will be automatically loaded on the
-    | request to your application. Feel free to add your own services to
-    | this array to grant expanded functionality to your applications.
-    |
-    */
-
-    'providers' => [
-
-        /*
-         * Laravel Framework Service Providers...
-         */
-        Illuminate\Auth\AuthServiceProvider::class,
-        Illuminate\Broadcasting\BroadcastServiceProvider::class,
-        Illuminate\Bus\BusServiceProvider::class,
-        Illuminate\Cache\CacheServiceProvider::class,
-        Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
-        Illuminate\Cookie\CookieServiceProvider::class,
-        Illuminate\Database\DatabaseServiceProvider::class,
-        Illuminate\Encryption\EncryptionServiceProvider::class,
-        Illuminate\Filesystem\FilesystemServiceProvider::class,
-        Illuminate\Foundation\Providers\FoundationServiceProvider::class,
-        Illuminate\Hashing\HashServiceProvider::class,
-        Illuminate\Mail\MailServiceProvider::class,
-        Illuminate\Notifications\NotificationServiceProvider::class,
-        Illuminate\Pagination\PaginationServiceProvider::class,
-        Illuminate\Pipeline\PipelineServiceProvider::class,
-        Illuminate\Queue\QueueServiceProvider::class,
-        Illuminate\Redis\RedisServiceProvider::class,
-        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
-        Illuminate\Session\SessionServiceProvider::class,
-        Illuminate\Translation\TranslationServiceProvider::class,
-        Illuminate\Validation\ValidationServiceProvider::class,
-        Illuminate\View\ViewServiceProvider::class,
-
-        /*
-         * Package Service Providers...
-         */
-
-        /*
-         * Application Service Providers...
-         */
-        Acelle\Providers\AppServiceProvider::class,
-        Acelle\Providers\AuthServiceProvider::class,
-        Acelle\Providers\EventServiceProvider::class,
-        Acelle\Providers\RouteServiceProvider::class,
-        Acelle\Providers\JobServiceProvider::class,
-
-        /*
-         * Acelle Extended Provider
-         */
-        Acelle\Extra\LogViewer\ServiceProvider::class,
-        Lawepham\Geoip\LaweGeoIpProvider::class,
-
-        /*
-         * 3rd Service Provider
-         */
-        Intervention\Image\ImageServiceProvider::class,
-
-        // Laravel\Cashier\CashierServiceProvider::class,
-        Acelle\Cashier\CashierServiceProvider::class,
-
-        // More
-        Acelle\Providers\MailerServiceProvider::class,
-        Acelle\Providers\StorageServiceProvider::class,
-        Acelle\Providers\CheckoutServiceProvider::class,
-    ],
 
     /*
     |--------------------------------------------------------------------------

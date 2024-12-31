@@ -43,7 +43,7 @@ class ApiHelper
                     'uri' => '/api/v1/login-token',
                     'description' => 'Generate one time login token',
                     'help' => 'User can login by visiting the following URL:<br>
-                        <code>' . action('Controller@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
+                        <code>' . action('AppController@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
                     'parameters' => [
                     ],
                     'returns' => 'Token string',
@@ -496,7 +496,7 @@ class ApiHelper
                     'uri' => '/api/v1/login-token',
                     'description' => 'Generate one time login token',
                     'help' => 'User can login by visiting the following URL:<br>
-                        <code>' . action('Controller@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
+                        <code>' . action('AppController@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                     ],

@@ -1,55 +1,82 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Create The Application
-|--------------------------------------------------------------------------
-|
-| The first thing we will do is create a new Laravel application instance
-| which serves as the "glue" for all the components of Laravel, and is
-| the IoC container for the system binding all of the various parts.
-|
-*/
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
 
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
+return Application::configure(basePath: dirname(__DIR__))
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->use([
+            \Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks::class,
+            // \Illuminate\Http\Middleware\TrustHosts::class,
+            // \Illuminate\Http\Middleware\TrustProxies::class,
+            \Illuminate\Http\Middleware\HandleCors::class,
+            \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
+            \Illuminate\Http\Middleware\ValidatePostSize::class,
+            \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
+            \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        ]);
 
-/*
-|--------------------------------------------------------------------------
-| Bind Important Interfaces
-|--------------------------------------------------------------------------
-|
-| Next, we need to bind some important interfaces into the container so
-| we will be able to resolve them when needed. The kernels serve the
-| incoming requests to this application from both the web and CLI.
-|
-*/
+        $middleware->appendToGroup('web', [
+            \Acelle\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Acelle\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
 
-$app->singleton(
-    Illuminate\Contracts\Http\Kernel::class,
-    Acelle\Http\Kernel::class
-);
+        $middleware->prependToGroup('web_nocsrf', [
+            \Acelle\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            #\Acelle\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
 
-$app->singleton(
-    Illuminate\Contracts\Console\Kernel::class,
-    Acelle\Console\Kernel::class
-);
+        $middleware->prependToGroup('api', [
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
 
-$app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class,
-    Acelle\Exceptions\Handler::class
-);
+        $middleware->alias([
+            'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+            'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+            'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+            'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+            'can' => \Illuminate\Auth\Middleware\Authorize::class,
+            'guest' => \Acelle\Http\Middleware\RedirectIfAuthenticated::class,
+            'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+            'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+            'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+            'frontend' => \Acelle\Http\Middleware\Frontend::class,
+            'backend' => \Acelle\Http\Middleware\Backend::class,
+            'installed' => \Acelle\Http\Middleware\Installed::class,
+            'not_installed' => \Acelle\Http\Middleware\NotInstalled::class,
+            'not_logged_in' => \Acelle\Http\Middleware\NotLoggedIn::class,
+            'subscription' => \Acelle\Http\Middleware\Subscription::class,
+            'email_verify' => \Acelle\Http\Middleware\EmailVerify::class,
+            '2fa' => \Acelle\Http\Middleware\TwoFA::class,
+            'setdb' => \Acelle\Http\Middleware\SetUserDbConnection::class,
+        ]);
 
-/*
-|--------------------------------------------------------------------------
-| Return The Application
-|--------------------------------------------------------------------------
-|
-| This script returns the application instance. The instance is given to
-| the calling script so we can separate the building of the instances
-| from the actual running of the application and sending responses.
-|
-*/
+        $middleware->priority([
+            \Acelle\Http\Middleware\NotInstalled::class,
+            \Illuminate\Auth\Middleware\Authenticate::class,
+        ]);
+    })
 
-return $app;
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        //
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();

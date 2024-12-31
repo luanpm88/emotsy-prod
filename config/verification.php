@@ -97,7 +97,7 @@ return [
             'fields' => [ 'api_key' ],
         ], [
             'id' => 'emailevs.com',
-            'name' => 'EmailEVS',
+            'name' => 'EmailEVSs',
             'fields' => [ 'api_key' ],
         ], [
             'id' => 'verifiedemails.io',

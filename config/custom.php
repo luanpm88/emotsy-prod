@@ -14,7 +14,7 @@ return [
     'php_recommended' => '8.2.0',
 
     // Minimum supported PHP version
-    'php' => '8.0.2',
+    'php' => '8.1.0',
 
     // Branding
     'default_logo_light' => env('APP_DEFAULT_LOGO_LIGHT', 'images/logo_light.svg'),

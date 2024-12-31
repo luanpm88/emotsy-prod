@@ -12,7 +12,7 @@
         FormPopupContent.loadJs([
             '{{ AppUrl::asset('core/js/jquery-3.6.4.min.js') }}',
             '{{ AppUrl::asset('core/validate/jquery.validate.min.js') }}',
-            '{{ action('Controller@jquery_validate_locale') }}',
+            '{{ action('AppController@jquery_validate_locale') }}',
             '{{ AppUrl::asset('core/datetime/anytime.min.js') }}',
             '{{ AppUrl::asset('core/datetime/moment.min.js') }}',
             '{{ AppUrl::asset('core/datetime/pickadate/picker.js') }}',

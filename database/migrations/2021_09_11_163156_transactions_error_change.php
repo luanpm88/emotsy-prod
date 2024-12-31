@@ -14,7 +14,7 @@ class TransactionsErrorChange extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->longText('error')->change();
+            $table->longText('error')->nullable()->change();
         });
     }
 
