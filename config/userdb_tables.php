@@ -25,6 +25,7 @@ return [
     'segments',
     'senders',
     'sending_domains',
+    'signatures',
     'subscribers',
     'timelines',
     'tracking_domains',
