@@ -20,6 +20,7 @@ return [
     'mail_lists',
     'mail_lists_sending_servers',
     'open_logs',
+    'pages',
     'segment_conditions',
     'segments',
     'senders',
