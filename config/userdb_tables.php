@@ -1,4 +1,5 @@
 <?php
+
 return [
     'auto_triggers',
     'automation2s',

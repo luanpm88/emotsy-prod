@@ -1062,8 +1062,6 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
 
-        var_dump($campaign->run_at);die;
-
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();

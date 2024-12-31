@@ -377,6 +377,3 @@ return [
         'type' => 'boolean',
     ],
 ];
-
-
-            

@@ -7,7 +7,6 @@ use Acelle\Model\User;
 
 class Frontend
 {
-
     public function handle($request, Closure $next)
     {
         $user = $request->user();

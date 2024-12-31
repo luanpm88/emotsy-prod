@@ -19,7 +19,6 @@ use Carbon\Carbon;
 
 class CampaignController extends Controller
 {
-
     private function setUserDbConnection($request)
     {
         $customerUid = $request->customer_uid;
