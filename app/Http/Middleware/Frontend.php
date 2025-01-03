@@ -18,24 +18,24 @@ class Frontend
 
         // check if user not authorized for customer access
         if (!$user->can("customer_access", User::class)) {
-            return redirect()->action('AppController@notAuthorized');
+            return redirect()->action('Controller@notAuthorized');
         }
 
         // Site offline
         if (\Acelle\Model\Setting::get('site_online') == 'no') {
-            return redirect()->action('Controller@offline');
+            return redirect()->action('AppController@offline');
         }
 
         // User does not have customer account
         if (!$user->customer) {
-            return redirect()->action('Controller@somethingWentWrong', [
+            return redirect()->action('AppController@somethingWentWrong', [
                 'message' => "User {$user->email} does not have a customer account!",
             ]);
         }
 
         // Customer account is not active & user is not admin
         if (!$user->customer->isActive()) {
-            return redirect()->action('Controller@somethingWentWrong', [
+            return redirect()->action('AppController@somethingWentWrong', [
                 'message' => "Customer account {$user->customer->name} is not active!",
             ]);
         }
