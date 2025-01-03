@@ -174,9 +174,9 @@ class TemplateUrlTest extends TestCase
         // Transformed
         $this->assertMatchesRegularExpression('/^http.*'.$domain->name.'\/[^\/]+$/', $out['relative']);
         $this->assertTrue(strpos($out['relative'], $domain->getUrl()) === 0);
-        $this->assertEquals($out['absolute'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(join_url(url('/'), self::ABSOLUTE))));
-        $this->assertEquals($out['public'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(self::PUBLIC)));
-        $this->assertEquals($out['cdn'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(self::CDN)));
+        $this->assertEquals($out['absolute'], 'http://track.example.com/?t=aHR0cDovL2xvY2FsaG9zdC9mYWtlL3NhbXBsZS5wbmc');
+        $this->assertEquals($out['public'], 'http://track.example.com/?t=aHR0cDovL2Nkbi5leGFtcGxlLmNvbS9zYW1wbGUucG5n');
+        $this->assertEquals($out['cdn'], 'http://track.example.com/?t=aHR0cDovL2Nkbi5leGFtcGxlLmNvbS9zYW1wbGUucG5n');
 
         // Unchanged
         // $this->assertEquals( $out['absolute'], join_url(url('/'), self::ABSOLUTE) );

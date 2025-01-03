@@ -15,7 +15,7 @@
 <!-- Validate -->
 <script type="text/javascript" src="{{ AppUrl::asset('core/validate/jquery.validate.min.js') }}"></script>
 <script type="text/javascript" src="{{ AppUrl::asset('core/js/validate.js') }}"></script>
-<script type="text/javascript" src="{{ action('Controller@jquery_validate_locale') }}"></script>
+<script type="text/javascript" src="{{ action('AppController@jquery_validate_locale') }}"></script>
 
 <!-- Numeric -->
 <script type="text/javascript" src="{{ AppUrl::asset('core/numeric/jquery.numeric.min.js') }}"></script>

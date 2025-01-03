@@ -1,4 +1,4 @@
-@extends('layouts.core.frontend_no_subscription', [
+@extends('layouts.core.backend', [
     'menu' => 'profile',
 ])
 

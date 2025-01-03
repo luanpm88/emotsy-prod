@@ -119,7 +119,7 @@ class Send extends Action
         if (!is_null($this->getLastExecuted())) {
             $queuedAt = Carbon::parse($this->getOption('queued_at'));
             $sentAt = Carbon::parse($this->getOption('sent_at'));
-            $diffInSeconds = $sentAt->diffInSeconds($queuedAt);
+            $diffInSeconds = (int)ceil($sentAt->diffInSeconds($queuedAt, $abs = true));
 
             $sentAt->timezone($timezone);
 

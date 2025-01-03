@@ -66,7 +66,7 @@
                 e.preventDefault();
 
                 var popup = new Popup({
-                    url: '{{ action('Controller@termsOfService') }}'
+                    url: '{{ action('AppController@termsOfService') }}'
                 });
                 popup.load();
             });

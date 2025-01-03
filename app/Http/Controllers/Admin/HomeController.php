@@ -17,8 +17,6 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        parent::__construct();
-
         // Trigger admin monitoring events when admin is logged in
         event(new \Acelle\Events\AdminLoggedIn());
     }

@@ -84,7 +84,11 @@ class HtmlHandlersTest extends TestCase
     public function test_transform_tag()
     {
         // List
+        $customer = Mockery::mock(new Customer());
+        $customer->uid = uniqid();
+
         $list = Mockery::mock(new MailList());
+        $list->customer = $customer;
 
         // Campaign
         $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
@@ -93,6 +97,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->mailList = $list;
         $subscriber->id = '000000';
 
         // Pipe
@@ -145,7 +150,10 @@ class HtmlHandlersTest extends TestCase
         $msgId = 'TEST';
 
         // List
+        $customer = Mockery::mock(new Customer());
+        $customer->uid = uniqid();
         $list = Mockery::mock(new MailList());
+        $list->customer = $customer;
 
         // Campaign
         $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
@@ -154,6 +162,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->mailList = $list;
         $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
@@ -184,7 +193,10 @@ class HtmlHandlersTest extends TestCase
         $msgId = 'TEST';
 
         // List
+        $customer = Mockery::mock(new Customer());
+        $customer->uid = uniqid();
         $list = Mockery::mock(new MailList());
+        $list->customer = $customer;
 
         // Campaign
         $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
@@ -193,6 +205,7 @@ class HtmlHandlersTest extends TestCase
 
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->mailList = $list;
         $subscriber->id = '000000';
 
         $pipeline = new PipelineBuilder();
@@ -229,7 +242,10 @@ class HtmlHandlersTest extends TestCase
         $template->generateUid();
 
         // List
+        $customer = Mockery::mock(new Customer());
+        $customer->uid = uniqid();
         $list = Mockery::mock(new MailList());
+        $list->customer = $customer;
 
         // Campaign
         $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
@@ -239,6 +255,7 @@ class HtmlHandlersTest extends TestCase
         // Subscriber
         $subscriber = Mockery::mock(new Subscriber());
         $subscriber->id = '000000';
+        $subscriber->mailList = $list;
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new AddDoctype());
@@ -287,6 +304,7 @@ class HtmlHandlersTest extends TestCase
         $domain->verification_method = TrackingDomain::VERIFICATION_METHOD_HOST;
 
         $customer = Mockery::mock(new Customer());
+        $customer->uid = uniqid();
         $customer->shouldReceive('getLanguageCode')->andReturn('en');
 
         // Template
@@ -347,6 +365,7 @@ class HtmlHandlersTest extends TestCase
     public function test_test_campaign_with_special_tags_without_tracking_domain()
     {
         $customer = Mockery::mock(new Customer());
+        $customer->uid = uniqid();
         $customer->shouldReceive('getLanguageCode')->andReturn('en');
 
         // Template
@@ -390,7 +409,7 @@ class HtmlHandlersTest extends TestCase
         $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
 
         // Special tags
-        $this->assertTrue(strpos($html, 'c/999999/unsubscribe/TVNHSUQ') !== false);
+        $this->assertTrue(strpos($html, '/unsubscribe/999999/TVNHSUQ/form') !== false);
         $this->assertTrue(strpos($html, 'update-profile') !== false);
         $this->assertTrue(strpos($html, 'campaigns/TVNHSUQ/web-view') !== false);
     }

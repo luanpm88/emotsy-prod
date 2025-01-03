@@ -36,14 +36,12 @@ class Subscription extends Model
      */
     protected $guarded = [];
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'cancelled_at', 'current_period_ends_at',
-        'created_at', 'updated_at', 'terminated_at'
+    protected $casts = [
+        'cancelled_at' => 'datetime',
+        'current_period_ends_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'terminated_at' => 'datetime',
     ];
 
     /**
@@ -298,11 +296,11 @@ class Subscription extends Model
     {
         //
         if ($this->getItsOnlyUnpaidRenewInvoice()) {
-            throw new \Exception("Hey, đang có 1 unpaid renew invoice khác. Không thể tạo renew invoice nữa! " . $this->getUnpaidInvoice()->toJson());
+            throw new \Exception("Cannot create renew invoice because there is already another unpaid invoice: " . $this->getUnpaidInvoice()->toJson());
         }
 
         if ($this->status != self::STATUS_ACTIVE) {
-            throw new \Exception("Hey, subscription này đâu có active đâu mà đòi renew???");
+            throw new \Exception("Cannot renew an inactive subscription");
         }
 
         // create init invoice
@@ -352,12 +350,12 @@ class Subscription extends Model
     public function createChangePlanInvoice($newPlan)
     {
         if ($this->status != self::STATUS_ACTIVE) {
-            throw new \Exception("Hey, subscription này đâu có active đâu mà đòi change plan???");
+            throw new \Exception("Cannot change plan for an inactive subscription");
         }
 
         // already has change plan invoice
         if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
-            throw new \Exception("Hey, subscription này đã có unpaid change plan invoice rồi???");
+            throw new \Exception("An unpaid change plan invoice already existed");
         }
 
         // calculate change plan amout ends at
@@ -566,7 +564,7 @@ class Subscription extends Model
 
             // already have active subscription
             if ($this->customer->getCurrentActiveSubscription()) {
-                throw new \Exception("Customer already has active subscription!");
+                throw new \Exception("Customer already has an active subscription!");
             }
 
             if ($this->plan->hasTrial()) {
@@ -952,8 +950,8 @@ class Subscription extends Model
 
         // amout per day of current plan
         $currentAmount = $this->plan->price;
-        $periodDays = $this->current_period_ends_at->diffInDays($this->periodStartAt()->startOfDay());
-        $remainDays = $this->current_period_ends_at->diffInDays(Carbon::now()->startOfDay());
+        $periodDays = ceil($this->current_period_ends_at->diffInDays($this->periodStartAt(), $abs = true));
+        $remainDays = ceil($this->current_period_ends_at->diffInDays(now(), $abs = true));
         $currentPerDayAmount = ($currentAmount / $periodDays);
         $newAmount = ($plan->price / $periodDays) * $remainDays;
         $remainAmount = $currentPerDayAmount * $remainDays;

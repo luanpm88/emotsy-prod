@@ -7,15 +7,7 @@ use Acelle\Model\User;
 
 class Frontend
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|null  $guard
-     * @return mixed
-     */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
         $user = $request->user();
 
@@ -26,7 +18,7 @@ class Frontend
 
         // check if user not authorized for customer access
         if (!$user->can("customer_access", User::class)) {
-            return redirect()->action('Controller@notAuthorized');
+            return redirect()->action('AppController@notAuthorized');
         }
 
         // Site offline

@@ -683,7 +683,7 @@ class User extends Authenticatable
 
     public function generateOneClickLoginUrl()
     {
-        return action('Controller@autoLogin', [
+        return action('AppController@autoLogin', [
             'api_token' => $this->api_token,
         ]);
     }
@@ -843,7 +843,7 @@ class User extends Authenticatable
 
     public function getLastSendUntilNowInSeconds()
     {
-        return $this->two_factor_last_send ? \Carbon\Carbon::now()->diffInSeconds($this->two_factor_last_send) : 600;
+        return $this->two_factor_last_send ? \Carbon\Carbon::now()->diffInSeconds($this->two_factor_last_send, $abs = true) : 600;
     }
 
     public function getRemainVerifyCountdown()

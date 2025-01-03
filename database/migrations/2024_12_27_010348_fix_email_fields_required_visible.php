@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveContentFromEmails extends Migration
+class FixEmailFieldsRequiredVisible extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class RemoveContentFromEmails extends Migration
      */
     public function up()
     {
-        Schema::table('emails', function (Blueprint $table) {
-            $table->dropColumn('content');
+        Schema::table('fields', function (Blueprint $table) {
+            \Acelle\Model\Field::where('tag', 'EMAIL')->update([
+                'required' => 1,
+                'visible' => 1,
+            ]);
         });
     }
 
@@ -25,8 +28,8 @@ class RemoveContentFromEmails extends Migration
      */
     public function down()
     {
-        Schema::table('emails', function (Blueprint $table) {
-            $table->longText('content')->nullable();
+        Schema::table('fields', function (Blueprint $table) {
+            //
         });
     }
 }

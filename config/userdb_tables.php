@@ -1,4 +1,5 @@
 <?php
+
 return [
     'auto_triggers',
     'automation2s',
@@ -20,10 +21,12 @@ return [
     'mail_lists',
     'mail_lists_sending_servers',
     'open_logs',
+    'pages',
     'segment_conditions',
     'segments',
     'senders',
     'sending_domains',
+    'signatures',
     'subscribers',
     'timelines',
     'tracking_domains',

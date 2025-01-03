@@ -489,7 +489,7 @@ h2 [class^="icon-"] {
     margin: 0;
 }
 .checker, .checker span, .checker input {
-    width: 22px;
+    width: 30px;
     height: 22px;
 }
 .checker span.checked {

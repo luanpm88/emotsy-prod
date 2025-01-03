@@ -27,9 +27,8 @@
 	@if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('api_documentation'))
 		<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
 
-		<p style="margin-bottom: 30px"><code style="font-size: 18px">
-		<a target="_blank" href="{{ action("Controller@docsApiV1") }}">{{ action("Controller@docsApiV1") }} <span class="material-symbols-rounded">link</span></a></code></p>
-	@endif
+	<p style="margin-bottom: 30px"><code style="font-size: 18px">
+    <a target="_blank" href="{{ action("AppController@docsApiV1") }}">{{ action("AppController@docsApiV1") }} <span class="material-symbols-rounded">link</span></a></code></p>
 
 	<h4 class="text-semibold">{{ trans('messages.api_endpoint') }}</h4>
 

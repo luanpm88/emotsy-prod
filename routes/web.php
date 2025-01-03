@@ -1,5 +1,9 @@
 <?php
 
+namespace Acelle\Http\Controllers;
+use Route;
+use Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -12,7 +16,7 @@
 */
 
 // Installation
-Route::group(['middleware' => ['installed']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['installed']], function () {
     // Installation
     Route::get('install', 'InstallController@starting');
     Route::get('install/site-info', 'InstallController@siteInfo');
@@ -95,20 +99,20 @@ Route::get('assets/{dirname}/{basename}', [ function ($dirname, $basename) {
 }])->name('public_assets');
 
 // Setting upload path
-Route::get('setting/{filename}', 'SettingController@file');
+Route::get('setting/{filename}', [SettingController::class, 'file']);
 
 // Translation data
-Route::get('/datatable_locale', 'Controller@datatable_locale');
-Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
+Route::get('/datatable_locale', [AppController::class, 'datatable_locale']);
+Route::get('/jquery_validate_locale', [AppController::class, 'jquery_validate_locale']);
 
 // Term of service
-Route::get('/terms-of-service', 'Controller@termsOfService');
+Route::get('/terms-of-service', [AppController::class, 'termsOfService']);
 
 // set guest language
-Route::get('/guest-language/{code}', 'Controller@setGuestLanguage');
+Route::get('/guest-language/{code}', [AppController::class, 'setGuestLanguage']);
 
 // For visitor with Web UI, loading the right app language
-Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
     Auth::routes();
     // Google OAuth 2.0
@@ -119,21 +123,19 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
     Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
 
-    Route::get('/login/token/{token}', 'Controller@tokenLogin');
+    Route::get('/login/token/{token}', 'AppController@tokenLogin');
 
-    Route::get('/validate-token/{api_token}', 'Controller@validateToken');
+    Route::get('/validate-token/{api_token}', 'AppController@validateToken');
     Route::get('user/activate/{token}', 'UserController@activate');
-    Route::get('/disabled', 'Controller@userDisabled');
-    Route::get('/something-went-wrong', 'Controller@somethingWentWrong');
-    Route::get('/offline', 'Controller@offline');
-    Route::get('/not-authorized', 'Controller@notAuthorized');
-    Route::get('/user-does-not-have-role', 'Controller@userDoesNotHaveRole');
-    Route::get('/demo', 'Controller@demo');
-    Route::get('/demo/go/{view}', 'Controller@demoGo');
-    Route::get('/autologin/{api_token}', 'Controller@autoLogin');
+    Route::get('/disabled', 'AppController@userDisabled');
+    Route::get('/offline', 'AppController@offline');
+    Route::get('/not-authorized', 'AppController@notAuthorized');
+    Route::get('/demo', 'AppController@demo');
+    Route::get('/demo/go/{view}', 'AppController@demoGo');
+    Route::get('/autologin/{api_token}', 'AppController@autoLogin');
     Route::get('/migrate/run', 'Admin\Upgrade@migrate');
 
-    Route::get('/autologin/{api_token}/{email}', 'Controller@autoLoginEmail');
+    Route::get('/autologin/{api_token}/{email}', 'AppController@autoLoginEmail');
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{id?}.jpg', 'SubscriberController@avatar');
     Route::get('assets/images/avatar/subscribe-origin-{id?}.jpg', 'SubscriberController@avatarOrigin');
@@ -191,7 +193,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 });
 
 // Without authentication
-Route::group(['middleware' => ['not_installed']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed']], function () {
     // Form
     Route::post('frontend/forms/{uid}/save', 'FormController@frontendSave');
     Route::get('frontend/forms/{uid}/popup.js', 'FormController@frontendPopup');
@@ -233,7 +235,7 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('logout', 'Auth\LoginController@logout')->name('logout');   // use GET for logout, keep compatible with 5.2
 
     // Get Application Key
-    Route::get('appkey', 'Controller@appkey')->name('appkey');
+    Route::get('appkey', 'AppController@appkey')->name('appkey');
 
     // Campaign test links
     Route::get('campaigns/test/{message}', 'CampaignController@notification')->name('campaign_message');
@@ -268,13 +270,13 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
     Route::post('2fa/google-authenticator/check', 'Google2FAController@check');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', '2fa']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'auth', '2fa']], function () {
     // 2fa
     Route::post('2fa/google-authenticator/secret-key/save', 'Google2FAController@saveKey');
     Route::get('2fa/google-authenticator/secret-key/generate', 'Google2FAController@generateSecretKey');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
     //
     Route::post('sites/update', 'SiteController@update');
     Route::get('sites/{id}/edit', 'SiteController@edit');
@@ -384,7 +386,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], fun
     Route::get('users/login-back', 'UserController@loginBack');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription', 'authorize', '2fa']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers', 'namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'auth', 'frontend', 'subscription', '2fa']], function () {
     // 2FA settings
     Route::get('account/2fa', 'TwoFAController@index');
     Route::post('account/2fa/save', 'TwoFAController@save');
@@ -400,7 +402,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('/search/general', 'SearchController@general');
 
     Route::get('/', 'HomeController@index');
-    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
+    Route::get('frontend/docs/api/v1', 'AppController@docsApiV1');
 
     // Account
     Route::get('account/set-language/{code}', 'AccountController@setLanguage');
@@ -1042,7 +1044,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 });
 
 // ADMIN AREA
-Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend', '2fa']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => ['not_installed', 'auth', 'backend', '2fa']], function () {
     // 2FA settings
     Route::get('admin/2fa', 'TwoFAController@index');
     Route::post('admin/2fa/save', 'TwoFAController@save');

@@ -61,7 +61,9 @@ class Subscriber extends Model
     public const VERIFICATION_STATUS_RISKY = 'risky';
     public const VERIFICATION_STATUS_UNVERIFIED = 'unverified';
 
-    protected $dates = ['unsubscribed_at'];
+    protected $casts = [
+        'unsubscribed_at' => 'datetime',
+    ];
 
     public static $rules = [
         'email' => ['required', 'email:rfc,filter'],
