@@ -777,6 +777,7 @@ function filterSearchArray($items, $keyword)
 
 function getPeriodEndsAt($startDate, $amount, $unit)
 {
+    $amount = (float) $amount;
     switch ($unit) {
         case 'month':
             $endsAt = $startDate->addMonthsNoOverflow($amount);

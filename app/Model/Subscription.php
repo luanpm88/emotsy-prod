@@ -962,7 +962,7 @@ class Subscription extends Model
         if ($amount < 0) {
             $days = (int) ceil(-($amount / $currentPerDayAmount));
             $amount = 0;
-            $newEndsAt->addDays($days);
+            $newEndsAt->addDays((int) $days);
 
             // if free plan
             if ($plan->price == 0) {

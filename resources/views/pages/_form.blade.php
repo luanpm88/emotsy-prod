@@ -61,12 +61,20 @@
                 'searchreplace visualblocks code fullscreen',
                 'insertdatetime media paste code'
                 ],
+                style_formats: [
+                    { title: 'Line Height', items: [
+                        { title: '1', inline: 'span', styles: { lineHeight: '1' } },
+                        { title: '1.2', inline: 'span', styles: { lineHeight: '1.2' } },
+                        { title: '1.5', inline: 'span', styles: { lineHeight: '1.5' } },
+                        { title: '2', inline: 'span', styles: { lineHeight: '2' } }
+                    ]}
+                ],
                 setup: function(editor) {
                     editor.on('input', function(e) {
                         editor.save();
                     });
                 },
-                toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
+                toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | lineheight | bullist numlist outdent indent | link image media | ltr rtl',
                 valid_elements : '*[*],meta[*]',
                 valid_children: '+p[ol],+p[ul],+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div],*[*]',
                 extended_valid_elements : "meta[*]",

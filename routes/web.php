@@ -126,7 +126,7 @@ Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_i
     Route::get('user/activate/{token}', 'UserController@activate');
     Route::get('/disabled', 'AppController@userDisabled');
     Route::get('/offline', 'AppController@offline');
-    Route::get('/not-authorized', 'AppController@notAuthorized');
+    Route::get('/not-authorized', 'Controller@notAuthorized');
     Route::get('/demo', 'AppController@demo');
     Route::get('/demo/go/{view}', 'AppController@demoGo');
     Route::get('/autologin/{api_token}', 'AppController@autoLogin');

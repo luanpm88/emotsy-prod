@@ -20,7 +20,7 @@ class Backend
 
         // check if user not authorized for admin access
         if (isset($user) && !$user->can("admin_access", $user)) {
-            return redirect()->action('AppController@notAuthorized');
+            return redirect()->action('Controller@notAuthorized');
         }
 
         // If user is disabled
