@@ -108,6 +108,9 @@ Route::get('/jquery_validate_locale', [AppController::class, 'jquery_validate_lo
 // Term of service
 Route::get('/terms-of-service', [AppController::class, 'termsOfService']);
 
+// Something went wrong
+Route::get('/something-went-wrong', [AppController::class, 'somethingWentWrong']);
+
 // For visitor with Web UI, loading the right app language
 Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication

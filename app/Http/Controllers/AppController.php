@@ -234,4 +234,9 @@ class AppController extends Controller
         // return to home
         return redirect()->action('HomeController@index');
     }
+
+    public function somethingWentWrong(Request $request)
+    {
+        return view('somethingWentWrong', ['message' => $request->message]);
+    }
 }
