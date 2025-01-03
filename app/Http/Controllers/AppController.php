@@ -242,4 +242,8 @@ class AppController extends Controller
         return redirect()->back();
     }
 
+    public function somethingWentWrong(Request $request)
+    {
+        return view('somethingWentWrong', ['message' => $request->message]);
+    }
 }

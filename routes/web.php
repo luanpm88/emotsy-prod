@@ -111,6 +111,9 @@ Route::get('/terms-of-service', [AppController::class, 'termsOfService']);
 // set guest language
 Route::get('/guest-language/{code}', [AppController::class, 'setGuestLanguage']);
 
+// Something went wrong
+Route::get('/something-went-wrong', [AppController::class, 'somethingWentWrong']);
+
 // For visitor with Web UI, loading the right app language
 Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
