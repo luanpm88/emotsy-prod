@@ -281,7 +281,8 @@ h3 {
 .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     border-color: #ddd;
     background-color: #ddd;
-    height: 35px;
+    height: auto;
+    min-height: 35px;
     display: flex;
     align-items: center;
 }
@@ -488,7 +489,7 @@ h2 [class^="icon-"] {
     margin: 0;
 }
 .checker, .checker span, .checker input {
-    width: 22px;
+    width: 30px;
     height: 22px;
 }
 .checker span.checked {
@@ -1100,7 +1101,7 @@ input.disabled:hover {
     border-color: #ccc !important;
 }
 .text-trans {
-    color: rgba(0,0,0,0);
+    color: rgba(0,0,0,0)!important;
 }
 .checkbox-box-group {
     height: 60px;
@@ -8613,4 +8614,11 @@ label.check-symbol {
 }
 .styled[type="radio"]:checked ~ label.check-symbol:after {
     top: 5px;
+}
+.form-group .iti.iti--allow-dropdown {
+    height: auto;
+    width: 100%;
+}
+.tox-collection__item-label * {
+    background-color: transparent!important;
 }

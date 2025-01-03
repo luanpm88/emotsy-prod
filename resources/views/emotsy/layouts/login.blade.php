@@ -77,7 +77,7 @@
                                                     <ul class="dropdown-menu">
                                                         @foreach (Acelle\Model\Language::active()->get() as $language)
                                                             @if ($language->code != language_code()) 
-                                                                <li><a class="dropdown-item" href="{{ action('Controller@setGuestLanguage', [
+                                                                <li><a class="dropdown-item" href="{{ action('AppController@setGuestLanguage', [
                                                                     'code' => $language->code,
                                                                 ]) }}">{{ $language->name }}</a></li>
                                                             @endif

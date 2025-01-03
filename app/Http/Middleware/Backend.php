@@ -27,7 +27,7 @@ class Backend
         if (
             (isset($user) && $user->admin && !$user->admin->isActive())
         ) {
-            return redirect()->action('Controller@userDisabled');
+            return redirect()->action('AppController@userDisabled');
         }
 
         // Language

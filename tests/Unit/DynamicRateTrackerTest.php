@@ -123,8 +123,8 @@ class DynamicRateTrackerTest extends TestCase
 
         // The idea is: tracker2 will hit rate limit
         // However, make sure tracker1 remaining credits are not counted!
-        for($i = 1; $i <= 5; $i += 1) {
-            execute_with_limits([$tracker1, $tracker2], $credits = [], function () {
+        for ($i = 1; $i <= 5; $i += 1) {
+            execute_with_limits([$tracker1, $tracker2], null, $credits = [], function () {
                 // do nothing
             });
 
@@ -136,10 +136,10 @@ class DynamicRateTrackerTest extends TestCase
         }
 
 
-        for($i = 1; $i <= 2; $i += 1) {
+        for ($i = 1; $i <= 2; $i += 1) {
 
             try {
-                execute_with_limits([$tracker1, $tracker2], $credits = [], function () {
+                execute_with_limits([$tracker1, $tracker2], null, $credits = [], function () {
                     // do nothing
                 });
 
@@ -186,7 +186,7 @@ class DynamicRateTrackerTest extends TestCase
 
         while (true) {
             try {
-                execute_with_limits($rateTrackers = [$tracker], $creditsTrackers = [], function () {
+                execute_with_limits($rateTrackers = [$tracker], null, $creditsTrackers = [], function () {
                     // ONLY WRITE 2 lines (in total) every 30 seconds
                     $now = now()->toString();
                     $message = "{$now}: Added by ".getmypid()."\n";

@@ -2903,24 +2903,24 @@ class Automation2Controller extends Controller
     public function outgoingWebhookSetup(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        $options = array (
+        $options = array(
             'send_method' => 'post',
             'authorization_method' => 'basic_auth',
-            'authorization' => array (
-                'bearer_token' => NULL,
-                'username' => NULL,
-                'password' => NULL,
-                'custom_key' => NULL,
-                'custom_value' => NULL,
-            ), 'endpoint_url' => NULL,
+            'authorization' => array(
+                'bearer_token' => null,
+                'username' => null,
+                'password' => null,
+                'custom_key' => null,
+                'custom_value' => null,
+            ), 'endpoint_url' => null,
             'header' => 'with_headers',
-            'headers' => array (),
+            'headers' => array(),
             'body_type' => 'key_value_pair',
-            'body_parameters' => array (),
-            'plain_text' => NULL, 
+            'body_parameters' => array(),
+            'plain_text' => null,
         );
 
-        // 
+        //
         if ($request->id) {
             $options = array_merge($options, json_decode(json_encode($automation->getElement($request->id)->get('options')), true));
         }
@@ -2931,7 +2931,7 @@ class Automation2Controller extends Controller
             'options' => $options,
         ]);
     }
-    
+
     public function outgoingWebhookTestPopup(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
@@ -2979,17 +2979,18 @@ class Automation2Controller extends Controller
         ]);
     }
 
-    public function outgoingWebhookTestRun($options) {
+    public function outgoingWebhookTestRun($options)
+    {
         // Prepare cURL initialization
         $ch = curl_init();
 
         // Set the URL from the options
         curl_setopt($ch, CURLOPT_URL, $options['endpoint_url']);
-        
+
         // Set the HTTP method (POST)
         $method = strtoupper($options['send_method']);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        
+
         // Set the Authorization (Basic Auth)
         if ($options['authorization_method'] === 'basic_auth') {
             $username = $options['authorization']['username'];
@@ -3004,7 +3005,7 @@ class Automation2Controller extends Controller
                 $headers[] = $header['key'] . ': ' . $header['value'];
             }
         }
-        
+
         // Add Content-Type based on body type
         if ($options['body_type'] === 'key_value_pair') {
             $headers[] = 'Content-Type: application/x-www-form-urlencoded';

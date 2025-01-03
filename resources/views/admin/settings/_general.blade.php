@@ -89,9 +89,6 @@
                 @include('admin.settings.general.email-default-skip_failed_message')
             </div>
             <div class="col-md-6">
-                @include('admin.settings.general.notification-on_user_created')
-            </div>
-            <div class="col-md-6">
                 @include('admin.settings.general.signature-enabled')
             </div>
             <div class="col-md-6">

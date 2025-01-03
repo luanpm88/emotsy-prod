@@ -64,7 +64,7 @@ class SendMessage implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($campaign, Subscriber $subscriber, RouletteWheel $servers, Subscription $subscription = null, $triggerId = null)
+    public function __construct($campaign, Subscriber $subscriber, ?RouletteWheel $servers, Subscription $subscription = null, $triggerId = null)
     {
         $this->campaign = $campaign;
         $this->subscriber = $subscriber;
@@ -292,7 +292,7 @@ class SendMessage implements ShouldQueue
 
                 $info['last_message_sent_at'] = $now->toString();
                 $campaignStartAt = $info['start_at'];
-                $timeSinceCampaignStart = $now->diffInSeconds(Carbon::parse($campaignStartAt));
+                $timeSinceCampaignStart = $now->diffInSeconds(Carbon::parse($campaignStartAt), $abs = true);
 
                 // In case it is too fast, avoid DivisionByZero
                 $info['total_time'] = ($timeSinceCampaignStart == 0) ? 1 : $timeSinceCampaignStart;
@@ -365,7 +365,7 @@ class SendMessage implements ShouldQueue
                 return $exceptionCallback($ex);
             }
 
-            $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
+            $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage().": \n".$ex->getTraceAsString());
             $logger->error($message);
 
             $handled = $this->handleUnknownException($ex);

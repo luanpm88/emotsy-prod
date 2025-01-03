@@ -2181,7 +2181,7 @@ class MailList extends Model
     public function defaultEmbeddedFormOptions()
     {
         return [
-            'form_title' => trans('messages.Subscribe_to_our_mailing_list'),
+            'form_title' => '',
             'redirect_url' => '',
             'only_required_fields' => 'no',
             'stylesheet' => 'yes',

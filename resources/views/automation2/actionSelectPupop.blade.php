@@ -59,7 +59,9 @@
                         </div>
                         <div class="line-body">
                             <h5>{{ trans('messages.automation.action.outgoing-webhook') }}</h5>
-                            <p>{{ trans('messages.automation.action.outgoing-webhook.desc') }}</p>
+                            <p>{{ trans('messages.automation.action.outgoing-webhook.desc', [
+                                'app_name' => Acelle\Model\Setting::get('site_name'),
+                            ]) }}</p>
                         </div>
                     </div>
                 @endif

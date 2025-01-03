@@ -97,12 +97,24 @@ return [
             'fields' => [ 'api_key' ],
         ], [
             'id' => 'emailevs.com',
-            'name' => 'EmailEVS',
+            'name' => 'EmailEVSs',
             'fields' => [ 'api_key' ],
         ], [
             'id' => 'verifiedemails.io',
             'name' => 'VerifiedEmails.io',
             'fields' => [ 'username', 'api_token' ],
+        ], [
+            'id' => 'reoon.com',
+            'name' => 'Reoon.com',
+            'fields' => [ 'api_key' ],
+        ], [
+            'id' => 'emaillistverify.com',
+            'name' => 'EmailListVerify.com',
+            'fields' => [ 'api_key' ],
+        ], [
+            'id' => 'nerverbounce.com',
+            'name' => 'NerverBounce.com',
+            'fields' => [ 'api_key' ],
         ]
 
     ]

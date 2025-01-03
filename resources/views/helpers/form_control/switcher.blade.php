@@ -1,6 +1,7 @@
-<label class="checker">
+<label class="checker ms-2">
     <input type="hidden" name="{{ $name }}" value="{{ $off_value }}" />
     <input
+        {{ isset($readonly) && $readonly ? 'readonly' : '' }}
         type="checkbox"
         name="{{ $name }}"
         value="{{ $on_value }}" class="styled4"

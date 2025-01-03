@@ -94,7 +94,7 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        $settings = array_filter(Setting::getAll(), function($setting, $key) {
+        $settings = array_filter(Setting::getAll(), function ($setting, $key) {
             return in_array($key, [
                 'url_unsubscribe',
                 'url_open_track',
@@ -547,7 +547,7 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // 
+        //
         $settings = Setting::getAll();
 
         return view('admin.settings.advanced', [

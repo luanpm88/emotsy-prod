@@ -25,7 +25,6 @@ namespace Acelle\Console\Commands;
 use Illuminate\Console\Command;
 use Acelle\Model\BounceHandler;
 use Acelle\Model\FeedbackLoopHandler;
-use Acelle\Library\Log;
 use Acelle\Library\Lockable;
 
 class RunHandler extends Command
@@ -69,7 +68,7 @@ class RunHandler extends Command
             $this->execRunHandler();
         }, $timeout = 5, $timeoutCallback);
 
-        Log::info('Handlers finished!');
+        applog('bounce-feedback')->info('Handlers finished!');
 
         return 0;
     }
@@ -83,28 +82,30 @@ class RunHandler extends Command
     {
         // guarantee that only one process can be run at one time
         // use socket as lock
-        Log::info('Try to start handling process...');
+        applog('bounce-feedback')->info('Try to start handling process...');
 
         // bounce
         $handlers = BounceHandler::get();
-        Log::info(sizeof($handlers).' bounce handlers found');
+        applog('bounce-feedback')->info(sizeof($handlers).' bounce handlers found');
         $count = 1;
         foreach ($handlers as $handler) {
-            Log::info('Starting handler '.$handler->name." ($count/".sizeof($handlers).')');
+            applog('bounce-feedback')->info('Starting bounce handler '.$handler->name." ($count/".sizeof($handlers).')');
             $handler->start();
-            Log::info('Finish processing handler '.$handler->name);
+            applog('bounce-feedback')->info('Finish processing handler '.$handler->name);
             $count += 1;
         }
 
         // abuse
         $handlers = FeedbackLoopHandler::get();
-        Log::info(sizeof($handlers).' feedback loop handlers found');
+        applog('bounce-feedback')->info(sizeof($handlers).' feedback loop handlers found');
         $count = 1;
         foreach ($handlers as $handler) {
-            Log::info('Starting handler '.$handler->name." ($count/".sizeof($handlers).')');
+            applog('bounce-feedback')->info('Starting handler '.$handler->name." ($count/".sizeof($handlers).')');
             $handler->start();
-            Log::info('Finish processing handler '.$handler->name);
+            applog('bounce-feedback')->info('Finish processing handler '.$handler->name);
             $count += 1;
         }
+
+        applog('bounce-feedback')->info("Done all");
     }
 }

@@ -75,7 +75,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'first_name', 'last_name'
+        'email', 'first_name', 'last_name', 'phone'
     ];
 
     /**
@@ -213,6 +213,7 @@ class User extends Authenticatable
             'timezone' => 'required',
             'language_id' => 'required',
             'image' => 'nullable|image',
+            'phone' => [(Setting::get('user.require_mobile_phone') == 'yes' ? 'required' : 'nullable'), 'regex:/^[\+0-9]{10,15}$/'],
         );
 
         if (isset($this->id)) {
@@ -237,6 +238,7 @@ class User extends Authenticatable
             'last_name' => 'required',
             'timezone' => 'required',
             'language_id' => 'required',
+            'phone' => [(Setting::get('user.require_mobile_phone') == 'yes' ? 'required' : 'nullable'), 'regex:/^[\+0-9]{10,15}$/'],
         );
 
         if (isset($this->id)) {
@@ -262,6 +264,7 @@ class User extends Authenticatable
             'timezone' => 'required',
             'language_id' => 'required',
             'password' => 'required|min:5',
+            'phone' => [(Setting::get('user.require_mobile_phone') == 'yes' ? 'required' : 'nullable'), 'regex:/^[\+0-9]{10,15}$/'],
         );
     }
 
@@ -680,7 +683,7 @@ class User extends Authenticatable
 
     public function generateOneClickLoginUrl()
     {
-        return action('Controller@autoLogin', [
+        return action('AppController@autoLogin', [
             'api_token' => $this->api_token,
         ]);
     }
@@ -840,7 +843,7 @@ class User extends Authenticatable
 
     public function getLastSendUntilNowInSeconds()
     {
-        return $this->two_factor_last_send ? \Carbon\Carbon::now()->diffInSeconds($this->two_factor_last_send) : 600;
+        return $this->two_factor_last_send ? \Carbon\Carbon::now()->diffInSeconds($this->two_factor_last_send, $abs = true) : 600;
     }
 
     public function getRemainVerifyCountdown()
@@ -939,7 +942,8 @@ class User extends Authenticatable
         $first_name,
         $last_name,
         $image,
-        $role_uid
+        $role_uid,
+        $phone = null
     ) {
         $rules = [
             'email' => 'required|email|unique:users,email,'.$this->id.',id',
@@ -947,6 +951,7 @@ class User extends Authenticatable
             'last_name' => 'required',
             'image' => 'nullable|image',
             'role_uid' => 'required',
+            'phone' => [(Setting::get('user.require_mobile_phone') == 'yes' ? 'required' : 'nullable'), 'regex:/^[\+0-9]{10,15}$/'],
         ];
 
         if (isset($this->id)) {
@@ -962,6 +967,7 @@ class User extends Authenticatable
         }
         $this->first_name = $first_name;
         $this->last_name = $last_name;
+        $this->phone = $phone;
 
         $validator = \Validator::make([
             'email' => $email,
@@ -971,6 +977,7 @@ class User extends Authenticatable
             'last_name' => $last_name,
             'image' => $image,
             'role_uid' => $role_uid,
+            'phone' => $phone,
         ], $rules);
 
         // validate

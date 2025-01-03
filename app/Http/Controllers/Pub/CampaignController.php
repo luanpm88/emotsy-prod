@@ -19,11 +19,6 @@ use Carbon\Carbon;
 
 class CampaignController extends Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     private function setUserDbConnection($request)
     {
         $customerUid = $request->customer_uid;
@@ -191,7 +186,7 @@ class CampaignController extends Controller
             $months = [];
 
             // columns
-            for ($i = Carbon::now('UTC')->subYears(1)->diffInMonths(Carbon::now('UTC')) - 1; $i >= 0; --$i) {
+            for ($i = Carbon::now('UTC')->subYears(1)->diffInMonths(Carbon::now('UTC'), $abs = true) - 1; $i >= 0; --$i) {
                 $time = Carbon::now()->timezone($currentTimezone)->subMonths($i);
                 $result['columns'][] = $time->format('Y, M');
                 $months[] = $time->format('Y-m');

@@ -56,7 +56,7 @@ class RerunCampaigns extends Command
                 $lastActivityAt = Carbon::parse($info['last_activity_at']);
                 $now = Carbon::now();
                 $triggerIfExceeds = 300; // Auto rerun a campaign if it has been 'sending' idle for the last 300 seconds (5 minutes)
-                $diffInSeconds = $now->diffInSeconds($lastActivityAt);
+                $diffInSeconds = $now->diffInSeconds($lastActivityAt, $abs = true);
 
                 if ($diffInSeconds > $triggerIfExceeds) {
                     $notice = sprintf("Audit: Campaign '%s' is pending (last updated '%s'), force resuming...", $campaign->name, $lastActivityAt->diffForHumans());

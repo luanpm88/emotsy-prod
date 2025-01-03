@@ -34,13 +34,13 @@
     </div>
     <div class="col-md-5">
         <h4 class="mb-1 text-center text-white fs-5 fw-600 text-muted2">{{ trans("messages.frontend") }}</h3>
-        <a target="_blank" class="demo_pic" href="{{ action("Controller@demoGo", ['view' => 'frontend']) }}">
+        <a target="_blank" class="demo_pic" href="{{ action("AppController@demoGo", ['view' => 'frontend']) }}">
             <img style="max-width: 100%" src="{{ url("/images/demo_frontend2.png") }}" />
         </a>
     </div>
     <div class="col-md-5">
         <h4 class="mb-1 text-center text-white fs-5 fw-600 text-muted2">{{ trans("messages.backend") }}</h3>
-        <a target="_blank" class="demo_pic" href="{{ action("Controller@demoGo", ['view' => 'backend']) }}">
+        <a target="_blank" class="demo_pic" href="{{ action("AppController@demoGo", ['view' => 'backend']) }}">
             <img style="max-width: 100%" src="{{ url("/images/demo_backend2.png") }}" />
         </a>
     </div>

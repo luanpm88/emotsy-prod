@@ -7,15 +7,7 @@ use Acelle\Model\User;
 
 class Frontend
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|null  $guard
-     * @return mixed
-     */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
         $user = $request->user();
 
@@ -30,20 +22,20 @@ class Frontend
         }
 
         // Site offline
-        if (\Acelle\Model\Setting::get('site_online') == 'false') {
-            return redirect()->action('Controller@offline');
+        if (\Acelle\Model\Setting::get('site_online') == 'no') {
+            return redirect()->action('AppController@offline');
         }
 
         // User does not have customer account
         if (!$user->customer) {
-            return redirect()->action('Controller@somethingWentWrong', [
+            return redirect()->action('AppController@somethingWentWrong', [
                 'message' => "User {$user->email} does not have a customer account!",
             ]);
         }
 
         // Customer account is not active & user is not admin
         if (!$user->customer->isActive()) {
-            return redirect()->action('Controller@somethingWentWrong', [
+            return redirect()->action('AppController@somethingWentWrong', [
                 'message' => "Customer account {$user->customer->name} is not active!",
             ]);
         }

@@ -156,7 +156,8 @@ class UserController extends Controller
                 $first_name = $request->first_name,
                 $last_name = $request->last_name,
                 $image = $request->image,
-                $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
+                $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid,
+                $image = $request->phone
             );
 
             //  errors
@@ -266,7 +267,8 @@ class UserController extends Controller
             $first_name = $request->first_name,
             $last_name = $request->last_name,
             $image = $request->image,
-            $role_uid = $request->role_uid
+            $role_uid = $request->role_uid,
+            $phone = $request->phone
         );
 
 
@@ -347,7 +349,8 @@ class UserController extends Controller
             $first_name = $request->first_name,
             $last_name = $request->last_name,
             $image = $request->image,
-            $role_uid = $request->role_uid
+            $role_uid = $request->role_uid,
+            $phone = $request->phone
         );
 
         // redirect if fails

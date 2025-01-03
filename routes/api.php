@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => ['auth:api', 'setdb']], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers\Api', 'prefix' => 'v1', 'middleware' => ['auth:api', 'setdb']], function () {
     //
     Route::get('', function () {
         return \Response::json(\Auth::guard('api')->user());
@@ -83,7 +83,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => ['auth:api
     Route::post('notification/feedback', 'NotificationController@feedback');
 });
 
-Route::group(['namespace' => 'Api\Public', 'prefix' => 'v1'], function () {
+Route::group(['namespace' => '\Acelle\Http\Controllers\Api\Public', 'prefix' => 'v1'], function () {
     Route::post('public/subscribers', 'SubscriberController@store');
 
     // Payment

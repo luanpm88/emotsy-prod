@@ -66,7 +66,7 @@ class SignatureController extends Controller
         }
 
         //
-        $signature = $request->user()->customer->newSignature();
+        $signature = $request->user()->customer->local()->newSignature();
 
         return view('signatures.create', [
             'signature' => $signature,
@@ -88,7 +88,7 @@ class SignatureController extends Controller
         }
 
         //
-        $signature = $request->user()->customer->newSignature();
+        $signature = $request->user()->customer->local()->newSignature();
 
         // try to save
         list($result, $errors) = $signature->saveSignature(
