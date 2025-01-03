@@ -23,7 +23,7 @@ class CampaignPolicy
     public function read(User $user, Campaign $item)
     {
         // RBAC check
-        if (!$user->hasPermission('campaign.full_access') && !$item->hasPermission('campaign.read_only')) {
+        if (!$user->hasPermission('campaign.full_access') && !$user->hasPermission('campaign.read_only')) {
             return false;
         }
 
