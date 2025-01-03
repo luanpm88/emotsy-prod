@@ -8619,3 +8619,6 @@ label.check-symbol {
     height: auto;
     width: 100%;
 }
+.tox-collection__item-label * {
+    background-color: transparent!important;
+}

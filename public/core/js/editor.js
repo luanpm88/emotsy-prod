@@ -18,6 +18,14 @@ $(document).ready(function() {
           'searchreplace visualblocks code fullscreen',
           'insertdatetime media paste code'
         ],
+        style_formats: [
+          { title: 'Line Height', items: [
+              { title: '1', inline: 'span', styles: { lineHeight: '1' } },
+              { title: '1.2', inline: 'span', styles: { lineHeight: '1.2' } },
+              { title: '1.5', inline: 'span', styles: { lineHeight: '1.5' } },
+              { title: '2', inline: 'span', styles: { lineHeight: '2' } }
+          ]}
+        ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         content_css: [
           APP_URL.replace('/index.php','')+'/core/css/all.css',

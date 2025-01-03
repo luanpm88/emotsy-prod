@@ -18,7 +18,7 @@ class Frontend
 
         // check if user not authorized for customer access
         if (!$user->can("customer_access", User::class)) {
-            return redirect()->action('AppController@notAuthorized');
+            return redirect()->action('Controller@notAuthorized');
         }
 
         // Site offline
