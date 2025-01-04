@@ -592,8 +592,8 @@
             sidebar.load(url);
         }
 
-        function loadSidebarOperation(id) {
-            var url = operationShowUrl + '?operation=' + e.getOptions().operation_type + '&id=' + id;
+        function loadSidebarOperation(id, type) {
+            var url = operationShowUrl + '?operation=' + type + '&id=' + id;
             
             // load sidebar
             sidebar.load(url);
