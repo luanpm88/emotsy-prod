@@ -12,8 +12,6 @@
     @include('helpers.form_control.phone', [
         'name' => $field->tag,
         'value' => $value,
-        'attributes' => [
-            'required' => isset($list->getFieldRules()[$field->tag]) && $list->getFieldRules()[$field->tag] == 'required' ? 'required' : '',
-        ],
+        'attributes' => isset($list->getFieldRules()[$field->tag]) && $list->getFieldRules()[$field->tag] == 'required' ? ['required' => 'required'] : [],
     ])
 </div>
