@@ -123,5 +123,5 @@ Schedule::call(function() {
 // + import
 //
 if (!config('custom.distributed_worker')) {
-    Schedule::command('queue:work --queue=import,default,high,batch,single --tries=1 --max-time=180')->everyMinute();
+    Schedule::command('queue:work --queue=import,default,high,batch,single,automation-dispatch,automation --tries=1 --max-time=180')->everyMinute();
 }
