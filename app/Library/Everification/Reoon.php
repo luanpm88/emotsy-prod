@@ -109,7 +109,7 @@ class Reoon implements VerifyInterface, BulkVerifyInterface
 
     public function getCredits(): ?int
     {
-        return null;
+        return -1;
     }
 
     public function verify($email)
