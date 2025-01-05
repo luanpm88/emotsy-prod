@@ -20,7 +20,7 @@
 						<input type="radio" name="site[type]" value="1" id="udesfe_true" class="styled"><span class="check-symbol"></span>
 					</label>
 					<div>
-						<label for="udesfe_true" class="mb-0 radio-label">{{ trans('messages.site.type.landing_page') }}</label>
+						<label for="udesfe_true" class="mb-0 radio-label d-inline-block">{{ trans('messages.site.type.landing_page') }}</label>
 						<p class="text-muted mb-2 small fst-italic">
 							{{ trans('messages.site.type.landing_page.wording') }}
 						</p>
@@ -31,19 +31,13 @@
 						<input checked="" type="radio" name="site[type]" value="0" id="udesfe_false" class="styled"><span class="check-symbol"></span>
 					</label>
 					<div>
-						<label for="udesfe_false" class="mb-0 radio-label">{{ trans('messages.site.type.website') }}</label>
+						<label for="udesfe_false" class="mb-0 radio-label d-inline-block">{{ trans('messages.site.type.website') }}</label>
 						<p class="text-muted mb-2 small fst-italic">
 							{{ trans('messages.site.type.website.wording') }}
 						</p>
 					</div>
 				</div>
 			</div>
-		</div>
-
-		<hr >
-		<div class="text-end">
-			<a href="{{ action('SiteController@index') }}" class="btn btn-light me-1"><i class="icon-check"></i> {{ trans('messages.cancel') }}</a>
-			<button class="btn btn-primary me-1"><i class="icon-check"></i> {{ trans('messages.site.save_and_continue') }}</button>
 		</div>
 	</div>
 </div>

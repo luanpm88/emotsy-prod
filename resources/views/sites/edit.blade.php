@@ -14,7 +14,7 @@
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
 			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ action("SignatureController@index") }}">{{ trans('messages.signature.signatures') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("SiteController@index") }}">{{ trans('messages.site.landing_pages') }}</a></li>
 		</ul>
 		<h1 class="mc-h1">
 			<span class="text-semibold">{{ $signature->name }}</span>

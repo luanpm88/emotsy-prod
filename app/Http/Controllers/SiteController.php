@@ -38,9 +38,8 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-        //
-
-        return redirect()->action('SiteController@template', 1);
+        // pretend to be stored
+        return redirect()->action('SiteController@content', 1);
     }
 
     /**
@@ -88,8 +87,20 @@ class SiteController extends Controller
         //
     }
 
-    public function template(Request $request)
+    public function content(Request $request)
     {
         return view('sites.selectTemplate');
+    }
+
+    public function contentSelect(Request $request)
+    {
+        // pretend to be selected
+        return redirect()->action('SiteController@settings', 1);
+    }
+
+    public function settings(Request $request)
+    {
+        // pretend to be selected
+        return view('sites.settings');
     }
 }
