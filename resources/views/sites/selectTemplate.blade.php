@@ -51,7 +51,7 @@
 
     <div>
         <div class="row">
-            @foreach (Acelle\Model\Template::shared()->notPreserved()->email()->get() as $template)
+            @foreach (Acelle\Model\Template::shared()->notPreserved()->site()->get() as $template)
                 <div class="col-md-3 mb-4">
                     <div class="card h-100">
                         <img src="{{ $template->getThumbUrl() }}" class="card-img-top" alt="...">

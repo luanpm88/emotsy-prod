@@ -17,7 +17,7 @@
 			<div>
 				<div data-control="option-container" class="d-flex">
 					<label class="me-3">
-						<input type="radio" name="site[type]" value="1" id="udesfe_true" class="styled"><span class="check-symbol"></span>
+						<input checked type="radio" name="site[type]" value="1" id="udesfe_true" class="styled"><span class="check-symbol"></span>
 					</label>
 					<div>
 						<label for="udesfe_true" class="mb-0 radio-label d-inline-block">{{ trans('messages.site.type.landing_page') }}</label>
@@ -26,12 +26,12 @@
 						</p>
 					</div>
 				</div>
-				<div data-control="option-container" class="d-flex mt-2">
+				<div data-control="option-container" class="d-flex mt-2 pe-none" style="opacity: 0.5;">
 					<label class="me-3">
-						<input checked="" type="radio" name="site[type]" value="0" id="udesfe_false" class="styled"><span class="check-symbol"></span>
+						<input type="radio" name="site[type]" value="0" id="udesfe_false" class="styled"><span class="check-symbol"></span>
 					</label>
 					<div>
-						<label for="udesfe_false" class="mb-0 radio-label d-inline-block">{{ trans('messages.site.type.website') }}</label>
+						<label for="udesfe_false" class="mb-0 radio-label">{{ trans('messages.site.type.website') }} (coming soon)</label>
 						<p class="text-muted mb-2 small fst-italic">
 							{{ trans('messages.site.type.website.wording') }}
 						</p>

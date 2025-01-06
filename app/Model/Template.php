@@ -57,6 +57,7 @@ class Template extends Model
 
     public const TYPE_EMAIL = 'email';
     public const TYPE_POPUP = 'popup';
+    public const TYPE_SITE = 'site';
 
     public const IS_PRIVATE = true;
 
@@ -184,6 +185,11 @@ class Template extends Model
     public static function scopeEmail($query)
     {
         $query = $query->where('type', '=', self::TYPE_EMAIL);
+    }
+
+    public static function scopeSite($query)
+    {
+        $query = $query->where('type', '=', self::TYPE_SITE);
     }
 
     public static function scopePopup($query)
