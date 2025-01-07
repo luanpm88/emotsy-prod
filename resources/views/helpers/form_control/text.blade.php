@@ -1,5 +1,5 @@
 @if (isset($label) && $label != '')
-    <label class="form-label">
+    <label class="form-label fw-semibold">
         {{ $label }}
     </label>
 @endif

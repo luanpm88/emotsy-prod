@@ -7,20 +7,20 @@
     <table class="table border">
         <tbody>
             <tr>
-                <th width="50%" class="bg-light fw-normal">{{ trans('messages.automation.outgoing_webhook.request_method') }}</th>
+                <th width="50%" class="bg-light fw-normal">{{ trans('messages.webhook.request_method') }}</th>
                 <td width="50%" class="text-uppercase">
                     {{ $element->get('options')->send_method }}
                 </td>
             </tr>
             <tr>
-                <th width="50%" class="bg-light fw-normal">{{ trans('messages.automation.outgoing_webhook.authorization_options') }}</th>
+                <th width="50%" class="bg-light fw-normal">{{ trans('messages.webhook.authorization_options') }}</th>
                 <td width="50%" class="">
-                    {{ trans('messages.automation.outgoing_webhook.' . $element->get('options')->authorization_method) }}
+                    {{ trans('messages.webhook.' . $element->get('options')->authorization_method) }}
                 </td>
             </tr>
             <tr>
                 <th width="50%" class="bg-light fw-normal">
-                    {{ trans('messages.automation.outgoing_webhook.endpoint_url') }}
+                    {{ trans('messages.webhook.endpoint_url') }}
                 </th>
                 <td width="50%" class="">
                     {{ $element->get('options')->endpoint_url }}
@@ -28,7 +28,7 @@
             </tr>
             <tr>
                 <th width="50%" class="bg-light fw-normal">
-                    {{ trans('messages.automation.outgoing_webhook.headers') }}
+                    {{ trans('messages.webhook.headers') }}
                 </th>
                 <td width="50%" class="">
                     @if ($element->get('options')->header == 'with_headers')
@@ -47,22 +47,22 @@
                             </tbody>
                         </table>
                     @else
-                        {{ trans('messages.automation.outgoing_webhook.no_headers') }}
+                        {{ trans('messages.webhook.no_headers') }}
                     @endif
                 </td>
             </tr>
             <tr>
                 <th width="50%" class="bg-light fw-normal">
-                    {{ trans('messages.automation.outgoing_webhook.unified_body_configuration') }}
+                    {{ trans('messages.webhook.unified_body_configuration') }}
                 </th>
                 <td width="50%" class="">
-                    {{ trans('messages.automation.outgoing_webhook.' . $element->get('options')->body_type) }}
+                    {{ trans('messages.webhook.' . $element->get('options')->body_type) }}
                 </td>
             </tr>
             @if ($element->get('options')->body_type == 'key_value_pair' && isset($element->get('options')->body_parameters))
                 <tr>
                     <th width="50%" class="bg-light fw-normal">
-                        {{ trans('messages.automation.outgoing_webhook.body_parameters') }}
+                        {{ trans('messages.webhook.body_parameters') }}
                     </th>
                     <td width="50%" class="">
                         @if(isset($element->get('options')->body_parameters))
@@ -87,7 +87,7 @@
             @if ($element->get('options')->body_type == 'plain_text')
                 <tr>
                     <th width="50%" class="bg-light fw-normal">
-                        {{ trans('messages.automation.outgoing_webhook.plain_text') }}
+                        {{ trans('messages.webhook.plain_text') }}
                     </th>
                     <td width="50%" class="">
                         {!! $element->get('options')->plain_text !!}

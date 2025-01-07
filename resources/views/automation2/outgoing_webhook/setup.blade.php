@@ -16,16 +16,16 @@
                         <input type="hidden" name="id" value="{{ request()->id }}" />
                     @endif
 
-                    <h2 class="text-semibold">{{ trans('messages.automation.outgoing_webhook.setup') }}</h2>
+                    <h2 class="text-semibold">{{ trans('messages.webhook.setup') }}</h2>
 
-                    <p>{!! trans('messages.automation.outgoing_webhook.wording', [
+                    <p>{!! trans('messages.webhook.wording', [
                         'app_name' => Acelle\Model\Setting::get('site_name'),
                     ]) !!}</p>
 
                     <div class="p-3 border bg-light">
                         <div class="mb-4 p-3 border rounded shadow-sm bg-white">
                             <label for=""
-                                class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.request_method') }}</label>
+                                class="form-label fw-semibold">{{ trans('messages.webhook.request_method') }}</label>
                             <div class="d-flex align-items-center">
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
@@ -35,7 +35,7 @@
                                     </div>
                                     <div>
                                         <label for="method-get"
-                                            class="mb-0">{{ trans('messages.automation.outgoing_webhook.get_method') }}</label>
+                                            class="mb-0">{{ trans('messages.webhook.get_method') }}</label>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center me-4">
@@ -45,7 +45,7 @@
                                         <label class="check-symbol" for="method-post"></label>
                                     </div>
                                     <label for="method-post"
-                                        class="mb-0">{{ trans('messages.automation.outgoing_webhook.post_method') }}</label>
+                                        class="mb-0">{{ trans('messages.webhook.post_method') }}</label>
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
@@ -54,7 +54,7 @@
                                         <label class="check-symbol" for="method-put"></label>
                                     </div>
                                     <label for="method-put"
-                                        class="mb-0">{{ trans('messages.automation.outgoing_webhook.put_method') }}</label>
+                                        class="mb-0">{{ trans('messages.webhook.put_method') }}</label>
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
@@ -63,14 +63,14 @@
                                         <label class="check-symbol" for="method-delete"></label>
                                     </div>
                                     <label for="method-delete"
-                                        class="mb-0">{{ trans('messages.automation.outgoing_webhook.delete_method') }}</label>
+                                        class="mb-0">{{ trans('messages.webhook.delete_method') }}</label>
                                 </div>
                             </div>
                         </div>
 
                         <div data-control="authorization-options" class="mb-4 p-3 border rounded shadow-sm bg-white">
                             <label for=""
-                                class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.authorization_options') }}</label>
+                                class="form-label fw-semibold">{{ trans('messages.webhook.authorization_options') }}</label>
                             <div class="d-flex align-items-center mb-3">
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
@@ -80,7 +80,7 @@
                                     </div>
                                     <div>
                                         <label for="method-bearer_token"
-                                            class="mb-0">{{ trans('messages.automation.outgoing_webhook.bearer_token') }}</label>
+                                            class="mb-0">{{ trans('messages.webhook.bearer_token') }}</label>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center me-4">
@@ -91,7 +91,7 @@
                                         <label class="check-symbol" for="method-basic_auth"></label>
                                     </div>
                                     <label for="method-basic_auth"
-                                        class="mb-0">{{ trans('messages.automation.outgoing_webhook.basic_auth') }}</label>
+                                        class="mb-0">{{ trans('messages.webhook.basic_auth') }}</label>
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
@@ -100,7 +100,7 @@
                                         <label class="check-symbol" for="method-custom"></label>
                                     </div>
                                     <label for="method-custom"
-                                        class="mb-0">{{ trans('messages.automation.outgoing_webhook.custom') }}</label>
+                                        class="mb-0">{{ trans('messages.webhook.custom') }}</label>
                                 </div>
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
@@ -109,19 +109,19 @@
                                         <label class="check-symbol" for="method-no_auth"></label>
                                     </div>
                                     <label for="method-no_auth"
-                                        class="mb-0">{{ trans('messages.automation.outgoing_webhook.no_auth') }}</label>
+                                        class="mb-0">{{ trans('messages.webhook.no_auth') }}</label>
                                 </div>
                             </div>
 
                             <div data-option-box="bearer_token">
                                 <hr>
                                 <p class="small mb-2">
-                                    {{ trans('messages.automation.outgoing_webhook.bearer_token.desc') }}</p>
+                                    {{ trans('messages.webhook.bearer_token.desc') }}</p>
                                 <table class="table table-bordered m-0">
                                     <tr>
                                         <th width="10%" valign="middle" class="small bg-light text-nowrap px-3"
                                             style="font-weight:normal;">
-                                            {{ trans('messages.automation.outgoing_webhook.bearer_token') }}
+                                            {{ trans('messages.webhook.bearer_token') }}
                                         </th>
                                         <td>
                                             <input data-option-input="required" type="text" name="webhook[authorization][bearer_token]" value="{{ $options['authorization']['bearer_token'] }}"
@@ -133,13 +133,13 @@
 
                             <div data-option-box="basic_auth">
                                 <hr>
-                                <p class="small mb-2">{{ trans('messages.automation.outgoing_webhook.basic_auth.desc') }}
+                                <p class="small mb-2">{{ trans('messages.webhook.basic_auth.desc') }}
                                 </p>
                                 <table class="table table-bordered m-0">
                                     <tr>
                                         <th width="10%" valign="middle" class="small bg-light text-nowrap px-3"
                                             style="font-weight:normal;">
-                                            {{ trans('messages.automation.outgoing_webhook.username') }}
+                                            {{ trans('messages.webhook.username') }}
                                         </th>
                                         <td>
                                             <input data-option-input="required" type="text" name="webhook[authorization][username]" value="{{ $options['authorization']['username'] }}"
@@ -147,7 +147,7 @@
                                         </td>
                                         <th width="10%" valign="middle" class="small bg-light text-nowrap px-3"
                                             style="font-weight:normal;">
-                                            {{ trans('messages.automation.outgoing_webhook.password') }}
+                                            {{ trans('messages.webhook.password') }}
                                         </th>
                                         <td>
                                             <input data-option-input="required" type="text" name="webhook[authorization][password]" value="{{ $options['authorization']['password'] }}"
@@ -159,12 +159,12 @@
 
                             <div data-option-box="custom">
                                 <hr>
-                                <p class="small mb-2">{{ trans('messages.automation.outgoing_webhook.custom.desc') }}</p>
+                                <p class="small mb-2">{{ trans('messages.webhook.custom.desc') }}</p>
                                 <table class="table table-bordered m-0">
                                     <tr>
                                         <th width="10%" valign="middle" class="small bg-light text-nowrap px-3"
                                             style="font-weight:normal;">
-                                            {{ trans('messages.automation.outgoing_webhook.custom_key') }}
+                                            {{ trans('messages.webhook.custom_key') }}
                                         </th>
                                         <td>
                                             <input data-option-input="required" type="text" name="webhook[authorization][custom_key]" value="{{ $options['authorization']['custom_key'] }}"
@@ -172,7 +172,7 @@
                                         </td>
                                         <th width="10%" valign="middle" class="small bg-light text-nowrap px-3"
                                             style="font-weight:normal;">
-                                            {{ trans('messages.automation.outgoing_webhook.custom_value') }}
+                                            {{ trans('messages.webhook.custom_value') }}
                                         </th>
                                         <td>
                                             <div data-control="input-with-tag" class="input-group">
@@ -200,13 +200,13 @@
 
                             <div data-option-box="no_auth">
                                 <hr>
-                                <p class="small mb-0">{{ trans('messages.automation.outgoing_webhook.no_auth.desc') }}</p>
+                                <p class="small mb-0">{{ trans('messages.webhook.no_auth.desc') }}</p>
                             </div>
                         </div>
 
                         <div class="mb-4 p-3 border rounded shadow-sm bg-white">
                             <label for=""
-                                class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.endpoint_url') }}</label>
+                                class="form-label fw-semibold">{{ trans('messages.webhook.endpoint_url') }}</label>
                             <div class="d-flex align-items-center">
                                 <div data-control="input-with-tag" class="input-group">
                                     <input tag-control="input" type="url" name="webhook[endpoint_url]" value="{{ $options['endpoint_url'] }}" class="form-control" required />
@@ -228,7 +228,7 @@
 
                         <div data-control="headers" class="mb-4 p-3 border rounded shadow-sm bg-white">
                             <label for=""
-                                class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.headers') }}</label>
+                                class="form-label fw-semibold">{{ trans('messages.webhook.headers') }}</label>
                             <div class="d-flex align-items-center">
                                 <div class="d-flex align-items-center me-4">
                                     <div class="me-2">
@@ -239,7 +239,7 @@
                                     </div>
                                     <div>
                                         <label for="header-no_headers"
-                                            class="mb-0">{{ trans('messages.automation.outgoing_webhook.no_headers') }}</label>
+                                            class="mb-0">{{ trans('messages.webhook.no_headers') }}</label>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center me-4">
@@ -251,7 +251,7 @@
                                     </div>
                                     <div>
                                         <label for="header-with_headers"
-                                            class="mb-0">{{ trans('messages.automation.outgoing_webhook.with_headers') }}</label>
+                                            class="mb-0">{{ trans('messages.webhook.with_headers') }}</label>
                                     </div>
                                 </div>
                             </div>
@@ -262,9 +262,9 @@
                                         <thead>
                                             <tr>
                                                 <th width="50%" class="small" style="font-weight:normal;">
-                                                    {{ trans('messages.automation.outgoing_webhook.header_key') }}</th>
+                                                    {{ trans('messages.webhook.header_key') }}</th>
                                                 <th width="50%" class="small" style="font-weight:normal;">
-                                                    {{ trans('messages.automation.outgoing_webhook.header_value') }}</th>
+                                                    {{ trans('messages.webhook.header_value') }}</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -279,7 +279,7 @@
                                                     add
                                                 </span>
                                                 <span>
-                                                    {{ trans('messages.automation.outgoing_webhook.add_more_header') }}
+                                                    {{ trans('messages.webhook.add_more_header') }}
                                                 </span>
                                             </span>
                                         </button>
@@ -290,15 +290,15 @@
 
                         <div data-control="body-config" class="form-group mb-0 p-3 border rounded shadow-sm bg-white">
                             <label for=""
-                                class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.unified_body_configuration') }}</label>
+                                class="form-label fw-semibold">{{ trans('messages.webhook.unified_body_configuration') }}</label>
                             <div class="row mb-2">
                                 <div class="col-md-6">
                                     <select data-control="selector" name="webhook[body_type]" id=""
                                         class="select">
                                         <option {{ $options['body_type'] == 'key_value_pair' ? 'selected' : '' }} value="key_value_pair">
-                                            {{ trans('messages.automation.outgoing_webhook.key_value_pair') }}</option>
+                                            {{ trans('messages.webhook.key_value_pair') }}</option>
                                         <option {{ $options['body_type'] == 'plain_text' ? 'selected' : '' }} value="plain_text">
-                                            {{ trans('messages.automation.outgoing_webhook.plain_text') }}</option>
+                                            {{ trans('messages.webhook.plain_text') }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -306,14 +306,14 @@
                             <div data-option-box="key_value_pair" class="">
                                 <div data-control="body-parameters-container">
                                     <label for=""
-                                        class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.body_parameters') }}</label>
+                                        class="form-label fw-semibold">{{ trans('messages.webhook.body_parameters') }}</label>
                                     <table class="table table-bordered m-0">
                                         <thead>
                                             <tr>
                                                 <th width="50%" class="small" style="font-weight:normal;">
-                                                    {{ trans('messages.automation.outgoing_webhook.key') }}</th>
+                                                    {{ trans('messages.webhook.key') }}</th>
                                                 <th width="50%" class="small" style="font-weight:normal;">
-                                                    {{ trans('messages.automation.outgoing_webhook.value') }}</th>
+                                                    {{ trans('messages.webhook.value') }}</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -328,7 +328,7 @@
                                                     add
                                                 </span>
                                                 <span>
-                                                    {{ trans('messages.automation.outgoing_webhook.add_more_header') }}
+                                                    {{ trans('messages.webhook.add_more_header') }}
                                                 </span>
                                             </span>
                                         </button>
@@ -338,7 +338,7 @@
 
                             <div data-option-box="plain_text">
                                 <label for=""
-                                    class="form-label fw-semibold">{{ trans('messages.automation.outgoing_webhook.json_xml') }}</label>
+                                    class="form-label fw-semibold">{{ trans('messages.webhook.json_xml') }}</label>
                                 <div id="editor" class="rounded shadow-sm" style="height: 200px;width: 100%;"></div>
 
                                 <script src="/ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -371,7 +371,7 @@
                                     science
                                 </span>
                                 <span>
-                                    {{ trans('messages.automation.outgoing_webhook.test_webhook') }}
+                                    {{ trans('messages.webhook.test_webhook') }}
                                 </span>
                             </span>
                         </button>
@@ -495,7 +495,7 @@
                             notify({
                                 type: 'success',
                                 title: '{!! trans('messages.notify.success') !!}',
-                                message: '{{ trans('messages.automation.outgoing_webhook.updated') }}'
+                                message: '{{ trans('messages.webhook.updated') }}'
                             });
 
                             //
@@ -514,7 +514,7 @@
                             notify({
                                 type: 'success',
                                 title: '{!! trans('messages.notify.success') !!}',
-                                message: '{{ trans('messages.automation.outgoing_webhook.added') }}'
+                                message: '{{ trans('messages.webhook.added') }}'
                             });
 
                             // select newly added element
@@ -609,7 +609,7 @@
                         <tr>
                             <td class="bg-light">
                                 <input list-control="input-key" type="text" name="webhook[body_parameters][` + index +
-                        `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.key') }}"
+                        `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.webhook.key') }}"
                                 data-option-input="required"
                         />
                             </td>
@@ -617,7 +617,7 @@
                                 <div data-control="input-with-tag" class="input-group">
                                     <input data-option-input="required" tag-control="input" list-control="input-value" type="text" name="webhook[body_parameters][` + index + `][value]"
                                         value="` + element.value + `" class="form-control"
-                                        placeholder="{{ trans('messages.automation.outgoing_webhook.value') }}"
+                                        placeholder="{{ trans('messages.webhook.value') }}"
                                     />
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">...</button>
@@ -736,7 +736,7 @@
                         <tr>
                             <td class="bg-light">
                                 <input list-control="input-key" type="text" name="webhook[headers][` + index +
-                        `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.automation.outgoing_webhook.header_key') }}"
+                        `][key]" value="` + element.key + `" class="form-control" placeholder="{{ trans('messages.webhook.header_key') }}"
                                  data-option-input="required"
                         />
                             </td>
@@ -744,7 +744,7 @@
                                 <div data-control="input-with-tag" class="input-group">
                                     <input tag-control="input" list-control="input-value" type="text" name="webhook[headers][` + index + `][value]"
                                         value="` + element.value + `" class="form-control"
-                                        placeholder="{{ trans('messages.automation.outgoing_webhook.header_value') }}"
+                                        placeholder="{{ trans('messages.webhook.header_value') }}"
                                          data-option-input="required"
                                     />
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"

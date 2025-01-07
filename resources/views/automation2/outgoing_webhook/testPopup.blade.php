@@ -34,7 +34,7 @@
                 <div id="webhook-loading"></div>
             </div>
             <div class="text-center mt-4 fs-5">
-                {{ trans('messages.automation.outgoing_webhook.testing_webhook') }}
+                {{ trans('messages.webhook.testing_webhook') }}
             </div>
         </div>
     </div>

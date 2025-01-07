@@ -1437,4 +1437,13 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
     Route::post('admin/translation/save', 'TranslationController@phrasesSave');
     Route::post('admin/translation/finish-write', 'TranslationController@phrasesFinishWrite');
     Route::post('admin/translation/{uid}/write', 'TranslationController@phrasesWrite');
+
+    // Webhook
+    Route::match(['get', 'post'], 'webhooks/{id}/setup', 'WebhookController@setup');
+    Route::match(['get', 'post'], 'webhooks/{id}/test', 'WebhookController@test');
+    Route::post('webhooks/disable', 'WebhookController@disable');
+    Route::post('webhooks/enable', 'WebhookController@enable');
+    Route::get('webhooks/list/{page?}', 'WebhookController@list');
+    Route::post('webhooks/delete', 'WebhookController@delete');
+    Route::resource('webhooks', 'WebhookController');
 });
