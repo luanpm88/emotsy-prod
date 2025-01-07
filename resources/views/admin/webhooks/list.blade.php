@@ -17,22 +17,22 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="m-0 text-bold">
+                    <h5 class="m-0 fw-semibold">
                         <a class="kq_search d-block" href="{{ action('Admin\WebhookController@setup', ["id" => $webhook->uid]) }}">{{ $webhook->name }}</a>
                     </h5>
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($webhook->created_at, 'datetime_full') }}</span>
+                    <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($webhook->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
-                    <h5 class="m-0 text-bold">
+                    <label class="m-0 d-block">
                         {{ trans('messages.webhook.event.' . $webhook->event) }}
-                    </h5>
-                    <span class="text-muted">{{ trans('messages.webhook.event') }}</span>
+                    </label>
+                    <span class="text-muted2">{{ trans('messages.webhook.event') }}</span>
                 </td>
                 <td>
                     <h5 class="m-0">
                         <code style="white-space:nowrap;text-overflow:ellipsis;max-width:250px;display:block;overflow:hidden;"><span class="text-uppercase">{{ $webhook->request_method }}</span> {{ $webhook->request_url }}</code>
                     </h5>
-                    <span class="text-muted">{{ trans('messages.webhook.desc') }}</span>
+                    <span class="text-muted2">{{ trans('messages.webhook.desc') }}</span>
                 </td>
                 <td>
                     <span class="text-muted2 list-status pull-left">
@@ -48,6 +48,13 @@
                         <div class="btn-group">
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                @if (Auth::user()->admin->can('read', $webhook))
+                                    <li>
+                                        <a class="dropdown-item" data-control="webhook-log" href="{{ action('Admin\WebhookController@logs', $webhook->uid) }}">
+                                            <span class="material-symbols-rounded">manage_search</span> {{ trans('messages.webhook.logs') }}
+                                        </a>
+                                    </li>
+                                @endif
                                 @if (Auth::user()->admin->can('update', $webhook))
                                     <li>
                                         <a class="dropdown-item" data-control="test-webhook" href="{{ action('Admin\WebhookController@test', $webhook->uid) }}">
@@ -92,9 +99,30 @@
 			new TestWebhook({
 				links: $('[data-control="test-webhook"]'),
 			});
+
+            new WebhookLog({
+				links: $('[data-control="webhook-log"]'),
+			});
 		});
 
         var TestWebhook = class {
+            constructor(options) {
+                this.links = options.links;
+
+                this.events();
+            }
+
+            events() {
+                this.links.on('click', function(e) {
+                    e.preventDefault();
+
+                    var popup = new Popup({url: $(this).attr('href')});
+                    popup.load();
+                });
+            }
+        }
+
+        var WebhookLog = class {
             constructor(options) {
                 this.links = options.links;
 

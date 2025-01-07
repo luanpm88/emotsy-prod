@@ -27,6 +27,11 @@ class Webhook extends Model
     public const REQUEST_BODY_TYPE_KEY_VALUE = 'key_value';
     public const REQUEST_BODY_TYPE_PLAIN = 'plain';
 
+    public function webhookLogs()
+    {
+        return $this->hasMany(WebhookLog::class, 'webhook_id');
+    }
+
     public function fillAttributes($attributes)
     {
         $this->name = $attributes['name'];
@@ -215,13 +220,23 @@ class Webhook extends Model
         curl_close($ch);
 
         // Display all response aspects
-        return [
+        $result = [
             'method' => $method,
             'body' => $body,
             'error' => $curlError,
             'http_code' => $httpCode,
             'response' => $response,
         ];
+
+        //
+        $this->addLog(
+            $requestDetails = $this->getRequestArray(),
+            $responseHttpCode = $result['http_code'],
+            $repsonseContent = $result['response'],
+            $responseRrror = $result['error']
+        );
+
+        return $result;
     }
 
     public function getRequestArray()
@@ -243,5 +258,20 @@ class Webhook extends Model
             'request_body_params' => $this->getRequestBodyParams(),
             'request_body_plain' => $this->request_body_plain,
         ];
+    }
+
+    public function addLog($requestDetails, $responseHttpCode, $repsonseContent, $responseRrror = null)
+    {
+        $log = $this->webhookLogs()->make();
+
+        $log->customer_id = $this->customer_id;
+        $log->request_details = json_encode($requestDetails);
+        $log->response_http_code = $responseHttpCode;
+        $log->response_content = $repsonseContent;
+        $log->response_error = $responseRrror;
+
+        $log->save();
+
+        return $log;
     }
 }

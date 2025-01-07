@@ -25,12 +25,6 @@
 
 @section('content')
 
-<div class="row">
-	<div class="col-sm-12 col-md-10 col-lg-10">
-		<p>{!! trans('messages.webhook.wording') !!}</p>
-	</div>
-</div>
-
 @php
 	$formId = 'WebhookForm' . uniqid();
 @endphp
@@ -52,6 +46,42 @@
 			]
 		])
 	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+				<label class="fw-semibold">
+					{{ trans('messages.webhook.retry_attemps') }}
+					<span class="text-danger">*</span>
+				</label>
+				<p class="mb-2">{{ trans('messages.webhook.retry_attemps.wording') }}</p>
+				@include('helpers.form_control.number', [
+					'name' => 'webhook[setting_retry_times]',
+					'value' => $webhook->setting_retry_times,
+					'attributes' => [
+						'required' => true,
+					]
+				])
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+				<label class="fw-semibold">
+					{{ trans('messages.webhook.retry_after_seconds') }}
+					<span class="text-danger">*</span>
+				</label>
+				<p class="mb-2">{{ trans('messages.webhook.retry_after_seconds.wording') }}</p>
+				@include('helpers.form_control.number', [
+					'name' => 'webhook[setting_retry_after_seconds]',
+					'value' => $webhook->setting_retry_after_seconds,
+					'attributes' => [
+						'required' => true,
+					]
+				])
+			</div>
+		</div>
+	</div>
+			
 
 	<h2 class="text-semibold">{{ trans('messages.webhook.setup') }}</h2>
 

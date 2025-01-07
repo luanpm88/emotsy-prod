@@ -243,4 +243,26 @@ class WebhookController extends Controller
             'webhook' => $webhook,
         ]);
     }
+
+    public function logs(Request $request, $id)
+    {
+        $webhook = Webhook::findByUid($id);
+
+        return view('admin.webhooks.logs', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function logsList(Request $request, $id)
+    {
+        $webhook = Webhook::findByUid($id);
+        $webhookLogs = $webhook->webhookLogs()
+            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
+            ->paginate($request->per_page);
+
+        return view('admin.webhooks.logsList', [
+            'webhook' => $webhook,
+            'webhookLogs' => $webhookLogs,
+        ]);
+    }
 }
