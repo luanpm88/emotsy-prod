@@ -3742,4 +3742,9 @@
   'webhook.reponse_content' => 'Response content',
   'webhook.request_details' => 'Request details',
   'webhook.reponse_error' => 'Error',
+  'webhook.tag.customer_id' => 'Customer ID',
+  'webhook.tag.plan_id' => 'Plan ID',
+  'webhook.job.status.new' => 'New',
+  'webhook.job.status.success' => 'Success',
+  'webhook.job.status.failed' => 'Failed',
  ) ?>

@@ -27,9 +27,9 @@ class Webhook extends Model
     public const REQUEST_BODY_TYPE_KEY_VALUE = 'key_value';
     public const REQUEST_BODY_TYPE_PLAIN = 'plain';
 
-    public function webhookLogs()
+    public function webhookJobs()
     {
-        return $this->hasMany(WebhookLog::class, 'webhook_id');
+        return $this->hasMany(WebhookJob::class, 'webhook_id');
     }
 
     public function fillAttributes($attributes)
@@ -130,7 +130,12 @@ class Webhook extends Model
 
     public function getTags()
     {
-        return [];
+        return array_map(function($param) {
+            return [
+                'tag' => "{".$param."}",
+                'label' => trans('messages.webhook.tag.' .$param),
+            ];
+        }, config('webhooks')[$this->event]['params']);
     }
 
     public function getRequestHeaders()
@@ -153,125 +158,39 @@ class Webhook extends Model
 
     public function test()
     {
-        return $this->execute();
+        switch ($this->event) {
+            case 'customer_cancel_plan':
+                $params = [
+                    'customer_id' => '{customer_test_id}',
+                    'plan_id' => '{plan_test_id}',
+                ];
+                break;
+            case 'customer_subscribe_plan':
+                $params = [
+                    'customer_id' => '{customer_test_id}',
+                    'plan_id' => '{plan_test_id}',
+                ];
+                break;
+            default:
+                throw new \Exception('Unknown event: ' . $this->event);
+        }
+
+        $webhookJob = $this->dispatch($params);
+        $webhookJob->run();
+
+        return $webhookJob;
     }
 
-    public function execute()
+    public function dispatch(array $params)
     {
-        // Prepare cURL initialization
-        $ch = curl_init();
+        $webhookJob = $this->webhookJobs()->make();
 
-        // Set the URL from the options
-        curl_setopt($ch, CURLOPT_URL, $this->request_url);
+        $webhookJob->customer_id = $this->customer_id;
+        $webhookJob->fillParams($params);
+        $webhookJob->status = WebhookJob::STATUS_NEW;
 
-        // Set the HTTP method (POST)
-        $method = strtoupper($this->request_method);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        $webhookJob->save();
 
-        // Set the Authorization (Basic Auth)
-        if ($this->request_auth_type === static::REQUEST_AUTH_TYPE_BASIC_AUTH) {
-            $username = $this->request_auth_basic_username;
-            $password = $this->request_auth_basic_password;
-            curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
-        }
-
-        // Set Headers
-        $headers = [];
-        if (!empty($this->getRequestHeaders())) {
-            foreach ($this->getRequestHeaders() as $header) {
-                $headers[] = $header['key'] . ': ' . $header['value'];
-            }
-        }
-
-        // Add Content-Type based on body type
-        if ($this->request_body_type === static::REQUEST_BODY_TYPE_KEY_VALUE) {
-            $headers[] = 'Content-Type: application/x-www-form-urlencoded';
-        } elseif ($this->request_body_type === static::REQUEST_BODY_TYPE_PLAIN) {
-            // No special Content-Type needed for plain text
-        }
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        // Set the body type and parameters
-        $body = '';
-        if ($this->request_body_type === static::REQUEST_BODY_TYPE_PLAIN) {
-            $body = $this->request_body_plain;
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        } elseif ($this->request_body_type === static::REQUEST_BODY_TYPE_KEY_VALUE) {
-            $bodyParams = [];
-            foreach ($this->getRequestBodyParams() as $param) {
-                $bodyParams[] = urlencode($param['key']) . '=' . urlencode($param['value']);
-            }
-            $body = implode('&', $bodyParams);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        }
-
-        // Set additional cURL options
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-        // Execute the cURL request
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);  // Get HTTP response code
-
-        // Capture cURL errors
-        $curlError = curl_errno($ch) ? curl_error($ch) : null;
-
-        // Close the cURL session
-        curl_close($ch);
-
-        // Display all response aspects
-        $result = [
-            'method' => $method,
-            'body' => $body,
-            'error' => $curlError,
-            'http_code' => $httpCode,
-            'response' => $response,
-        ];
-
-        //
-        $this->addLog(
-            $requestDetails = $this->getRequestArray(),
-            $responseHttpCode = $result['http_code'],
-            $repsonseContent = $result['response'],
-            $responseRrror = $result['error']
-        );
-
-        return $result;
-    }
-
-    public function getRequestArray()
-    {
-        return [
-            'name' => $this->name,
-            'setting_retry_times' => $this->setting_retry_times,
-            'setting_retry_after_seconds' => $this->setting_retry_after_seconds,
-            'request_method' => $this->request_method,
-            'request_url' => $this->request_url,
-            'request_auth_type' => $this->request_auth_type,
-            'request_auth_bearer_token' => $this->request_auth_bearer_token,
-            'request_auth_basic_username' => $this->request_auth_basic_username,
-            'request_auth_basic_password' => $this->request_auth_basic_password,
-            'request_auth_custom_key' => $this->request_auth_custom_key,
-            'request_auth_custom_value' => $this->request_auth_custom_value,
-            'request_headers' => $this->getRequestHeaders(),
-            'request_body_type' => $this->request_body_type,
-            'request_body_params' => $this->getRequestBodyParams(),
-            'request_body_plain' => $this->request_body_plain,
-        ];
-    }
-
-    public function addLog($requestDetails, $responseHttpCode, $repsonseContent, $responseRrror = null)
-    {
-        $log = $this->webhookLogs()->make();
-
-        $log->customer_id = $this->customer_id;
-        $log->request_details = json_encode($requestDetails);
-        $log->response_http_code = $responseHttpCode;
-        $log->response_content = $repsonseContent;
-        $log->response_error = $responseRrror;
-
-        $log->save();
-
-        return $log;
+        return $webhookJob;
     }
 }

@@ -1439,9 +1439,9 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
     Route::post('admin/translation/{uid}/write', 'TranslationController@phrasesWrite');
 
     // Webhook
-    Route::get('webhooks/{id}/logs/details', 'WebhookController@logsDetails');
-    Route::get('webhooks/{id}/logs', 'WebhookController@logs');
-    Route::get('webhooks/{id}/logsList', 'WebhookController@logsList');
+    Route::get('webhooks/{id}/jobs/details', 'WebhookController@jobsDetails');
+    Route::get('webhooks/{id}/jobs', 'WebhookController@jobs');
+    Route::get('webhooks/{id}/jobsList', 'WebhookController@jobsList');
     Route::match(['get', 'post'], 'webhooks/{id}/setup', 'WebhookController@setup');
     Route::match(['get', 'post'], 'webhooks/{id}/test', 'WebhookController@test');
     Route::post('webhooks/disable', 'WebhookController@disable');

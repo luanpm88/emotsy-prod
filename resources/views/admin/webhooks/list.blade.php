@@ -30,7 +30,7 @@
                 </td>
                 <td>
                     <h5 class="m-0">
-                        <code style="white-space:nowrap;text-overflow:ellipsis;max-width:250px;display:block;overflow:hidden;"><span class="text-uppercase">{{ $webhook->request_method }}</span> {{ $webhook->request_url }}</code>
+                        <code class="fw-normal" style="white-space:nowrap;text-overflow:ellipsis;max-width:250px;display:block;overflow:hidden;"><span class="text-uppercase">{{ $webhook->request_method }}</span> {{ $webhook->request_url }}</code>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.webhook.desc') }}</span>
                 </td>
@@ -50,7 +50,7 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->admin->can('read', $webhook))
                                     <li>
-                                        <a class="dropdown-item" data-control="webhook-log" href="{{ action('Admin\WebhookController@logs', $webhook->uid) }}">
+                                        <a class="dropdown-item" data-control="webhook-log" href="{{ action('Admin\WebhookController@jobs', $webhook->uid) }}">
                                             <span class="material-symbols-rounded">manage_search</span> {{ trans('messages.webhook.logs') }}
                                         </a>
                                     </li>
@@ -100,7 +100,7 @@
 				links: $('[data-control="test-webhook"]'),
 			});
 
-            new WebhookLog({
+            new WebhookJob({
 				links: $('[data-control="webhook-log"]'),
 			});
 		});
@@ -122,7 +122,7 @@
             }
         }
 
-        var WebhookLog = class {
+        var WebhookJob = class {
             constructor(options) {
                 this.links = options.links;
 

@@ -3,7 +3,7 @@
 @section('content')
     <h2>{{ $webhook->name }}: {{ trans('messages.webhook.logs') }}</h2>
 
-    <div id="WebhookLogsListContainer">
+    <div id="WebhookJobsListContainer">
         <div class="d-flex top-list-controls top-sticky-content">
             <div class="me-auto">
                 <div class="filter-box">
@@ -25,8 +25,8 @@
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                         <select class="select" name="sort_order">
-                            <option value="webhook_logs.created_at">{{ trans('messages.created_at') }}</option>
-                            <option value="webhook_logs.updated_at">{{ trans('messages.updated_at') }}</option>
+                            <option value="webhook_jobs.created_at">{{ trans('messages.created_at') }}</option>
+                            <option value="webhook_jobs.updated_at">{{ trans('messages.updated_at') }}</option>
                         </select>
                         <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <div id="WebhookLogsListContent">
+        <div id="WebhookJobsListContent">
         </div>
     </div>
 
@@ -49,9 +49,9 @@
         var WebhooksIndex = {
             getList: function() {
                 return makeList({
-                    url: '{{ action('Admin\WebhookController@logsList', $webhook->uid) }}',
-                    container: $('#WebhookLogsListContainer'),
-                    content: $('#WebhookLogsListContent')
+                    url: '{{ action('Admin\WebhookController@jobsList', $webhook->uid) }}',
+                    container: $('#WebhookJobsListContainer'),
+                    content: $('#WebhookJobsListContent')
                 });
             }
         };

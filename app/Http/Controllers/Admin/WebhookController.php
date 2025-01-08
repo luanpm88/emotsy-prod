@@ -231,11 +231,12 @@ class WebhookController extends Controller
             if ($request->webhook) {
                 $webhook->fillAttributes($request->webhook);
             }
-            $result = $webhook->test();
+
+            $webhookJob = $webhook->test();
 
             return view('admin.webhooks.testResult', [
                 'webhook' => $webhook,
-                'result' => $result,
+                'webhookJobLog' => $webhookJob->webhookJobLogs()->latest()->first(),
             ]);
         }
 
@@ -244,25 +245,25 @@ class WebhookController extends Controller
         ]);
     }
 
-    public function logs(Request $request, $id)
+    public function jobs(Request $request, $id)
     {
         $webhook = Webhook::findByUid($id);
 
-        return view('admin.webhooks.logs', [
+        return view('admin.webhooks.jobs', [
             'webhook' => $webhook,
         ]);
     }
 
-    public function logsList(Request $request, $id)
+    public function jobsList(Request $request, $id)
     {
         $webhook = Webhook::findByUid($id);
-        $webhookLogs = $webhook->webhookLogs()
+        $webhookJobs = $webhook->webhookJobs()
             ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
             ->paginate($request->per_page);
 
-        return view('admin.webhooks.logsList', [
+        return view('admin.webhooks.jobsList', [
             'webhook' => $webhook,
-            'webhookLogs' => $webhookLogs,
+            'webhookJobs' => $webhookJobs,
         ]);
     }
 }

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('webhook_logs', function (Blueprint $table) {
+        Schema::create('webhook_job_logs', function (Blueprint $table) {
             $table->id();
             $table->uuid('uid');
             $table->integer('customer_id')->unsigned()->nullable();
-            $table->bigInteger('webhook_id')->unsigned()->nullable();
+            $table->bigInteger('webhook_job_id')->unsigned()->nullable();
             $table->longText('request_details');
             $table->string('response_http_code');
             $table->longText('response_content');
@@ -25,7 +25,7 @@ return new class extends Migration
 
             // foreign key
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->foreign('webhook_id')->references('id')->on('webhooks')->onDelete('cascade');
+            $table->foreign('webhook_job_id')->references('id')->on('webhook_jobs')->onDelete('cascade');
         });
     }
 
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('webhook_logs');
+        Schema::dropIfExists('webhook_job_logs');
     }
 };
