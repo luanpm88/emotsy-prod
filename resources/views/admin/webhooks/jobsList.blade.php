@@ -22,35 +22,67 @@
                     </label>
                     <span class="text-muted2">{{ trans('messages.created_at') }}</span>
                 </td>
-                <td>
-                    <label class="m-0 d-block">
-                        {{ $webhookJob->getLatestLog()->response_http_code }}
-                    </label>
-                    <span class="text-muted2">{{ trans('messages.webhook.http_code') }}</span>
-                </td>
-                <td>
-                    <label class="m-0 d-block clamp-3" style="max-width: 250px;">
-                        {{ $webhookJob->getLatestLog()->request_details }}
-                    </label>
-                    <span class="text-muted2">{{ trans('messages.webhook.request_details') }}</span>
-                </td>
-                <td>
-                    <label class="m-0 d-block clamp-3" style="max-width: 250px;">
-                        {{ $webhookJob->getLatestLog()->response_content }}
-                    </label>
-                    <span class="text-muted2">{{ trans('messages.webhook.reponse_content') }}</span>
-                </td>
-                <td>
-                    <label class="m-0 d-block clamp-3" style="max-width: 250px;">
-                        {{ $webhookJob->getLatestLog()->response_error ?? trans('messages.general.n_a') }}
-                    </label>
-                    <span class="text-muted2">{{ trans('messages.webhook.reponse_error') }}</span>
-                </td>
-                <td>
-                    <span class="text-muted2 list-status pull-left">
-                        <span class="label label-flat bg-{{ $webhookJob->status }}">{{ trans('messages.webhook.job.status.' . $webhookJob->status) }}</span>
-                    </span>
-                </td>
+                @if ($webhookJob->getLatestLog())
+                    <td>
+                        <label class="m-0 d-block">
+                            {{ $webhookJob->getLatestLog()->response_http_code }}
+                        </label>
+                        <span class="text-muted2">{{ trans('messages.webhook.http_code') }}</span>
+                    </td>
+                    <td>
+                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                            {{ $webhookJob->getLatestLog()->request_details }}
+                        </label>
+                        <span class="text-muted2">{{ trans('messages.webhook.request_details') }}</span>
+                    </td>
+                    <td>
+                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                            {{ $webhookJob->getLatestLog()->response_content }}
+                        </label>
+                        <span class="text-muted2">{{ trans('messages.webhook.reponse_content') }}</span>
+                    </td>
+                    <td>
+                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                            {{ $webhookJob->getLatestLog()->response_error ?? trans('messages.general.n_a') }}
+                        </label>
+                        <span class="text-muted2">{{ trans('messages.webhook.reponse_error') }}</span>
+                    </td>
+                    <td>
+                        <span class="text-muted2 list-status pull-left">
+                            <span class="label label-flat bg-{{ $webhookJob->status }}">{{ trans('messages.webhook.job.status.' . $webhookJob->status) }}</span>
+                        </span>
+                    </td>
+                @else
+                    <td>
+                        <label class="m-0 d-block">
+                            {{ trans('messages.general.n_a') }}
+                        </label>
+                        <span class="text-muted2">{{ trans('messages.webhook.http_code') }}</span>
+                    </td>
+                    <td>
+                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                            {{ trans('messages.general.n_a') }}
+                        </label>
+                        <span class="text-muted2">{{ trans('messages.webhook.request_details') }}</span>
+                    </td>
+                    <td>
+                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                            {{ trans('messages.general.n_a') }}
+                        </label>
+                        <span class="text-muted2">{{ trans('messages.webhook.reponse_content') }}</span>
+                    </td>
+                    <td>
+                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                            {{ trans('messages.general.n_a') }}
+                        </label>
+                        <span class="text-muted2">{{ trans('messages.webhook.reponse_error') }}</span>
+                    </td>
+                    <td>
+                        <span class="text-muted2 list-status pull-left">
+                            <span class="label label-flat bg-{{ $webhookJob->status }}">{{ trans('messages.webhook.job.status.' . $webhookJob->status) }}</span>
+                        </span>
+                    </td>
+                @endif
                 <td>
                     <a href="{{ action('Admin\WebhookController@jobsDetails', ["id" => $webhookJob->uid]) }}" role="button" class="btn btn-light btn-icon">
                         <span class="material-symbols-rounded">zoom_in</span>

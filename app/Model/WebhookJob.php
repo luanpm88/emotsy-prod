@@ -160,6 +160,14 @@ class WebhookJob extends Model
             $responseRrror = $result['error']
         );
 
+        //
+        if ($result['http_code'] == 200) {
+            $this->status = static::STATUS_SUCCESS;
+        } else {
+            $this->status = static::STATUS_FAILED;
+        }
+        $this->save();
+
         return $result;
     }
 
