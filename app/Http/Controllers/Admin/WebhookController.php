@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Webhook;
+use Acelle\Model\WebhookJob;
 
 class WebhookController extends Controller
 {
@@ -264,6 +265,28 @@ class WebhookController extends Controller
         return view('admin.webhooks.jobsList', [
             'webhook' => $webhook,
             'webhookJobs' => $webhookJobs,
+        ]);
+    }
+
+    public function jobsLogs(Request $request, $id)
+    {
+        $webhookJob = WebhookJob::findByUid($id);
+
+        return view('admin.webhooks.jobsLogs', [
+            'webhookJob' => $webhookJob,
+        ]);
+    }
+
+    public function jobsLogsList(Request $request, $id)
+    {
+        $webhookJob = WebhookJob::findByUid($id);
+        $webhookJobLogs = $webhookJob->webhookJobLogs()
+            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
+            ->paginate($request->per_page);
+
+        return view('admin.webhooks.jobsLogsList', [
+            'webhookJob' => $webhookJob,
+            'webhookJobLogs' => $webhookJobLogs,
         ]);
     }
 }

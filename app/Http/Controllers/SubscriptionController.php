@@ -472,6 +472,9 @@ class SubscriptionController extends Controller
 
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $subscription->cancelNow();
+
+            // run webhook
+            \Acelle\Library\Webhook\CustomerCancelPlan::run($customer->uid, $subscription->planGeneral->uid);
         }
 
         // Redirect to my subscription page

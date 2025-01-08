@@ -2,89 +2,80 @@
     <table class="table table-box pml-table mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
+        <tr>
+            <th class="ps-0">{{ trans('messages.created_at') }}</th>
+            <th>{{ trans('messages.webhook.params') }}</th>
+            <th>{{ trans('messages.webhook.http_code') }}</th>
+            {{-- <th>{{ trans('messages.webhook.request_details') }}</th> --}}
+            <th>{{ trans('messages.webhook.reponse_content') }}</th>
+            {{-- <th>{{ trans('messages.webhook.reponse_error') }}</th> --}}
+            <th>{{ trans('messages.status') }}</th>
+            <th width="1%"></th>
+        </tr>
         @foreach ($webhookJobs as $key => $webhookJob)
             <tr class="position-relative">
-                <td width="1%" class="list-check-col">
-                    <div class="text-nowrap">
-                        <div class="checkbox inline me-1">
-                            <label>
-                                <input type="checkbox" class="node styled"
-                                    name="uids[]"
-                                    value="{{ $webhookJob->uid }}"
-                                />
-                            </label>
-                        </div>
-                    </div>
-                </td>
                 <td>
                     <label class="m-0 d-block">
                         {{ Auth::user()->admin->formatDateTime($webhookJob->created_at, 'datetime_full') }}
                     </label>
-                    <span class="text-muted2">{{ trans('messages.created_at') }}</span>
+                </td>
+                <td>
+                    @foreach ($webhookJob->getParams() as $key => $value)
+                        <code class="m-0 d-block text-dark">
+                            <strong>{{ $key }}:</strong> {{ $value }}
+                        </code>
+                    @endforeach
                 </td>
                 @if ($webhookJob->getLatestLog())
                     <td>
-                        <label class="m-0 d-block">
+                        <code class="m-0 d-block text-dark">
                             {{ $webhookJob->getLatestLog()->response_http_code }}
-                        </label>
-                        <span class="text-muted2">{{ trans('messages.webhook.http_code') }}</span>
+                        </code>
                     </td>
-                    <td>
-                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                    {{-- <td>
+                        <code class="m-0 d-block clamp-3 text-dark" style="max-width: 250px;">
                             {{ $webhookJob->getLatestLog()->request_details }}
-                        </label>
-                        <span class="text-muted2">{{ trans('messages.webhook.request_details') }}</span>
-                    </td>
+                        </code>
+                    </td> --}}
                     <td>
-                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                        <code data-control="more-popup" class="m-0 d-block clamp-3 text-dark" style="max-width: 250px;">
                             {{ $webhookJob->getLatestLog()->response_content }}
-                        </label>
-                        <span class="text-muted2">{{ trans('messages.webhook.reponse_content') }}</span>
+                        </code>
                     </td>
-                    <td>
-                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                    {{-- <td>
+                        <code class="m-0 d-block clamp-3 text-dark" style="max-width: 250px;">
                             {{ $webhookJob->getLatestLog()->response_error ?? trans('messages.general.n_a') }}
-                        </label>
-                        <span class="text-muted2">{{ trans('messages.webhook.reponse_error') }}</span>
-                    </td>
-                    <td>
-                        <span class="text-muted2 list-status pull-left">
-                            <span class="label label-flat bg-{{ $webhookJob->status }}">{{ trans('messages.webhook.job.status.' . $webhookJob->status) }}</span>
-                        </span>
-                    </td>
+                        </code>
+                    </td> --}}
                 @else
                     <td>
-                        <label class="m-0 d-block">
+                        <code class="m-0 d-block text-dark">
                             {{ trans('messages.general.n_a') }}
-                        </label>
-                        <span class="text-muted2">{{ trans('messages.webhook.http_code') }}</span>
+                        </code>
                     </td>
-                    <td>
-                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                    {{-- <td>
+                        <code class="m-0 d-block clamp-3 text-dark" style="max-width: 250px;">
                             {{ trans('messages.general.n_a') }}
-                        </label>
-                        <span class="text-muted2">{{ trans('messages.webhook.request_details') }}</span>
-                    </td>
+                        </code>
+                    </td> --}}
                     <td>
-                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                        <code class="m-0 d-block clamp-3 text-dark" style="max-width: 250px;">
                             {{ trans('messages.general.n_a') }}
-                        </label>
-                        <span class="text-muted2">{{ trans('messages.webhook.reponse_content') }}</span>
+                        </code>
                     </td>
-                    <td>
-                        <label class="m-0 d-block clamp-3" style="max-width: 250px;">
+                    {{-- <td>
+                        <code class="m-0 d-block clamp-3 text-dark" style="max-width: 250px;">
                             {{ trans('messages.general.n_a') }}
-                        </label>
-                        <span class="text-muted2">{{ trans('messages.webhook.reponse_error') }}</span>
-                    </td>
-                    <td>
-                        <span class="text-muted2 list-status pull-left">
-                            <span class="label label-flat bg-{{ $webhookJob->status }}">{{ trans('messages.webhook.job.status.' . $webhookJob->status) }}</span>
-                        </span>
-                    </td>
+                        </code>
+                    </td> --}}
                 @endif
                 <td>
-                    <a href="{{ action('Admin\WebhookController@jobsDetails', ["id" => $webhookJob->uid]) }}" role="button" class="btn btn-light btn-icon">
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-{{ $webhookJob->status }}">{{ trans('messages.webhook.job.status.' . $webhookJob->status) }}</span>
+                    </span>
+                </td>
+                <td>
+                    <a data-control="webhook-log" href="{{ action('Admin\WebhookController@jobsLogs', ["id" => $webhookJob->uid]) }}" role="button" class="btn btn-light btn-icon">
                         <span class="material-symbols-rounded">zoom_in</span>
                     </a>
                 </td>
@@ -94,6 +85,73 @@
     @include('elements/_per_page_select', [
         'items' => $webhookJobs,
     ])
+
+    <script>
+        $(function() {
+            new MorePopup({
+                controls: $('[data-control="more-popup"]'),
+            })
+        });
+
+        var MorePopup = class {
+            constructor(options) {
+                this.controls = options.controls;
+
+                this.events();
+            }
+
+            events() {
+                this.controls.on('click', function(e) {
+                    e.preventDefault();
+
+                    var popup = new Popup();
+                    var content = $(this).html();
+
+                    popup.loadHtml(`
+                        <div class="modal-dialog shadow modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center" style="overflow: auto;">
+                                    `+content+`
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+            }
+        }
+    </script>
+
+    <script>
+        $(() => {
+            new WebhookJobLog({
+                links: $('[data-control="webhook-log"]'),
+            });
+        });
+
+        var WebhookJobLog = class {
+            constructor(options) {
+                this.links = options.links;
+
+                this.events();
+            }
+
+            events() {
+                this.links.on('click', function(e) {
+                    e.preventDefault();
+
+                    var popup = new Popup({url: $(this).attr('href')});
+                    popup.load();
+                });
+            }
+        }
+
+    </script>
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
         <span class="material-symbols-rounded">dns</span>

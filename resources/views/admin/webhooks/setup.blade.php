@@ -16,9 +16,17 @@
 			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li class="breadcrumb-item"><a href="{{ action("Admin\WebhookController@index") }}">{{ trans('messages.webhook.webhooks') }}</a></li>
 		</ul>
-		<h1 class="mc-h1">
-			<span class="text-semibold">{{ $webhook->name }}</span>
-		</h1>
+		<div class="d-flex align-items-center mb-4">
+			<div class="me-4">
+				<span class="material-symbols-rounded fs-3">
+					settings_input_component
+				</span>
+			</div>
+			<div>
+				<h3 class="mb-1">{{ $webhook->name }}</h3>
+				<p class="mb-0">{{ trans('messages.webhook.event.' . $webhook->event . '.wording') }}</p>
+			</div>
+		</div>
 	</div>
 
 @endsection
@@ -28,7 +36,7 @@
 @php
 	$formId = 'WebhookForm' . uniqid();
 @endphp
-
+		
 <form id="{{ $formId }}" action="{{ action('Admin\WebhookController@setup', $webhook->uid) }}" method="POST" class="">
 	@csrf
 

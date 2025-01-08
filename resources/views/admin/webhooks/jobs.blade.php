@@ -1,17 +1,12 @@
 @extends('layouts.popup.large')
 
 @section('content')
-    <h2>{{ $webhook->name }}: {{ trans('messages.webhook.logs') }}</h2>
+    <h2>{{ $webhook->name }}: {{ trans('messages.webhook.jobs') }}</h2>
 
     <div id="WebhookJobsListContainer">
         <div class="d-flex top-list-controls top-sticky-content">
             <div class="me-auto">
                 <div class="filter-box">
-                    <div class="checkbox inline check_all_list">
-                        <label>
-                            <input type="checkbox" name="page_checked" class="styled check_all">
-                        </label>
-                    </div>
                     <div class="dropdown list_actions" style="display: none">
                         <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                             {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>

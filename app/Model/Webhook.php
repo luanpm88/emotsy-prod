@@ -26,7 +26,7 @@ class Webhook extends Model
 
     public const REQUEST_BODY_TYPE_KEY_VALUE = 'key_value';
     public const REQUEST_BODY_TYPE_PLAIN = 'plain';
-
+    
     public function webhookJobs()
     {
         return $this->hasMany(WebhookJob::class, 'webhook_id');
@@ -50,7 +50,6 @@ class Webhook extends Model
         $this->request_body_params = json_encode($attributes['request_body_params']);
         $this->request_body_plain = $attributes['request_body_plain'];
     }
-
 
     public static function newDefault()
     {
@@ -135,7 +134,7 @@ class Webhook extends Model
                 'tag' => "{".$param."}",
                 'label' => trans('messages.webhook.tag.' .$param),
             ];
-        }, config('webhooks')[$this->event]['params']);
+        }, config('webhook_events')[$this->event]['params']);
     }
 
     public function getRequestHeaders()
@@ -190,6 +189,14 @@ class Webhook extends Model
         $webhookJob->status = WebhookJob::STATUS_NEW;
 
         $webhookJob->save();
+
+        return $webhookJob;
+    }
+
+    public function run($params)
+    {
+        $webhookJob = $this->dispatch($params);
+        $webhookJob->run();
 
         return $webhookJob;
     }

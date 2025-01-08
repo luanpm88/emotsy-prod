@@ -29,7 +29,13 @@
                     <span class="text-muted2">{{ trans('messages.webhook.event') }}</span>
                 </td>
                 <td>
-                    <h5 class="m-0">
+                    <a class="d-block fw-semibold" data-control="webhook-job" href="{{ action('Admin\WebhookController@jobs', $webhook->uid) }}">
+                        <span>{{ $webhook->webhookJobs()->count() }}</span>
+                    </a>
+                    <span class="text-muted2">{{ trans('messages.webhook.runs') }}</span>
+                </td>
+                <td>
+                    <h5 class="m-0" style="line-height: 22px;">
                         <code class="fw-normal" style="white-space:nowrap;text-overflow:ellipsis;max-width:250px;display:block;overflow:hidden;"><span class="text-uppercase">{{ $webhook->request_method }}</span> {{ $webhook->request_url }}</code>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.webhook.desc') }}</span>
@@ -40,9 +46,8 @@
                     </span>
                 </td>
                 <td class="text-end text-nowrap pe-0">
-                    <a href="{{ action('Admin\WebhookController@setup', ["id" => $webhook->uid]) }}" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon">
-                        <span class="material-symbols-rounded">edit</span>
-                        {{ trans('messages.edit') }}
+                    <a data-control="webhook-job" href="{{ action('Admin\WebhookController@jobs', ["id" => $webhook->uid]) }}" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon">
+                        <span class="material-symbols-rounded">manage_search</span>
                     </a>
                     @if (Auth::user()->admin->can('delete', $webhook) || Auth::user()->admin->can('disable', $webhook) || Auth::user()->admin->can('enable', $webhook))
                         <div class="btn-group">
@@ -50,8 +55,8 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->admin->can('read', $webhook))
                                     <li>
-                                        <a class="dropdown-item" data-control="webhook-log" href="{{ action('Admin\WebhookController@jobs', $webhook->uid) }}">
-                                            <span class="material-symbols-rounded">manage_search</span> {{ trans('messages.webhook.logs') }}
+                                        <a class="dropdown-item" href="{{ action('Admin\WebhookController@setup', $webhook->uid) }}">
+                                            <span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}
                                         </a>
                                     </li>
                                 @endif
@@ -101,7 +106,7 @@
 			});
 
             new WebhookJob({
-				links: $('[data-control="webhook-log"]'),
+				links: $('[data-control="webhook-job"]'),
 			});
 		});
 

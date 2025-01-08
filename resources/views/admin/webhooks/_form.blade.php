@@ -29,9 +29,9 @@
 				'options' => array_map(function($event, $data) {
 					return [
 						'value' => $event,
-						'text' => trans('messages.webhook.event.' . $event),
+						'text' => trans('messages.webhook.event.' . $event) . '|||' . trans('messages.webhook.event.' . $event . '.wording'),
 					];
-				}, array_keys(config('webhooks')), config('webhooks')),
+				}, array_keys(config('webhook_events')), config('webhook_events')),
 				'attributes' => [
 					'required' => 'required',
 				],

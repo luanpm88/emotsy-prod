@@ -56,6 +56,9 @@ class InvoiceNewSubscription extends Invoice
         SubscriptionFacade::log($this->subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
             'amount' => $this->total(),
         ]);
+
+        // run webhook
+        \Acelle\Library\Webhook\CustomerSubscribePlan::run($this->subscription->customer->uid, $this->subscription->plan->uid);
     }
 
     /**

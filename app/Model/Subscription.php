@@ -987,6 +987,9 @@ class Subscription extends Model
         // if subscription is new -> cancel now subscription.
         // Make sure a new subscription must have a pending invoice
         $this->cancelNow();
+
+        // run webhook
+        \Acelle\Library\Webhook\CustomerCancelPlan::run($customer->uid, $subscription->planGeneral->uid);
     }
 
     public function getRemainingEmailCredits()
