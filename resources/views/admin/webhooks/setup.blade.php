@@ -366,15 +366,15 @@
 				<div class="col-md-6">
 					<select data-control="selector" name="webhook[request_body_type]" id=""
 						class="select">
-						<option {{ $webhook->request_body_type == Acelle\Model\Webhook::REQUEST_BODY_TYPE_KEY_VALUE ? 'selected' : '' }} value="key_value_pair">
+						<option {{ $webhook->request_body_type == Acelle\Model\Webhook::REQUEST_BODY_TYPE_KEY_VALUE ? 'selected' : '' }} value="{{ Acelle\Model\Webhook::REQUEST_BODY_TYPE_KEY_VALUE }}">
 							{{ trans('messages.webhook.key_value_pair') }}</option>
-						<option {{ $webhook->request_body_type == Acelle\Model\Webhook::REQUEST_BODY_TYPE_PLAIN ? 'selected' : '' }} value="plain_text">
+						<option {{ $webhook->request_body_type == Acelle\Model\Webhook::REQUEST_BODY_TYPE_PLAIN ? 'selected' : '' }} value="{{ Acelle\Model\Webhook::REQUEST_BODY_TYPE_PLAIN }}">
 							{{ trans('messages.webhook.plain_text') }}</option>
 					</select>
 				</div>
 			</div>
 
-			<div data-option-box="key_value_pair" class="">
+			<div data-option-box="{{ Acelle\Model\Webhook::REQUEST_BODY_TYPE_KEY_VALUE }}" class="">
 				<div data-control="body-parameters-container">
 					<label for=""
 						class="form-label fw-semibold">{{ trans('messages.webhook.body_parameters') }}</label>
@@ -407,7 +407,7 @@
 				</div>
 			</div>
 
-			<div data-option-box="plain_text">
+			<div data-option-box="{{ Acelle\Model\Webhook::REQUEST_BODY_TYPE_PLAIN }}">
 				<label for=""
 					class="form-label fw-semibold">{{ trans('messages.webhook.json_xml') }}</label>
 				<div id="editor" class="rounded shadow-sm" style="height: 200px;width: 100%;"></div>
@@ -483,11 +483,6 @@
 					container: this.form.find('[data-control="headers"]'),
 				});
 
-				// BodyConfigurationSelector
-				this.bodyConfigurationSelector = new BodyConfigurationSelector({
-					container: this.form.find('[data-control="body-config"]'),
-				});
-
 				// HeaderListManager
 				this.headerListManager = new HeaderListManager({
 					container: this.form.find('[data-control="header-list-container"]'),
@@ -498,6 +493,11 @@
 				this.bodyParametersManager = new BodyParametersManager({
 					container: this.form.find('[data-control="body-parameters-container"]'),
 					elements: {!! json_encode($webhook->getRequestBodyParams()) !!},
+				});
+
+				// BodyConfigurationSelector
+				this.bodyConfigurationSelector = new BodyConfigurationSelector({
+					container: this.form.find('[data-control="body-config"]'),
 				});
 
 				//
