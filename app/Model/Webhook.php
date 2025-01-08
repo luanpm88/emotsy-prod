@@ -47,7 +47,7 @@ class Webhook extends Model
         $this->request_auth_custom_value = $attributes['request_auth_custom_value'];
         $this->request_headers = json_encode($attributes['request_headers']);
         $this->request_body_type = $attributes['request_body_type'];
-        $this->request_body_params = json_encode($attributes['request_body_params']);
+        $this->request_body_params = isset($attributes['request_body_params']) ? json_encode($attributes['request_body_params']) : json_encode([]);
         $this->request_body_plain = $attributes['request_body_plain'];
     }
 
