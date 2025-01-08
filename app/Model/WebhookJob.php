@@ -22,7 +22,7 @@ class WebhookJob extends Model
 
     public function webhookJobLogs()
     {
-        return $this->belongsTo(WebhookJobLog::class, 'webhook_id');
+        return $this->hasMany(WebhookJobLog::class, 'webhook_job_id');
     }
 
     public static function newDefault()
@@ -53,15 +53,15 @@ class WebhookJob extends Model
         $attributes['request_method'] = $this->webhook->request_method;
         $attributes['request_url'] = $this->webhook->request_url;
         $attributes['request_auth_type'] = $this->webhook->request_auth_type;
-        $attributes['request_auth_bearer_token'] = $this->webhook->request_auth_type;
-        $attributes['request_auth_basic_username'] = $this->webhook->request_auth_type;
-        $attributes['request_auth_basic_password'] = $this->webhook->request_auth_type;
-        $attributes['request_auth_custom_key'] = $this->webhook->request_auth_type;
-        $attributes['request_auth_custom_value'] = $this->webhook->request_auth_type;
-        $attributes['request_headers'] = $this->webhook->request_auth_type;
-        $attributes['request_body_type'] = $this->webhook->request_auth_type;
-        $attributes['request_body_params'] = $this->webhook->request_auth_type;
-        $attributes['request_body_plain'] = $this->webhook->request_auth_type;
+        $attributes['request_auth_bearer_token'] = $this->webhook->request_auth_bearer_token;
+        $attributes['request_auth_basic_username'] = $this->webhook->request_auth_basic_username;
+        $attributes['request_auth_basic_password'] = $this->webhook->request_auth_basic_password;
+        $attributes['request_auth_custom_key'] = $this->webhook->request_auth_custom_key;
+        $attributes['request_auth_custom_value'] = $this->webhook->request_auth_custom_value;
+        $attributes['request_headers'] = $this->webhook->request_headers;
+        $attributes['request_body_type'] = $this->webhook->request_body_type;
+        $attributes['request_body_params'] = $this->webhook->request_body_params;
+        $attributes['request_body_plain'] = $this->webhook->request_body_plain;
 
         //
         foreach ($attributes as $key => $value) {
