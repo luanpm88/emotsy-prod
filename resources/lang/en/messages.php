@@ -3752,4 +3752,5 @@
   'webhook.params' => 'Parameters',
   'webhook.jobs' => 'Jobs',
   'webhook.runs' => 'Run(s)',
+  'webhook.retries' => 'Retry(ies)',
  ) ?>

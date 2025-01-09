@@ -9,6 +9,7 @@
             {{-- <th>{{ trans('messages.webhook.request_details') }}</th> --}}
             <th>{{ trans('messages.webhook.reponse_content') }}</th>
             {{-- <th>{{ trans('messages.webhook.reponse_error') }}</th> --}}
+            <th>{{ trans('messages.webhook.retries') }}</th>
             <th>{{ trans('messages.status') }}</th>
             <th width="1%"></th>
         </tr>
@@ -69,6 +70,11 @@
                         </code>
                     </td> --}}
                 @endif
+                <td>
+                    <label class="m-0 d-block fw-semibold">
+                        {{ $webhookJob->retries }}
+                    </label>
+                </td>
                 <td>
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $webhookJob->status }}">{{ trans('messages.webhook.job.status.' . $webhookJob->status) }}</span>
