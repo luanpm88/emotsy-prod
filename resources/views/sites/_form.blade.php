@@ -9,7 +9,8 @@
 					'required' => 'required',
 				],
 			])
-			<span class="d-block small fst-italic text-muted mt-1">This is just for internal use, you can change it later.</span>
+			<span class="d-block small fst-italic text-muted mt-1">
+				{{ trans('messages.site.name_just_internal_use') }}</span>
 		</div>
 		
 		<div class="form-group">

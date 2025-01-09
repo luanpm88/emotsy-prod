@@ -278,10 +278,20 @@ Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_i
 
 Route::group(['namespace' => '\Acelle\Http\Controllers', 'middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
     //
-    Route::post('sites/update', 'SiteController@update');
+    Route::get('sites/list', 'SiteController@list');
+    Route::post('sites/delete', 'SiteController@delete');
+    Route::post('sites/disable', 'SiteController@disable');
+    Route::post('sites/enable', 'SiteController@enable');
+    Route::get('sites/{id}/preview/content', 'SiteController@previewContent');
+    Route::get('sites/{id}/preview', 'SiteController@preview');
+    Route::get('sites/{id}/builder/content', 'SiteController@builderContent');
+    Route::post('sites/{id}/builder', 'SiteController@builderSave');
+    Route::get('sites/{id}/builder', 'SiteController@builder');
+    Route::post('sites/{id}/update', 'SiteController@update');
     Route::get('sites/{id}/edit', 'SiteController@edit');
     Route::get('sites/{id}/settings', 'SiteController@settings');
-    Route::post('sites/{id}/content/select/{template_uid}', 'SiteController@contentSelect');
+    Route::post('sites/{id}/template/change/{template_uid}', 'SiteController@changeTemplate');
+    Route::get('sites/{id}/template/select', 'SiteController@selectTemplate');
     Route::get('sites/{id}/content', 'SiteController@content');
     Route::post('sites', 'SiteController@store');
     Route::get('sites/create', 'SiteController@create');

@@ -1,13 +1,8 @@
 @extends('layouts.core.frontend', [
-	'menu' => 'signature',
+	'menu' => 'site',
 ])
 
-@section('title', trans('messages.signature.add_new'))
-
-@section('head')
-	<script type="text/javascript" src="{{ AppUrl::asset('core/tinymce/tinymce.min.js') }}"></script>        
-    <script type="text/javascript" src="{{ AppUrl::asset('core/js/editor.js') }}"></script>
-@endsection
+@section('title', trans('messages.site.add_new'))
 
 @section('page_header')
 
@@ -16,8 +11,9 @@
 			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li class="breadcrumb-item"><a href="{{ action("SiteController@index") }}">{{ trans('messages.site.landing_pages') }}</a></li>
 		</ul>
-		<h1 class="mc-h1">
-			<span class="text-semibold">{{ $signature->name }}</span>
+		<h1>
+			<span class="text-semibold"><span class="material-symbols-rounded">edit</span>
+			<span class="text-semibold">{{ $site->name }}</span>
 		</h1>
 	</div>
 
@@ -25,17 +21,26 @@
 
 @section('content')
 
-<div class="row">
-	<div class="col-sm-12 col-md-10 col-lg-10">
-		<p>{!! trans('messages.signature.wording') !!}</p>
+	@include('sites._menu', [
+		'menu' => 'general',
+	])
+
+	<div class="row">
+		<div class="col-sm-12 col-md-10 col-lg-10">
+			<p>{!! trans('messages.site.create.intro') !!}</p>
+		</div>
 	</div>
-</div>
 
-<form action="{{ action('SignatureController@update', $signature->uid) }}" method="POST" class="">
-	@csrf
-    @method('PATCH')
+	<form action="{{ action('SiteController@update', $site->uid) }}" method="POST" class="">
+		@csrf
 
-	@include('signatures._form')
-</form>
+		@include('sites._form')
+
+		<hr >
+		<div class="text-end">
+			<a href="{{ action('SiteController@index') }}" class="btn btn-link me-1"><i class="icon-check"></i> {{ trans('messages.cancel') }}</a>
+			<button class="btn btn-primary me-1"><i class="icon-check"></i> {{ trans('messages.site.save_and_continue') }}</button>
+		</div>
+	</form>
     
 @endsection
