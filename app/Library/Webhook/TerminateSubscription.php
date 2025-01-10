@@ -2,9 +2,9 @@
 
 namespace Acelle\Library\Webhook;
 
-class CustomerCancelPlan
+class TerminateSubscription
 {
-    public const EVENT = 'customer_cancel_plan';
+    public const EVENT = 'terminate_subscription';
 
     public static function run($customerId, $planId)
     {

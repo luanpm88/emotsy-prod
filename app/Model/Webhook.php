@@ -158,13 +158,31 @@ class Webhook extends Model
     public function test()
     {
         switch ($this->event) {
-            case 'customer_cancel_plan':
+            case 'cancel_subscription':
                 $params = [
                     'customer_id' => '{customer_test_id}',
                     'plan_id' => '{plan_test_id}',
                 ];
                 break;
-            case 'customer_subscribe_plan':
+            case 'new_subscription':
+                $params = [
+                    'customer_id' => '{customer_test_id}',
+                    'plan_id' => '{plan_test_id}',
+                ];
+                break;
+            case 'new_customer':
+                $params = [
+                    'customer_id' => '{customer_test_id}',
+                ];
+                break;
+            case 'change_plan':
+                $params = [
+                    'customer_id' => '{customer_test_id}',
+                    'old_plan_id' => '{old_plan_test_id}',
+                    'new_plan_id' => '{new_plan_test_id}',
+                ];
+                break;
+            case 'terminate_subscription':
                 $params = [
                     'customer_id' => '{customer_test_id}',
                     'plan_id' => '{plan_test_id}',

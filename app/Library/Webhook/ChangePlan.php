@@ -2,11 +2,11 @@
 
 namespace Acelle\Library\Webhook;
 
-class CustomerSubscribePlan
+class ChangePlan
 {
-    public const EVENT = 'customer_subscribe_plan';
+    public const EVENT = 'change_plan';
 
-    public static function run($customerId, $planId)
+    public static function run($customerId, $oldPlanId, $newPlanId)
     {
         // Get all webhooks
         $webhooks = \Acelle\Model\Webhook::active()->where('event', static::EVENT)->get();
@@ -15,7 +15,8 @@ class CustomerSubscribePlan
         foreach ($webhooks as $webhook) {
             $webhook->run([
                 'customer_id' => $customerId,
-                'plan_id' => $planId,
+                'old_plan_id' => $oldPlanId,
+                'new_plan_id' => $newPlanId,
             ]);
         }
     }

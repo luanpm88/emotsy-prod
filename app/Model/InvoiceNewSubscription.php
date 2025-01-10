@@ -58,7 +58,7 @@ class InvoiceNewSubscription extends Invoice
         ]);
 
         // run webhook
-        \Acelle\Library\Webhook\CustomerSubscribePlan::run($this->subscription->customer->uid, $this->subscription->plan->uid);
+        \Acelle\Library\Webhook\NewSubscription::run($this->subscription->customer->uid, $this->subscription->plan->uid);
     }
 
     /**

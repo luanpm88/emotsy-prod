@@ -176,11 +176,10 @@ class WebhookJob extends Model
     public function addLog($requestDetails, $responseHttpCode, $repsonseContent, $responseRrror = null)
     {
         $webhookJobLog = $this->webhookJobLogs()->make();
-
         $webhookJobLog->customer_id = $this->customer_id;
         $webhookJobLog->request_details = json_encode($requestDetails);
         $webhookJobLog->response_http_code = $responseHttpCode;
-        $webhookJobLog->response_content = $repsonseContent;
+        $webhookJobLog->response_content = is_string($repsonseContent) ? mb_convert_encoding($repsonseContent, 'UTF-8', 'UTF-8') : $repsonseContent;
         $webhookJobLog->response_error = $responseRrror;
 
         $webhookJobLog->save();
