@@ -19,6 +19,7 @@ class Reoon implements VerifyInterface, BulkVerifyInterface
         'invalid' => 'undeliverable',
         'disposable' => 'risky',
         'spamtrap' => 'unknown',
+        'unknown' => 'unknown',
     ];
 
     public const BASE_URI = 'https://emailverifier.reoon.com/api/v1/';
