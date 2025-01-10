@@ -159,6 +159,18 @@ class AppServiceProvider extends ServiceProvider
             // run webhook
             \Acelle\Library\Webhook\ChangePlan::run($customer->uid, $oldPlan->uid, $newPlan->uid);
         });
+
+        // new subscription
+        Hook::register('new_subscription', function ($subscription) {
+            // run webhook
+            \Acelle\Library\Webhook\NewSubscription::run($subscription->customer->uid, $subscription->plan->uid);
+        });
+
+        // cancel subscription
+        Hook::register('subscription_cancelled', function ($subscription) {
+            // run webhook
+            \Acelle\Library\Webhook\CancelSubscription::run($subscription->customer->uid, $subscription->plan->uid);
+        });
     }
 
     // @deprecated

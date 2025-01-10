@@ -11,6 +11,7 @@ use Acelle\Model\InvoiceNewSubscription;
 use Acelle\Model\InvoiceRenewSubscription;
 use Acelle\Model\InvoiceChangePlan;
 use Acelle\Model\Transaction;
+use Acelle\Library\Facades\Hook;
 
 class SubscriptionController extends Controller
 {
@@ -473,8 +474,8 @@ class SubscriptionController extends Controller
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $subscription->cancelNow();
 
-            // run webhook
-            \Acelle\Library\Webhook\CancelSubscription::run($customer->uid, $subscription->planGeneral->uid);
+            // Execute registered hooks
+            Hook::execute('subscription_cancelled', [$subscription]);
         }
 
         // Redirect to my subscription page
