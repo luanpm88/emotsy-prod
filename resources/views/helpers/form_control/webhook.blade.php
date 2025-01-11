@@ -373,7 +373,7 @@
 				<div id="editor" class="rounded shadow-sm" style="height: 200px;width: 100%;"></div>
 
 				<script src="/ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-				<textarea id="signatureContent" type="text" name="webhook[request_body_plain]" class="form-control required template-editor"
+				<textarea id="webhookRequestBodyPlain" type="text" name="webhook[request_body_plain]" class="form-control required template-editor"
 					style="display: none;">{!! $webhook->request_body_plain !!}</textarea>
 				<script>
 					var editor = ace.edit("editor");
@@ -381,14 +381,14 @@
 					editor.getSession().setMode("ace/mode/json"); // Optional: set to HTML mode
 
 					// Set the content, using Blade to escape it for raw HTML
-					var content = ``;
+					var content = `{!! $webhook->request_body_plain !!}`;
 					editor.setValue(content);
 
 					// Set up a listener for changes
 					editor.getSession().on('change', function(delta) {
 						// This code will run every time the content changes
 						var content = editor.getValue();
-						document.getElementById('signatureContent').value = editor.getValue();
+						document.getElementById('webhookRequestBodyPlain').value = editor.getValue();
 						// You can perform additional actions here, like saving or validating the content
 					});
 				</script>
