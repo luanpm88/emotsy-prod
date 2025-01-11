@@ -35,4 +35,10 @@ return [
             'plan_id',
         ],
     ],
+
+    'automation_webhook' => [
+        'params' => [
+            'automation_id',
+        ],
+    ],
 ];

@@ -743,11 +743,12 @@ Route::group(['namespace' => '\Acelle\Http\Controllers', 'namespace' => '\Acelle
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::post('automation/{uid}/outgoing-webhook/add', 'Automation2Controller@outgoingWebhookAdd');
     Route::get('automation/{uid}/outgoing-webhook/show', 'Automation2Controller@outgoingWebhookShow');
     Route::post('automation/{uid}/outgoing-webhook/save', 'Automation2Controller@outgoingWebhookSave');
     Route::post('automation/{uid}/outgoing-webhook/test', 'Automation2Controller@outgoingWebhookTest');
     Route::get('automation/{uid}/outgoing-webhook/test-popup', 'Automation2Controller@outgoingWebhookTestPopup');
-    Route::get('automation/{uid}/outgoing-webhook/setup', 'Automation2Controller@outgoingWebhookSetup');
+    Route::get('automation/outgoing-webhook/{webhook_uid}/setup', 'Automation2Controller@outgoingWebhookSetup');
 
     Route::get('automation/{email_uid}/save-signature', 'Automation2Controller@emailSaveSignature');
     Route::get('automation/{email_uid}/overview', 'Automation2Controller@emailOverview');
@@ -1012,6 +1013,19 @@ Route::group(['namespace' => '\Acelle\Http\Controllers', 'namespace' => '\Acelle
     Route::resource('account/roles', 'RoleController');
     Route::post('account/roles/{uid}/update', 'RoleController@update');
 
+    // // Webhook
+    // Route::get('webhooks/{id}/jobs/logs', 'WebhookController@jobsLogs');
+    // Route::get('webhooks/{id}/jobs/logs/list', 'WebhookController@jobsLogsList');
+    // Route::get('webhooks/{id}/jobs/details', 'WebhookController@jobsDetails');
+    // Route::get('webhooks/{id}/jobs', 'WebhookController@jobs');
+    // Route::get('webhooks/{id}/jobsList', 'WebhookController@jobsList');
+    // Route::match(['get', 'post'], 'webhooks/{id}/setup', 'WebhookController@setup');
+    Route::match(['get', 'post'], 'webhooks/{id}/test', 'WebhookController@test');
+    // Route::post('webhooks/disable', 'WebhookController@disable');
+    // Route::post('webhooks/enable', 'WebhookController@enable');
+    // Route::get('webhooks/list/{page?}', 'WebhookController@list');
+    // Route::post('webhooks/delete', 'WebhookController@delete');
+    // Route::resource('webhooks', 'WebhookController');
 });
 
 // ADMIN AREA
@@ -1439,16 +1453,16 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
     Route::post('admin/translation/{uid}/write', 'TranslationController@phrasesWrite');
 
     // Webhook
-    Route::get('webhooks/{id}/jobs/logs', 'WebhookController@jobsLogs');
-    Route::get('webhooks/{id}/jobs/logs/list', 'WebhookController@jobsLogsList');
-    Route::get('webhooks/{id}/jobs/details', 'WebhookController@jobsDetails');
-    Route::get('webhooks/{id}/jobs', 'WebhookController@jobs');
-    Route::get('webhooks/{id}/jobsList', 'WebhookController@jobsList');
-    Route::match(['get', 'post'], 'webhooks/{id}/setup', 'WebhookController@setup');
-    Route::match(['get', 'post'], 'webhooks/{id}/test', 'WebhookController@test');
-    Route::post('webhooks/disable', 'WebhookController@disable');
-    Route::post('webhooks/enable', 'WebhookController@enable');
-    Route::get('webhooks/list/{page?}', 'WebhookController@list');
-    Route::post('webhooks/delete', 'WebhookController@delete');
-    Route::resource('webhooks', 'WebhookController');
+    Route::get('admin/webhooks/{id}/jobs/logs', 'WebhookController@jobsLogs');
+    Route::get('admin/webhooks/{id}/jobs/logs/list', 'WebhookController@jobsLogsList');
+    Route::get('admin/webhooks/{id}/jobs/details', 'WebhookController@jobsDetails');
+    Route::get('admin/webhooks/{id}/jobs', 'WebhookController@jobs');
+    Route::get('admin/webhooks/{id}/jobsList', 'WebhookController@jobsList');
+    Route::match(['get', 'post'], 'admin/webhooks/{id}/setup', 'WebhookController@setup');
+    Route::match(['get', 'post'], 'admin/webhooks/{id}/test', 'WebhookController@test');
+    Route::post('admin/webhooks/disable', 'WebhookController@disable');
+    Route::post('admin/webhooks/enable', 'WebhookController@enable');
+    Route::get('admin/webhooks/list/{page?}', 'WebhookController@list');
+    Route::post('admin/webhooks/delete', 'WebhookController@delete');
+    Route::resource('admin/webhooks', 'WebhookController');
 });

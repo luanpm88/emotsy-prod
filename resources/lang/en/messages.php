@@ -3759,4 +3759,5 @@
   'webhook.jobs' => 'Jobs',
   'webhook.runs' => 'Run(s)',
   'webhook.retries' => 'Retry(ies)',
+  'automation.webhook_name' => ':automation: webhook',
  ) ?>

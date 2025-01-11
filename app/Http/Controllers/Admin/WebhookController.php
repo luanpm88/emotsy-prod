@@ -106,7 +106,6 @@ class WebhookController extends Controller
         $webhook = Webhook::findByUid($id);
 
         if ($request->isMethod('post')) {
-            $webhook = Webhook::findByUid($id);
             $webhook->fillAttributes($request->webhook);
             $webhook->save();
 
@@ -228,12 +227,7 @@ class WebhookController extends Controller
         $webhook = Webhook::findByUid($id);
 
         if ($request->isMethod('post')) {
-            $webhook = Webhook::findByUid($id);
-            if ($request->webhook) {
-                $webhook->fillAttributes($request->webhook);
-            }
-
-            $webhookJob = $webhook->test();
+            $webhookJob = $webhook->test($request->webhook);
 
             return view('admin.webhooks.testResult', [
                 'webhook' => $webhook,

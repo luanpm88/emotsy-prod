@@ -34,7 +34,7 @@ class Webhook extends Model
 
     public function fillAttributes($attributes)
     {
-        $this->name = $attributes['name'];
+        $this->name = $attributes['name'] ?? $this->name;
         $this->setting_retry_times = $attributes['setting_retry_times'] ?? 0;
         $this->setting_retry_after_seconds = $attributes['setting_retry_after_seconds'] ?? 900;
         $this->request_method = $attributes['request_method'];
@@ -155,7 +155,7 @@ class Webhook extends Model
         return json_decode($this->request_body_params, true);
     }
 
-    public function test()
+    public function test($requestDetails=null)
     {
         switch ($this->event) {
             case 'cancel_subscription':
@@ -188,11 +188,19 @@ class Webhook extends Model
                     'plan_id' => '{plan_test_id}',
                 ];
                 break;
+            case 'automation_webhook':
+                $params = [
+                    'automation_id' => '{automation_test_id}',
+                ];
+                break;
             default:
                 throw new \Exception('Unknown event: ' . $this->event);
         }
 
         $webhookJob = $this->dispatch($params);
+        if ($requestDetails !== null) {
+            $webhookJob->webhook->fillAttributes($requestDetails);
+        }
         $webhookJob->run();
 
         return $webhookJob;

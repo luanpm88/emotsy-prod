@@ -48,7 +48,7 @@ class WebhookJob extends Model
         $attributes = [];
         $configParams = config('webhook_events')[$this->webhook->event]['params'];
         $paramsValues = $this->getParams();
-        
+
         //
         $attributes['request_method'] = $this->webhook->request_method;
         $attributes['request_url'] = $this->webhook->request_url;

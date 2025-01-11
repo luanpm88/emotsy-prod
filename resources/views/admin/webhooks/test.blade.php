@@ -59,7 +59,7 @@
                 $.ajax({
                     url: this.url,
                     type: 'POST',
-                    data: window.webhookForm ? window.webhookForm.getData() : {},
+                    data: window.webhookManager ? window.webhookManager.getData() : {},
                 }).done((response) => {
                     this.resultBox.html(response);               
                 });
