@@ -103,8 +103,8 @@ class WebhookJob extends Model
 
         // Set Headers
         $headers = [];
-        if (!empty($attributes['request_headers'])) {
-            foreach ($attributes['request_headers'] as $header) {
+        if (!empty($requests['request_headers'])) {
+            foreach ($requests['request_headers'] as $header) {
                 $headers[] = $header['key'] . ': ' . $header['value'];
             }
         }
@@ -124,7 +124,7 @@ class WebhookJob extends Model
             curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         } elseif ($requests['request_body_type'] === Webhook::REQUEST_BODY_TYPE_KEY_VALUE) {
             $bodyParams = [];
-            foreach ($attributes['request_body_params'] as $param) {
+            foreach ($requests['request_body_params'] as $param) {
                 $bodyParams[] = urlencode($param['key']) . '=' . urlencode($param['value']);
             }
             $body = implode('&', $bodyParams);
