@@ -44,6 +44,11 @@
 			'formId' => $formId,
 			'testUrl' => action('Admin\WebhookController@test', $webhook->uid),
 		])
+
+		<div class="mt-4">
+			<a href="{{ action('Admin\WebhookController@index') }}" class="btn btn-link me-2"
+				data-dismiss="modal">{{ trans('messages.cancel') }}</a>
+		</div>
 		
 	</form>
 

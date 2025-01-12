@@ -745,10 +745,8 @@ Route::group(['namespace' => '\Acelle\Http\Controllers', 'namespace' => '\Acelle
     // Automation2
     Route::post('automation/{uid}/outgoing-webhook/add', 'Automation2Controller@outgoingWebhookAdd');
     Route::get('automation/{uid}/outgoing-webhook/show', 'Automation2Controller@outgoingWebhookShow');
-    Route::post('automation/{uid}/outgoing-webhook/save', 'Automation2Controller@outgoingWebhookSave');
-    Route::post('automation/{uid}/outgoing-webhook/test', 'Automation2Controller@outgoingWebhookTest');
-    Route::get('automation/{uid}/outgoing-webhook/test-popup', 'Automation2Controller@outgoingWebhookTestPopup');
-    Route::get('automation/outgoing-webhook/{webhook_uid}/setup', 'Automation2Controller@outgoingWebhookSetup');
+    Route::post('automation/{uid}/outgoing-webhook/{webhook_uid}/save', 'Automation2Controller@outgoingWebhookSave');
+    Route::get('automation/{uid}/outgoing-webhook/{webhook_uid}/setup', 'Automation2Controller@outgoingWebhookSetup');
 
     Route::get('automation/{email_uid}/save-signature', 'Automation2Controller@emailSaveSignature');
     Route::get('automation/{email_uid}/overview', 'Automation2Controller@emailOverview');

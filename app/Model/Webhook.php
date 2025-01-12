@@ -34,6 +34,10 @@ class Webhook extends Model
 
     public function fillAttributes($attributes)
     {
+        if ($attributes['header_type'] == 'no_headers') {
+            $attributes['request_headers'] = [];
+        }
+
         $this->name = $attributes['name'] ?? $this->name;
         $this->setting_retry_times = $attributes['setting_retry_times'] ?? 0;
         $this->setting_retry_after_seconds = $attributes['setting_retry_after_seconds'] ?? 900;
@@ -225,5 +229,10 @@ class Webhook extends Model
         $webhookJob->run();
 
         return $webhookJob;
+    }
+
+    public static function scopeBackend($query)
+    {
+        $query->whereNull('customer_id');
     }
 }

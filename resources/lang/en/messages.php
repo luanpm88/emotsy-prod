@@ -3744,6 +3744,8 @@
   'webhook.event.change_plan.wording' => 'Triggered when a customer changes their subscription plan.',
   'webhook.event.terminate_subscription' => 'Customer Subscription Terminated',
   'webhook.event.terminate_subscription.wording' => 'Triggered when a customer’s subscription is terminated.',
+  'webhook.event.automation_webhook' => 'Automation Webhook',
+  'webhook.event.automation_webhook.wording' => 'An webhook in an automation that is triggered by the automation.',
   'webhook.http_code' => 'HTTP code',
   'webhook.run_at' => 'Run at',
   'webhook.device' => 'Device',
@@ -3760,4 +3762,6 @@
   'webhook.runs' => 'Run(s)',
   'webhook.retries' => 'Retry(ies)',
   'automation.webhook_name' => ':automation: webhook',
+  'webhook.plain' => 'Plain Text',
+  'webhook.key_value' => 'Key-Value',
  ) ?>

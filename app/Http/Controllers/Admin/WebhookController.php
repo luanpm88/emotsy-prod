@@ -27,6 +27,7 @@ class WebhookController extends Controller
     public function list(Request $request)
     {
         $webhooks = Webhook::search($request->keyword)
+            ->backend()
             ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
             ->paginate($request->per_page);
 

@@ -263,7 +263,7 @@
 			<div class="d-flex align-items-center">
 				<div class="d-flex align-items-center me-4">
 					<div class="me-2">
-						<input data-control="checker" type="radio" name="webhook_header_type"
+						<input data-control="checker" type="radio" name="webhook[header_type]"
 							{{ !count($webhook->getRequestHeaders()) ? 'checked' : '' }}
 							value="no_headers" id="header-no_headers" class="styled" />
 						<label class="check-symbol" for="header-no_headers"></label>
@@ -275,7 +275,7 @@
 				</div>
 				<div class="d-flex align-items-center me-4">
 					<div class="me-2">
-						<input data-control="checker" type="radio" name="webhook_header_type"
+						<input data-control="checker" type="radio" name="webhook[header_type]"
 							{{ count($webhook->getRequestHeaders()) ? 'checked' : '' }}
 							value="with_headers" id="header-with_headers" class="styled" />
 						<label class="check-symbol" for="header-with_headers"></label>
@@ -408,8 +408,6 @@
 		</button>
 		<span class="mx-2">|</span>
 		<button type="button" data-control="save" class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
-		<a href="{{ action('Admin\WebhookController@index') }}" class="btn btn-link me-2"
-			data-dismiss="modal">{{ trans('messages.cancel') }}</a>
 	</div>
 
 	<script>
