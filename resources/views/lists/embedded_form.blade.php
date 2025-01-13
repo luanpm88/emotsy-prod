@@ -187,7 +187,12 @@
                         </div>
                         <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
                             <pre class="language-markup content-group embedded-code"><code></code></pre>
-                            <code style="height: 400px" class="form-control main-code hide">@include("lists._embedded_form_content")</code>
+                            @php
+                                $encodedString = base64_encode(view("lists._embedded_form_content", [
+                                    'list' => $list,
+                                ])->render());
+                            @endphp
+                            <code style="height: 400px" class="form-control main-code hide">{!! $encodedString !!}</code>
                         </div>
                     </div>
                     
@@ -208,7 +213,7 @@
     <script>
         var EmbeddedForm = {
             formatCopyCode: function() {
-                var bio_text = $(".main-code").html();
+                var bio_text = atob($(".main-code").html());
                 bio_text = bio_text.replace(/\</g, '&lt;');
                 bio_text = bio_text.replace(/script_tmp/g, 'script');
                 bio_text = bio_text.replace(/\t/g, '');
