@@ -3,22 +3,6 @@
 <h4 class="mb-3">{{ trans('messages.automation.outgoing_webhook') }}</h4>
 <p>{{ trans('messages.automation.action.outgoing-webhook.desc') }}</p>
 
-{{-- $this->name = $attributes['name'] ?? $this->name;
-        $this->setting_retry_times = $attributes['setting_retry_times'] ?? 0;
-        $this->setting_retry_after_seconds = $attributes['setting_retry_after_seconds'] ?? 900;
-        $this->request_method = $attributes['request_method'];
-        $this->request_url = $attributes['request_url'];
-        $this->request_auth_type = $attributes['request_auth_type'];
-        $this->request_auth_bearer_token = $attributes['request_auth_bearer_token'];
-        $this->request_auth_basic_username = $attributes['request_auth_basic_username'];
-        $this->request_auth_basic_password = $attributes['request_auth_basic_password'];
-        $this->request_auth_custom_key = $attributes['request_auth_custom_key'];
-        $this->request_auth_custom_value = $attributes['request_auth_custom_value'];
-        $this->request_headers = json_encode($attributes['request_headers']);
-        $this->request_body_type = $attributes['request_body_type'];
-        $this->request_body_params = isset($attributes['request_body_params']) ? json_encode($attributes['request_body_params']) : json_encode([]);
-        $this->request_body_plain = $attributes['request_body_plain']; --}}
-
 <div>
     <table class="table border">
         <tbody>

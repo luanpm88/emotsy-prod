@@ -38,6 +38,12 @@ class Webhook extends Model
             $attributes['request_headers'] = [];
         }
 
+        if ($attributes['request_body_type'] == static::REQUEST_BODY_TYPE_PLAIN) {
+            $attributes['request_body_params'] = [];
+        } else {
+            $attributes['request_body_plain'] = null;
+        }
+
         $this->name = $attributes['name'] ?? $this->name;
         $this->setting_retry_times = $attributes['setting_retry_times'] ?? 0;
         $this->setting_retry_after_seconds = $attributes['setting_retry_after_seconds'] ?? 900;
