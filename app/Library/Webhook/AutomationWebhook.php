@@ -11,11 +11,14 @@ class AutomationWebhook
         // Get all webhooks
         $webhooks = \Acelle\Model\Webhook::active()->where('event', static::EVENT)->get();
 
+        // params processing
+        $params = [
+            'automation_id' => $automationId,
+        ];
+
         // Run all
         foreach ($webhooks as $webhook) {
-            $webhook->run([
-                'automation_id' => $automationId,
-            ]);
+            $webhook->run($params);
         }
     }
 }

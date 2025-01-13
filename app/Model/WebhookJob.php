@@ -46,7 +46,6 @@ class WebhookJob extends Model
     public function processRequests()
     {
         $attributes = [];
-        $configParams = config('webhook_events')[$this->webhook->event]['params'];
         $paramsValues = $this->getParams();
 
         //
@@ -65,9 +64,9 @@ class WebhookJob extends Model
 
         //
         foreach ($attributes as $key => $value) {
-            foreach ($configParams as $param) {
+            foreach ($paramsValues as $param => $value) {
                 if ($attributes[$key] !== null) {
-                    $attributes[$key] = str_replace('{' .$param. '}', $paramsValues[$param], $attributes[$key]);
+                    $attributes[$key] = str_replace('{' .$param. '}', $value, $attributes[$key]);
                 }
             }
         }

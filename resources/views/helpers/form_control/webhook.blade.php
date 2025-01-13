@@ -213,7 +213,7 @@
 								<button class="btn btn-outline-secondary dropdown-toggle" type="button"
 									data-bs-toggle="dropdown" aria-expanded="false">...</button>
 								<ul class="dropdown-menu">
-									@foreach ($webhook->getTags() as $tag)
+									@foreach ($tags as $tag)
 										<li>
 											<a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item border-bottom" href="#">
 												<span class="fw-semibold">{{ $tag['label'] }}</span><br>
@@ -244,7 +244,7 @@
 					<button class="btn btn-outline-secondary dropdown-toggle" type="button"
 						data-bs-toggle="dropdown" aria-expanded="false">...</button>
 					<ul class="dropdown-menu">
-						@foreach ($webhook->getTags() as $tag)
+						@foreach ($tags as $tag)
 							<li>
 								<a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item border-bottom" href="#">
 									<span class="fw-semibold">{{ $tag['label'] }}</span><br>
@@ -584,7 +584,7 @@
 									<button class="btn btn-outline-secondary dropdown-toggle" type="button"
 										data-bs-toggle="dropdown" aria-expanded="false">...</button>
 									<ul class="dropdown-menu">
-										@foreach ($webhook->getTags() as $tag)
+										@foreach ($tags as $tag)
 											<li>
 												<a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item border-bottom" href="#">
 													<span class="fw-semibold">{{ $tag['label'] }}</span><br>
@@ -712,7 +712,7 @@
 									<button class="btn btn-outline-secondary dropdown-toggle" type="button"
 										data-bs-toggle="dropdown" aria-expanded="false">...</button>
 									<ul class="dropdown-menu">
-										@foreach ($webhook->getTags() as $tag)
+										@foreach ($tags as $tag)
 											<li>
 												<a tag-control="selector" data-tag="{{ $tag['tag'] }}" class="dropdown-item border-bottom" href="#">
 													<span class="fw-semibold">{{ $tag['label'] }}</span><br>

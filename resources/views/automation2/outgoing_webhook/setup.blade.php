@@ -21,6 +21,7 @@
             'webhook' => $webhook,
             'formId' => $formId,
             'testUrl' => action('WebhookController@test', $webhook->uid),
+            'tags' => array_merge($webhook->getTags(), $automation->getAvailableOutgoingWebhookTags()),
         ])
         
         <div class="mt-4">

@@ -43,6 +43,7 @@
 			'webhook' => $webhook,
 			'formId' => $formId,
 			'testUrl' => action('Admin\WebhookController@test', $webhook->uid),
+			'tags' => $webhook->getTags(),
 		])
 
 		<div class="mt-4">
