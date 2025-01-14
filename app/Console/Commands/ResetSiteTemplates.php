@@ -35,7 +35,7 @@ class ResetSiteTemplates extends Command
                 'name' => 'Blank',
                 'dir' => database_path('templates/site/0000-blank/6037a26b22000'),
             ], [
-                'name' => 'Simple',
+                'name' => 'Landing Page',
                 'dir' => database_path('templates/site/0001-simple/6037a26b22001'),
             ], [
                 'name' => 'Besiness Frontpage',

@@ -23,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Session\Middleware\StartSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \Acelle\Http\Middleware\VerifyCsrfToken::class,
+            // \Acelle\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
 
@@ -66,6 +66,17 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->priority([
             \Acelle\Http\Middleware\NotInstalled::class,
             \Illuminate\Auth\Middleware\Authenticate::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/*',
+            'plugins/webhooks/*',
+            'delivery/*',
+            'api/*',
+            '*/embedded-form-*',
+            'payments/stripe/credit-card*',
+            'frontend/*',
+            'paytr/*'
         ]);
     })
 
