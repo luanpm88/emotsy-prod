@@ -1096,6 +1096,10 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
     Route::get('admin/sending_servers/delete', 'SendingServerController@delete');
     Route::get('admin/sending_servers/disable', 'SendingServerController@disable');
     Route::get('admin/sending_servers/enable', 'SendingServerController@enable');
+    Route::get('admin/sending_servers/create/{type}', 'SendingServerController@create');
+    Route::post('admin/sending_servers/create/{type}', 'SendingServerController@store');
+    Route::get('admin/sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
+    Route::patch('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
     Route::resource('admin/sending_servers', 'SendingServerController')->names([
         'index' => 'admin.sending_servers.index',
         'create' => 'admin.sending_servers.create',
@@ -1105,10 +1109,6 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
         'update' => 'admin.sending_servers.update',
         'destroy' => 'admin.sending_servers.destroy',
     ]);
-    Route::get('admin/sending_servers/create/{type}', 'SendingServerController@create');
-    Route::post('admin/sending_servers/create/{type}', 'SendingServerController@store');
-    Route::get('admin/sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
-    Route::patch('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
 
     // Bounce handlers
     Route::post('admin/bounce_handlers/{uid}/test', 'BounceHandlerController@test');
