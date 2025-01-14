@@ -29,9 +29,7 @@
         @include('chat._builder_script')
     @endif
 
-    @if ($site->template->theme)
-        @include('builder.themes.' . $site->template->theme)
-    @endif
+    @include('builder.themes.langdingPage')
 
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -44,7 +42,7 @@
                 strict: true,
                 showHelp: false,
                 showInlineToolbar: false,
-                emailMode: true,
+                emailMode: false,
                 lang: {!! json_encode($site->customer->language->getBuilderLang()) !!},
                 url: '{{ action('SiteController@builderContent', $site->uid) }}',
                 backCallback: function() {

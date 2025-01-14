@@ -3769,4 +3769,6 @@
   'site.page_builder' => 'Page Builder PRO',
   'site.preview' => 'Preview',
   'site.landing_page' => 'Landing Page',
+  'site.site_widgets' => 'Site Widgets',
+  'site.builder' => 'Site builder: ',
 ) ?>

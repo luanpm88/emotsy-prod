@@ -42,7 +42,7 @@
                 </td>
                 <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->customer->can('update', $site))
-                        <a href="{{ action('SiteController@setup', $site->uid) }}" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon">
+                        <a href="{{ action('SiteController@edit', $site->uid) }}" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon">
                             <span class="material-symbols-rounded">edit</span>
                             {{ trans('messages.edit') }}
                         </a>
