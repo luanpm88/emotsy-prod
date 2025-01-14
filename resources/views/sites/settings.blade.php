@@ -33,7 +33,7 @@
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="#">{{ AppUrl::asset('/') }}</a></li>
             </ul>
-            <input type="text" class="form-control" value="{{ uniqid() }}" aria-label="Text input with dropdown button">
+            <input type="text" class="form-control" value="{{ $site->uid }}" aria-label="Text input with dropdown button">
         </div>
         <span class="d-block small fst-italic text-muted">
             {!! trans('messages.site.url.custom_need_upgrade', [

@@ -217,6 +217,11 @@ class Customer extends Model
         return $this->hasMany(Signature::class, 'customer_id');
     }
 
+    public function sites()
+    {
+        return $this->hasMany(Site::class, 'customer_id');
+    }
+
     public function getBasePath($path = null)
     {
         $base = storage_path(join_paths(self::BASE_DIR, $this->uid)); // storage/app/customers/000000/

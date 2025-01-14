@@ -32,9 +32,9 @@
             <h3>{{ trans('messages.site.template.start_from_scratch') }}</h3>
             <p>{!! trans('messages.site.template.start_from_scratch.intro') !!}</p>
             <div class="mt-4">
-                <a link-method="POST" href="{{ action('SiteController@contentSelect', [
-                    'id' => 1,
-                    'template_uid' => 1,
+                <a link-method="POST" href="{{ action('SiteController@changeTemplate', [
+                    'id' => $site->uid,
+                    'template_uid' => Acelle\Model\Template::shared()->notPreserved()->site()->first()->uid,
                 ]) }}"
                     class="btn btn-primary">
                     {{ trans('messages.site.template.start_from_scratch.start') }}
@@ -51,7 +51,7 @@
 
     <div>
         <div class="row">
-            @foreach (Acelle\Model\Template::shared()->notPreserved()->email()->get() as $template)
+            @foreach (Acelle\Model\Template::shared()->notPreserved()->site()->get() as $template)
                 <div class="col-md-3 mb-4">
                     <div class="card h-100">
                         <img src="{{ $template->getThumbUrl() }}" class="card-img-top" alt="...">
@@ -59,7 +59,11 @@
                             <label class="card-title d-block">{{ $template->name }}</label>
                             <p class="card-text d-none">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">
+                            <a link-method="POST" href="{{ action('SiteController@changeTemplate', [
+                                'id' => $site->uid,
+                                'template_uid' => $template->uid,
+                            ]) }}"
+                                class="btn btn-primary">
                                 {{ trans('messages.site.template.start_from_scratch.select_template') }}
                             </a>
                         </div>
