@@ -4092,4 +4092,21 @@
   'site.landing_page' => 'Landing Page',
   'site.site_widgets' => 'Site Widgets',
   'site.builder' => 'Site builder: ',
+  'site.social_share_title' => 'Social share title',
+  'site.social_share_title.wording' => 'This page title appears on social networks like Facebook, X and others.',
+  'site.social_share_description' => 'Social share description',
+  'site.social_share_description.wording' => 'The page description is visible on search results (between 145-155 characters).',
+  'site.social_share_image' => 'Social share image',
+  'site.social_share_image.wording' => 'This image appears on social networks (Facebook, X, etc.) when your landing page is shared.<br>
+                    Recommended minimum image size is 600 x 315 px.<br>
+                    Note : It can take time before you see these changes on social networks.
+  ',
+  'site.google_analystics' => 'Google analytics',
+  'site.google_analystics.wording' => 'Enter your Google Analytics account number to enable Google Analytics on your landing page.',
+  'site.meta_pixel' => 'Meta pixel',
+  'site.meta_pixel.wording' => 'Track your Facebook campaigns to see how they are doing and what works best.',
+  'site.header_code_injection' => 'Header code injection',
+  'site.header_code_injection.wording' => 'Enter code that will be injected into the <head> tag on your landing page.',
+  'site.page_code_injection' => 'Page code injection',
+  'site.page_code_injection.wording' => 'Enter code that will be injected immediately after the opening <body> tag.',
 ) ?>
