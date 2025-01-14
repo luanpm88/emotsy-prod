@@ -207,10 +207,15 @@ class Webhook extends Model
                 throw new \Exception('Unknown event: ' . $this->event);
         }
 
+        // Dispatch the job with the given parameters
         $webhookJob = $this->dispatch($params);
-        if ($requestDetails !== null) {
+
+        // If request details are provided, populate webhook attributes (test only, do not save)
+        if (!is_null($requestDetails)) {
             $webhookJob->webhook->fillAttributes($requestDetails);
         }
+
+        // Execute the webhook job
         $webhookJob->run();
 
         return $webhookJob;
