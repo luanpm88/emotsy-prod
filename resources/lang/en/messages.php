@@ -3704,4 +3704,5 @@
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'your_subscription' => 'Your subscription',
   'zip_postal_code' => 'Zip / Postal code',
+  'sending_server.recommended' => 'Recommended',
 ) ?>
