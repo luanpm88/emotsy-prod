@@ -34,7 +34,7 @@
         utilsScript: "{{ AppUrl::asset('core/phoneinput/utils.js') }}",
     });
 
-    $(function() {
+    document.addEventListener("DOMContentLoaded", function () {
         $(phoneInputField{{ $phoneInputId }}).closest('form').on('submit', function(e) {
             $(phoneInputField{{ $phoneInputId }}).val(phoneInput{{ $phoneInputId }}.getNumber());
         });
