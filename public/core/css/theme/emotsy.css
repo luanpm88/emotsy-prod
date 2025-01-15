@@ -1546,3 +1546,6 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .popup-bg-emo {
     background-color: #F4FEFF;
 }
+.nav-tabs > li.active > a.nav-link, .nav-tabs > li > a.nav-link.active, .nav-tabs > li > a.nav-link:hover, .nav-tabs > li > a.nav-link:focus {
+    background-color: transparent;
+}
