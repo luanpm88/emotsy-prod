@@ -20,6 +20,17 @@
         
     
         <input type="hidden" name="plan_uid" value="{{ request()->plan_uid }}" />
+
+        <div class="form-group control-text mt-4"> 
+            <label class="form-label required">{{ trans('messages.account.name') }} <span class="text-danger">*</span></label>
+            <input type="text" name="name" value="{{ $customer->name }}"
+                class="form-control form-control-sm rd-10 {{ $errors->has('name') ? 'is-invalid' : '' }}"
+                required
+            >
+            @if ($errors->has('name')) 
+                <div class="invalid-feedback"> {{ $errors->first('name') }} </div>
+            @endif
+        </div>
             
         @include('helpers.form_control', [
             'type' => 'text',

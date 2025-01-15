@@ -135,11 +135,19 @@ class UserController extends Controller
                             'recaptcha_invalid' => 'required',
                         ]);
 
-                        return view('users.register', [
-                            'customer' => $customer,
-                            'user' => $user,
-                            'errors' => $validator->errors(),
-                        ]);
+                        if (config('app.emotsy')) {
+                            return view('emotsy.register', [
+                                'customer' => $customer,
+                                'user' => $user,
+                                'errors' => $validator->errors(),
+                            ]);
+                        } else {
+                            return view('users.register', [
+                                'customer' => $customer,
+                                'user' => $user,
+                                'errors' => $validator->errors(),
+                            ]);
+                        }
                     }
                 }
             }
@@ -162,11 +170,20 @@ class UserController extends Controller
 
             //  errors
             if (!$validator->errors()->isEmpty()) {
-                return view('users.register', [
-                    'customer' => $customer,
-                    'user' => $user,
-                    'errors' => $validator->errors(),
-                ]);
+                if (config('app.emotsy')) {
+                    return view('emotsy.register', [
+                        'customer' => $customer,
+                        'user' => $user,
+                        'errors' => $validator->errors(),
+                    ]);
+                } else {
+                    return view('users.register', [
+                        'customer' => $customer,
+                        'user' => $user,
+                        'errors' => $validator->errors(),
+                    ]);
+                }
+                
             }
 
             // user email verification

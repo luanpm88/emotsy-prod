@@ -90,7 +90,7 @@ class BulkVerify implements ShouldQueue
         }
 
         $serviceCredits = $this->server->getServiceClient()->getCredits();
-        if ($serviceCredits == 0) {
+        if ($serviceCredits === 0) { // use === to avoid null case, meaning unknown
             $logger->warning('User has run out of service credit');
             throw new Exception('User  run out of service credit');
         }

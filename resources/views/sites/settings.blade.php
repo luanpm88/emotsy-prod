@@ -33,7 +33,7 @@
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="#">{{ AppUrl::asset('/') }}</a></li>
             </ul>
-            <input type="text" class="form-control" value="{{ uniqid() }}" aria-label="Text input with dropdown button">
+            <input type="text" class="form-control" value="{{ $site->uid }}" aria-label="Text input with dropdown button">
         </div>
         <span class="d-block small fst-italic text-muted">
             {!! trans('messages.site.url.custom_need_upgrade', [
@@ -158,10 +158,116 @@
             </div>
         </div>
         <div class="tab-pane fade" id="social-tab-pane" role="tabpanel" aria-labelledby="social-tab" tabindex="0">
-            SOCIAL
+            <div class="form-group">
+                <label class="fw-semibold">{{ trans('messages.site.social_share_title') }}</label>
+                @include('helpers.form_control.text', [
+                    'name' => 'page[social_share_title]',
+                    'value' => '',
+                    'attributes' => [
+                        'required' => 'required',
+                    ],
+                ])
+                <p class="mb-0 small fst-italic text-muted mt-2">
+                    {{ trans('messages.site.social_share_title.wording') }}
+                </p>
+            </div>
+            <div class="form-group">
+                <label class="fw-semibold">{{ trans('messages.site.social_share_description') }}</label>
+                @include('helpers.form_control.textarea', [
+                    'name' => 'page[social_share_description]',
+                    'value' => '',
+                    'attributes' => [
+                        'required' => 'required',
+                    ],
+                ])
+                <p class="mb-0 small fst-italic text-muted mt-2">
+                    {{ trans('messages.site.social_share_description.wording') }}
+                </p>
+            </div>
+            
+            <div class="form-group">
+                <label class="fw-semibold">{{ trans('messages.site.social_share_image') }}</label>
+                <div class="d-flex">
+                    <div class="me-4">
+                        <div class="bg-light rounded-3 shadow-sm p-3 border text-success" style="
+                            width: 60px;
+                            height: 60px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">
+                            <span class="text-muted2">
+                                <svg style="fill: currentColor;" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-480ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h320v80H200v560h560v-320h80v320q0 33-23.5 56.5T760-120H200Zm40-160h480L570-480 450-320l-90-120-120 160Zm440-320v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="mb-2">
+                            <button type="button" class="btn btn-light">{{ trans('messages.site.favicon.choose_image') }}</button>
+                        </div>
+                        <p class="mb-0 small fst-italic text-muted mt-2">
+                            {!! trans('messages.site.social_share_image.wording')  !!}
+                        </p>
+                    </div>
+                </div>
+                
+            </div>
         </div>
         <div class="tab-pane fade" id="custom-tab-pane" role="tabpanel" aria-labelledby="custom-tab" tabindex="0">
-            CUSTOM
+            <div class="form-group">
+                <label class="fw-semibold">{{ trans('messages.site.google_analystics') }}</label>
+                @include('helpers.form_control.text', [
+                    'name' => 'page[google_analystics]',
+                    'value' => '',
+                    'attributes' => [
+                        'required' => 'required',
+                        'placeholder' => 'UA-XXXXX-X or G-XXXXXXX',
+                    ],
+                ])
+                <p class="mb-0 small fst-italic text-muted mt-2">
+                    {{ trans('messages.site.google_analystics.wording') }}
+                </p>
+            </div>
+            <div class="form-group">
+                <label class="fw-semibold">{{ trans('messages.site.meta_pixel') }}</label>
+                @include('helpers.form_control.text', [
+                    'name' => 'page[meta_pixel]',
+                    'value' => '',
+                    'attributes' => [
+                        'required' => 'required',
+                        'placeholder' => 'e.g 123456789012345',
+                    ],
+                ])
+                <p class="mb-0 small fst-italic text-muted mt-2">
+                    {{ trans('messages.site.meta_pixel.wording') }}
+                </p>
+            </div>
+            <div class="form-group">
+                <label class="fw-semibold">{{ trans('messages.site.header_code_injection') }}</label>
+                @include('helpers.form_control.textarea', [
+                    'name' => 'page[header_code_injection]',
+                    'value' => '',
+                    'attributes' => [
+                        'required' => 'required',
+                    ],
+                ])
+                <p class="mb-0 small fst-italic text-muted mt-2">
+                    {{ trans('messages.site.header_code_injection.wording') }}
+                </p>
+            </div>
+            <div class="form-group">
+                <label class="fw-semibold">{{ trans('messages.site.page_code_injection') }}</label>
+                @include('helpers.form_control.textarea', [
+                    'name' => 'page[page_code_injection]',
+                    'value' => '',
+                    'attributes' => [
+                        'required' => 'required',
+                    ],
+                ])
+                <p class="mb-0 small fst-italic text-muted mt-2">
+                    {{ trans('messages.site.page_code_injection.wording') }}
+                </p>
+            </div>
         </div>
     </div>
 
