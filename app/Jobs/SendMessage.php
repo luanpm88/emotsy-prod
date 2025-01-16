@@ -162,13 +162,15 @@ class SendMessage implements ShouldQueue
             $startGettingLock = Carbon::now()->getTimestampMs();
             execute_with_limits($rateTrackers, $this->servers, $creditTrackers, function ($selectedServer) use ($startAt, $logger, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock) {
 
+                // Assign it here in order to retrieve it elsewhere
+                $this->selectedServer = $selectedServer;
+
                 $getLockAt = Carbon::now()->getTimestampMs();
                 $getLockDiff = ($getLockAt - $startAt) / 1000;
                 $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
                 $logger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
 
-                // Assign it here in order to retrieve it elsewhere
-                $this->selectedServer = $selectedServer;
+
                 $logger->info(sprintf('Server %s (id %s) selected', $this->selectedServer->name, $this->selectedServer->id));
 
                 // Prepare the email message to send
@@ -384,7 +386,7 @@ class SendMessage implements ShouldQueue
             //     throw new Exception($message);
             // Option 2: just skip the error, log it and proceed with the next subscriber
 
-            if ($handled) {
+            if ($handled && $this->selectedServer) {
                 $this->campaign->trackMessage(['status' => 'failed', 'error' => $message], $this->subscriber, $this->selectedServer, $this->msgId, $this->triggerId);
             } elseif ($this->stopOnError || $forceEndCampaign || is_null($this->selectedServer)) {
                 throw new Exception($message);
