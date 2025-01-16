@@ -824,7 +824,9 @@ class SubscriberController extends Controller
         $list = MailList::findByUid($request->list_uid);
 
         // Launch re-sending job
-        dispatch_now(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
+        $job = new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list);
+        $job->onQueue(ACM_QUEUE_TYPE_HIGH);
+        dispatch($job);
 
         // Redirect to my lists page
         echo trans('messages.subscribers.resend_confirmation_email.being_sent');
