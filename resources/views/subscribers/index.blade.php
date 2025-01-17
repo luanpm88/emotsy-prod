@@ -53,6 +53,15 @@
 									</a>
 								</li>
 								<li>
+									<a data-control="remove-tag" href="#" class="dropdown-item"
+										data-url="{{ action('SubscriberController@bulkRemoveTag', [
+											'list_uid' => $list->uid,
+										]) }}">
+											<span class="material-symbols-rounded">disabled_by_default</span>
+											{{ trans('messages.subscriber.remove_tag_s') }}
+									</a>
+								</li>
+								<li>
 									<a class="dropdown-item assign-values-button"
 									href="{{ action('SubscriberController@assignValues', $list->uid) }}">
 										<span class="material-symbols-rounded">control_point_duplicate</span> {{ trans('messages.subscriber.assign_values') }}
@@ -231,6 +240,10 @@
 			window.addTagManager = new AddTagManager({
 				actions: $('[data-control="add-tag"]'),
 			});
+
+			window.removeTagManager = new RemoveTagManager({
+				actions: $('[data-control="remove-tag"]'),
+			});
 		});
 
 		var AddTagManager = class {
@@ -247,6 +260,29 @@
 			events() {
 				var _this = this;
 				$(document).on('click', '[data-control="add-tag"]', function(e) {
+					e.preventDefault();
+
+					_this.popup.load({
+						data: SubscribersIndex.getList().data(),
+					});
+				});
+			}
+		}
+
+		var RemoveTagManager = class {
+			constructor(options) {
+				this.actions = options.actions;
+				this.popup = new Popup({
+					url: this.actions.attr('data-url'),
+				});
+
+				//
+				this.events();
+			}
+
+			events() {
+				var _this = this;
+				$(document).on('click', '[data-control="remove-tag"]', function(e) {
 					e.preventDefault();
 
 					_this.popup.load({
