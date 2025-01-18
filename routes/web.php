@@ -392,6 +392,7 @@ Route::group(['namespace' => '\Acelle\Http\Controllers', 'namespace' => '\Acelle
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
+    Route::match(['post', 'get'], 'subscribers/{list_uid}/bulk-remove-tag', 'SubscriberController@bulkRemoveTag');
     Route::post('subscribers/save-columns', 'SubscriberController@saveColumnsSettings');
     Route::get('subscribers/{id}/timeline', 'SubscriberController@timeline');
     Route::get('subscribers/{id}/timeline/list', 'SubscriberController@timelineList');
