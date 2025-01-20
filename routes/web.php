@@ -878,15 +878,9 @@ Route::group(['namespace' => '\Acelle\Http\Controllers', 'namespace' => '\Acelle
     Route::post('site/sources/delete', 'Site\SourceController@delete');
     Route::get('site/sources/connect', 'Site\SourceController@connect');
     Route::get('site/sources/listing', 'Site\SourceController@listing');
-    Route::resource('site/sources', 'Site\SourceController')->names([
-        'index' => 'site.sources.index',
-        'create' => 'site.sources.create',
-        'store' => 'site.sources.store',
-        'show' => 'site.sources.show',
-        'edit' => 'site.sources.edit',
-        'update' => 'site.sources.update',
-        'destroy' => 'site.sources.destroy',
-    ]);
+    Route::get('site/sources', 'Site\SourceController@index');
+    Route::get('site/sources/create', 'Site\SourceController@create');
+
     // Invoice
     Route::get('invoices/{uid}/show', 'InvoiceController@show');
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
@@ -905,15 +899,11 @@ Route::group(['namespace' => '\Acelle\Http\Controllers', 'namespace' => '\Acelle
     Route::PUT('store/products', 'Store\ProductController@multiltask');
     Route::post('store/products/search', 'Store\ProductController@search');
     Route::get('store/products/search', 'Store\ProductController@search');
-    Route::resource('/store/products', 'Store\ProductController')->names([
-        'index' => 'store.products.index',
-        'create' => 'store.products.create',
-        'store' => 'store.products.store',
-        'show' => 'store.products.show',
-        'edit' => 'store.products.edit',
-        'update' => 'store.products.update',
-        'destroy' => 'store.products.destroy',
-    ]);
+    Route::get('store/products', 'Store\ProductController@index');
+    Route::get('store/products/create', 'Store\ProductController@create');
+    Route::post('store/products/store', 'Store\ProductController@store');
+    Route::get('store/products/{product}/edit', 'Store\ProductController@edit');
+    Route::PATCH('store/products/{product}/update', 'Store\ProductController@edit');
 
     // Orders
     Route::get('store/orders/list', 'Store\OrdersController@list');
@@ -1017,15 +1007,11 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
     Route::get('admin/customers/{customer_uid}/users/delete', 'UserController@delete');
     Route::get('admin/customers/{customer_uid}/users/disable', 'UserController@disable');
     Route::get('admin/customers/{customer_uid}/users/enable', 'UserController@enable');
-    Route::resource('admin/customers/{customer_uid}/users', 'UserController')->names([
-        'index' => 'admin.users.index',
-        'create' => 'admin.users.create',
-        'store' => 'admin.users.store',
-        'show' => 'admin.users.show',
-        'edit' => 'admin.users.edit',
-        'update' => 'admin.users.update',
-        'destroy' => 'admin.users.destroy',
-    ]);
+    Route::get('admin/customers/{customer_uid}/users', 'UserController@index');
+    Route::get('admin/customers/{customer_uid}/users/create', 'UserController@create');
+    Route::post('admin/customers/{customer_uid}/users', 'UserController@store');
+    Route::get('admin/customers/{customer_uid}/users/{user}/edit', 'UserController@edit');
+    Route::patch('admin/customers/{customer_uid}/users/{user}/update', 'UserController@update');
 
     // Form Template
     Route::get('admin/templates/forms/{uid}/preview', 'FormTemplateController@preview');
@@ -1058,15 +1044,9 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
     Route::get('admin/templates/upload', 'TemplateController@uploadTemplate');
     Route::post('admin/templates/upload', 'TemplateController@uploadTemplate');
     Route::get('admin/templates/delete', 'TemplateController@delete');
-    Route::resource('admin/templates', 'TemplateController')->names([
-        'index' => 'admin.templates.index',
-        'create' => 'admin.templates.create',
-        'store' => 'admin.templates.store',
-        'show' => 'admin.templates.show',
-        'edit' => 'admin.templates.edit',
-        'update' => 'admin.templates.update',
-        'destroy' => 'admin.templates.destroy',
-    ]);
+    Route::get('admin/templates', 'TemplateController@index');
+    Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');
+    Route::patch('admin/templates/{uid}/update', 'TemplateController@update');
     Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('admin/templates/{uid}/update', 'TemplateController@update');
 
@@ -1243,16 +1223,7 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
     Route::get('admin/admins2/disable', 'Admin2Controller@disable');
     Route::get('admin/admins2/enable', 'Admin2Controller@enable');
     Route::get('admin/admins2/login-back', 'Admin2Controller@loginBack');
-    Route::resource('admin2/admins', 'Admin2Controller')->names([
-        'index' => 'admin.admin2.index',
-        'create' => 'admin.admin2.create',
-        'store' => 'admin.admin2.store',
-        'show' => 'admin.admin2.show',
-        'edit' => 'admin.admin2.edit',
-        'update' => 'admin.admin2.update',
-        'destroy' => 'admin.admin2.destroy',
-    ]);
-
+    Route::get('admin/admins2', 'Admin2Controller@index');
 
     // Account
     Route::post('admin/account/change-theme-mode', 'AccountController@changeThemeMode');
@@ -1337,15 +1308,11 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
     Route::get('admin/email_verification_servers/delete', 'EmailVerificationServerController@delete');
     Route::get('admin/email_verification_servers/disable', 'EmailVerificationServerController@disable');
     Route::get('admin/email_verification_servers/enable', 'EmailVerificationServerController@enable');
-    Route::resource('admin/email_verification_servers', 'EmailVerificationServerController')->names([
-        'index' => 'admin.email_verification_servers.index',
-        'create' => 'admin.email_verification_servers.create',
-        'store' => 'admin.email_verification_servers.store',
-        'show' => 'admin.email_verification_servers.show',
-        'edit' => 'admin.email_verification_servers.edit',
-        'update' => 'admin.email_verification_servers.update',
-        'destroy' => 'admin.email_verification_servers.destroy',
-    ]);
+    Route::get('admin/email_verification_servers', 'EmailVerificationServerController@index');
+    Route::get('admin/email_verification_servers/create', 'EmailVerificationServerController@create');
+    Route::post('admin/email_verification_servers', 'EmailVerificationServerController@store');
+    Route::get('admin/email_verification_servers/{email_verification_server}/edit', 'EmailVerificationServerController@edit');
+    Route::patch('admin/email_verification_servers/{email_verification_server}/update', 'EmailVerificationServerController@update');
 
     // Payment gateways
     Route::post('admin/payment/gateways/{name}/disable', 'PaymentController@disable');
@@ -1409,15 +1376,10 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Admin', 'middleware' => [
     Route::post('admin/roles/disable', 'RoleController@disable');
     Route::post('admin/roles/enable', 'RoleController@enable');
     Route::get('admin/roles/list', 'RoleController@list');
-    Route::resource('admin/roles', 'RoleController')->names([
-        'index' => 'admin.roles.index',
-        'create' => 'admin.roles.create',
-        'store' => 'admin.roles.store',
-        'show' => 'admin.roles.show',
-        'edit' => 'admin.roles.edit',
-        'update' => 'admin.roles.update',
-        'destroy' => 'admin.roles.destroy',
-    ]);
+    Route::get('admin/roles', 'RoleController@index');
+    Route::get('admin/roles/create', 'RoleController@create');
+    Route::post('admin/roles', 'RoleController@store');
+    Route::get('admin/roles/{uid}/edit', 'RoleController@edit');
     Route::post('admin/roles/{uid}/update', 'RoleController@update');
 
     //
