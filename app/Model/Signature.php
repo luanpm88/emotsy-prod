@@ -14,10 +14,6 @@ class Signature extends Model
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
 
-    protected $fillable = [
-        'is_default'
-    ];
-
     public static function newDefault()
     {
         $signature = new static();

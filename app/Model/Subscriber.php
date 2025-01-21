@@ -1329,6 +1329,28 @@ class Subscriber extends Model
         return $validator;
     }
 
+    public static function removeSubscribersTags($subscribers, $tags)
+    {
+        // make validator
+        $validator = \Validator::make([
+            'tags' => $tags,
+        ], [
+            'tags' => 'required|array',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // add tags
+        foreach ($subscribers->get() as $subscriber) {
+            $subscriber->removeTags($tags);
+        }
+
+        return $validator;
+    }
+
     // $updates is a PHP array equiv. to:
     // [{"field_uid":"668a855841b1d","value":"Field Value"},{"field_uid":"668a855843d3b","value":"Field Value"}]
     public function bulkUpdate($updates)

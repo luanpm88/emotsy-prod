@@ -376,4 +376,8 @@ return [
         'value' => 'no',
         'type' => 'boolean',
     ],
+    'sending_server.recommended_type' => [
+        'value' => '',
+        'type' => 'string',
+    ],
 ];

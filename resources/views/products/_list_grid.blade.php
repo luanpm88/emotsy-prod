@@ -7,11 +7,19 @@
 						<img class="card-img-top" src="{{ $product->getImageUrl() }}" style="height: 100%; width: auto; display: block;">
 					</span>
 					<div class="card-body p-3">
-						<h5 title="{{ $product->title }}" class="fw-600 mt-1 mb-2 text-ellipsis">{{ $product->title }}</h5>
-						<p style="display: block;
-						height: 48px;
-						overflow: hidden;" class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-						<div class="">
+						<h5 title="{{ $product->title }}" class="fw-600 mt-1 mb-2 xtooltip" style="display: -webkit-box;
+							-webkit-box-orient: vertical;
+							-webkit-line-clamp: 2;
+							overflow: hidden;
+							text-overflow: ellipsis;">{{ $product->title }}</h5>
+						<p style="display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;" class="card-text">
+  
+</p>
+						<div class="d-none">
 							<div class="d-flex align-items-center">
 								<button role="button" class="btn btn-secondary">{{ trans('messages.view') }}</button>
 								<a

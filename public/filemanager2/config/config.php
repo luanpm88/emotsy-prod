@@ -15,15 +15,19 @@ ob_start('mb_output_handler');
 date_default_timezone_set('Europe/Rome');
 setlocale(LC_CTYPE, 'en_US'); //correct transliteration
 
-// ACELLE INJECTED
-require '../../bootstrap/autoload.php';
-$app = require_once '../../bootstrap/app.php';
+define('LARAVEL_START', microtime(true));
+
+// Register the Composer autoloader...
+require __DIR__.'/../../../vendor/autoload.php';
+
+// Bootstrap Laravel and handle the request...
+$app = (require_once __DIR__.'/../../../bootstrap/app.php');
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $response = $kernel->handle(
-    $request = Acelle\Framework\LaravelRequest::capture('/blank')
+    $request = Illuminate\Http\Request::capture()
 );
-
 $mainAppConfig = Auth::user()->getFilemanagerConfig(isset($_GET['admin']) ? true : false);
+
 
 /*
 |--------------------------------------------------------------------------

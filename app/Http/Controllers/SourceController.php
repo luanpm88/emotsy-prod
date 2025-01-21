@@ -177,6 +177,9 @@ class SourceController extends Controller
                 ], 400);
             }
 
+            // create default list for the source
+            $source->createDefaultList();
+
             // success
             return response()->json([
                 'status' => 'success',

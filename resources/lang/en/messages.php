@@ -4364,4 +4364,11 @@
   'site.header_code_injection.wording' => 'Enter code that will be injected into the <head> tag on your landing page.',
   'site.page_code_injection' => 'Page code injection',
   'site.page_code_injection.wording' => 'Enter code that will be injected immediately after the opening <body> tag.',
+  'sending_server.recommended' => 'Recommended',
+  'subscriber.remove_tag_s' => 'Remove tag(s)',
+  'subscribers.tag_removed' => 'Subscribers\' tags were removed!',
+  'subscriber.remove_tag' => 'Remove tag(s)',
+  'subscriber.remove_tag.choose_tags' => 'Choose one or many tags',
+  'subscriber.remove_tag.loading' => 'Removing tag(s). Please wait...',
+  'subscriber.remove_tag.wording' => 'Your are about to remove tag(s) from <span class="font-weight-semibold">:count</span> contacts',
 ) ?>
