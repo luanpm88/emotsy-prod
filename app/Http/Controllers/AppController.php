@@ -19,16 +19,6 @@ class AppController extends Controller
     use ValidatesRequests;
 
     /**
-     * Check if the user cannot create more item.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function noMoreItem()
-    {
-        return view('noMoreItem');
-    }
-
-    /**
      * When site status is offline.
      *
      * @return \Illuminate\Http\Response
