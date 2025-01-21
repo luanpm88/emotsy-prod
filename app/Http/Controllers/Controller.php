@@ -21,4 +21,14 @@ abstract class Controller
 
         return response()->view('notAuthorized')->setStatusCode(403);
     }
+
+    /**
+     * Check if the user cannot create more item.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function noMoreItem()
+    {
+        return view('noMoreItem');
+    }
 }
