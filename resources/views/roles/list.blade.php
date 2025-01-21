@@ -22,7 +22,7 @@
                     </p>
                 </td>
 
-                <td style="width:30%">
+                <td>
                     <div class="px-md-4">
                         <div class="mb-1">
                             <a class="" href="{{ action('RoleController@edit', $role->uid) }}">
@@ -33,7 +33,7 @@
                     </div>
                 </td>
 
-                <td width="20%">
+                <td>
                     <div class="single-stat-box pull-left">
                         <span class="no-margin stat-num">{{ $role->updated_at->diffForHumans() }}</span>
                         <br />
