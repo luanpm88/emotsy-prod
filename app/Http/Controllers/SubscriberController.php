@@ -829,7 +829,9 @@ class SubscriberController extends Controller
         $list = MailList::findByUid($request->list_uid);
 
         // Launch re-sending job
-        dispatch_now(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
+        $job = new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list);
+        $job->onQueue(ACM_QUEUE_TYPE_HIGH);
+        dispatch($job);
 
         // Redirect to my lists page
         echo trans('messages.subscribers.resend_confirmation_email.being_sent');
@@ -1291,5 +1293,47 @@ class SubscriberController extends Controller
     public function saveColumnsSettings(Request $request)
     {
         $request->user()->writeSetting('subscribers_columns', $request->columns);
+    }
+
+    public function bulkRemoveTag(Request $request, $list_uid)
+    {
+        // init
+        $list = MailList::findByUid($request->list_uid);
+        $ids = $request->ids;
+
+        if (!is_array($request->ids)) {
+            $ids = explode(',', $request->ids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('id', $ids);
+        $list = MailList::findByUid($request->list_uid);
+
+        // Select all items
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $validator = \Acelle\Model\Subscriber::removeSubscribersTags($subscribers, $request->tags);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscribers.bulkRemoveTag', [
+                    'list' => $list,
+                    'subscribers' => $subscribers,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscribers.tag_removed'),
+            ]);
+        }
+
+        return view('subscribers.bulkRemoveTag', [
+            'list' => $list,
+            'subscribers' => $subscribers,
+        ]);
     }
 }

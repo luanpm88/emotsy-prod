@@ -48,7 +48,13 @@
                                 <span class="material-symbols-rounded"></span>
                             </span>
                         </a>
-                        <h4><a href="{{ action('SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.sending_server.type.' . $key) }}</a></h4>
+                        <h4>
+                            <a href="{{ action('SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.sending_server.type.' . $key) }}
+                                @if ($key == Acelle\Model\Setting::get('sending_server.recommended_type'))
+                                    ({{ trans('messages.sending_server.recommended') }})
+                                @endif
+                            </a>
+                        </h4>
                         <p>
                             {{ trans('messages.sending_server.intro.' . $key) }}
                         </p>

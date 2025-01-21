@@ -21,7 +21,7 @@ return [
     'default_logo_dark' => env('APP_DEFAULT_LOGO_DARK', 'images/logo_dark.svg'),
 
     // Beta features
-    'woo' => false,
+    'woo' => true,
 
     // Special settings
     'japan' => env('APP_JAPAN', false),

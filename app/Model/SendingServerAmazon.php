@@ -224,6 +224,8 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         $lock->getExclusiveLock(function () use ($fromEmailAddress) {
             $this->setupSns($fromEmailAddress);
             sleep(1); // SNS request rate limit
+        }, $timeout = 15, function() {
+            // just quit as SNS is already covered by another process
         });
     }
 
