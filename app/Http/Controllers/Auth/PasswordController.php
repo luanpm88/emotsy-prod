@@ -23,14 +23,6 @@ class PasswordController extends Controller
     protected $redirectTo = '/';
 
     /**
-     * Create a new password controller instance.
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
-
-    /**
      * Get the e-mail subject line to be used for the reset link email.
      *
      * @return string
