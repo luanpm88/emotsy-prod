@@ -105,7 +105,6 @@ body {
 .rtl, [dir=rtl] {
     direction: rtl;
     unicode-bidi: bidi-override !important;
-    direction: unset !important;
     text-align:right;
 }
 #acm_term-error {
