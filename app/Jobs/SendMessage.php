@@ -59,6 +59,9 @@ class SendMessage implements ShouldQueue
     protected $msgId;
     protected $customer;
 
+    // debug
+    protected $startAt;
+
     /**
      * Create a new job instance.
      *
@@ -103,6 +106,8 @@ class SendMessage implements ShouldQueue
      */
     public function handle()
     {
+        $this->startAt = Carbon::now()->getTimestampMs();
+
         // Might cause problems with batch
         // Set default connection
         // $this->customer->setUserDbConnection();
@@ -133,9 +138,6 @@ class SendMessage implements ShouldQueue
     public function send($exceptionCallback = null)
     {
         try {
-
-            // debug
-            $startAt = Carbon::now()->getTimestampMs();
             $email = $this->subscriber->getEmail(); // important: $email must be here, in case code in Exception block needs it
 
             $logger = $this->campaign->logger();
@@ -160,13 +162,13 @@ class SendMessage implements ShouldQueue
             // END DEBUG
 
             $startGettingLock = Carbon::now()->getTimestampMs();
-            execute_with_limits($rateTrackers, $this->servers, $creditTrackers, function ($selectedServer) use ($startAt, $logger, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock) {
+            execute_with_limits($rateTrackers, $this->servers, $creditTrackers, function ($selectedServer) use ($logger, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock) {
 
                 // Assign it here in order to retrieve it elsewhere
                 $this->selectedServer = $selectedServer;
 
                 $getLockAt = Carbon::now()->getTimestampMs();
-                $getLockDiff = ($getLockAt - $startAt) / 1000;
+                $getLockDiff = ($getLockAt - $this->startAt) / 1000;
                 $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
                 $logger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
 
@@ -248,8 +250,8 @@ class SendMessage implements ShouldQueue
             $now = Carbon::now(); // OK DONE ALL
             $finishAt = $now->getTimestampMs();
 
-            $this->campaign->debug(function ($info) use ($startAt, $now, $finishAt, $finishPreparingAt, $finishDeliveryAt, $getLockAt) {
-                $diff = ($finishAt - $startAt) / 1000;
+            $this->campaign->debug(function ($info) use ($now, $finishAt, $finishPreparingAt, $finishDeliveryAt, $getLockAt) {
+                $diff = ($finishAt - $this->startAt) / 1000;
                 $avg = $info['send_message_avg_time'];
                 if (is_null($avg)) {
                     $info['send_message_avg_time'] = $diff;
@@ -257,7 +259,7 @@ class SendMessage implements ShouldQueue
                     $info['send_message_avg_time'] = ($avg * $info['send_message_count'] + $diff) / ($info['send_message_count'] + 1);
                 }
 
-                $prepareDiff = ($finishPreparingAt - $startAt) / 1000;
+                $prepareDiff = ($finishPreparingAt - $this->startAt) / 1000;
                 $prepareAvg = $info['send_message_prepare_avg_time'] ?? null;
                 if (is_null($prepareAvg)) {
                     $info['send_message_prepare_avg_time'] = $prepareDiff;
@@ -265,7 +267,7 @@ class SendMessage implements ShouldQueue
                     $info['send_message_prepare_avg_time'] = ($prepareAvg * $info['send_message_count'] + $prepareDiff) / ($info['send_message_count'] + 1);
                 }
 
-                $getLockDiff = ($getLockAt - $startAt) / 1000;
+                $getLockDiff = ($getLockAt - $this->startAt) / 1000;
                 $getLockAvg = $info['send_message_lock_avg_time'] ?? null;
                 if (is_null($getLockAvg)) {
                     $info['send_message_lock_avg_time'] = $getLockDiff;
@@ -273,7 +275,7 @@ class SendMessage implements ShouldQueue
                     $info['send_message_lock_avg_time'] = ($getLockAvg * $info['send_message_count'] + $getLockDiff) / ($info['send_message_count'] + 1);
                 }
 
-                $deliveryDiff = ($finishDeliveryAt - $startAt) / 1000;
+                $deliveryDiff = ($finishDeliveryAt - $this->startAt) / 1000;
                 $deliveryAvg = $info['send_message_delivery_avg_time'] ?? null;
                 if (is_null($deliveryAvg)) {
                     $info['send_message_delivery_avg_time'] = $deliveryDiff;
