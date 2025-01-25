@@ -69,7 +69,7 @@ class SendSingleMessage extends SendMessage
 
     public function handle()
     {
-        // Set default connection
+        $this->startAt = now()->getTimestampMs();
         $this->customer->setUserDbConnection();
         $this->send();
     }
