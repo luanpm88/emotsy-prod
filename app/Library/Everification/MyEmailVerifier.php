@@ -24,6 +24,7 @@ class MyEmailVerifier implements VerifyInterface, BulkVerifyInterface
         'Catch-all' => 'unknown',
         'Grey-listed' => 'unknown',
         '' => 'unknown',
+        'Duplicate' => 'unknown',
     ];
 
     public function __construct($apiKey)
