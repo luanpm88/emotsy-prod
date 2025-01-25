@@ -312,11 +312,21 @@ class SendMessage implements ShouldQueue
             // So "attempts" will be >0
             $this->release(1);
 
+            $getLockAt = Carbon::now()->getTimestampMs();
+            $getLockDiff = ($getLockAt - $this->startAt) / 1000;
+            $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
+            $logger->info(sprintf('Falling to RateLimitReservedByAnotherFileSystem (%s) after "%s" seconds since started (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
+
             return;
         } catch (RateLimitExceeded $ex) {
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
             }
+
+            $getLockAt = Carbon::now()->getTimestampMs();
+            $getLockDiff = ($getLockAt - $this->startAt) / 1000;
+            $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
+            $logger->info(sprintf('Falling to RateLimitExceeded (%s) after "%s" seconds since started (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
 
             if ($this->batch()) {
                 $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
