@@ -113,9 +113,9 @@ class TransformTag implements StageInterface
                 $tags[$field->tag] = $this->subscriber->getValueByField($field);
             }
 
-            // Special / shortcut fields
-            $tags['NAME'] = $this->subscriber->getFullName();
-            $tags['FULL_NAME'] = $this->subscriber->getFullName();
+            // Hack
+            $tags['NAME'] = $this->subscriber->getFullName(null, false, $tags);
+            $tags['FULL_NAME'] = $this->subscriber->getFullName(null, false, $tags);
         }
 
         // Actually transform the message

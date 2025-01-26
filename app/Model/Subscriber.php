@@ -768,7 +768,7 @@ class Subscriber extends Model
         }
     }
 
-    public function getFullName($default = null, $reload = true)
+    public function getFullName($default = null, $reload = true, $tagsToValueCache = [])
     {
         if ($reload && $this->id) {
             $this->refresh();
@@ -776,12 +776,14 @@ class Subscriber extends Model
 
         $lastNameFirst = get_localization_config('show_last_name_first', $this->mailList->customer->getLanguageCode());
 
-        if ($lastNameFirst) {
-            $full = trim($this->getValueByTag('LAST_NAME').' '.$this->getValueByTag('FIRST_NAME'));
-        } else {
-            $full = trim($this->getValueByTag('FIRST_NAME').' '.$this->getValueByTag('LAST_NAME'));
-        }
+        $first = $tagsToValueCache['FIRST_NAME'] ?? $this->getValueByTag('FIRST_NAME');
+        $last = $tagsToValueCache['LAST_NAME'] ?? $this->getValueByTag('LAST_NAME');
 
+        if ($lastNameFirst) {
+            $full = trim("{$last} {$first}");
+        } else {
+            $full = trim("{$first} {$last}");
+        }
 
         if (empty($full)) {
             return $default;
