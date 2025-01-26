@@ -177,12 +177,7 @@ class SendMessage implements ShouldQueue
 
                 // Prepare the email message to send
                 // In case of an invalid email, an exception will arise at: Swift_Mime_SimpleMessage->setTo(...)
-
-                if (config('custom.dryrun') || $this->campaign->name == '_DRYRUN') {
-                    list($message, $msgId) = ['[message]', (string)rand(0,1000000000)];
-                } else {
-                    list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->selectedServer, $fromCache = true);
-                }
+                list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->selectedServer, $fromCache = true);
 
                 // Assign it here in order to retrieve it elsewhere
                 $this->msgId = $msgId;
