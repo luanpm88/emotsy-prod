@@ -232,7 +232,17 @@ trait HasTemplate
                 $message->setReturnPath($returnPath);
             }
         }
-        $message->setSubject($this->getSubject($subscriber, $msgId));
+
+        // Cached tag values of subscribers
+
+        if ($this->isStdClassSubscriber($subscriber)) {
+            $tagValues = [];
+        } else {
+            $tagValues = $subscriber->getAllTagValues();
+        }
+
+
+        $message->setSubject($this->getSubject($subscriber, $msgId, $tagValues));
         $message->setTo($subscriber->email);
 
         if ($this->useSendingServerDefaultFromEmailAddress()) {
@@ -259,7 +269,7 @@ trait HasTemplate
 
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
-            $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds);
+            $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds, $tagValues);
 
             $plain = $this->getPlainContentFromHtml($html);
 
@@ -268,7 +278,7 @@ trait HasTemplate
             $message->addPart($html, 'text/html');
         } else {
             // Get plain content is for PLAIN campaign only
-            $plain = $this->getPlainContent($subscriber, $msgId, $server);
+            $plain = $this->getPlainContent($subscriber, $msgId, $server, $tagValues);
             $message->addPart($plain, 'text/plain');
         }
 
@@ -314,7 +324,7 @@ trait HasTemplate
      *
      * @return string
      */
-    public function getSubject($subscriber = null, $msgId = null)
+    public function getSubject($subscriber = null, $msgId = null, $tagValues = [])
     {
         $pipeline = new PipelineBuilder();
 
@@ -322,7 +332,7 @@ trait HasTemplate
             if (is_null($msgId)) {
                 throw new Exception('MessageID must not be null');
             }
-            $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+            $pipeline->add(new TransformTag($this, $subscriber, $msgId, null, $tagValues));
         }
 
         $pipeline->add(new DecodeHtmlSpecialChars());
@@ -396,13 +406,13 @@ trait HasTemplate
      *
      * @return string
      */
-    public function getHtmlContent($subscriber = null, $msgId = null, $server = null, $fromCache = false, $expiresInSeconds = 600)
+    public function getHtmlContent($subscriber = null, $msgId = null, $server = null, $fromCache = false, $expiresInSeconds = 600, $tagValues = [])
     {
         $baseHtml = $this->getBaseHtmlContent($fromCache, $expiresInSeconds);
 
         // Bind subscriber/message/server information to email content
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server, $tagValues));
 
         if (!$this->isStageExcluded(InjectTrackingPixel::class)) {
             $pipeline->add(new InjectTrackingPixel($this, $msgId));
@@ -449,7 +459,6 @@ trait HasTemplate
             $pipeline->add(new ParseRss());
             $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
             $pipeline->add(new TransformWidgets());
-            // $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
             // $pipeline->add(new InjectTrackingPixel($this, $msgId));
             // $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
             // $html = $this->template->wooTransform($html);
@@ -478,13 +487,13 @@ trait HasTemplate
      *
      * @return string
      */
-    public function getPlainContent($subscriber = null, $msgId = null, $server = null)
+    public function getPlainContent($subscriber = null, $msgId = null, $server = null, $tagValues = [])
     {
         $plain = $this->plain.$this->getPlainTextFooter();
         $pipeline = new PipelineBuilder();
 
         if (!is_null($subscriber)) {
-            $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+            $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server, $tagValues));
         }
 
         $pipeline->add(new DecodeHtmlSpecialChars());

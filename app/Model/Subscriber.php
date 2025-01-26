@@ -1391,4 +1391,27 @@ class Subscriber extends Model
     {
         return $this->timelines()->orderBy('created_at', 'desc')->limit(100)->get();
     }
+
+    public function getAllTagValues()
+    {
+        $tags = [];
+
+        $tags['LIST_UID'] = $this->mailList->uid;
+        $tags['LIST_NAME'] = $this->mailList->name;
+        $tags['LIST_FROM_NAME'] = $this->mailList->from_name;
+        $tags['LIST_FROM_EMAIL'] = $this->mailList->from_email;
+        $tags['SUBSCRIBER_UID'] = $this->uid;
+
+        # Subscriber custom fields
+        foreach ($this->mailList->fields as $field) {
+            $tags['SUBSCRIBER_'.$field->tag] = $this->getValueByField($field);
+            $tags[$field->tag] = $this->getValueByField($field);
+        }
+
+        // Hack
+        $tags['NAME'] = $this->getFullName(null, false, $tags);
+        $tags['FULL_NAME'] = $this->getFullName(null, false, $tags);
+
+        return $tags;
+    }
 }

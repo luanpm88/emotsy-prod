@@ -11,14 +11,16 @@ class TransformTag implements StageInterface
     public $subscriber;
     public $msgId;
     public $server;
+    public $tagValues;
 
     // Campaign or email
-    public function __construct($campaign, $subscriber, $msgId, $server = null)
+    public function __construct($campaign, $subscriber, $msgId, $server = null, $tagValues = [])
     {
         $this->campaign = $campaign;
         $this->subscriber = $subscriber;
         $this->msgId = $msgId;
         $this->server = $server;
+        $this->tagValues = $tagValues;
     }
     public function __invoke($html)
     {
@@ -81,10 +83,10 @@ class TransformTag implements StageInterface
             // Only email is "reserved", overwrite previous $sample
             $tags['SUBSCRIBER_EMAIL'] = is_null($this->subscriber) ? 'email@sample.com' : $this->subscriber->email;
         } else {
-            $tags['LIST_UID'] = $this->subscriber->mailList->uid;
-            $tags['LIST_NAME'] = $this->subscriber->mailList->name;
-            $tags['LIST_FROM_NAME'] = $this->subscriber->mailList->from_name;
-            $tags['LIST_FROM_EMAIL'] = $this->subscriber->mailList->from_email;
+            $tags['LIST_UID'] = $this->tagValues['LIST_UID'] ?? $this->subscriber->mailList->uid;
+            $tags['LIST_NAME'] = $this->tagValues['LIST_NAME'] ?? $this->subscriber->mailList->name;
+            $tags['LIST_FROM_NAME'] = $this->tagValues['LIST_FROM_NAME'] ?? $this->subscriber->mailList->from_name;
+            $tags['LIST_FROM_EMAIL'] = $this->tagValues['LIST_FROM_EMAIL'] ?? $this->subscriber->mailList->from_email;
 
             $updateProfileUrl = $this->subscriber->generateUpdateProfileUrl();
 
@@ -105,17 +107,17 @@ class TransformTag implements StageInterface
             $tags['UPDATE_PROFILE_URL'] = $updateProfileUrl;
             $tags['UNSUBSCRIBE_URL'] = $unsubscribeUrl;
             $tags['WEB_VIEW_URL'] = $webViewUrl;
-            $tags['SUBSCRIBER_UID'] = $this->subscriber->uid;
+            $tags['SUBSCRIBER_UID'] = $this->tagValues['SUBSCRIBER_UID'] ?? $this->subscriber->uid;
 
             # Subscriber custom fields
             foreach ($this->subscriber->mailList->fields as $field) {
-                $tags['SUBSCRIBER_'.$field->tag] = $this->subscriber->getValueByField($field);
-                $tags[$field->tag] = $this->subscriber->getValueByField($field);
+                $tags['SUBSCRIBER_'.$field->tag] = $this->tagValues['SUBSCRIBER_'.$field->tag] ?? $this->subscriber->getValueByField($field);
+                $tags[$field->tag] = $this->tagValues[$field->tag] ?? $this->subscriber->getValueByField($field);
             }
 
             // Hack
-            $tags['NAME'] = $this->subscriber->getFullName(null, false, $tags);
-            $tags['FULL_NAME'] = $this->subscriber->getFullName(null, false, $tags);
+            $tags['NAME'] = $this->tagValues['NAME'] ?? $this->subscriber->getFullName(null, false, $tags);
+            $tags['FULL_NAME'] = $this->tagValues['FULL_NAME'] ?? $this->subscriber->getFullName(null, false, $tags);
         }
 
         // Actually transform the message
