@@ -106,7 +106,7 @@ class SendMessage implements ShouldQueue
      */
     public function handle()
     {
-        $this->startAt = Carbon::now()->getTimestampMs();
+        $this->startAt = now()->getTimestampMs();
 
         // Might cause problems with batch
         // Set default connection
@@ -125,7 +125,7 @@ class SendMessage implements ShouldQueue
             // Record last activity, no matter it is a successful delivery or exception
             // This information is useful when we want to audit delivery processes
             // i.e. when we can to automatically restart dead jobs for example
-            $info['last_activity_at'] = Carbon::now()->toString();
+            $info['last_activity_at'] = now()->toString();
 
             // Must return;
             return $info;
@@ -157,19 +157,19 @@ class SendMessage implements ShouldQueue
             }
 
             // DEBUG
-            $finishPreparingAt = Carbon::now()->getTimestampMs();
+            $finishPreparingAt = now()->getTimestampMs();
             $finishDeliveryAt = null;
             $finishComposingEmailDiff = null;
             $getLockAt = null;
             // END DEBUG
 
-            $startGettingLock = Carbon::now()->getTimestampMs();
+            $startGettingLock = now()->getTimestampMs();
             execute_with_limits($rateTrackers, $this->servers, $creditTrackers, function ($selectedServer) use ($logger, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock, &$finishComposingEmailDiff) {
 
                 // Assign it here in order to retrieve it elsewhere
                 $this->selectedServer = $selectedServer;
 
-                $getLockAt = Carbon::now()->getTimestampMs();
+                $getLockAt = now()->getTimestampMs();
                 $getLockDiff = ($getLockAt - $this->startAt) / 1000;
                 $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
                 $logger->info(sprintf('GOT LOCK %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
@@ -235,7 +235,7 @@ class SendMessage implements ShouldQueue
                     }
                 }
 
-                $finishDeliveryAt = Carbon::now()->getTimestampMs();
+                $finishDeliveryAt = now()->getTimestampMs();
 
                 $logger->info(sprintf('SENT to %s', $email));
 
@@ -250,7 +250,7 @@ class SendMessage implements ShouldQueue
             });
 
             // Debug
-            $now = Carbon::now(); // OK DONE ALL
+            $now = now(); // OK DONE ALL
             $finishAt = $now->getTimestampMs();
 
             $this->campaign->debug(function ($info) use ($now, $email, $finishAt, $finishPreparingAt, $finishDeliveryAt, $getLockAt, $finishComposingEmailDiff) {
@@ -305,7 +305,7 @@ class SendMessage implements ShouldQueue
                 $info['total_time'] = ($timeSinceCampaignStart == 0) ? 1 : $timeSinceCampaignStart;
                 $info['messages_sent_per_second'] = $info['send_message_count'] / $info['total_time'];
 
-                $this->campaign->logger()->info(sprintf('REPORT %s | Prepared %s -> Composed %s, Got lock %s -> Delivered %s -> All done %s', $email, $prepareDiff, $finishComposingEmailDiff, $getLockDiff, $deliveryDiff, $diff));
+                $this->campaign->logger()->info(sprintf('REPORT %s | Prepared %s -> Got lock %s, Composed %s -> Delivered %s -> All done %s', $email, $prepareDiff, $getLockDiff, $finishComposingEmailDiff, $deliveryDiff, $diff));
 
                 return $info;
             });
@@ -314,7 +314,7 @@ class SendMessage implements ShouldQueue
             // So "attempts" will be >0
             $this->release(1);
 
-            $getLockAt = Carbon::now()->getTimestampMs();
+            $getLockAt = now()->getTimestampMs();
             $getLockDiff = ($getLockAt - $this->startAt) / 1000;
             $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
             $logger->info(sprintf('QUIT %s, reserved by another system, %s seconds since started, %s lock waiting time. %s', $email, $getLockDiff, $lockWaitingTime, $ex->getMessage()));
@@ -325,7 +325,7 @@ class SendMessage implements ShouldQueue
                 return $exceptionCallback($ex);
             }
 
-            $getLockAt = Carbon::now()->getTimestampMs();
+            $getLockAt = now()->getTimestampMs();
             $getLockDiff = ($getLockAt - $this->startAt) / 1000;
             $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
             $logger->info(sprintf('DELAY %s due to RateLimitExceeded after "%s" seconds since started (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
