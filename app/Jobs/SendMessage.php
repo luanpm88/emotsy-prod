@@ -141,6 +141,7 @@ class SendMessage implements ShouldQueue
             $email = $this->subscriber->getEmail(); // important: $email must be here, in case code in Exception block needs it
 
             $logger = $this->campaign->logger();
+            $logger->info(sprintf('- START %s', $email));
             $serverRateLimitTracker = null;
 
             // Rate limit trackers
@@ -158,11 +159,12 @@ class SendMessage implements ShouldQueue
             // DEBUG
             $finishPreparingAt = Carbon::now()->getTimestampMs();
             $finishDeliveryAt = null;
+            $finishComposingEmailDiff = null;
             $getLockAt = null;
             // END DEBUG
 
             $startGettingLock = Carbon::now()->getTimestampMs();
-            execute_with_limits($rateTrackers, $this->servers, $creditTrackers, function ($selectedServer) use ($logger, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock) {
+            execute_with_limits($rateTrackers, $this->servers, $creditTrackers, function ($selectedServer) use ($logger, $email, &$finishDeliveryAt, &$getLockAt, $startGettingLock, &$finishComposingEmailDiff) {
 
                 // Assign it here in order to retrieve it elsewhere
                 $this->selectedServer = $selectedServer;
@@ -170,14 +172,15 @@ class SendMessage implements ShouldQueue
                 $getLockAt = Carbon::now()->getTimestampMs();
                 $getLockDiff = ($getLockAt - $this->startAt) / 1000;
                 $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
-                $logger->info(sprintf('Got lock for %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
+                $logger->info(sprintf('GOT LOCK %s after "%s" seconds (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
 
-
-                $logger->info(sprintf('Server %s (id %s) selected', $this->selectedServer->name, $this->selectedServer->id));
+                $logger->info(sprintf('SERVER FOR %s is selected %s (id %s)', $email, $this->selectedServer->name, $this->selectedServer->id));
 
                 // Prepare the email message to send
                 // In case of an invalid email, an exception will arise at: Swift_Mime_SimpleMessage->setTo(...)
                 list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->selectedServer, $fromCache = true);
+
+                $finishComposingEmailDiff = (now()->getTimestampMs() - $this->startAt)/1000;
 
                 // Assign it here in order to retrieve it elsewhere
                 $this->msgId = $msgId;
@@ -234,7 +237,7 @@ class SendMessage implements ShouldQueue
 
                 $finishDeliveryAt = Carbon::now()->getTimestampMs();
 
-                $logger->info(sprintf('Sent to %s', $email));
+                $logger->info(sprintf('SENT to %s', $email));
 
                 // Log successful shot
                 $this->campaign->trackMessage($sent, $this->subscriber, $this->selectedServer, $this->msgId, $this->triggerId);
@@ -243,14 +246,14 @@ class SendMessage implements ShouldQueue
                 $this->afterSuccess();
 
                 // Done, written to tracking_logs table
-                $logger->info(sprintf('Done with %s [Server "%s"]', $email, $this->selectedServer->name));
+                $logger->info(sprintf('DONE %s [Server "%s"]', $email, $this->selectedServer->name));
             });
 
             // Debug
             $now = Carbon::now(); // OK DONE ALL
             $finishAt = $now->getTimestampMs();
 
-            $this->campaign->debug(function ($info) use ($now, $finishAt, $finishPreparingAt, $finishDeliveryAt, $getLockAt) {
+            $this->campaign->debug(function ($info) use ($now, $email, $finishAt, $finishPreparingAt, $finishDeliveryAt, $getLockAt, $finishComposingEmailDiff) {
                 $diff = ($finishAt - $this->startAt) / 1000;
                 $avg = $info['send_message_avg_time'];
                 if (is_null($avg)) {
@@ -302,12 +305,11 @@ class SendMessage implements ShouldQueue
                 $info['total_time'] = ($timeSinceCampaignStart == 0) ? 1 : $timeSinceCampaignStart;
                 $info['messages_sent_per_second'] = $info['send_message_count'] / $info['total_time'];
 
+                $this->campaign->logger()->info(sprintf('REPORT %s | Prepared %s -> Composed %s, Got lock %s -> Delivered %s -> All done %s', $email, $prepareDiff, $finishComposingEmailDiff, $getLockDiff, $deliveryDiff, $diff));
+
                 return $info;
             });
         } catch (RateLimitReservedByAnotherFileSystem $ex) {
-            // This is for Dynamic Rate Limit tracking only
-            $logger->info(sprintf("Delay [%s] due to rate limit RESERVATION: %s. Release, waiting for a process from the filesystem that owns the reservation", $email, $ex->getMessage()));
-
             // Simply release the job back to queue, hopefully it will picked up again by a process of the filesystem that owns the reservation.
             // So "attempts" will be >0
             $this->release(1);
@@ -315,7 +317,7 @@ class SendMessage implements ShouldQueue
             $getLockAt = Carbon::now()->getTimestampMs();
             $getLockDiff = ($getLockAt - $this->startAt) / 1000;
             $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
-            $logger->info(sprintf('Falling to RateLimitReservedByAnotherFileSystem (%s) after "%s" seconds since started (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
+            $logger->info(sprintf('QUIT %s due to RateLimitReservedByAnotherFileSystem after "%s" seconds since started (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
 
             return;
         } catch (RateLimitExceeded $ex) {
@@ -326,7 +328,7 @@ class SendMessage implements ShouldQueue
             $getLockAt = Carbon::now()->getTimestampMs();
             $getLockDiff = ($getLockAt - $this->startAt) / 1000;
             $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
-            $logger->info(sprintf('Falling to RateLimitExceeded (%s) after "%s" seconds since started (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
+            $logger->info(sprintf('DELAY %s due to RateLimitExceeded after "%s" seconds since started (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
 
             if ($this->batch()) {
                 $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
@@ -343,7 +345,7 @@ class SendMessage implements ShouldQueue
 
                         $delayInSeconds = 60; // reservation stategy, so 60 seconds is good enough
 
-                        $logger->warning(sprintf("DELAY!!! [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
+                        $logger->warning(sprintf("DISPATCH WAITING JOB %s, dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
 
                         // set delay flag to true
                         $this->campaign->setDelayFlag(true);
@@ -379,7 +381,7 @@ class SendMessage implements ShouldQueue
                 return $exceptionCallback($ex);
             }
 
-            $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage().": \n".$ex->getTraceAsString());
+            $message = sprintf("ERROR %s: %s", $email, $ex->getMessage().": \n".$ex->getTraceAsString());
             $logger->error($message);
 
             $handled = $this->handleUnknownException($ex);
