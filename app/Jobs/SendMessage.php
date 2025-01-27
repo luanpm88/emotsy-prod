@@ -317,7 +317,7 @@ class SendMessage implements ShouldQueue
             $getLockAt = Carbon::now()->getTimestampMs();
             $getLockDiff = ($getLockAt - $this->startAt) / 1000;
             $lockWaitingTime = ($getLockAt - $startGettingLock) / 1000;
-            $logger->info(sprintf('QUIT %s due to RateLimitReservedByAnotherFileSystem after "%s" seconds since started (lock waiting time %s)', $email, $getLockDiff, $lockWaitingTime));
+            $logger->info(sprintf('QUIT %s, reserved by another system, %s seconds since started, %s lock waiting time. %s', $email, $getLockDiff, $lockWaitingTime, $ex->getMessage()));
 
             return;
         } catch (RateLimitExceeded $ex) {
