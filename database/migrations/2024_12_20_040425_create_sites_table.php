@@ -18,6 +18,8 @@ class CreateSitesTable extends Migration
             $table->uuid('uid');
             $table->integer('customer_id')->unsigned()->nullable();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->integer('template_id')->unsigned()->nullable();
+            $table->foreign('template_id')->references('id')->on('templates')->onDelete('set null');
             $table->string('name');
             $table->string('type');
             $table->string('status');
