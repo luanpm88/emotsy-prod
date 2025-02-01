@@ -180,7 +180,7 @@ class SendMessage implements ShouldQueue
                 // In case of an invalid email, an exception will arise at: Swift_Mime_SimpleMessage->setTo(...)
                 list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->selectedServer, $fromCache = true);
 
-                $finishComposingEmailDiff = (now()->getTimestampMs() - $this->startAt)/1000;
+                $finishComposingEmailDiff = (now()->getTimestampMs() - $this->startAt) / 1000;
 
                 // Assign it here in order to retrieve it elsewhere
                 $this->msgId = $msgId;
