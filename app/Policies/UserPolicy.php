@@ -4,6 +4,7 @@ namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
+use Acelle\Model\Customer;
 
 class UserPolicy
 {
@@ -173,7 +174,7 @@ class UserPolicy
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('customer_login_as');
-                $can = $item->id != $user->customer_id && ($ability == 'all');
+                $can = $item->id != $user->id && ($ability == 'all');
                 break;
             case 'customer':
                 // RBAC check

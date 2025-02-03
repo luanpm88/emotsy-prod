@@ -361,7 +361,7 @@ class CustomerController extends Controller
             $customer = Customer::findByUid($request->customer_uid);
 
             // authorize
-            if (!$user->can('loginAs', $customer)) {
+            if (!$user->admin->can('loginAs', $customer)) {
                 return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
             }
 
