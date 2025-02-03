@@ -3705,7 +3705,6 @@
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'your_subscription' => 'Your subscription',
   'zip_postal_code' => 'Zip / Postal code',
-
   'webhook.add_new' => 'Add a new webhook',
   'webhook.add_webhook' => 'Save',
   'webhook.added.success' => 'Webhook [:name] was successfully added.',
@@ -3765,4 +3764,11 @@
   'automation.webhook_name' => ':automation: webhook',
   'webhook.plain' => 'Plain Text',
   'webhook.key_value' => 'Key-Value',
- ) ?>
+  'sending_server.recommended' => 'Recommended',
+  'subscriber.remove_tag_s' => 'Remove tag(s)',
+  'subscribers.tag_removed' => 'Subscribers\' tags were removed!',
+  'subscriber.remove_tag' => 'Remove tag(s)',
+  'subscriber.remove_tag.choose_tags' => 'Choose one or many tags',
+  'subscriber.remove_tag.loading' => 'Removing tag(s). Please wait...',
+  'subscriber.remove_tag.wording' => 'Your are about to remove tag(s) from <span class="font-weight-semibold">:count</span> contacts',
+) ?>

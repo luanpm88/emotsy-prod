@@ -7,7 +7,7 @@ class Domain
     public const DOMAINKEY = '._domainkey';
 
     protected $name;
-    protected $selctor;
+    protected $selector;
     protected $publicKey;
     protected $privateKey;
 

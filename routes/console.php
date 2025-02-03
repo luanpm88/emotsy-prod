@@ -44,7 +44,7 @@ if (isInitiated()) {
     })->name('cronjob_event:log')->everyMinute();
 
     // Echo okie
-    Schedule::command('automation:dispatch')->everyMinute();
+    Schedule::command('automation:dispatch')->everyFiveMinutes();
 
     // Bounce/feedback handler
     Schedule::command('handler:run')->everyThirtyMinutes();

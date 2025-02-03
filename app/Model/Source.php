@@ -140,6 +140,22 @@ class Source extends Model
         return $class::find($this->id);
     }
 
+    public function createDefaultList()
+    {
+        // list
+        $list = $this->customer->newMailList();
+        $list->name = trans('messages.source.list.default_name', [
+            'source' => $this->getName(),
+        ]);
+        $list->save();
+
+        // assign list
+        $this->mail_list_id = $list->id;
+        $this->save();
+
+        return $list;
+    }
+
     /**
      * Get source list.
      *
@@ -147,31 +163,6 @@ class Source extends Model
      */
     public function getList()
     {
-        if ($this->mailList) {
-            return $this->mailList;
-        }
-
-        throw new \Exception('Rewrite this method: why ->save() in a Get method????');
-
-        // contact
-        $contact = new \Acelle\Model\Contact();
-        $contact->address_1 = 'empty';
-        $contact->country_id = $this->customer->country_id;
-        $contact->save();
-
-        // list
-        $list = new \Acelle\Model\MailList();
-        $list->customer_id = $this->customer_id;
-        // $list->contact_id = $contact->id;
-        $list->name = trans('messages.source.list.default_name', [
-            'source' => $this->getName(),
-        ]);
-        $list->save();
-
-        // list assign
-        $this->mail_list_id = $list->id;
-        $this->save();
-
-        return $list;
+        return $this->mailList;
     }
 }
