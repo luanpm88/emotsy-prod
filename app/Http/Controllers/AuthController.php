@@ -83,7 +83,7 @@ class AuthController extends Controller
                 $password = $password,
                 $passwordConfirmation = $password,
                 $first_name = $googleUser->name,
-                $last_name = $googleUser->name,
+                $last_name = trans('messages.account.default_user'),
                 $image = null,
                 $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
             );
@@ -179,7 +179,7 @@ class AuthController extends Controller
                 $password = $password,
                 $passwordConfirmation = $password,
                 $first_name = $facebookUser->name,
-                $last_name = $facebookUser->name,
+                $last_name = trans('messages.account.default_user'),
                 $image = null,
                 $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
             );
