@@ -372,7 +372,7 @@ class CustomerController extends Controller
 
         echo json_encode(array(
             'token' => $user->one_time_api_token,
-            'url' => action('Controller@tokenLogin', ['token' => $user->one_time_api_token]),
+            'url' => action('AppController@tokenLogin', ['token' => $user->one_time_api_token]),
         ), JSON_UNESCAPED_SLASHES);
     }
 
