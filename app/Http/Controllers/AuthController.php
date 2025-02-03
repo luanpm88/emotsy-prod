@@ -66,15 +66,38 @@ class AuthController extends Controller
                 ]));
             }
 
-            \Acelle\Model\User::createCustomer([
-                'name' => $googleUser->name,
-                'email' => $googleUser->email,
-                'google_id' => $googleUser->id,
-                'google_token' => $googleUser->token,
-                'google_refresh_token' => $googleUser->refreshToken,
-            ]);
+            // default infos
+            $locale = app()->getLocale();
+            $language = \Acelle\Model\Language::where('code', '=', $locale)->first();
+            $password = uniqid();
 
-            $user = User::where('google_id', $googleUser->id)->first();
+            // validation
+            list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+                // customer information
+                $admin = null,
+                $name = $googleUser->name,
+                $timezone = config('app.timezone'),
+                $language_id = $language->id,
+                // user information
+                $email = $googleUser->email,
+                $password = $password,
+                $passwordConfirmation = $password,
+                $first_name = $googleUser->name,
+                $last_name = $googleUser->name,
+                $image = null,
+                $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
+            );
+
+            //  errors
+            if (!$validator->errors()->isEmpty()) {
+                return $validator->errors();
+            }
+
+            // update google id
+            $user->google_id = $googleUser->id;
+            $user->google_token = $googleUser->token;
+            $user->google_refresh_token = $googleUser->refreshToken;
+            $user->save();
         }
 
         // login
