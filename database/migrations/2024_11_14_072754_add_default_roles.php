@@ -13,10 +13,6 @@ class AddDefaultRoles extends Migration
      */
     public function up()
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->boolean('readonly')->default(false);
-        });
-
         // find or create default admin role
         $adminRole = \Acelle\Model\Role::whereCode('organization_admin')->first();
         if (!$adminRole) {

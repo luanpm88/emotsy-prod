@@ -1189,10 +1189,6 @@ function getFullCodeByLanguageCode($languageCode)
 
 function getDefaultLogoUrl($type)
 {
-    if (\Auth::user() && \Auth::user()->customer && \Auth::user()->customer->getNewOrActiveGeneralSubscription() && \Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('remove_logo')) {
-        return "";
-    }
-
     if (!in_array($type, ['light', 'dark'])) {
         throw new \Exception('Logo type must be either "light" or "dark"');
     }
