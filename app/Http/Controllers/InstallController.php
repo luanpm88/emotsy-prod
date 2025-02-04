@@ -480,12 +480,12 @@ class InstallController extends Controller
                 'check' => class_exists('ZipArchive', false),
                 'note' => trans('messages.install.error.extension', ['name' => 'PHP ZIP']),
             ],
-            // [
-            //     'type' => 'requirement',
-            //     'name' => 'IMAP',
-            //     'check' => extension_loaded('imap'),
-            //     'note' => trans('messages.install.error.extension', ['name' => 'IMAP']),
-            // ],
+            [
+                'type' => 'requirement',
+                'name' => 'IMAP',
+                'check' => extension_loaded('imap'),
+                'note' => trans('messages.install.error.extension', ['name' => 'IMAP']),
+            ],
             [
                 'type' => 'requirement',
                 'name' => 'SQLite3',
