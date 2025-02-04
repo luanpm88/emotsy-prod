@@ -504,7 +504,7 @@ class ApiHelper
                     'example' => 'curl -X POST -H "accept:application/json" -G \
 ' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken")).' \
 -d api_token=' .\Auth::user()->api_token.' \
--d customer_uid={customer_uid}',
+-d customer_uid=<redbold>{customer_uid}</redbold>',
                 ],
             ],
         ];
