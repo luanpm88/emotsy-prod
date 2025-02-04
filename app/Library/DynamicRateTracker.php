@@ -25,6 +25,8 @@ class DynamicRateTracker
 {
     protected $resourceKey;
     protected $reservedPath;
+    protected $remoteLock;
+
     protected $limits;
 
     protected $seperator = ':';
@@ -37,8 +39,10 @@ class DynamicRateTracker
         // IMPORTANT: this path is shared among processes of the same server (same filesystem)
         $this->reservedPath = "/tmp/dynamic-rate-tracker-pid-".md5($this->resourceKey);
 
-        $this->limits = $limits;
+        // Store the datetime until remote reservation is expired
+        $this->remoteLock = "/tmp/dynamic-rate-tracker-pid-".md5($this->resourceKey)."-remote-lock";
 
+        $this->limits = $limits;
         $this->hostname = gethostname() ?: 'Unknown';
 
         if (!file_exists($this->reservedPath)) {
@@ -91,6 +95,32 @@ class DynamicRateTracker
         file_put_contents($this->reservedPath, "{$until->timestamp}{$this->seperator}{$credits}");
     }
 
+    private function cacheRemoteLock($until)
+    {
+        file_put_contents($this->remoteLock, "{$until->timestamp}");
+    }
+
+    private function isRemoteLockCached()
+    {
+        if (!file_exists($this->remoteLock)) {
+            return;
+        }
+
+        $until = file_get_contents($this->remoteLock);
+
+        if (empty($until)) {
+            return;
+        }
+
+        $untilObject = new Carbon((int)$until);
+
+        if ($untilObject->gt(now())) {
+            return $untilObject;
+        } else {
+            return;
+        }
+    }
+
     private function countReservedCredits(Carbon $now, $fopen, $failedCallback)
     {
         list($until, $credits) = $this->parseReservedCredits($fopen);
@@ -137,32 +167,22 @@ class DynamicRateTracker
             return;
         }
 
-        $now = $now ?: Carbon::now();
-        $available = false;
-
-        // Step 1: check if there is a local reservation
         $lock = new Lockable($this->reservedPath);
-        $lock->getExclusiveLock(function ($fopen) use ($now, &$available, $failedCallback) {
+        $lock->getExclusiveLock(function ($fopen) use ($now, $count, $failedCallback) {
+            $now = $now ?: Carbon::now();
+
+            // If there is a valid local reservation, 3 possible outcome
+            // - true: OK
+            // - false: no local reservation, check remote....
+            // - Exception: reserved by this host but no credits left
             if ($this->countReservedCredits($now, $fopen, $failedCallback)) {
-                $available = true;
+                return;
             }
-        });
 
-        if ($available) {
-            // If there is a valid local reservation, then move forward
-            // without having to check the remote tracker
-            return;
-        }
+            // Else, no local reservation, checking remote
 
-        // If not available locally, check the remote
-        with_cache_lock($this->resourceKey, function () use ($now, $count, $failedCallback) {
-            if ($this->isReservedByOthers($now)) {
-                // no local reserved
-                // and there is a reserved-until key (by other)
-
-                $reservedUntil = (int)Cache::get($this->resourceKey);
-                $until = new Carbon($reservedUntil);
-
+            // A valid remote reservation which was previously cached (local check)
+            if ($until = $this->isRemoteLockCached()) {
                 $msg = "Currently reserved by another process/filesystem (current host: {$this->hostname}): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Will be available for booking in {$until->diffForHumans()}, at {$until->format('H:i T')}";
 
                 if ($failedCallback) {
@@ -177,32 +197,62 @@ class DynamicRateTracker
                 );
             }
 
-            if (!$count) {
-                // this is for Delay job only
-                // test if it shoudl resume a campaign, do not count ONE use credits
-                return;
-            }
 
-            // Okie, so ready
-            $until = $now->add($this->getShortestLimitPeriod());
-            $credits = $this->getMinCredits();
+            // In the worst case, connect to remote....
+            with_cache_lock($this->resourceKey, function () use ($now, $count, $failedCallback) {
+                // returning null or an active reservation Carbon object
+                if ($until = $this->isReservedByOthers($now)) {
+                    $msg = "***Currently reserved by another process/filesystem (current host: {$this->hostname}): {$this->getMinCredits()}/{$this->getShortestLimitPeriod()} ({$this->getLimitsDescription()}). Will be available for booking in {$until->diffForHumans()}, at {$until->format('H:i T')}";
 
-            // reserve credits for local & remote
-            // also count 1 credit used
-            $this->reserve($until, $credits - 1);
+                    if ($failedCallback) {
+                        $failedCallback($msg);
+                    }
 
-        }, $timeout = 15);
+                    // Cache here, so other process does not have to come all the way here
+                    // They will be able to stop earlier at isRemoteLockCache() check above
+                    // A remote request is eliminated
+                    $this->cacheRemoteLock($until);
+
+                    throw new RateLimitReservedByAnotherFileSystem(
+                        $msg,
+                        $code = 0,
+                        $previous = null,
+                        $until // pass this additional parameter to Exception
+                    );
+                }
+
+                if (!$count) {
+                    // this is for Delay job only
+                    // test if it shoudl resume a campaign, do not count ONE use credits
+                    return;
+                }
+
+                // Okie, so ready
+                $until = $now->add($this->getShortestLimitPeriod());
+                $credits = $this->getMinCredits();
+
+                // reserve credits for local & remote
+                // also count 1 credit used
+                $this->reserve($until, $credits - 1);
+
+            }, $timeout = 15);
+        });
     }
 
+    // Return a Carbon object if reserved by remote peer
+    // Return null if no reservation or reservation is already expired
     public function isReservedByOthers(Carbon $now)
     {
         $reservedUntil = Cache::get($this->resourceKey);
 
-        if (!is_null($reservedUntil) && (new Carbon((int)$reservedUntil))->gte($now)) {
-            return true;
-        } else {
-            return false;
+        if (!is_null($reservedUntil)) {
+            $untilObj = new Carbon((int)$reservedUntil);
+            if ($untilObj->gte($now)) {
+                return $untilObj;
+            }
         }
+
+        return null;
     }
 
     private function reserve(Carbon $until, $credits)
@@ -261,6 +311,11 @@ class DynamicRateTracker
     {
         file_put_contents($this->getReservedPath(), '');
         Cache::forget($this->resourceKey);
+    }
+
+    public function clearLocalReservation()
+    {
+        file_put_contents($this->getReservedPath(), '');
     }
 
     public function getLimitsDescription()

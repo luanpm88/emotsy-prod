@@ -361,7 +361,7 @@ class CustomerController extends Controller
             $customer = Customer::findByUid($request->customer_uid);
 
             // authorize
-            if (!$user->can('loginAs', $customer)) {
+            if (!$user->admin->can('loginAs', $customer)) {
                 return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
             }
 
@@ -372,7 +372,7 @@ class CustomerController extends Controller
 
         echo json_encode(array(
             'token' => $user->one_time_api_token,
-            'url' => action('Controller@tokenLogin', ['token' => $user->one_time_api_token]),
+            'url' => action('AppController@tokenLogin', ['token' => $user->one_time_api_token]),
         ), JSON_UNESCAPED_SLASHES);
     }
 

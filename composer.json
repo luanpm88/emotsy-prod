@@ -30,7 +30,7 @@
         "kub-at/php-simple-html-dom-parser": "^1.9",
         "laravel/framework": "^11.0",
         "laravel/helpers": "^1.7",
-        "laravel/socialite": "^5.9",
+        "laravel/socialite": "^5.17",
         "laravel/tinker": "^2.10",
         "laravel/ui": "^4.0",
         "lawepham/geoip": "^1.7",

@@ -1533,19 +1533,32 @@ class Customer extends Model
 
         // Create new customer
         if (!$user) {
-            // Create new customer
-            $customer = self::newCustomer();
-            $customer->timezone = config('app.timezone');
-            $customer->language_id = Language::getDefaultLanguage()->id;
-            $customer->save();
+            // default infos
+            $locale = app()->getLocale();
+            $language = \Acelle\Model\Language::where('code', '=', $locale)->first();
+            $password = uniqid();
 
-            $user = $customer->newUser();
-            $user->email = $email;
-            $user->activated = true;
-            $user->customer_id = $customer->id;
-            $user->password = bcrypt('12345678');
+            // validation
+            list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+                // customer information
+                $admin = null,
+                $name = $email,
+                $timezone = config('app.timezone'),
+                $language_id = $language->id,
+                // user information
+                $email = $email,
+                $password = $password,
+                $passwordConfirmation = $password,
+                $first_name = $email,
+                $last_name = trans('messages.account.default_user'),
+                $image = null,
+                $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
+            );
 
-            $user->save();
+            //  errors
+            if (!$validator->errors()->isEmpty()) {
+                return $validator->errors()->toArray();
+            }
         } else {
             $customer = $user->customer;
         }

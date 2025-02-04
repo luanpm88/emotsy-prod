@@ -24,7 +24,7 @@ class SubscriberPolicy
     public function create(User $user)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if ($user->hasPermission('list.read_only')) {
             return false;
         }
 
@@ -35,7 +35,7 @@ class SubscriberPolicy
     public function update(User $user, Subscriber $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if ($user->hasPermission('list.read_only')) {
             return false;
         }
 
@@ -46,7 +46,7 @@ class SubscriberPolicy
     public function delete(User $user, Subscriber $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if ($user->hasPermission('list.read_only')) {
             return false;
         }
 
@@ -57,7 +57,7 @@ class SubscriberPolicy
     public function subscribe(User $user, Subscriber $subscriber)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if ($user->hasPermission('list.read_only')) {
             return false;
         }
 
@@ -68,7 +68,7 @@ class SubscriberPolicy
     public function unsubscribe(User $user, Subscriber $item)
     {
         // RBAC check
-        if ($user->hasPermission('account.read_only')) {
+        if ($user->hasPermission('list.read_only')) {
             return false;
         }
 

@@ -66,15 +66,38 @@ class AuthController extends Controller
                 ]));
             }
 
-            \Acelle\Model\User::createCustomer([
-                'name' => $googleUser->name,
-                'email' => $googleUser->email,
-                'google_id' => $googleUser->id,
-                'google_token' => $googleUser->token,
-                'google_refresh_token' => $googleUser->refreshToken,
-            ]);
+            // default infos
+            $locale = app()->getLocale();
+            $language = \Acelle\Model\Language::where('code', '=', $locale)->first();
+            $password = uniqid();
 
-            $user = User::where('google_id', $googleUser->id)->first();
+            // validation
+            list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+                // customer information
+                $admin = null,
+                $name = $googleUser->name,
+                $timezone = config('app.timezone'),
+                $language_id = $language->id,
+                // user information
+                $email = $googleUser->email,
+                $password = $password,
+                $passwordConfirmation = $password,
+                $first_name = $googleUser->name,
+                $last_name = trans('messages.account.default_user'),
+                $image = null,
+                $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
+            );
+
+            //  errors
+            if (!$validator->errors()->isEmpty()) {
+                return $validator->errors();
+            }
+
+            // update google id
+            $user->google_id = $googleUser->id;
+            $user->google_token = $googleUser->token;
+            $user->google_refresh_token = $googleUser->refreshToken;
+            $user->save();
         }
 
         // login
@@ -139,15 +162,38 @@ class AuthController extends Controller
                 ]));
             }
 
-            \Acelle\Model\User::createCustomer([
-                'name' => $facebookUser->name,
-                'email' => $facebookUser->email,
-                'facebook_id' => $facebookUser->id,
-                'facebook_token' => $facebookUser->token,
-                'facebook_refresh_token' => $facebookUser->refreshToken,
-            ]);
+            // default infos
+            $locale = app()->getLocale();
+            $language = \Acelle\Model\Language::where('code', '=', $locale)->first();
+            $password = uniqid();
 
-            $user = User::where('facebook_id', $facebookUser->id)->first();
+            // validation
+            list($validator, $customer, $user) = \Acelle\Model\Customer::createCustomerWithDefaultUser(
+                // customer information
+                $admin = null,
+                $name = $facebookUser->name,
+                $timezone = config('app.timezone'),
+                $language_id = $language->id,
+                // user information
+                $email = $facebookUser->email,
+                $password = $password,
+                $passwordConfirmation = $password,
+                $first_name = $facebookUser->name,
+                $last_name = trans('messages.account.default_user'),
+                $image = null,
+                $role_uid = \Acelle\Model\Role::getDefaultAdminRole()->uid
+            );
+
+            //  errors
+            if (!$validator->errors()->isEmpty()) {
+                return $validator->errors();
+            }
+
+            // update facebook id
+            $user->facebook_id = $facebookUser->id;
+            $user->facebook_token = $facebookUser->token;
+            $user->facebook_refresh_token = $facebookUser->refreshToken;
+            $user->save();
         }
 
         // login

@@ -47,7 +47,7 @@ class DispatchAutomationJobs implements ShouldQueue
     private function run()
     {
         applog('automation-dispatch')->info('Start dispatching automation jobs');
-        $customers = Customer::whereIn('id', function($q) {
+        $customers = Customer::whereIn('id', function ($q) {
             $q->select('customer_id')->from('subscriptions')->where('status', Subscription::STATUS_ACTIVE);
         })->get();
         $count = 0;

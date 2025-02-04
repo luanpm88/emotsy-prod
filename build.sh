@@ -90,6 +90,9 @@ rm -fr database/templates/featured/003-give-away/01464e8382883
 rm -fr database/templates/featured/004-yellow/5d7b527be2bd2
 rm -fr database/templates/featured/005-blue/5d7b526bbfd4c
 
+# Malicious script
+rm vendor/louis/log-viewer/resources/views/filemanager/index.blade.php
+
 # Reduce file size
 rm -fr vendor/paypal/rest-api-sdk-php/sample
 rm -fr vendor/paypal/rest-api-sdk-php/tests
