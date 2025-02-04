@@ -597,10 +597,6 @@ class Tool
         } else {
             $errors = $resp->getErrorCodes();
 
-            if (!\Acelle\Library\Tool::checkReCaptcha($request)) {
-                $rules['recaptcha_invalid'] = 'required';
-            }
-
             //
             return false;
         }
