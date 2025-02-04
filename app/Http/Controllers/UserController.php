@@ -128,7 +128,7 @@ class UserController extends Controller
                     }
                     // @reCaptcha: default
                 } else if (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
-                    $success = \Acelle\Library\Tool::checkReCaptchaV3($request);
+                    list($success, $errors) = \Acelle\Library\Tool::checkReCaptchaV3($request);
                     if (!$success) {
                         // validation
                         $validator = \Validator::make([], [

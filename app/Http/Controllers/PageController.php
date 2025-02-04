@@ -179,7 +179,7 @@ class PageController extends Controller
                         ]);
                     }
                 } else if (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
-                    $success = \Acelle\Library\Tool::checkReCaptchaV3($request);
+                    list($success, $errors) = \Acelle\Library\Tool::checkReCaptchaV3($request);
                     if (!$success) {
                         return view('somethingWentWrong', [
                             'message' => trans('messages.list.sign_up.invalid_captcha'),

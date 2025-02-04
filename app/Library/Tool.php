@@ -593,12 +593,12 @@ class Tool
         $resp = $recaptcha->verify($request->input('g-recaptcha-response'), $request->ip());
         if ($resp->isSuccess()) {
             // Verified!
-            return true;
+            return [true, []];
         } else {
             $errors = $resp->getErrorCodes();
 
             //
-            return false;
+            return [false, $errors];
         }
     }
 

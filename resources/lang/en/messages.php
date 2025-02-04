@@ -3716,4 +3716,5 @@
   'recaptcha.site_key' => 'reCAPTCHA Site Key',
   'recaptcha.secret_key' => 'reCAPTCHA Secret Key',
   'recaptcha.keys.warning' => 'reCAPTCHA keys must match the reCAPTCHA version (v2 or v3). Make sure the keys are for the correct version.',
+  'invalid_recaptcha.errors' => 'Invalid reCAPTCHA check. Error code: :error',
 ) ?>
