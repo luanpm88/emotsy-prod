@@ -11,3 +11,25 @@
         ],
     ])
 </div>
+
+<div data-control="captcha-keys">
+    <div class="form-group">
+        <label class="fw-semibold">{{ trans('messages.recaptcha.site_key') }}</label>
+        @include('helpers.form_control.text', [
+            'name' => 'general[recaptcha_site_key]',
+            'value' => Acelle\Model\Setting::get('recaptcha_site_key', config('app.recaptcha_sitekey')),
+        ])
+    </div>
+
+    <div class="form-group">
+        <label class="fw-semibold">{{ trans('messages.recaptcha.secret_key') }}</label>
+        @include('helpers.form_control.text', [
+            'name' => 'general[recaptcha_secret_key]',
+            'value' => Acelle\Model\Setting::get('recaptcha_secret_key', config('app.recaptcha_secret')),
+        ])
+    </div>
+
+    <div class="alert alert-info">
+        {{ trans('messages.recaptcha.keys.warning') }}
+    </div>
+</div>

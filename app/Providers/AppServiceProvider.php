@@ -138,7 +138,15 @@ class AppServiceProvider extends ServiceProvider
         Hook::register('captcha_method', function () {
             return [
                 "id" => 'recaptcha',
-                "title" => trans('messages.recaptcha'),
+                "title" => trans('messages.recaptcha.v2'),
+            ];
+        });
+
+        // default captcha method
+        Hook::register('captcha_method', function () {
+            return [
+                "id" => 'recaptcha_v3',
+                "title" => trans('messages.recaptcha.v3'),
             ];
         });
     }
