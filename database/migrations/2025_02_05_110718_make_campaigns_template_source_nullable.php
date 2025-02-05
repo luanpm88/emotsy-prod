@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->string('template_source')->nullable()->change();
+            $table->dropColumn('template_source');
         });
     }
 
