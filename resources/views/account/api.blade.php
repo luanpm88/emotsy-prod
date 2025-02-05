@@ -12,7 +12,7 @@
 			<li class="breadcrumb-item active">{{ trans('messages.api_token') }}</li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ Auth::user()->customer->getName() }}</span>
+			<span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ Auth::user()->customer->displayName() }}</span>
 		</h1>
 	</div>
 
@@ -24,8 +24,7 @@
 		'menu' => 'api',
 	])
 
-	@if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('api_documentation'))
-		<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
+	<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
 
 	<p style="margin-bottom: 30px"><code style="font-size: 18px">
     <a target="_blank" href="{{ action("AppController@docsApiV1") }}">{{ action("AppController@docsApiV1") }} <span class="material-symbols-rounded">link</span></a></code></p>
