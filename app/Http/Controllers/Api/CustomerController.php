@@ -360,6 +360,11 @@ class CustomerController extends Controller
         if ($request->customer_uid) {
             $customer = Customer::findByUid($request->customer_uid);
 
+            // customer not found
+            if (!$customer) {
+                return \Response::json(array('status' => 0, 'message' => 'Customer with uid '.$request->customer_uid.' not found'), 404);
+            }
+
             // authorize
             if (!$user->admin->can('loginAs', $customer)) {
                 return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);

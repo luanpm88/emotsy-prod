@@ -50,6 +50,8 @@
 				$hcaptcha = \Acelle\Hcaptcha\Client::initialize();
 			@endphp
 			{!! $hcaptcha->renderFormHtml($errors) !!}
+		@elseif (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3')
+			{!! \Acelle\Library\Tool::showReCaptchaV3($errors) !!}
 		@else
 			{!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
 		@endif

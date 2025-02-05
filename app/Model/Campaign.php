@@ -357,7 +357,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         'subject', 'from_name', 'from_email',
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
-        'html', 'plain', 'template_source',
+        'html', 'plain',
         'tracking_domain_id', 'use_default_sending_server_from_email',
         'skip_failed_message',
         'subject_b', 'ab_split_subject', 'ab_split_content',

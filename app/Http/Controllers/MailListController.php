@@ -687,6 +687,8 @@ class MailListController extends Controller
                 if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
                     $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
                     $success = $hcaptcha->check($request);
+                } else if (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
+                    list($success, $errors) = \Acelle\Library\Tool::checkReCaptchaV3($request);
                 } else {
                     $success = \Acelle\Library\Tool::checkReCaptcha($request);
                 }

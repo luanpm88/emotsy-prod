@@ -70,7 +70,7 @@ class Setting extends Model
 
         if ($setting) {
             return $setting->value;
-        } elseif (isset(config('default')[$name])) {
+        } elseif (isset(config('default')[$name]) && config('default')[$name]['value']) {
             return config('default')[$name]['value'];
         } else {
             // @todo exception case not handled

@@ -380,4 +380,12 @@ return [
         'value' => '',
         'type' => 'string',
     ],
+    'recaptcha_site_key' => [
+        'value' => '',
+        'type' => 'string',
+    ],
+    'recaptcha_secret_key' => [
+        'value' => '',
+        'type' => 'string',
+    ],
 ];

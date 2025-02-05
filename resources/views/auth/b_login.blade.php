@@ -9,7 +9,7 @@
     }
 </style>
 <!-- Advanced login -->
-<form class="" role="form" method="POST" action="{{ url('/login') }}">
+<form data-control="form-with-captcha" class="" role="form" method="POST" action="{{ url('/login') }}">
     {{ csrf_field() }}
 
     <div class="panel panel-body p-4 rounded-3 bg-white shadow">
@@ -18,7 +18,7 @@
 
         <div class="form-group login-email-input has-feedback has-feedback-left{{ $errors->has('email') ? ' has-error' : '' }}">
             <input id="email" type="email" class="form-control" name="email" placeholder="{{ trans("messages.email") }}"
-	 value="{{ old('email') ? old('email') : demo_auth()['email'] }}"
+	 value="{{ old('email') ? old('email') : demo_auth()['email'] }}" required
             >
             <div class="form-control-feedback">
 	<i class="icon-envelop5 text-muted"></i>
@@ -32,7 +32,7 @@
 
         <div class="form-group login-password-input has-feedback has-feedback-left{{ $errors->has('password') ? ' has-error' : '' }}">
             <input id="password" type="password" class="form-control" name="password" placeholder="{{ trans("messages.password") }}"
-	value="{{ demo_auth()['password'] }}"
+	value="{{ demo_auth()['password'] }}" required
             >
             <div class="form-control-feedback">
 	<i class="icon-lock2 text-muted"></i>
@@ -67,6 +67,8 @@
                     $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
                 @endphp
                 {!! $hcaptcha->renderFormHtml($errors) !!}
+            @elseif (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3')
+                {!! \Acelle\Library\Tool::showReCaptchaV3($errors) !!}
             @else
                 {!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
             @endif
@@ -74,7 +76,10 @@
 
         <button type="submit" class="btn rounded-2 btn-primary d-block login-button py-2 fw-600"
             style="width:100%;text-transform:uppercase"
-        ><span class="me-2">{{ trans("messages.login") }}</span> <span class="material-symbols-rounded">login</span></button>
+        >
+            <span class="me-2">{{ trans("messages.login") }}</span>
+            <span class="material-symbols-rounded">login</span>
+        </button>
             
 
             @if (
@@ -115,28 +120,5 @@
     
 </form>
 <!-- /advanced login -->
-
-<script>
-    function addButtonLoadingEffect(button) {
-        button.addClass('button-loading');
-        button.append('<div class="loader"></div>');
-    }
-
-    function removeButtonLoadingEffect(button) {
-        button.removeClass('button-loading');
-        button.find('.loader').remove();
-    }
-    $('.login-button').on('click', function(e) {
-        e.preventDefault();
-
-        $(this).html('{{ trans('messages.login.please_wait') }}');
-
-        $(this).closest('form').addClass('loading');
-
-        addButtonLoadingEffect($(this));
-
-        $(this).closest('form').submit();
-    });
-</script>
 
 @endsection

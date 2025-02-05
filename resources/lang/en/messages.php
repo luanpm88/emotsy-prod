@@ -4116,4 +4116,10 @@
   'subscriber.remove_tag.choose_tags' => 'Choose one or many tags',
   'subscriber.remove_tag.loading' => 'Removing tag(s). Please wait...',
   'subscriber.remove_tag.wording' => 'Your are about to remove tag(s) from <span class="font-weight-semibold">:count</span> contacts',
+  'recaptcha.v2' => 'reCAPTCHA v2',
+  'recaptcha.v3' => 'reCAPTCHA v3',
+  'recaptcha.site_key' => 'reCAPTCHA Site Key',
+  'recaptcha.secret_key' => 'reCAPTCHA Secret Key',
+  'recaptcha.keys.warning' => 'reCAPTCHA keys must match the reCAPTCHA version (v2 or v3). Make sure the keys are for the correct version.',
+  'invalid_recaptcha.errors' => 'Invalid reCAPTCHA check. Error code: :error',
 ) ?>

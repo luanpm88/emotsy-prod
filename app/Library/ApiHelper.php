@@ -498,11 +498,13 @@ class ApiHelper
                     'help' => 'User can login by visiting the following URL:<br>
                         <code>' . action('AppController@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
                     'parameters' => [
+                        ['name' => '$customer_uid', 'description' => 'Customer\'s uid'],
                     ],
                     'returns' => 'Token string',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\UserController@loginToken")).' \
--d api_token=' .\Auth::user()->api_token,
+' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken")).' \
+-d api_token=' .\Auth::user()->api_token.' \
+-d customer_uid=<redbold>{customer_uid}</redbold>',
                 ],
             ],
         ];
