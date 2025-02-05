@@ -57,7 +57,9 @@ class SendingServerSmtp extends SendingServer
                 'status' => self::DELIVERY_STATUS_SENT,
             );
         } else {
-            throw new \Exception('Unknown SMTP error');
+            $from = $message->getFrom();
+            $fromEmail = empty($from) ? '#' : array_keys($from)[0];
+            throw new \Exception(sprintf('Unknown SMTP error. Server: "%s", FROM EMAIL: %s (server default FROM EMAIL: %s)', $this->name, $fromEmail, $this->default_from_email));
         }
     }
 
