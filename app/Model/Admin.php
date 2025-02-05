@@ -382,6 +382,9 @@ class Admin extends Model
         $user->customer_id = $customer->id;
         $user->save();
 
+        // set default role
+        $user->setRole(\Acelle\Model\Role::getDefaultAdminRole());
+
         return $customer;
     }
 
