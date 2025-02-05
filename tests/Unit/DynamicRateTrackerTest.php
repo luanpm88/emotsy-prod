@@ -214,7 +214,7 @@ class DynamicRateTrackerTest extends TestCase
         $tracker = new DynamicRateTracker($key, $limits);
         $tracker->clearReservation();
 
-        $this->assertFalse($tracker->isReservedByOthers(now()));
+        $this->assertNull($tracker->isReservedByOthers(now()));
     }
 
     public function test_get_reserved_until_value_from_reserved_by_another_exception()

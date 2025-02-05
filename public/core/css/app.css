@@ -2587,7 +2587,6 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .rtl, [dir=rtl] {
     direction: rtl;
     unicode-bidi: bidi-override !important;
-    direction: unset !important;
     text-align:right;
 }
 .modal-trigger {

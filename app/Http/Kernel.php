@@ -83,6 +83,6 @@ class Kernel extends HttpKernel
         'authorize' => \Acelle\Http\Middleware\Authorize::class,
         'email_verify' => \Acelle\Http\Middleware\EmailVerify::class,
         '2fa' => \Acelle\Http\Middleware\TwoFA::class,
-        'setdb' => \Acelle\Http\Middleware\SetUserDbConnection::class,
+        // 'setdb' => \Acelle\Http\Middleware\SetUserDbConnection::class,
     ];
 }

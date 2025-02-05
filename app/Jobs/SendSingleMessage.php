@@ -69,7 +69,7 @@ class SendSingleMessage extends SendMessage
 
     public function handle()
     {
-        // Set default connection
+        $this->startAt = now()->getTimestampMs();
         $this->customer->setUserDbConnection();
         $this->send();
     }
@@ -77,7 +77,9 @@ class SendSingleMessage extends SendMessage
     public function handleRateLimitExceeded($email, RateLimitExceeded $ex)
     {
         $secondsToDelay = 600;
-        $this->campaign->logger()->warning(sprintf("Delay [%s] for %s seconds (no batch): %s", $email, $secondsToDelay, $ex->getMessage()));
+        $now = now()->getTimestampMs();
+        $time = ($now - $this->startAt) / 1000;
+        $this->campaign->logger()->warning(sprintf("Delay [%s] for %s seconds (no batch): %s (it taks %s to get here!)", $email, $secondsToDelay, $ex->getMessage(), $time));
 
         $this->getAutoTrigger()->withUpdateLock(function ($trigger) use ($email, $ex, $secondsToDelay) {
             $delayNote = sprintf("Delayed for %s seconds: %s", $secondsToDelay, $ex->getMessage());

@@ -387,7 +387,7 @@ class Admin extends Model
         $user->save();
 
         // set default role
-        $user->setRole(Role::default()->first());
+        $user->setRole(\Acelle\Model\Role::getDefaultAdminRole());
 
         return $customer;
     }
