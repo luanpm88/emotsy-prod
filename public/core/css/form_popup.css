@@ -53,7 +53,7 @@ body.acelle-popup-open .acelle-popup {
 .acelle-popup-container {
     position: relative;
     min-width: 700px;
-    min-height: 500px;
+    min-height: auto;
     max-height: 80vh;
     overflow: none;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
