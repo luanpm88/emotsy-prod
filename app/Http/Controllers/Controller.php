@@ -8,6 +8,12 @@ abstract class Controller
 {
     use ValidatesRequests;
 
+    public function __construct()
+    {
+        // Keep it here for plugin compatibility
+        // Certain plugins might inherit this controller and call parent::construct();
+    }
+
     /**
      * Check if the user is not authorized.
      *
