@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "86aab909e2f7aa9ea38f5da47be05b73",
+    "content-hash": "8d683e3e4f8398cf2a8d6ddd4c0fd90f",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -286,6 +286,42 @@
                 "source": "https://github.com/apimatic/unirest-php/tree/4.0.5"
             },
             "time": "2023-04-25T14:19:45+00:00"
+        },
+        {
+            "name": "athena/email-verification-result",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/luanpm88/athena-email-verification-result.git",
+                "reference": "3130057f8076f1bb9749cb2338716bef12b999b1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/luanpm88/athena-email-verification-result/zipball/3130057f8076f1bb9749cb2338716bef12b999b1",
+                "reference": "3130057f8076f1bb9749cb2338716bef12b999b1",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0"
+            },
+            "default-branch": true,
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "Athena\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
+            "description": "A sample PHP project using Composer",
+            "support": {
+                "source": "https://github.com/luanpm88/athena-email-verification-result/tree/main",
+                "issues": "https://github.com/luanpm88/athena-email-verification-result/issues"
+            },
+            "time": "2024-09-13T11:39:25+00:00"
         },
         {
             "name": "athenaevs/athenaevs-php",
@@ -14507,6 +14543,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "acelle/cashier": 20,
+        "athena/email-verification-result": 20,
         "athenaevs/athenaevs-php": 20,
         "louis/sendgrid": 20
     },
