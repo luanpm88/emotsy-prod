@@ -7,6 +7,7 @@
     "type": "project",
     "require": {
         "acelle/cashier": "dev-master",
+        "athena/email-verification-result": "dev-main",
         "athenaevs/athenaevs-php": "dev-master",
         "aws/aws-php-sns-message-validator": "^1.1",
         "aws/aws-sdk-php": "^3.19",
@@ -156,6 +157,9 @@
         }, {
             "type": "vcs",
             "url": "https://github.com/athenaevs/athenaevs-php"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/luanpm88/athena-email-verification-result"
         }
     ]
 }

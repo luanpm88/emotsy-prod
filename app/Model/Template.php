@@ -1097,7 +1097,7 @@ class Template extends Model
     {
         // DELTEE categories
         TemplateCategory::query()->delete();
-        foreach (self::default() as $template) {
+        foreach (self::default()->get() as $template) {
             $template->deleteAndCleanup();
         }
 
