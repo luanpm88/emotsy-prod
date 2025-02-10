@@ -8527,3 +8527,11 @@ label.check-symbol {
 .tox-collection__item-label * {
     background-color: transparent!important;
 }
+.clamp-3 {
+    display: -webkit-box!important;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 3; /* Limits to 3 lines */
+    max-width: 100%; /* Adjust as needed */
+}

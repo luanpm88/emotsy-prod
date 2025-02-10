@@ -111,6 +111,11 @@ class LocalCustomer extends Customer
         return $this->hasmany('Acelle\Model\Source', 'customer_id');
     }
 
+    public function webhooks()
+    {
+        return $this->hasMany(Webhook::class, 'customer_id');
+    }
+
     public function getVerifiedTrackingDomainOptions()
     {
         return $this->trackingDomains()->verified()->get()->map(function ($domain) {
@@ -465,5 +470,13 @@ class LocalCustomer extends Customer
         $site->customer_id = $this->id;
 
         return $site;
+    }
+
+    public function newWebhook()
+    {
+        $webhook = Webhook::newDefault();
+        $webhook->customer_id = $this->id;
+
+        return $webhook;
     }
 }

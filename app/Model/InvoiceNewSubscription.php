@@ -5,6 +5,7 @@ namespace Acelle\Model;
 use Acelle\Model\Invoice;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Exception;
+use Acelle\Library\Facades\Hook;
 
 class InvoiceNewSubscription extends Invoice
 {
@@ -56,6 +57,9 @@ class InvoiceNewSubscription extends Invoice
         SubscriptionFacade::log($this->subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
             'amount' => $this->total(),
         ]);
+
+        // Execute registered hooks
+        Hook::execute('new_subscription', [$this->subscription]);
     }
 
     /**

@@ -2887,69 +2887,61 @@ class Automation2Controller extends Controller
         $email->setSignature($signature);
     }
 
-    public function outgoingWebhookSetup(Request $request, $uid)
+    public function outgoingWebhookAdd(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        $options = array(
-            'send_method' => 'post',
-            'authorization_method' => 'basic_auth',
-            'authorization' => array(
-                'bearer_token' => null,
-                'username' => null,
-                'password' => null,
-                'custom_key' => null,
-                'custom_value' => null,
-            ), 'endpoint_url' => null,
-            'header' => 'with_headers',
-            'headers' => array(),
-            'body_type' => 'key_value_pair',
-            'body_parameters' => array(),
-            'plain_text' => null,
+        $webhook = $request->user()->customer->local()->newWebhook();
+
+        // try to save
+        list($result, $errors) = $webhook->saveWebhook(
+            $name = trans('messages.automation.webhook_name', [
+                'automation' => $automation->name,
+            ]),
+            $event = 'automation_webhook',
         );
 
-        //
-        if ($request->id) {
-            $options = array_merge($options, json_decode(json_encode($automation->getElement($request->id)->get('options')), true));
+        // redirect if fails
+        if (!$result) {
+            return response()->json([
+                'errors' => $errors,
+            ], 400);
         }
+
+        return response()->json([
+            'setup_url' => action('Automation2Controller@outgoingWebhookSetup', [
+                'uid' => $automation->uid,
+                'webhook_uid' => $webhook->uid,
+            ]),
+        ]);
+    }
+
+    public function outgoingWebhookSetup(Request $request, $uid, $webhook_uid)
+    {
+        //
+        $automation = Automation2::findByUid($uid);
+        $webhook = \Acelle\Model\Webhook::findByUid($webhook_uid);
 
         return view('automation2.outgoing_webhook.setup', [
             'automation' => $automation,
+            'webhook' => $webhook,
             'element' => $request->id ? $automation->getElement($request->id) : null,
-            'options' => $options,
         ]);
     }
 
-    public function outgoingWebhookTestPopup(Request $request, $uid)
+    public function outgoingWebhookSave(Request $request, $uid, $webhook_uid)
     {
         $automation = Automation2::findByUid($uid);
+        $webhook = \Acelle\Model\Webhook::findByUid($webhook_uid);
 
-        return view('automation2.outgoing_webhook.testPopup', [
-            'automation' => $automation,
-        ]);
-    }
+        $webhook->fillAttributes($request->webhook);
+        $webhook->save();
 
-    public function outgoingWebhookTest(Request $request, $uid)
-    {
-        $automation = Automation2::findByUid($uid);
-        $options = $request->webhook;
-        $result = $this->outgoingWebhookTestRun($options);
-
-        return view('automation2.outgoing_webhook.testResult', [
-            'automation' => $automation,
-            'options' => $options,
-            'result' => $result,
-        ]);
-    }
-
-    public function outgoingWebhookSave(Request $request, $uid)
-    {
-        $automation = Automation2::findByUid($uid);
-
-        //
-        $data = array_merge([
+        $data = [
             'title' => trans('messages.automation.outgoing_webhook'),
-            'options' => $request->webhook,
-        ]);
+            'options' => [
+                'webhook_uid' => $webhook->uid,
+            ],
+        ];
 
         return response()->json($data);
     }
@@ -2957,86 +2949,13 @@ class Automation2Controller extends Controller
     public function outgoingWebhookShow(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-
-        // var_export(json_decode(json_encode($automation->getElement($request->id)->get('options')), true));
+        $element = $automation->getElement($request->id);
+        $webhook = \Acelle\Model\Webhook::findByUid($element->get('options')->webhook_uid);
 
         return view('automation2.outgoing_webhook.show', [
             'automation' => $automation,
-            'element' => $automation->getElement($request->id),
+            'element' => $element,
+            'webhook' => $webhook,
         ]);
-    }
-
-    public function outgoingWebhookTestRun($options)
-    {
-        // Prepare cURL initialization
-        $ch = curl_init();
-
-        // Set the URL from the options
-        curl_setopt($ch, CURLOPT_URL, $options['endpoint_url']);
-
-        // Set the HTTP method (POST)
-        $method = strtoupper($options['send_method']);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-
-        // Set the Authorization (Basic Auth)
-        if ($options['authorization_method'] === 'basic_auth') {
-            $username = $options['authorization']['username'];
-            $password = $options['authorization']['password'];
-            curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
-        }
-
-        // Set Headers
-        $headers = [];
-        if ($options['header'] === 'with_headers' && !empty($options['headers'])) {
-            foreach ($options['headers'] as $header) {
-                $headers[] = $header['key'] . ': ' . $header['value'];
-            }
-        }
-
-        // Add Content-Type based on body type
-        if ($options['body_type'] === 'key_value_pair') {
-            $headers[] = 'Content-Type: application/x-www-form-urlencoded';
-        } elseif ($options['body_type'] === 'plain_text') {
-            // No special Content-Type needed for plain text
-        }
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        // Set the body type and parameters
-        $body = '';
-        if ($options['body_type'] === 'plain_text') {
-            $body = $options['plain_text'];
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        } elseif ($options['body_type'] === 'key_value_pair') {
-            $bodyParams = [];
-            $options['body_parameters'] = $options['body_parameters'] ?? [];
-            foreach ($options['body_parameters'] as $param) {
-                $bodyParams[] = urlencode($param['key']) . '=' . urlencode($param['value']);
-            }
-            $body = implode('&', $bodyParams);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        }
-
-        // Set additional cURL options
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-        // Execute the cURL request
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);  // Get HTTP response code
-
-        // Capture cURL errors
-        $curlError = curl_errno($ch) ? curl_error($ch) : null;
-
-        // Close the cURL session
-        curl_close($ch);
-
-        // Display all response aspects
-        return [
-            'methos' => $method,
-            'body' => $body,
-            'error' => $curlError,
-            'http_code' => $httpCode,
-            'response' => $response,
-        ];
     }
 }

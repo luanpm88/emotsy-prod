@@ -17,6 +17,7 @@ use Acelle\Library\DynamicRateTracker;
 use Acelle\Library\RateLimit;
 use Illuminate\Database\Eloquent\Builder;
 use DB;
+use Acelle\Library\Facades\Hook;
 
 class Subscription extends Model
 {
@@ -466,6 +467,9 @@ class Subscription extends Model
      */
     public function changePlan($newPlan)
     {
+        //
+        $oldPlan = $this->plan;
+
         // calculate change plan amout ends at
         $metadata = $this->calcChangePlan($newPlan);
 
@@ -476,6 +480,9 @@ class Subscription extends Model
         $this->current_period_ends_at = $metadata['endsAt'];
 
         $this->save();
+
+        // Execute registered hooks
+        Hook::execute('plan_changed', [$this->customer, $oldPlan, $newPlan]);
     }
 
     /**
@@ -814,6 +821,9 @@ class Subscription extends Model
                 'terminate_at' => $this->terminated_at,
             ]);
         });
+
+        // Execute registered hooks
+        Hook::execute('subscription_terminated', [$this]);
     }
 
     public function end()
@@ -987,6 +997,9 @@ class Subscription extends Model
         // if subscription is new -> cancel now subscription.
         // Make sure a new subscription must have a pending invoice
         $this->cancelNow();
+
+        // run webhook
+        \Acelle\Library\Webhook\CancelSubscription::run($customer->uid, $subscription->planGeneral->uid);
     }
 
     public function getRemainingEmailCredits()

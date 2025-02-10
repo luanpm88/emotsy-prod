@@ -115,13 +115,44 @@
             });
 
             // select outgoing-webhook action
-            $('[action-select="outgoing-webhook"]').on('click', function(e) {
-                e.preventDefault();
-
-                var url = '{!! action('Automation2Controller@outgoingWebhookSetup', $automation->uid) !!}';
-                automationPopup.load(url);
+            new WebhookSelector({
+                createUrl: '{!! action('Automation2Controller@outgoingWebhookAdd', $automation->uid) !!}',
+                createButton: $('[action-select="outgoing-webhook"]'),
             });
         });
+
+        var WebhookSelector = class {
+            constructor(options) {
+                this.createUrl = options.createUrl;
+                this.createButton = options.createButton;
+
+                this.events();
+            }
+
+            events() {
+                this.createButton.on('click', (e) => {
+                    e.preventDefault();
+
+                    this.add();
+                });
+            }
+
+            add() {
+                addMaskLoading();
+
+                $.ajax({
+                    url: this.createUrl,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    }
+                }).done((res) => {
+                    automationPopup.load(res.setup_url);
+
+                    removeMaskLoading();
+                });
+            }
+        }
         
     </script>
 

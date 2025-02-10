@@ -9,6 +9,7 @@ use Acelle\Model\Language;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Model\SubscriptionLog;
 use Acelle\Library\TransactionResult;
+use Acelle\Library\Facades\Hook;
 
 /**
  * /api/v1/customers - API controller for managing customers.
