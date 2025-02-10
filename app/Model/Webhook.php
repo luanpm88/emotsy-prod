@@ -26,7 +26,7 @@ class Webhook extends Model
 
     public const REQUEST_BODY_TYPE_KEY_VALUE = 'key_value';
     public const REQUEST_BODY_TYPE_PLAIN = 'plain';
-    
+
     public function webhookJobs()
     {
         return $this->hasMany(WebhookJob::class, 'webhook_id');
@@ -139,7 +139,7 @@ class Webhook extends Model
 
     public function getTags()
     {
-        return array_map(function($param) {
+        return array_map(function ($param) {
             return [
                 'tag' => "{".$param."}",
                 'label' => trans('messages.webhook.tag.' .$param),
@@ -165,7 +165,7 @@ class Webhook extends Model
         return json_decode($this->request_body_params, true);
     }
 
-    public function test($requestDetails=null)
+    public function test($requestDetails = null)
     {
         switch ($this->event) {
             case 'cancel_subscription':

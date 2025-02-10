@@ -2840,7 +2840,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     public function fillDeliveryStatuses(array $array)
     {
-        $array = array_map(function($status) {
+        $array = array_map(function ($status) {
             $status = trim($status);
 
             //
