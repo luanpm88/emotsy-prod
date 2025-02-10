@@ -830,6 +830,11 @@ class Automation2Controller extends Controller
                 ], 400);
             }
 
+            // save delivery settings
+            if ($request->delivery_statuses) {
+                $email->fillDeliveryStatuses($request->delivery_statuses);
+            }
+
             // pass validation and save
             $email->save();
 

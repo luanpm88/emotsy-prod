@@ -473,4 +473,49 @@ class Email extends Model implements HasTemplateInterface
     {
         return $this->use_default_sending_server_from_email == true;
     }
+
+    public function fillDeliveryStatuses(array $array)
+    {
+        $array = array_map(function($status) {
+            $status = trim($status);
+
+            //
+            if (empty($status)) {
+                throw new \Exception("Status can not be empty");
+            }
+
+            //
+            if (!in_array($status, [
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNDELIVERABLE,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNKNOWN,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_RISKY,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
+            ])) {
+                throw new \Exception("Status $status is invalid!");
+            }
+
+            return $status;
+        }, $array);
+
+        $this->delivery_statuses = json_encode($array);
+    }
+
+    public function setDeliveryStatuses(array $array)
+    {
+        $this->fillDeliveryStatuses($array);
+        $this->save();
+    }
+
+    public function getDeliveryStatuses()
+    {
+        if ($this->delivery_statuses == null) {
+            return [
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
+            ];
+        }
+
+        return json_decode($this->delivery_statuses, true);
+    }
 }

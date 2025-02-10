@@ -62,13 +62,16 @@
                     <?php $num++ ?>
                 @endforeach
             </div>
-            <br />
             <a
                 sample-url="{{ action('CampaignController@listSegmentForm', $campaign->uid) }}"
                 href="#add_condition" class="btn btn-secondary add-form">
                 <span class="material-symbols-rounded">add</span> {{ trans('messages.add_list_segment') }}
             </a>
         </div>
+
+        <hr>
+
+        @include('campaigns._delivery_settings')
 
         <hr>
 
