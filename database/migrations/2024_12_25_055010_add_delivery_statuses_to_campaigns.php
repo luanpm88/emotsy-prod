@@ -16,6 +16,11 @@ class AddDeliveryStatusesToCampaigns extends Migration
         Schema::table('campaigns', function (Blueprint $table) {
             $table->text('delivery_statuses')->nullable();
         });
+
+        // Update all existing campaigns
+        foreach(\Acelle\Model\Campaign::whereNull('delivery_statuses')->get() as $campaign) {
+            $campaign->setDeliveryStatuses($campaign->getDefaultDeliveryStatuses());
+        }
     }
 
     /**
@@ -26,7 +31,7 @@ class AddDeliveryStatusesToCampaigns extends Migration
     public function down()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            //
+            $table->dropColumn('delivery_statuses');
         });
     }
 }

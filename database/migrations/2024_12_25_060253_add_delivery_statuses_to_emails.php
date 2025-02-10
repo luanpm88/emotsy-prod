@@ -16,6 +16,11 @@ class AddDeliveryStatusesToEmails extends Migration
         Schema::table('emails', function (Blueprint $table) {
             $table->text('delivery_statuses')->nullable();
         });
+
+        // Update all existing campaigns
+        foreach(\Acelle\Model\Email::whereNull('delivery_statuses')->get() as $email) {
+            $email->setDeliveryStatuses($email->getDefaultDeliveryStatuses());
+        }
     }
 
     /**
@@ -26,7 +31,7 @@ class AddDeliveryStatusesToEmails extends Migration
     public function down()
     {
         Schema::table('emails', function (Blueprint $table) {
-            //
+            $table->dropColumn('delivery_statuses');
         });
     }
 }

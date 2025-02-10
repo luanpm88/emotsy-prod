@@ -444,6 +444,9 @@ class Email extends Model implements HasTemplateInterface
 
         $email->skip_failed_message = Setting::isYes('email.default.skip_failed_message');
 
+        //
+        $email->fillDeliveryStatuses($email->getDefaultDeliveryStatuses());
+
         return $email;
     }
 
@@ -507,13 +510,19 @@ class Email extends Model implements HasTemplateInterface
         $this->save();
     }
 
+    public function getDefaultDeliveryStatuses()
+    {
+        return [
+            \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
+            \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
+        ];
+    }
+
     public function getDeliveryStatuses()
     {
         if ($this->delivery_statuses == null) {
-            return [
-                \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
-                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
-            ];
+            // Default delivery statuses
+            return $this->getDefaultDeliveryStatuses();
         }
 
         return json_decode($this->delivery_statuses, true);

@@ -2441,6 +2441,9 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $campaign->status = Campaign::STATUS_NEW;
         $campaign->skip_failed_message = Setting::isYes('email.default.skip_failed_message');
 
+        //
+        $campaign->fillDeliveryStatuses($campaign->getDefaultDeliveryStatuses());
+
         return $campaign;
     }
 
@@ -2868,14 +2871,19 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $this->save();
     }
 
+    public function getDefaultDeliveryStatuses()
+    {
+        return [
+            \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
+            \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
+        ];
+    }
+
     public function getDeliveryStatuses()
     {
         if ($this->delivery_statuses == null) {
             // Default delivery statuses
-            return [
-                \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
-                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
-            ];
+            return $this->getDefaultDeliveryStatuses();
         }
 
         return json_decode($this->delivery_statuses, true);
