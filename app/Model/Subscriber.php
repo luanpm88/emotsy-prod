@@ -130,6 +130,19 @@ class Subscriber extends Model
         ));
     }
 
+    public function scopeByVerificationStatus($query, $verificationStatuses = [])
+    {
+        if (in_array(static::VERIFICATION_STATUS_UNVERIFIED, $verificationStatuses)) {
+            // WHERE NULL must be specified explicitly
+            return $query->where(function ($query) use ($verificationStatuses) {
+                $query->whereNull('subscribers.verification_status')
+                      ->orWhereIn('subscribers.verification_status', $verificationStatuses);
+            });
+        } else {
+            return $query->whereIn('subscribers.verification_status', $verificationStatuses);
+        }
+    }
+
     public function scopeUndeliverable($query)
     {
         return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_UNDELIVERABLE);

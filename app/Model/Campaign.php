@@ -2257,7 +2257,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $query = $this->subscribers([])
                 ->whereRaw(sprintf(table('subscribers').".email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s AND t.status != '%s')", table('tracking_logs'), table('subscribers'), $this->id, TrackingLog::STATUS_DUPLICATE))
                 ->subscribed()
-                ->deliverableOrNotVerified();
+                ->byVerificationStatus($this->getDeliveryStatuses());
 
         return $query;
     }
@@ -2441,7 +2441,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $campaign->status = Campaign::STATUS_NEW;
         $campaign->skip_failed_message = Setting::isYes('email.default.skip_failed_message');
 
-        //
         $campaign->fillDeliveryStatuses($campaign->getDefaultDeliveryStatuses());
 
         return $campaign;
@@ -2840,7 +2839,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     public function fillDeliveryStatuses(array $array)
     {
-        $array = array_map(function($status) {
+        $array = array_map(function ($status) {
             $status = trim($status);
 
             //

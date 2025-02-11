@@ -300,9 +300,11 @@ class TrackingDomain extends Model
     }
 
     // If tracking domain is of type HOST
-    // ==> https://tracking.com/aHR0cHM6Ly9sb2NhbGhvc3QvcC9hSFIwY0RvdkwyZHZiMmRzWlM1amIyMC9jbGljay9UVk5IU1VR
+    // ==> https://tracking.com/?t=aHR0cHM6Ly9sb2NhbGhvc3QvcC9hSFIwY0RvdkwyZHZiMmRzWlM1amIyMC9jbGljay9UVk5IU1VR
+    //
     // Or, if tracking domain is of type DNS
     // ==> https://tracking.com/p/aHR0cDovL2dvb2dsZS5jb20/click/TVNHSUQ
+    //
     public function buildTrackingUrl(string $url)
     {
         if (!parse_url($url, PHP_URL_HOST)) {

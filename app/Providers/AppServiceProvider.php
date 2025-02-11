@@ -155,7 +155,7 @@ class AppServiceProvider extends ServiceProvider
             // run webhook
             \Acelle\Library\Webhook\NewCustomer::run($customer->uid);
         });
-        
+
         // subscription terminated
         Hook::register('subscription_terminated', function ($subscription) {
             // run webhook
