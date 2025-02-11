@@ -534,7 +534,7 @@ class Tool
         ?>
             <div class="recaptcha-box">
                 <script src='https://www.google.com/recaptcha/api.js?hl=<?php echo language_code() ?>'></script>
-                <div class="g-recaptcha" data-sitekey="<?php echo \Acelle\Model\Setting::get('recaptcha_site_key', config('app.recaptcha_sitekey')) ?>"></div>
+                <div class="g-recaptcha" data-sitekey="<?php echo \Acelle\Model\Setting::get('recaptcha_site_key') ?? config('app.recaptcha_sitekey') ?>"></div>
                 <?php if (isset($errors) && $errors->has('recaptcha_invalid')) {
                     ?>
                     <span class="help-block text-danger">
@@ -560,7 +560,7 @@ class Tool
         // Check recaptch
         $client = new \GuzzleHttp\Client(['verify' => false]);
         $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['verify' => false, 'form_params' => [
-            'secret' => \Acelle\Model\Setting::get('recaptcha_secret_key', config('app.recaptcha_secret')),
+            'secret' => \Acelle\Model\Setting::get('recaptcha_secret_key') ?? config('app.recaptcha_secret'),
             'remoteip' => $request->ip(),
             'response' => $request->all()['g-recaptcha-response'],
         ]]);
@@ -589,7 +589,7 @@ class Tool
             return false;
         }
 
-        $recaptcha = new \ReCaptcha\ReCaptcha(\Acelle\Model\Setting::get('recaptcha_secret_key', config('app.recaptcha_secret')));
+        $recaptcha = new \ReCaptcha\ReCaptcha(\Acelle\Model\Setting::get('recaptcha_secret_key'));
         $resp = $recaptcha->verify($request->input('g-recaptcha-response'), $request->ip());
         if ($resp->isSuccess()) {
             // Verified!
