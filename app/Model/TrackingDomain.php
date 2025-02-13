@@ -238,6 +238,12 @@ class TrackingDomain extends Model
 
     public function verify()
     {
+        if (!filter_var(gethostbyname($this->name), FILTER_VALIDATE_IP)) {
+            $this->setUnverified();
+            $this->save();
+            return $this;
+        }
+
         $result = false;
         switch ($this->verification_method) {
             case self::VERIFICATION_METHOD_HOST:
@@ -264,7 +270,6 @@ class TrackingDomain extends Model
         }
 
         $this->save();
-
         return $this;
     }
 
