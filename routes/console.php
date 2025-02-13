@@ -55,6 +55,9 @@ if (isInitiated()) {
     // System clean up
     Schedule::command('system:cleanup')->daily();
 
+    // Re verify tracking domains
+    Schedule::command('tracking-domains:verify')->weekly()->sundays()->at('13:00');
+
     // GeoIp database check
     Schedule::command('geoip:check')->everyMinute()->withoutOverlapping(60);
 
