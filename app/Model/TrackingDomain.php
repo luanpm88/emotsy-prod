@@ -32,7 +32,6 @@ use Acelle\Library\Traits\HasUid;
 use Validator;
 use Exception;
 use Acelle\Library\StringHelper;
-use Illuminate\Support\Facades\Log;
 
 use function Acelle\Helpers\getAppHost;
 
@@ -232,33 +231,62 @@ class TrackingDomain extends Model
         $this->status = self::STATUS_VERIFIED;
     }
 
+    public function setUnverified()
+    {
+        $this->status = self::STATUS_UNVERIFIED;
+    }
+
     public function verify()
     {
-        try {
-            $url = $this->getUrl();
-            $verifyUrl = "$url/ok";
+        $result = false;
+        switch ($this->verification_method) {
+            case self::VERIFICATION_METHOD_HOST:
+                $result = $this->verify();
+                break;
 
-            $client = curl_init();
-            curl_setopt_array($client, array(
-                CURLOPT_URL => $verifyUrl,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HEADER => false,
-                CURLOPT_SSL_VERIFYPEER => false
-            ));
+            case self::VERIFICATION_METHOD_CNAME:
+                $result = $this->verifyCname();
+                break;
 
-            $result = curl_exec($client);
-            curl_close($client);
+            case self::VERIFICATION_METHOD_AUTOSSL:
+                $result = $this->verifyCaddy();
+                break;
 
-            if ($result == 'ok') {
-                $this->setVerified();
-                $this->save();
-                return true;
-            } else {
-                Log::warning(sprintf('Failed verifying tracking domain %s. Error: %s', $url, $result));
-                return false;
-            }
-        } catch (\Exception $ex) {
-            Log::warning(sprintf('Error verifying tracking domain %s. Error: %s', $url, $ex->getMessage()));
+            default:
+                throw new Exception("Invalid tracking domain verification type: ".$this->verification_method);
+                break;
+        }
+
+        if ($result) {
+            $this->setVerified();
+        } else {
+            $this->setUnverified();
+        }
+
+        $this->save();
+
+        return $this;
+    }
+
+    public function verifyHost()
+    {
+        $url = $this->getUrl();
+        $verifyUrl = "$url/ok";
+
+        $client = curl_init();
+        curl_setopt_array($client, array(
+            CURLOPT_URL => $verifyUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_SSL_VERIFYPEER => false
+        ));
+
+        $result = curl_exec($client);
+        curl_close($client);
+
+        if ($result == 'ok') {
+            return true;
+        } else {
             return false;
         }
     }
@@ -270,8 +298,7 @@ class TrackingDomain extends Model
             $response = $client->request('GET', $this->getVerificationUrl());
 
             if ((string)$response->getBody() == get_app_identity()) {
-                $this->setVerified();
-                $this->save();
+                return true;
             } else {
                 if ($debug) {
                     echo "This app's identity: " . get_app_identity();
@@ -279,9 +306,8 @@ class TrackingDomain extends Model
                     echo "Retrieved identity: " . $response->getBody();
                     die;
                 }
-                throw new \Exception("Verification failed");
+                return false;
             }
-            return true;
         } catch (\Exception $ex) {
             if ($debug) {
                 echo "This app's identity: " . get_app_identity();
@@ -289,14 +315,14 @@ class TrackingDomain extends Model
                 echo $ex->getMessage();
                 die;
             }
-            // loggging here
+
             return false;
         }
     }
 
     public function verifyCaddy()
     {
-        return $this->verify();
+        return $this->verifyHost();
     }
 
     // If tracking domain is of type HOST

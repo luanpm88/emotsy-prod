@@ -928,6 +928,7 @@
   'campaign.track_click.help' => 'Discover which campaign links were clicked, how many times they were clicked, and who did the clicking.',
   'campaign.track_fbl.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
   'campaign.track_open.help' => 'Discover who opens your campaigns by tracking the number of times an invisible web beacon embedded in the campaign is downloaded.',
+  'campaign.tracking_domain.invalid' => 'Invalid tracking domain :t',
   'campaign.tracking_domain_uid.help' => 'Rewrite all tracking links to use the domain you choose',
   'campaign.updated' => 'A new campaign was updated!',
   'campaign.upload_custom_template' => 'Upload custom template',
