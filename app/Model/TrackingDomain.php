@@ -278,18 +278,19 @@ class TrackingDomain extends Model
         $url = $this->getUrl();
         $verifyUrl = "$url/ok";
 
-        $client = curl_init();
-        curl_setopt_array($client, array(
-            CURLOPT_CONNECTTIMEOUT => 10,
-            CURLOPT_TIMEOUT => 10,
-            CURLOPT_URL => $verifyUrl,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER => false,
-            CURLOPT_SSL_VERIFYPEER => false
-        ));
+        $client = new Client([
+            'timeout'  => 10,
+            'connect_timeout' => 10,
+            'verify' => false, // Equivalent to CURLOPT_SSL_VERIFYPEER => false
+        ]);
 
-        $result = curl_exec($client);
-        curl_close($client);
+        try {
+            $response = $client->get($verifyUrl);
+        } catch (Exception $ex) {
+            return false;
+        }
+
+        $result = $response->getBody()->getContents();
 
         if ($result == 'ok') {
             return true;
