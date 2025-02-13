@@ -30,7 +30,6 @@ class VerifyTrackingDomains extends Command
             try {
                 applog('tracking-domains')->info("Verify $domain->name\n");
                 $domain->verify();
-                1/0;
             } catch (\Throwable $ex) {
                 applog('tracking-domains')->info("Something went wrong when verifying $domain->name. Error ".$ex->getMessage());
                 continue;
