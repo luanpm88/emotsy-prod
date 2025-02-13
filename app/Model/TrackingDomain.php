@@ -275,6 +275,8 @@ class TrackingDomain extends Model
 
         $client = curl_init();
         curl_setopt_array($client, array(
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 10,
             CURLOPT_URL => $verifyUrl,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HEADER => false,

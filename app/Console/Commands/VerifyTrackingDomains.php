@@ -27,8 +27,14 @@ class VerifyTrackingDomains extends Command
     {
         $domains = \Acelle\Model\TrackingDomain::verified()->get();
         foreach($domains as $domain) {
-            applog('tracking-domains')->info("Verifying $domain->name\n");
-            $domain->verify();
+            try {
+                applog('tracking-domains')->info("Verify $domain->name\n");
+                $domain->verify();
+                1/0;
+            } catch (\Throwable $ex) {
+                applog('tracking-domains')->info("Something went wrong when verifying $domain->name. Error ".$ex->getMessage());
+                continue;
+            }
 
             if (!$domain->isVerified()) {
                 applog('tracking-domains')->warning('* Domain $domain->name is no longer VERIFIED, set back to UNVERIFIED');
