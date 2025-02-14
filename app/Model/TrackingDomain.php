@@ -247,7 +247,7 @@ class TrackingDomain extends Model
         $result = false;
         switch ($this->verification_method) {
             case self::VERIFICATION_METHOD_HOST:
-                $result = $this->verify();
+                $result = $this->verifyHost();
                 break;
 
             case self::VERIFICATION_METHOD_CNAME:
