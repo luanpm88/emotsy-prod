@@ -302,7 +302,12 @@ class TrackingDomain extends Model
     public function verifyCname($debug = false)
     {
         try {
-            $client = new Client(['verify' => false]);
+            $client = new Client([
+                'timeout'  => 10,
+                'connect_timeout' => 10,
+                'verify' => false
+            ]);
+
             $response = $client->request('GET', $this->getVerificationUrl());
 
             if ((string)$response->getBody() == get_app_identity()) {
