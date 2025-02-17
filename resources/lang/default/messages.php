@@ -798,7 +798,7 @@
   'bounced' => 'Bounced',
   'brand.account_privacy' => 'Account & Privacy',
   'brand.categories' => 'Categories',
-  'brand.copyright' => 'Copyright © 2024. :app_name Email Marketing. All Rights Reserved.',
+  'brand.copyright' => 'Copyright © 2025. :app_name Email Marketing. All Rights Reserved.',
   'brand.emails' => 'Emails',
   'brand.home_page' => 'Home page',
   'brand.orders' => 'Orders',
