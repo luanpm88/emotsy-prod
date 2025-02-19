@@ -46,6 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\Source::class => \Acelle\Policies\SourcePolicy::class,
         \Acelle\Model\Invoice::class => \Acelle\Policies\InvoicePolicy::class,
         \Acelle\Model\Role::class => \Acelle\Policies\RolePolicy::class,
+        \Acelle\Model\Webhook::class => \Acelle\Policies\WebhookPolicy::class,
     ];
 
     /**

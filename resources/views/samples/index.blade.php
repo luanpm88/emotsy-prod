@@ -126,7 +126,7 @@
                             <label class="check-symbol" for="method-get"></label>
                         </div>
                         <div>
-                            <label for="method-get" class="mb-0">{{ trans('messages.automation.outgoing_webhook.get_method') }}</label>
+                            <label for="method-get" class="mb-0">{{ trans('messages.webhook.get_method') }}</label>
                         </div>
                     </div>
                     <div class="d-flex align-items-center me-4">
@@ -134,21 +134,21 @@
                             <input type="radio" name="webhook[method]" value="post" id="method-post" class="styled" />
                             <label class="check-symbol" for="method-post"></label>
                         </div>
-                        <label for="method-post" class="mb-0">{{ trans('messages.automation.outgoing_webhook.post_method') }}</label>
+                        <label for="method-post" class="mb-0">{{ trans('messages.webhook.post_method') }}</label>
                     </div>
                     <div class="d-flex align-items-center me-4">
                         <div class="me-2">
                             <input type="radio" name="webhook[method]" value="put" id="method-put" class="styled" />
                             <label class="check-symbol" for="method-put"></label>
                         </div>
-                        <label for="method-put" class="mb-0">{{ trans('messages.automation.outgoing_webhook.put_method') }}</label>
+                        <label for="method-put" class="mb-0">{{ trans('messages.webhook.put_method') }}</label>
                     </div>
                     <div class="d-flex align-items-center me-4">
                         <div class="me-2">
                             <input type="radio" name="webhook[method]" value="delete" id="method-delete" class="styled" />
                             <label class="check-symbol" for="method-delete"></label>
                         </div>
-                        <label for="method-delete" class="mb-0">{{ trans('messages.automation.outgoing_webhook.delete_method') }}</label>
+                        <label for="method-delete" class="mb-0">{{ trans('messages.webhook.delete_method') }}</label>
                     </div>
                 </div>
             </div>
@@ -161,7 +161,7 @@
                             <input type="radio" name="site[type]" value="1" id="udesfe_true" class="styled"><span class="check-symbol"></span>
                         </label>
                         <div>
-                            <label for="udesfe_true" class="mb-0 radio-label">{{ trans('messages.site.type.landing_page') }}</label>
+                            <label for="udesfe_true" class="mb-0 radio-label d-inline-block">{{ trans('messages.site.type.landing_page') }}</label>
                             <p class="text-muted mb-2 small fst-italic">
                                 {{ trans('messages.site.type.landing_page.wording') }}
                             </p>
@@ -172,7 +172,35 @@
                             <input checked="" type="radio" name="site[type]" value="0" id="udesfe_false" class="styled"><span class="check-symbol"></span>
                         </label>
                         <div>
-                            <label for="udesfe_false" class="mb-0 radio-label">{{ trans('messages.site.type.website') }}</label>
+                            <label for="udesfe_false" class="mb-0 radio-label d-inline-block">{{ trans('messages.site.type.website') }}</label>
+                            <p class="text-muted mb-2 small fst-italic">
+                                {{ trans('messages.site.type.website.wording') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="fw-semibold mb-2">{{ trans('messages.site.type') }}</label>
+                <div>
+                    <div data-control="option-container" class="d-flex">
+                        <label class="me-3">
+                            <input type="checkbox" name="site[type]" value="1" id="udesfe_true" class="styled"><span class="check-symbol"></span>
+                        </label>
+                        <div>
+                            <label for="udesfe_true" class="mb-0 radio-label d-inline-block">{{ trans('messages.site.type.landing_page') }}</label>
+                            <p class="text-muted mb-2 small fst-italic">
+                                {{ trans('messages.site.type.landing_page.wording') }}
+                            </p>
+                        </div>
+                    </div>
+                    <div data-control="option-container" class="d-flex mt-2">
+                        <label class="me-3">
+                            <input checked="" type="checkbox" name="site[type]" value="0" id="udesfe_false" class="styled"><span class="check-symbol"></span>
+                        </label>
+                        <div>
+                            <label for="udesfe_false" class="mb-0 radio-label d-inline-block">{{ trans('messages.site.type.website') }}</label>
                             <p class="text-muted mb-2 small fst-italic">
                                 {{ trans('messages.site.type.website.wording') }}
                             </p>

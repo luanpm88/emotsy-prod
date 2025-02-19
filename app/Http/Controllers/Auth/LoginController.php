@@ -60,7 +60,7 @@ class LoginController extends Controller
                 if (!$hcaptcha->check($request)) {
                     $rules['captcha_invalid'] = 'required';
                 }
-            } else if (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
+            } elseif (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
                 list($success, $errors) = \Acelle\Library\Tool::checkReCaptchaV3($request);
                 if (!$success) {
                     $rules['recaptcha_invalid'] = 'required';

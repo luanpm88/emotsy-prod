@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Acelle\Library\Traits\Trackable;
 use Acelle\Library\Contracts\CampaignInterface;
 use Carbon\Carbon;
-use DB;
+use Exception;
 
 class RunCampaign implements ShouldQueue
 {
@@ -77,6 +77,17 @@ class RunCampaign implements ShouldQueue
 
             $this->campaign->logger()->warning('Set up campaign before sending');
             $this->campaign->prepare();
+
+            // Test campaign tracking domain if any
+            $trackingDomain = $this->campaign->trackingDomain;
+            if (!is_null($trackingDomain)) {
+                $trackingDomain->verify();
+
+                if (!$trackingDomain->isVerified()) {
+                    throw new Exception(trans('messages.campaign.tracking_domain.invalid', ['t' => $trackingDomain->name]));
+                }
+            }
+
             $this->campaign->logger()->warning('Done setting up campaign before sending');
             $this->campaign->run($check = true, $this->campaignQueue);
 

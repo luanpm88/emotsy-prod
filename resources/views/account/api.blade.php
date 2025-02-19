@@ -41,7 +41,7 @@
 	<p style="margin-bottom: 30px" class="d-flex align-items-center"><code class="api-token" style="font-size: 18px">
 		{{ Auth::user()->api_token }}</code>
 		
-		<button class="btn btn-secondary api-token-copy-button ml-4"><i class="material-symbols-rounded me-2">content_copy</i>Copy</button>
+		<button class="btn btn-secondary api-token-copy-button ml-4"><i class="material-symbols-rounded me-2">content_copy</i>{{ trans('messages.copy') }}</button>
 	</p>
 	<p class="alert alert-info">{!! trans('messages.api_token_guide', ["link" => action("Api\MailListController@index", ["api_token" => "YOUR_API_TOKEN"])]) !!}</p>
 

@@ -388,4 +388,8 @@ return [
         'value' => '',
         'type' => 'string',
     ],
+    'custom_delivery_statuses' => [
+        'value' => 'no',
+        'type' => 'boolean',
+    ],
 ];

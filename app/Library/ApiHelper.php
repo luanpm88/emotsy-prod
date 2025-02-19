@@ -40,6 +40,20 @@ class ApiHelper
             'functions' => [
                 [
                     'method' => 'POST',
+                    'uri' => '/api/v1/user/login',
+                    'description' => 'Get API token using email and password',
+                    'parameters' => [
+                        ['name' => 'email', 'description' => 'User\'s email'],
+                        ['name' => 'password', 'description' => 'User\'s password'],
+                    ],
+                    'returns' => 'API Token',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .action("Api\UserController@login").' \
+-d email=user@example.com \
+-d password=yourpassword',
+                ],
+                [
+                    'method' => 'POST',
                     'uri' => '/api/v1/login-token',
                     'description' => 'Generate one time login token',
                     'help' => 'User can login by visiting the following URL:<br>
@@ -502,7 +516,7 @@ class ApiHelper
                     ],
                     'returns' => 'Token string',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken")).' \
+' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\UserController@loginToken")).' \
 -d api_token=' .\Auth::user()->api_token.' \
 -d customer_uid=<redbold>{customer_uid}</redbold>',
                 ],

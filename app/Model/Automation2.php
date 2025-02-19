@@ -1789,7 +1789,7 @@ class Automation2 extends Model
         foreach ($this->mailList->fields as $field) {
             $tags[] = [
                 'label' => $field->label,
-                'tag' => '{{' . $field->tag . '}}',
+                'tag' => '{' . $field->tag . '}',
             ];
         }
 

@@ -178,7 +178,7 @@ class PageController extends Controller
                             'redirect_url' => action('PageController@signUpForm', ['list_uid' => $list->uid, 'customer_uid' => $list->customer->uid], false),
                         ]);
                     }
-                } else if (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
+                } elseif (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
                     list($success, $errors) = \Acelle\Library\Tool::checkReCaptchaV3($request);
                     if (!$success) {
                         return view('somethingWentWrong', [

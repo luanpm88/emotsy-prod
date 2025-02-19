@@ -149,6 +149,36 @@ class AppServiceProvider extends ServiceProvider
                 "title" => trans('messages.recaptcha.v3'),
             ];
         });
+
+        // customer added
+        Hook::register('customer_added', function ($customer) {
+            // run webhook
+            \Acelle\Library\Webhook\NewCustomer::run($customer->uid);
+        });
+
+        // subscription terminated
+        Hook::register('subscription_terminated', function ($subscription) {
+            // run webhook
+            \Acelle\Library\Webhook\TerminateSubscription::run($subscription->customer->uid, $subscription->plan->uid);
+        });
+
+        // change plan
+        Hook::register('plan_changed', function ($customer, $oldPlan, $newPlan) {
+            // run webhook
+            \Acelle\Library\Webhook\ChangePlan::run($customer->uid, $oldPlan->uid, $newPlan->uid);
+        });
+
+        // new subscription
+        Hook::register('new_subscription', function ($subscription) {
+            // run webhook
+            \Acelle\Library\Webhook\NewSubscription::run($subscription->customer->uid, $subscription->plan->uid);
+        });
+
+        // cancel subscription
+        Hook::register('subscription_cancelled', function ($subscription) {
+            // run webhook
+            \Acelle\Library\Webhook\CancelSubscription::run($subscription->customer->uid, $subscription->plan->uid);
+        });
     }
 
     // @deprecated

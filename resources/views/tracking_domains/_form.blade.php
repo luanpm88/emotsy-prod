@@ -32,7 +32,7 @@
 <div class="row">
 	<div class="col-sm-6 col-md-6">
 		<div class="form-group checkbox-right-switch mt-4">
-			<div class="d-flex">	
+			{{-- <div class="d-flex">	
 				<div class="d-flex align-items-top me-3">
 					<label>
 						<input type="radio" name="verification_method"
@@ -49,15 +49,13 @@
 					   
 				   </label>
 				</div>
-				   
-				
-	   		</div>
+	   		</div> --}}
 
 			<div class="d-flex">	
 				<div class="d-flex align-items-top me-3">
 					<label>
 						<input type="radio" name="verification_method"
-							{{ $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST ? 'checked' : '' }}
+							{{ true || $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST ? 'checked' : '' }}
 							value="{{ Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST }}" class="styled">
 					</label>
 				</div>

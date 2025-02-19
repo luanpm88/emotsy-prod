@@ -127,7 +127,7 @@ class UserController extends Controller
                         ]);
                     }
                     // @reCaptcha: default
-                } else if (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
+                } elseif (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
                     list($success, $errors) = \Acelle\Library\Tool::checkReCaptchaV3($request);
                     if (!$success) {
                         // validation

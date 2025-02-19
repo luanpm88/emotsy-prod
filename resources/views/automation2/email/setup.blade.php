@@ -260,6 +260,10 @@
 						</div>
 					@endif
                 </div>
+
+                @if (Acelle\Model\Setting::isYes('custom_delivery_statuses'))
+                    @include('automation2.email._delivery_settings')
+                @endif
             </div>
         </div>
         

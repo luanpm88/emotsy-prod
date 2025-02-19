@@ -61,6 +61,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'email_verify' => \Acelle\Http\Middleware\EmailVerify::class,
             '2fa' => \Acelle\Http\Middleware\TwoFA::class,
             'setdb' => \Acelle\Http\Middleware\SetUserDbConnection::class,
+            'api_key_auth' => \Acelle\Http\Middleware\ApiKeyAuth::class,
         ]);
 
         $middleware->priority([

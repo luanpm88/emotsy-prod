@@ -5,6 +5,7 @@ namespace Acelle\Library;
 use Acelle\Model\Subscription;
 use Acelle\Library\TransactionResult;
 use Acelle\Model\SubscriptionLog;
+use Acelle\Model\Invoice;
 
 class SubscriptionManager
 {
@@ -35,16 +36,25 @@ class SubscriptionManager
 
         foreach ($renewInvoices as $invoice) {
             $subscription = $invoice->mapType()->subscription;
+
             $customer = $subscription->customer;
+
+            applog('invoice')->info(sprintf("START CHECKING customer %s for invoice #%s AMOUNT: %s, TYPE: %s", $customer->name, $invoice->uid, $invoice->formattedTotal(), $invoice->type));
 
             // not reach due date
             if (!$subscription->isBillingPeriod()) {
+                $billingDate = $subscription->getAutoBillingDate();
+                $diffs = $billingDate->diffForHumans(now());
+
+                applog('invoice')->info(sprintf("+ NOT DUE YET! Invoice of customer '%s' #%s AMOUNT: %s, TYPE: %s is not due for billing until %s, i.e. %s", $customer->name, $invoice->uid, $invoice->formattedTotal(), $invoice->type, $billingDate, $diffs));
                 // do nothing
                 continue;
             }
 
             // check if customer can auto charge
             if (!$customer->preferredPaymentGatewayCanAutoCharge()) {
+                applog('invoice')->info(sprintf("+ NO AUTO BILLING! Preferred payment method of customer '%s' does not support auto billing, skipped #%s AMOUNT: %s, TYPE: %s", $customer->name, $invoice->uid, $invoice->formattedTotal(), $invoice->type));
+
                 continue;
             }
 
@@ -64,6 +74,8 @@ class SubscriptionManager
 
             // Bypass payment when no_payment_required_when_free
             if ($invoice->no_payment_required_when_free && $invoice->isFree()) {
+                applog('invoice')->info(sprintf("+ BYPASS! Bypass this invoice for customer '%s' #%s AMOUNT: %s, TYPE: %s", $customer->name, $invoice->uid, $invoice->formattedTotal(), $invoice->type));
+
                 $invoice->bypassPayment();
                 continue;
             }
