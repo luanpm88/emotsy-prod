@@ -1423,6 +1423,10 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     public function saveRecipients($params = [])
     {
+        // Empty old data and refresh
+        $this->listsSegments()->delete();
+        $this->refresh();
+        
         // Fill params
         $this->fillRecipients($params);
 
@@ -1449,9 +1453,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 ];
             }
         }
-
-        // Empty old data
-        $this->listsSegments()->delete();
 
         // Insert Data
         CampaignsListsSegment::insert($data);
