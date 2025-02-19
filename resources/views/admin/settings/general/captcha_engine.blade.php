@@ -17,7 +17,7 @@
         <label class="fw-semibold">{{ trans('messages.recaptcha.site_key') }}</label>
         @include('helpers.form_control.text', [
             'name' => 'general[recaptcha_site_key]',
-            'value' => (\Acelle\Model\Setting::get('recaptcha_site_key','') == '' ? config('app.recaptcha_sitekey') : ""),
+            'value' => (\Acelle\Model\Setting::get('recaptcha_site_key','') == '' ? config('app.recaptcha_sitekey') : \Acelle\Model\Setting::get('recaptcha_site_key','')),
         ])
     </div>
 
@@ -25,7 +25,7 @@
         <label class="fw-semibold">{{ trans('messages.recaptcha.secret_key') }}</label>
         @include('helpers.form_control.text', [
             'name' => 'general[recaptcha_secret_key]',
-            'value' => (\Acelle\Model\Setting::get('recaptcha_secret_key','') == '' ? config('app.recaptcha_secret') : ""),
+            'value' => (\Acelle\Model\Setting::get('recaptcha_secret_key','') == '' ? config('app.recaptcha_secret') : \Acelle\Model\Setting::get('recaptcha_secret_key','')),
         ])
     </div>
 
