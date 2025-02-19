@@ -57,7 +57,7 @@ class FeedbackLoopHandler extends DeliveryHandler
             $header = imap_fetchheader($mbox, $msgNo);
             $body = imap_body($mbox, $msgNo, FT_PEEK);
 
-            // Sometimes the header is included in the body of the bounced message
+            // Sometimes the header is included in the body of the feedback message
             // So, search for feedback type in both header and body
             $feedbackType = $this->getFeedbackType($header) ?: $this->getFeedbackType($body);
 
@@ -92,14 +92,16 @@ class FeedbackLoopHandler extends DeliveryHandler
                 throw new \Exception('message-id not found in tracking_logs, skipped');
             }
 
-            // record a bounce log, one message may have more than one
+            // record a feedback log, one message may have more than one
             $feedbackLog = new FeedbackLog();
+            $feedbackLog->customer_id = $trackingLog->customer_id;
+            $feedbackLog->tracking_log_id = $trackingLog->id;
             $feedbackLog->message_id = $msgId;
             $feedbackLog->feedback_type = $feedbackType;
             $feedbackLog->raw_feedback_content = $header.PHP_EOL.$body;
             $feedbackLog->save();
 
-            // just delete the bounce notification email
+            // just delete the feedback notification email
             imap_delete($mbox, $msgNo);
 
             $this->logger()->info('Feedback recorded for message '.$msgId);
