@@ -135,6 +135,11 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Api', 'prefix' => 'v1', '
     Route::post('notification/feedback', 'NotificationController@feedback');
 });
 
+Route::group(['namespace' => '\Acelle\Http\Controllers\Api', 'prefix' => 'v1', 'middleware' => []], function () {
+    // User
+    Route::post('user/login', 'UserController@login');
+});
+
 Route::group(['namespace' => '\Acelle\Http\Controllers\Api\Public', 'prefix' => 'v1'], function () {
     Route::post('public/subscribers', 'SubscriberController@store');
 
