@@ -357,7 +357,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         'subject', 'from_name', 'from_email',
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
-        'html', 'plain', 'template_source',
+        'html', 'plain',
         'tracking_domain_id', 'use_default_sending_server_from_email',
         'skip_failed_message',
         'subject_b', 'ab_split_subject', 'ab_split_content',
@@ -1464,8 +1464,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     public function saveRecipients($params = [])
     {
-        // Empty current data
-        $this->listsSegments = collect([]);
         // Fill params
         $this->fillRecipients($params);
 
@@ -2304,7 +2302,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $query = $this->subscribers([])
                 ->whereRaw(sprintf(table('subscribers').".email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s AND t.status != '%s')", table('tracking_logs'), table('subscribers'), $this->id, TrackingLog::STATUS_DUPLICATE))
                 ->subscribed()
-                ->deliverableOrNotVerified();
+                ->byVerificationStatus($this->getDeliveryStatuses());
 
         return $query;
     }
@@ -2487,6 +2485,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $campaign->name = trans('messages.untitled');
         $campaign->status = Campaign::STATUS_NEW;
         $campaign->skip_failed_message = Setting::isYes('email.default.skip_failed_message');
+
+        $campaign->fillDeliveryStatuses($campaign->getDefaultDeliveryStatuses());
 
         return $campaign;
     }
@@ -3026,5 +3026,56 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public function useSendingServerDefaultFromEmailAddress()
     {
         return $this->use_default_sending_server_from_email == true;
+    }
+
+    public function fillDeliveryStatuses(array $array)
+    {
+        $array = array_map(function ($status) {
+            $status = trim($status);
+
+            //
+            if (empty($status)) {
+                throw new \Exception("Status can not be empty");
+            }
+
+            //
+            if (!in_array($status, [
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNDELIVERABLE,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNKNOWN,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_RISKY,
+                \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
+            ])) {
+                throw new \Exception("Status $status is invalid!");
+            }
+
+            return $status;
+        }, $array);
+
+        $this->delivery_statuses = json_encode($array);
+    }
+
+    public function setDeliveryStatuses(array $array)
+    {
+        $this->fillDeliveryStatuses($array);
+        $this->save();
+    }
+
+    public function getDefaultDeliveryStatuses()
+    {
+        return [
+            \Acelle\Model\Subscriber::VERIFICATION_STATUS_DELIVERABLE,
+            \Acelle\Model\Subscriber::VERIFICATION_STATUS_UNVERIFIED,
+        ];
+    }
+
+    public function getDeliveryStatuses()
+    {
+        if ($this->delivery_statuses == null) {
+            // Default delivery statuses
+            return $this->getDefaultDeliveryStatuses();
+        }
+
+        return json_decode($this->delivery_statuses, true);
     }
 }

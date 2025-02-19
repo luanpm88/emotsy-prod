@@ -231,6 +231,15 @@ class CampaignController extends Controller
 
             $campaign->saveRecipients($request->all());
 
+            // save delivery settings
+            if ($request->delivery_statuses) {
+                $campaign->setDeliveryStatuses($request->delivery_statuses);
+
+                if ($campaign->isABTest()) {
+                    $campaign->campaignB->setDeliveryStatuses($request->delivery_statuses);
+                }
+            }
+
             if ($campaign->isABTest()) {
                 $campaign->campaignB->saveRecipients($request->all());
             }

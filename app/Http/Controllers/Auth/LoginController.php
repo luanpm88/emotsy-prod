@@ -50,6 +50,7 @@ class LoginController extends Controller
             $this->username() => 'required',
             'password' => 'required'
         ];
+        $messages = [];
 
         if (Setting::isYes('login_recaptcha') && !Setting::isYes('theme.beta')) {
             // @hCaptcha
@@ -59,6 +60,14 @@ class LoginController extends Controller
                 if (!$hcaptcha->check($request)) {
                     $rules['captcha_invalid'] = 'required';
                 }
+            } elseif (\Acelle\Model\Setting::getCaptchaProvider() == 'recaptcha_v3') {
+                list($success, $errors) = \Acelle\Library\Tool::checkReCaptchaV3($request);
+                if (!$success) {
+                    $rules['recaptcha_invalid'] = 'required';
+                    $messages['recaptcha_invalid.required'] = trans('messages.invalid_recaptcha.errors', [
+                        'error' => json_encode($errors),
+                    ]);
+                }
             } else {
                 if (!\Acelle\Library\Tool::checkReCaptcha($request)) {
                     $rules['recaptcha_invalid'] = 'required';
@@ -66,7 +75,7 @@ class LoginController extends Controller
             }
         }
 
-        $this->validate($request, $rules);
+        $this->validate($request, $rules, $messages);
     }
 
     public function authenticated($request, $user)

@@ -211,7 +211,7 @@ class TrackingDomainController extends Controller
     {
         $debug = session()->has('tracking_domain_debug');
         $domain = TrackingDomain::findByUid($uid);
-        $domain->verifyCname($debug);
+        $domain->verify();
         return redirect()->action('TrackingDomainController@showCname', ['uid' => $uid]);
     }
 

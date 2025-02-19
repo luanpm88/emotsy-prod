@@ -88,7 +88,7 @@ class CheckoutServiceProvider extends ServiceProvider implements DeferrableProvi
     public function register()
     {
         $this->app->singleton(BillingManager::class, function ($app) {
-            return new BillingManager(action('SubscriptionController@index'));
+            return new BillingManager();
         });
     }
 

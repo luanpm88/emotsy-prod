@@ -114,7 +114,7 @@ class CustomerPolicy
 
     public function loginAs(User $user, Customer $customer, $role = 'admin')
     {
-        // 
+        //
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('customer_login_as');

@@ -7,74 +7,74 @@
     <table class="table border">
         <tbody>
             <tr>
-                <th width="50%" class="bg-light fw-normal">{{ trans('messages.automation.outgoing_webhook.request_method') }}</th>
+                <th width="50%" class="bg-light fw-normal">{{ trans('messages.webhook.request_method') }}</th>
                 <td width="50%" class="text-uppercase">
-                    {{ $element->get('options')->send_method }}
+                    {{ $webhook->request_method }}
                 </td>
             </tr>
             <tr>
-                <th width="50%" class="bg-light fw-normal">{{ trans('messages.automation.outgoing_webhook.authorization_options') }}</th>
+                <th width="50%" class="bg-light fw-normal">{{ trans('messages.webhook.authorization_options') }}</th>
                 <td width="50%" class="">
-                    {{ trans('messages.automation.outgoing_webhook.' . $element->get('options')->authorization_method) }}
-                </td>
-            </tr>
-            <tr>
-                <th width="50%" class="bg-light fw-normal">
-                    {{ trans('messages.automation.outgoing_webhook.endpoint_url') }}
-                </th>
-                <td width="50%" class="">
-                    {{ $element->get('options')->endpoint_url }}
+                    {{ trans('messages.webhook.' . $webhook->request_auth_type) }}
                 </td>
             </tr>
             <tr>
                 <th width="50%" class="bg-light fw-normal">
-                    {{ trans('messages.automation.outgoing_webhook.headers') }}
+                    {{ trans('messages.webhook.endpoint_url') }}
                 </th>
                 <td width="50%" class="">
-                    @if ($element->get('options')->header == 'with_headers')
+                    {{ $webhook->request_url }}
+                </td>
+            </tr>
+            <tr>
+                <th width="50%" class="bg-light fw-normal">
+                    {{ trans('messages.webhook.headers') }}
+                </th>
+                <td width="50%" class="">
+                    @if (count($webhook->getRequestHeaders()))
                         <table class="table m-0">
                             <tbody>
-                                @foreach ($element->get('options')->headers as $header)
+                                @foreach ($webhook->getRequestHeaders() as $header)
                                     <tr>
                                         <th width="50%" class="fw-normal border-0 py-1 px-2 bg-light">
-                                            {{ $header->key ?? 'N/A' }}:
+                                            {{ $header['key'] ?? 'N/A' }}:
                                         </th>
                                         <td width="50%" class="text-uppercase border-0 py-1 px-2" style="word-break:break-all;">
-                                            {{ $header->value ?? 'N/A' }}
+                                            {{ $header['value'] ?? 'N/A' }}
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     @else
-                        {{ trans('messages.automation.outgoing_webhook.no_headers') }}
+                        {{ trans('messages.webhook.no_headers') }}
                     @endif
                 </td>
             </tr>
             <tr>
                 <th width="50%" class="bg-light fw-normal">
-                    {{ trans('messages.automation.outgoing_webhook.unified_body_configuration') }}
+                    {{ trans('messages.webhook.unified_body_configuration') }}
                 </th>
                 <td width="50%" class="">
-                    {{ trans('messages.automation.outgoing_webhook.' . $element->get('options')->body_type) }}
+                    {{ trans('messages.webhook.' . $webhook->request_body_type) }}
                 </td>
             </tr>
-            @if ($element->get('options')->body_type == 'key_value_pair' && isset($element->get('options')->body_parameters))
+            @if ($webhook->request_body_type == Acelle\Model\Webhook::REQUEST_BODY_TYPE_KEY_VALUE && count($webhook->getRequestBodyParams()))
                 <tr>
                     <th width="50%" class="bg-light fw-normal">
-                        {{ trans('messages.automation.outgoing_webhook.body_parameters') }}
+                        {{ trans('messages.webhook.body_parameters') }}
                     </th>
                     <td width="50%" class="">
-                        @if(isset($element->get('options')->body_parameters))
+                        @if(count($webhook->getRequestBodyParams()))
                             <table class="table m-0">
                                 <tbody>
-                                    @foreach ($element->get('options')->body_parameters as $param)
+                                    @foreach ($webhook->getRequestBodyParams() as $param)
                                         <tr>
                                             <th width="50%" class="fw-normal border-0 py-1 px-2 bg-light">
-                                                {{ $param->key ?? 'N/A' }}:
+                                                {{ $param['key'] ?? 'N/A' }}:
                                             </th>
                                             <td width="50%" class="text-uppercase border-0 py-1 px-2" style="word-break:break-all;">
-                                                {{ $param->value ?? 'N/A' }}
+                                                {{ $param['value'] ?? 'N/A' }}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -84,13 +84,13 @@
                     </td>
                 </tr>
             @endif
-            @if ($element->get('options')->body_type == 'plain_text')
+            @if ($webhook->request_body_type == Acelle\Model\Webhook::REQUEST_BODY_TYPE_PLAIN)
                 <tr>
                     <th width="50%" class="bg-light fw-normal">
-                        {{ trans('messages.automation.outgoing_webhook.plain_text') }}
+                        {{ trans('messages.webhook.plain_text') }}
                     </th>
                     <td width="50%" class="">
-                        {!! $element->get('options')->plain_text !!}
+                        {!! $webhook->request_body_plain !!}
                     </td>
                 </tr>
             @endif
@@ -124,7 +124,11 @@
 <script>
     $(() => {
         new WebhookManager({
-            url: '{!! action('Automation2Controller@outgoingWebhookSetup', $automation->uid) !!}?id={{ request()->id }}'
+            url: '{!! action('Automation2Controller@outgoingWebhookSetup', [
+                'uid' => $automation->uid,
+                'webhook_uid' => $webhook->uid,
+                'id' => $element->get('id'),
+            ]) !!}'
         });
     });
 

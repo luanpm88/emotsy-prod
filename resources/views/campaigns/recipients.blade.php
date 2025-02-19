@@ -88,8 +88,16 @@
 
         <hr>
 
-        <div class="text-center">
-            <button class="btn btn-primary px-4 py-2" style="border-radius:100px;">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
+        @if (Acelle\Model\Setting::isYes('custom_delivery_statuses'))
+            @include('campaigns._delivery_settings')
+
+            <hr>
+        @endif
+
+        
+
+        <div class="text-end">
+            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
         </div>
     <form>
 

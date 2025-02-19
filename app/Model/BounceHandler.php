@@ -84,6 +84,8 @@ class BounceHandler extends DeliveryHandler
 
             // record a bounce log, one message may have more than one
             $bounceLog = new BounceLog();
+            $bounceLog->customer_id = $trackingLog->customer_id;
+            $bounceLog->tracking_log_id = $trackingLog->id;
             $bounceLog->message_id = $msgId;
             $bounceLog->runtime_message_id = $msgId;
             $bounceLog->bounce_type = $type; // soft | hard | unknown

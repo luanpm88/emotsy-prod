@@ -34,7 +34,7 @@
                 <div id="webhook-loading"></div>
             </div>
             <div class="text-center mt-4 fs-5">
-                {{ trans('messages.automation.outgoing_webhook.testing_webhook') }}
+                {{ trans('messages.webhook.testing_webhook') }}
             </div>
         </div>
     </div>
@@ -43,7 +43,7 @@
         $(() => {
             new WebhookTest({
                 resultBox: $('[test-control="result"]'),
-                url: '{{ action('Automation2Controller@outgoingWebhookTest', $automation->uid) }}',
+                url: '{{ action('WebhookController@test', $webhook->uid) }}',
             });
         });
 
@@ -59,7 +59,7 @@
                 $.ajax({
                     url: this.url,
                     type: 'POST',
-                    data: window.webhookForm.getData(),
+                    data: window.webhookManager ? window.webhookManager.getData() : {},
                 }).done((response) => {
                     this.resultBox.html(response);               
                 });

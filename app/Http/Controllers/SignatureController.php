@@ -178,7 +178,7 @@ class SignatureController extends Controller
         }
 
         return redirect()->action('SignatureController@index')
-            ->with('alert-success', trans('messages.signature.added.success', [
+            ->with('alert-success', trans('messages.signature.updated.success', [
                 'name' => $signature->name,
             ]));
     }

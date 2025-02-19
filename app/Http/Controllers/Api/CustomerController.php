@@ -9,6 +9,7 @@ use Acelle\Model\Language;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Model\SubscriptionLog;
 use Acelle\Library\TransactionResult;
+use Acelle\Library\Facades\Hook;
 
 /**
  * /api/v1/customers - API controller for managing customers.
@@ -341,39 +342,6 @@ class CustomerController extends Controller
         }
 
         return $this->assignPlan($request, $uid, $request->plan_uid);
-    }
-
-    /**
-     * Generate one time token.
-     *
-     * PATCH /api/v1/customers/{uid}/login-token
-     *
-     * @param int $id customer's uid
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function loginToken(Request $request)
-    {
-        $user = \Auth::guard('api')->user();
-
-        // if for another customer
-        if ($request->customer_uid) {
-            $customer = Customer::findByUid($request->customer_uid);
-
-            // authorize
-            if (!$user->admin->can('loginAs', $customer)) {
-                return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
-            }
-
-            $user = $customer->getFirstUserLegacy();
-        }
-
-        $user->generateOneTimeToken();
-
-        echo json_encode(array(
-            'token' => $user->one_time_api_token,
-            'url' => action('AppController@tokenLogin', ['token' => $user->one_time_api_token]),
-        ), JSON_UNESCAPED_SLASHES);
     }
 
     public function destroy($uid)
