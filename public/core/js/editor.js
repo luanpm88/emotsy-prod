@@ -11,8 +11,8 @@ $(document).ready(function() {
         statusbar: false,
         valid_elements : '*[*],meta[*]',
         valid_children: '+p[ol],+p[ul],+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div],*[*]',
-        extended_valid_elements : "meta[*]",
-        valid_children : "+body[meta],+div[h2|span|meta|object],+object[param|embed]",
+        extended_valid_elements : "meta[*],style[type],link[rel|href]",
+        valid_children : "+body[meta],+div[h2|span|meta|object],+object[param|embed,+head[style],+body[style]",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
