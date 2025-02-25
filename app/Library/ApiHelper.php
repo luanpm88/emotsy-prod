@@ -185,7 +185,10 @@ class ApiHelper
                     'method' => 'GET',
                     'uri' => '/api/v1/campaigns',
                     'description' => 'Get information about all campaigns',
-                    'parameters' => [],
+                    'parameters' => [
+                        ['name' => '$per_page', 'description' => 'Number of subscribers per page', 'optional' => true, 'default' => 10],
+                        ['name' => '$page', 'description' => 'Page number'],
+                    ],
                     'returns' => 'List of all user\'s campaigns in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
 ' .action("Api\CampaignController@index").' \
