@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 list_select_box"
+        <div class="col-md-4 list_select_box form-group-mb-0"
             target-box="segments-select-box"
             segments-url="{{ action('SegmentController@selectBox') }}"
         >
@@ -32,7 +32,7 @@
                 'type' => 'select',
                 'label' => trans('messages.which_list_send'),
                 'value' => ($lists_segment_group['list'] ? $lists_segment_group['list']->uid : ""),
-                'options' => $campaign->customer->readCache('MailListSelectOptions', []),
+                'options' => Auth::user()->customer->local()->readCache('MailListSelectOptions', []),
                 'rules' => isset($rules) ? $rules : []
             ])
         </div>
@@ -50,7 +50,7 @@
             @endif
         </div>
         <div class="col-md-1 pt-28 del-col">
-            <a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn bg-danger-400"><span class="material-symbols-rounded">delete_outline</span></a>
+            <a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn btn-light"><span class="material-symbols-rounded">delete_outline</span></a>
         </div>
     </div>
     <hr class="mt-10">
