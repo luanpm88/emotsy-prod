@@ -250,11 +250,6 @@ class CampaignController extends Controller
         $customer = $request->user()->customer;
         $campaign = Campaign::findByUid($request->uid);
 
-        // authorize
-        if (Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
         // From name/email
         $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->defaultMailList->from_name;
         $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->defaultMailList->from_email;
@@ -302,7 +297,7 @@ class CampaignController extends Controller
                 $campaign->campaignB->log('created', $customer);
             }
 
-            return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
+            return redirect()->action('Admin\CampaignController@template', ['uid' => $campaign->uid]);
         }
 
         $rules = $campaign->rules();
