@@ -1,122 +1,232 @@
-@extends('layouts.core.backend', [
+@extends('layouts.core.frontend', [
     'menu' => 'campaign',
 ])
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.setup'))
 
 @section('head')
-	<script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+	<script type="text/javascript" src="{{ AppUrl::asset('core/js/group-manager.js') }}"></script>
 
-    <link href="{{ URL::asset('core/emojionearea/emojionearea.min.css') }}" rel="stylesheet">
-    <script type="text/javascript" src="{{ URL::asset('core/emojionearea/emojionearea.min.js') }}"></script>
+    <link href="{{ AppUrl::asset('core/emojionearea/emojionearea.min.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ AppUrl::asset('core/emojionearea/emojionearea.min.js') }}"></script>
 @endsection
 	
 @section('page_header')
-	
-	<div class="page-title">
-		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li class="breadcrumb-item"><a href="{{ action("Admin\CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
-		</ul>
-		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded me-2 me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
-		</h1>
 
-		@include('admin.campaigns._steps', ['current' => 2])
+	<div class="mt-3">
+		<div class="mb-4">
+			<div class="" style="width: 100%">
+				<div class="page-title pt-0">
+					<ul class="breadcrumb breadcrumb-caret position-right">
+						<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+						<li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+					</ul>
+				</div>
+				<h2 class="mb-0 mb-3 d-flex align-items-center">
+					<span class="text-semibold">
+						<img width="25px" class="icon-img d-inline-block me-2" src="{{ url('images/icons/'.$campaign->type.'.svg') }}" />
+						<span>{{ $campaign->name }}</span>
+					</span>
+					<span class="text-center text-muted badge badge-info ms-2">{{ trans('messages.campaign.type.' . $campaign->type) }}</span>
+				</h2>
+				@include('admin.campaigns._steps', ['current' => 2])
+			</div>
+		</div>
 	</div>
 
 @endsection
 
 @section('content')
-	<form id="campaignSetup" action="{{ action('Admin\CampaignController@setup', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+	<form id="campaignSetup" action="{{ action('CampaignController@setup', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST" class="form-validate-jqueryz">
 		{{ csrf_field() }}
+
+		<h1 class="mb-4">{{ trans('messages.setup') }}</h1>
 		
 		<div class="row">
-			<div class="col-md-6 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
+			<div class="col-md-7 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'name',
 					'label' => trans('messages.name_your_campaign'),
 					'value' => $campaign->name,
 					'rules' => $rules,
-					'help_class' => 'campaign'
+					'help_class' => 'campaign',
+					'disabled' => true,
 				])
 				
-                @if (false && $campaign->customer->getChatgptApiKey())
-                    @include('chat._email_subject', [
-                        'name' => 'subject',
-                        'label' => trans('messages.email_subject'),
-                        'value' => $campaign->subject,
-                    ])
-                @else
-                    <div class="has-emoji">
-                        @include('helpers.form_control', ['type' => 'text',
-                            'name' => 'subject',
-                            'label' => trans('messages.email_subject'),
-                            'value' => $campaign->subject,
-                            'rules' => $rules,
-                            'help_class' => 'campaign',
-                            'attributes' => [
-                                'data-emojiable' => 'true',
-                            ]
-                        ])
-                    </div>
-                @endif
+				@if ($campaign->isABTest())
+					@include('campaigns.ab._welcome')
+					@include('campaigns.ab._variables')
+					@include('campaigns.ab._email_subject')
+				@else
+					@if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ai_writing') && Auth::user()->customer->getChatgptApiKey())
+						@include('chat._email_subject', [
+							'name' => 'subject',
+							'label' => trans('messages._email_subject'),
+							'value' => $campaign->subject,
+							'disabled' => true,
+						])
+					@else
+						<div class="has-emoji">
+							@include('helpers.form_control', ['type' => 'text',
+								'name' => 'subject',
+								'label' => trans('messages.email_subject'),
+								'value' => $campaign->subject,
+								'rules' => $rules,
+								'help_class' => 'campaign',
+								'attributes' => [
+									'data-emojiable' => 'true',
+								],
+								'disabled' => true,
+							])
+						</div>
+					@endif
+				@endif
 												
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'from_name',
 					'label' => trans('messages.from_name'),
 					'value' => $campaign->from_name,
 					'rules' => $rules,
-					'help_class' => 'campaign'
+					'help_class' => 'campaign',
+					'disabled' => true,
 				])
-				
-				<div class="hiddable-box" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
+
+				@if (Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() &&
+					Auth::user()->customer->sendingServers()->count()
+				)
+					<p>{!! trans('messages.use_default_sending_server_from_email.wording') !!}</p>
+
+					<div>
+						<div data-control="option-container" class="d-flex">
+							<label class="me-3">
+								<input {{ $campaign->use_default_sending_server_from_email ? 'checked' : '' }} type="radio" name="use_default_sending_server_from_email" value="1" id="udesfe_true" class="styled" />
+							</label>
+							<div>
+								<label for="udesfe_true" class="mb-1 radio-label">{{ trans('messages.use_default_sending_server_from_email.title') }}</label>
+								<p class="text-muted" data-control="desc">
+									{!! trans('messages.use_default_sending_server_from_email.intro') !!}
+								</p>
+							</div>
+						</div>
+						<div data-control="option-container" class="d-flex mt-2">
+							<label class="me-3">
+								<input {{ !$campaign->use_default_sending_server_from_email ? 'checked' : '' }} type="radio" name="use_default_sending_server_from_email" value="0" id="udesfe_false" class="styled" />
+							</label>
+							<div>
+								<label for="udesfe_false" class="mb-1 radio-label">{{ trans('messages.use_fixed_from_email.title') }}</label>
+								<p class="text-muted" data-control="desc">
+									{!! trans('messages.use_fixed_from_email.intro') !!}
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<script>
+						$(() => {
+							new FromEmailOption({
+								fixedBox: $('[data-control="from-reply"]'),
+								radios: $('[name="use_default_sending_server_from_email"]'),
+								showFromEmailsButton: $('[data-control="show-from-emails"]'),
+							});
+						})
+
+						var FromEmailOption = class {
+							constructor(options) {
+								this.fixedBox = options.fixedBox;
+								this.radios = options.radios;
+								this.showFromEmailsButton = options.showFromEmailsButton;
+								this.fromEmailsPopup = new Popup({
+									url: '{{ action('SendingServerController@fromEmails') }}',
+								});
+
+								this.check();
+
+								this.events();
+							}
+
+							getCheckedRadio() {
+								return this.radios.filter(':checked');
+							}
+
+							getUseSendingServerValue() {
+								return this.getCheckedRadio().val();
+							}
+
+							check() {
+								this.radios.closest('[data-control="option-container"]').find('[data-control="desc"]').hide();
+								this.getCheckedRadio().closest('[data-control="option-container"]').find('[data-control="desc"]').fadeIn();
+
+								if(this.getUseSendingServerValue() == '1') {
+									//
+									this.fixedBox.fadeOut();
+								} else {
+									//
+									this.fixedBox.fadeIn();
+								}
+							}
+
+							showFromEmails() {
+								this.fromEmailsPopup.load();
+							}
+
+							events() {
+								this.radios.on('change', () => {
+									this.check();
+								});
+
+								this.showFromEmailsButton.on('click', () => {
+									this.showFromEmails();
+								});
+							}
+						}
+					</script>
+				@else
+					<input type="hidden" name="use_default_sending_server_from_email" value="0" />
+				@endif
+
+				<div data-control="from-reply">
+					<div class="hiddable-box" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
+						@include('helpers.form_control', [
+							'type' => 'autofill',
+							'id' => 'sender_from_input',
+							'name' => 'from_email',
+							'label' => trans('messages.from_email'),
+							'value' => $campaign->from_email,
+							'rules' => $rules,
+							'help_class' => 'campaign',
+							'url' => action('SenderController@dropbox'),
+							'empty' => trans('messages.sender.dropbox.empty'),
+							'error' => trans('messages.sender.dropbox.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
+								'sender_link' => action('SendingDomainController@index'),
+							]),
+							'header' => trans('messages.verified_senders'),
+							'disabled' => true,
+						])
+					</div>
+
 					@include('helpers.form_control', [
 						'type' => 'autofill',
-						'id' => 'sender_from_input',
-						'name' => 'from_email',
-						'label' => trans('messages.from_email'),
-						'value' => $campaign->from_email,
-						'rules' => $rules,
-						'help_class' => 'campaign',
+						'id' => 'sender_reply_to_input',
+						'name' => 'reply_to',
+						'label' => trans('messages.reply_to'),
+						'value' => $campaign->reply_to,
 						'url' => action('SenderController@dropbox'),
+						'rules' => $campaign->rules(),
+						'help_class' => 'campaign',
 						'empty' => trans('messages.sender.dropbox.empty'),
-						'error' => trans('messages.sender.dropbox.error.' . $campaign->customer->allowUnverifiedFromEmailAddress(), [
+						'error' => trans('messages.sender.dropbox.reply.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
 							'sender_link' => action('SendingDomainController@index'),
 						]),
 						'header' => trans('messages.verified_senders'),
+						'disabled' => true,
 					])
 				</div>
-
-                <div class="hide">
-                    @include('helpers.form_control', ['type' => 'checkbox2',
-                        'name' => 'use_default_sending_server_from_email',
-                        'label' => trans('messages.use_sending_server_default_value'),
-                        'value' => $campaign->use_default_sending_server_from_email,
-                        'rules' => $rules,
-                        'help_class' => 'campaign',
-                        'options' => ['0','1'],
-                    ])
-                </div>
-												
-				@include('helpers.form_control', [
-                    'type' => 'autofill',
-                    'id' => 'sender_reply_to_input',
-                    'name' => 'reply_to',
-                    'label' => trans('messages.reply_to'),
-                    'value' => $campaign->reply_to,
-                    'url' => action('SenderController@dropbox'),
-                    'rules' => $campaign->rules(),
-                    'help_class' => 'campaign',
-                    'empty' => trans('messages.sender.dropbox.empty'),
-                    'error' => trans('messages.sender.dropbox.reply.error.' . $campaign->customer->allowUnverifiedFromEmailAddress(), [
-                        'sender_link' => action('SendingDomainController@index'),
-                    ]),
-                    'header' => trans('messages.verified_senders'),
-                ])
-				
 			</div>
-			<div class="col-md-6 segments-select-box">
+			<div class="col-md-5 segments-select-box">
+				<h3 class="mb-4">{{ trans('messages.campaign.tracking_settings') }}</h3>
 				<div class="form-group checkbox-right-switch">
 					@if ($campaign->type != 'plain-text')
 						@include('helpers.form_control', ['type' => 'checkbox',
@@ -125,7 +235,8 @@
 													'value' => $campaign->track_open,
 													'options' => [false,true],
 													'help_class' => 'campaign',
-													'rules' => $rules
+													'rules' => $rules,
+													'disabled' => true,
 												])
 					
 						@include('helpers.form_control', ['type' => 'checkbox',
@@ -134,7 +245,8 @@
 													'value' => $campaign->track_click,
 													'options' => [false,true],
 													'help_class' => 'campaign',
-													'rules' => $rules
+													'rules' => $rules,
+													'disabled' => true,
 												])
 					@endif
 					
@@ -144,30 +256,38 @@
 													'value' => $campaign->sign_dkim,
 													'options' => [false,true],
 													'help_class' => 'campaign',
-													'rules' => $rules
+													'rules' => $rules,
+													'disabled' => true,
 												])
-					@include('helpers.form_control', [
-						'type' => 'checkbox',
-						'name' => 'custom_tracking_domain',
-						'label' => trans('messages.custom_tracking_domain'),
-						'value' => $campaign->customer->isCustomTrackingDomainRequired() ? true : $campaign->tracking_domain_id,
-						'options' => [false,true],
-						'help_class' => 'campaign',
-						'rules' => $rules
-					])
-					
-					<div class="select-tracking-domain mb-4">
+
+					@if ($trackingDomain)
+
 						@include('helpers.form_control', [
-							'type' => 'select',
-							'name' => 'tracking_domain_uid',
-							'label' => '',
-							'value' => $campaign->trackingDomain? $campaign->trackingDomain->uid : null,
-							'options' => $campaign->customer->getVerifiedTrackingDomainOptions(),
-							'include_blank' => trans('messages.campaign.select_tracking_domain'),
+							'type' => 'checkbox',
+							'name' => 'custom_tracking_domain',
+							'label' => trans('messages.custom_tracking_domain'),
+							'value' => Auth::user()->customer->local()->isCustomTrackingDomainRequired() ? true : $campaign->tracking_domain_id,
+							'options' => [false,true],
 							'help_class' => 'campaign',
-							'rules' => $rules
+							'rules' => $rules,
+							'disabled' => true,
 						])
-					</div>
+
+						<div class="select-tracking-domain mb-4">
+							@include('helpers.form_control', [
+								'type' => 'select',
+								'name' => 'tracking_domain_uid',
+								'label' => '',
+								'value' => $campaign->trackingDomain? $campaign->trackingDomain->uid : null,
+								'options' => Auth::user()->customer->local()->getVerifiedTrackingDomainOptions(),
+								'include_blank' => trans('messages.campaign.select_tracking_domain'),
+								'help_class' => 'campaign',
+								'rules' => $rules,
+								'disabled' => true,
+							])
+						</div>
+
+					@endif
 
                     @include('helpers.form_control', [
                         'type' => 'checkbox',
@@ -176,7 +296,8 @@
                         'value' => $campaign->skip_failed_message,
                         'options' => [false,true],
                         'help_class' => 'campaign',
-                        'rules' => $rules
+                        'rules' => $rules,
+						'disabled' => true,
                     ])
 												
 					@if ($campaign->type == 'plain-text')
@@ -184,29 +305,12 @@
 							{!! trans('messages.campaign.plain_text.open_click_tracking_wanring') !!}
 						</div>
 					@endif
-					
-					@if ($campaign->template)
-						<div class="webhooks-management">
-							<div class="d-flex align-items-center mb-2">
-                                <h3 class="mb-0 me-2"> {{ trans('messages.webhooks') }}</h3>
-                                <span class="badge badge-info">{{ number_with_delimiter($campaign->campaignWebhooks()->count()) }}</span>
-                            </div>
-							<div class="d-flex">
-								<p>{{ trans('messages.webhooks.wording') }}</p>
-								<div class="ms-4">
-									<a href="javascript:;" class="btn btn-secondary manage_webhooks_but">
-										{{ trans('messages.webhooks.manage') }}
-									</a>
-								</div>
-							</div>
-						</div>
-					@endif
 				</div>
 			</div>
 		</div>
 		{{-- <hr>
-		<div class="text-end {{ $campaign->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
-			<button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
+		<div class="text-center {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
+			<button class="btn btn-primary px-4 py-2" style="border-radius:100px;">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
 		</div> --}}
 		
 	<form>
@@ -217,7 +321,7 @@
 			getWebhooksPopup: function() {
 				if (this.webhooksPopup == null) {
 					this.webhooksPopup = new Popup({
-						url: '{{ action('Admin\CampaignController@webhooks', [
+						url: '{{ action('CampaignController@webhooks', [
 							'uid' => $campaign->uid,
 						]) }}',
 						onclose: function() {
@@ -310,10 +414,10 @@
 					CampaignsSetupNextButton.check();
 				}
 			});
-			// box.loadDropbox(function() {
-			// 	$('#sender_from_input').focusout();
-			// 	box.updateErrorMessage();
-			// })
+			box.loadDropbox(function() {
+				$('#sender_from_input').focusout();
+				box.updateErrorMessage();
+			})
 
 			// auto fill 2
 			var box2 = $('#sender_reply_to_input').autofill({
@@ -325,10 +429,10 @@
 					CampaignsSetupNextButton.check();
 				}
 			});
-			// box2.loadDropbox(function() {
-			// 	$('#sender_reply_to_input').focusout();
-			// 	box2.updateErrorMessage();
-			// })
+			box2.loadDropbox(function() {
+				$('#sender_reply_to_input').focusout();
+				box2.updateErrorMessage();
+			})
 
 			$('[name="from_email"]').blur(function() {
 				$('[name="reply_to"]').val($(this).val()).change();

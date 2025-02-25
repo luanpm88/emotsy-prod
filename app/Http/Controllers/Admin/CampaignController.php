@@ -247,15 +247,30 @@ class CampaignController extends Controller
      */
     public function setup(Request $request)
     {
-        $admin = $request->user()->admin;
+        $customer = $request->user()->customer;
         $campaign = Campaign::findByUid($request->uid);
 
+        // authorize
+        if (Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        // From name/email
         $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->defaultMailList->from_name;
         $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->defaultMailList->from_email;
+
+        if ($campaign->isABTest()) {
+            $campaign->campaignB->from_name = $campaign->from_name;
+            $campaign->campaignB->from_email = $campaign->from_email;
+        }
 
         // Get old post values
         if ($request->old()) {
             $campaign->fillAttributes($request->old());
+
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->fillAttributes($request->old());
+            }
         }
 
         // validate and save posted data
@@ -263,21 +278,41 @@ class CampaignController extends Controller
             // Fill values
             $campaign->fillAttributes($request->all());
 
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->fillAttributes($request->all());
+            }
+
             // Check validation
             $this->validate($request, $campaign->rules($request));
+
+            // success
             $campaign->save();
 
-            // Log
-            // $campaign->log('created', $customer);
+            if ($campaign->isABTest()) {
+                if ($request->ab_split_subject) {
+                    $campaign->campaignB->subject = $request->subject_b;
+                }
+                $campaign->campaignB->save();
+            }
 
-            return redirect()->action('Admin\CampaignController@template', ['uid' => $campaign->uid]);
+            // Log
+            $campaign->log('created', $customer);
+
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->log('created', $customer);
+            }
+
+            return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         }
 
         $rules = $campaign->rules();
 
+        $trackingDomain = Setting::isYes('campaign.tracking_domain');
+
         return view('admin.campaigns.setup', [
             'campaign' => $campaign,
             'rules' => $campaign->rules(),
+            'trackingDomain' => $trackingDomain,
         ]);
     }
 
