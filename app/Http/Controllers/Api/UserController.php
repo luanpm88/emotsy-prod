@@ -36,4 +36,16 @@ class UserController extends Controller
 
         return response()->json(['api_token' => $token], 200);
     }
+
+    public function info(Request $request)
+    {
+        $user = \Auth::guard('api')->user();
+        
+        return response()->json([
+            'email' => $user->email,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'image_url' => $user->getProfileImageUrl(),
+        ], 200);
+    }
 }
