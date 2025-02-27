@@ -43,16 +43,21 @@ class DashboardController extends Controller
         $subscribersUsed = ($maxSubscribers == -1) ? 0 : $subscribersCount / $maxSubscribers;
 
         return response()->json([
-            'currentTimezone' => $currentTimezone,
-            'maxLists' => $maxLists,
-            'listsCount' => $listsCount,
-            'listsUsed' => $listsUsed,
-            'maxCampaigns' => $maxCampaigns,
-            'campaignsCount' => $campaignsCount,
-            'campaignsUsed' => $campaignsUsed,
-            'maxSubscribers' => $maxSubscribers,
-            'subscribersCount' => $subscribersCount,
-            'subscribersUsed' => $subscribersUsed,
+            'campaign_count' => $campaignsCount,
+            'list_count' => $listsCount,
+            'subscriber_percent' => $subscribersUsed*100,
+            'subscriber_used' => (number_with_delimiter($subscribersCount)) . '/' . (($maxSubscribers == -1) ? '∞' : number_with_delimiter($maxSubscribers)),
+
+            // 'currentTimezone' => $currentTimezone,
+            // 'maxLists' => $maxLists,
+            // 'listsCount' => $listsCount,
+            // 'listsUsed' => $listsUsed,
+            // 'maxCampaigns' => $maxCampaigns,
+            // 'campaignsCount' => $campaignsCount,
+            // 'campaignsUsed' => $campaignsUsed,
+            // 'maxSubscribers' => $maxSubscribers,
+            // 'subscribersCount' => $subscribersCount,
+            // 'subscribersUsed' => $subscribersUsed,
         ], 200);
     }
 }
