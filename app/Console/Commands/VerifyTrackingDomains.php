@@ -26,7 +26,7 @@ class VerifyTrackingDomains extends Command
     public function handle()
     {
         $domains = \Acelle\Model\TrackingDomain::verified()->get();
-        foreach($domains as $domain) {
+        foreach ($domains as $domain) {
             try {
                 applog('tracking-domains')->info("Verify $domain->name\n");
                 $domain->verify();

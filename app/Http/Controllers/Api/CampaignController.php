@@ -26,6 +26,26 @@ class CampaignController extends Controller
             ->where('customer_id', '=', $user->customer->id)
             ->get();
 
+        $lists = $lists->map(function ($campaign, $key) {
+            return [
+                'uid' => $campaign->uid,
+                'name' => $campaign->name,
+                'type' => $campaign->type,
+                'subscribers' => $campaign->readCache('SubscriberCount'),
+                'open_rate' => number_to_percentage($campaign->readCache('UniqOpenRate')),
+                'click_rate' => number_to_percentage($campaign->readCache('ClickedRate')),
+                'subject' => $campaign->subject,
+                'plain' => $campaign->plain,
+                'from_email' => $campaign->from_email,
+                'from_name' => $campaign->from_name,
+                'reply_to' => $campaign->reply_to,
+                'status' => $campaign->status,
+                'delivery_at' => $campaign->delivery_at,
+                'created_at' => $campaign->created_at,
+                'updated_at' => $campaign->updated_at,
+            ];
+        });
+
         return \Response::json($lists, 200);
     }
 

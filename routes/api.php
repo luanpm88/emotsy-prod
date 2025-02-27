@@ -137,6 +137,15 @@ Route::group(['namespace' => '\Acelle\Http\Controllers\Api', 'prefix' => 'v1', '
     Route::match(['get','post'], 'login-token', 'UserController@loginToken');
     Route::post('notification/bounce', 'NotificationController@bounce');
     Route::post('notification/feedback', 'NotificationController@feedback');
+
+    // User
+    Route::get('user/info', 'UserController@info');
+
+    // Dashboard
+    Route::get('dashboard', 'DashboardController@index');
+
+    // Automation
+    Route::get('automations', 'AutomationController@index');
 });
 
 Route::group(['namespace' => '\Acelle\Http\Controllers\Api', 'prefix' => 'v1', 'middleware' => []], function () {
