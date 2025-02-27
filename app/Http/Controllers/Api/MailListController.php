@@ -17,14 +17,34 @@ class MailListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = \Auth::guard('api')->user();
 
-        $lists = \Acelle\Model\MailList::getAll()
+        // Get page and per_page from request, with default values
+        $page = $request->input('page', 1);
+        $perPage = $request->input('per_page', 10);
+
+        // Get lists with pagination
+        $listsQuery = \Acelle\Model\MailList::getAll()
             ->select('id', 'uid', 'name', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
-            ->where('customer_id', '=', $user->customer->id)
-            ->get();
+            ->where('customer_id', '=', $user->customer->id);
+
+        $total = $listsQuery->count();
+        $lists = $listsQuery->skip(($page - 1) * $perPage)->take($perPage)->get();
+
+        $lists = $lists->map(function ($list, $key) {
+            return [
+                'id' => $list->id,
+                'uid' => $list->uid,
+                'name' => $list->name,
+                'from_email' => $list->from_email,
+                'from_name' => $list->from_name,
+                'status' => $list->status,
+                'created_at' => $list->created_at,
+                'updated_at' => $list->updated_at,
+            ];
+        });
 
         return \Response::json($lists, 200);
     }
