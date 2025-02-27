@@ -31,4 +31,29 @@ class AutomationController extends Controller
             return \Response::json(['success' => false, 'error' => $ex->getMessage()], 500);
         }
     }
+
+    public function index()
+    {
+        $user = \Auth::guard('api')->user();
+
+        $automations = $user->customer->local()->automation2s;
+
+        $automations = $automations->map(function ($automation, $key) {
+            return [
+                'uid' => $automation->uid,
+                'name' => $automation->name,
+                'description' => $automation->getBriefIntro(),
+                'subscribers' => $automation->mailList->readCache('SubscriberCount', '#'),
+                'emails' => $automation->countEmails(),
+                'complete' => $automation->readCache('SummaryStats') ? number_to_percentage($automation->readCache('SummaryStats')['complete']) : '#',
+                'status' => $automation->status,
+                'last_error' => $automation->last_error,
+                'last_updated' => $automation->updated_at->diffForHumans(['options' => 2]),
+                'created_at' => $automation->created_at,
+                'updated_at' => $automation->updated_at,
+            ];
+        });
+
+        return \Response::json($automations, 200);
+    }
 }
