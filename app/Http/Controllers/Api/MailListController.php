@@ -40,7 +40,9 @@ class MailListController extends Controller
                 'name' => $list->name,
                 'from_email' => $list->from_email,
                 'from_name' => $list->from_name,
-                'status' => $list->status,
+                'subscribers' => $list->readCache('SubscriberCount', 0),
+                'open_rate' => $list->readCache('UniqOpenRate', 0),
+                'click_rate' => $list->readCache('ClickedRate', 0),
                 'created_at' => $list->created_at,
                 'updated_at' => $list->updated_at,
             ];
