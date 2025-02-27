@@ -32,11 +32,19 @@ class AutomationController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = \Auth::guard('api')->user();
 
-        $automations = $user->customer->local()->automation2s;
+        // Get page and per_page from request, with default values
+        $page = $request->input('page', 1);
+        $perPage = $request->input('per_page', 10);
+
+        // Get automations with pagination
+        $automationsQuery = $user->customer->local()->automation2s();
+
+        $total = $automationsQuery->count();
+        $automations = $automationsQuery->skip(($page - 1) * $perPage)->take($perPage)->get();
 
         $automations = $automations->map(function ($automation, $key) {
             return [

@@ -17,21 +17,29 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = \Auth::guard('api')->user();
 
-        $lists = \Acelle\Model\Campaign::getAll()
-            ->select('uid', 'name', 'type', 'subject', 'plain', 'from_email', 'from_name', 'reply_to', 'status', 'delivery_at', 'created_at', 'updated_at')
-            ->where('customer_id', '=', $user->customer->id)
-            ->get();
+        // Get page and per_page from request, with default values
+        $page = $request->input('page', 1);
+        $perPage = $request->input('per_page', 10);
 
-        $lists = $lists->map(function ($campaign, $key) {
+        // Get campaigns with pagination
+        $campaignsQuery = \Acelle\Model\Campaign::getAll()
+            ->select('uid', 'name', 'type', 'subject', 'plain', 'from_email', 'from_name', 'reply_to', 'status', 'delivery_at', 'created_at', 'updated_at')
+            ->where('customer_id', '=', $user->customer->id);
+
+        $total = $campaignsQuery->count();
+        $campaigns = $campaignsQuery->skip(($page - 1) * $perPage)->take($perPage)->get();
+
+        $campaigns = $campaigns->map(function ($campaign, $key) {
             return [
                 'uid' => $campaign->uid,
                 'name' => $campaign->name,
                 'type' => $campaign->type,
                 'subscribers' => $campaign->readCache('SubscriberCount'),
+                'sent_count' => $campaign->isSending() ? number_to_percentage($campaign->deliveredRate(true)) : number_to_percentage($campaign->readCache('DeliveredRate')),
                 'open_rate' => $campaign->readCache('UniqOpenRate'),
                 'click_rate' => $campaign->readCache('ClickedRate'),
                 'subject' => $campaign->subject,
@@ -46,7 +54,18 @@ class CampaignController extends Controller
             ];
         });
 
-        return \Response::json($lists, 200);
+        return \Response::json($campaigns, 200);
+
+        // return \Response::json([
+        //     'data' => $campaigns,
+        //     'pagination' => [
+        //         'total' => $total,
+        //         'count' => $campaigns->count(),
+        //         'per_page' => $perPage,
+        //         'current_page' => $page,
+        //         'total_pages' => ceil($total / $perPage),
+        //     ]
+        // ], 200);
     }
 
     public function store(Request $request)
