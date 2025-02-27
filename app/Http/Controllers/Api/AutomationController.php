@@ -53,7 +53,7 @@ class AutomationController extends Controller
                 'description' => $automation->getBriefIntro(),
                 'subscribers' => $automation->mailList->readCache('SubscriberCount', '#'),
                 'emails' => $automation->countEmails(),
-                'complete' => $automation->readCache('SummaryStats') ? $automation->readCache('SummaryStats')['complete'] : '#',
+                'complete' => $automation->readCache('SummaryStats') ? $automation->readCache('SummaryStats')['complete'] : 0,
                 'status' => $automation->status,
                 'last_error' => $automation->last_error,
                 'last_updated' => $automation->updated_at->diffForHumans(['options' => 2]),
