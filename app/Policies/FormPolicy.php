@@ -36,7 +36,7 @@ class FormPolicy
         }
 
         // max features
-        if ($user->customer->forms()->count() > $user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('popup')) {
+        if ($user->customer->local()->forms()->count() > $user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('popup')) {
             return false;
         }
 
