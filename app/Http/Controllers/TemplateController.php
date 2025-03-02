@@ -19,7 +19,7 @@ class TemplateController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('create_own_template')) {
+        if (!$request->user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('newsletter_templates')) {
             return $this->notAuthorized();
         }
 

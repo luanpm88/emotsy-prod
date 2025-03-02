@@ -160,7 +160,7 @@
                         @endif
                     </ul>
                 </li>
-                @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('create_own_template'))
+                @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('newsletter_templates'))
                     <li class="nav-item {{ $menu == 'template' ? 'active' : '' }}">
                         <a href="{{ action('TemplateController@index') }}" title="{{ trans('messages.templates') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
                             <i class="navbar-icon">
