@@ -19,3 +19,5 @@ Homestead.json
 /public/campaign_attachment
 VERSION
 .DS_Store
+.env.prod.bak
+.env.*.bak
