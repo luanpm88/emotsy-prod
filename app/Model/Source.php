@@ -123,7 +123,11 @@ class Source extends Model
     {
         switch ($this->type) {
             case 'WooCommerce':
-                return $this->getData()['data']['name'];
+                // A not-yet-connected store has meta {"data":null}, so ['data']['name']
+                // walks through null and PHP raises "Trying to access array offset on
+                // null" — which Laravel turns into a 500 (showing the debug page / "back
+                // end code" on the Products page). Null-coalesce to a safe label. (BUG-002)
+                return $this->getData()['data']['name'] ?? 'WooCommerce';
             default:
                 return trans('messages.source.' . $this->type);
         }
