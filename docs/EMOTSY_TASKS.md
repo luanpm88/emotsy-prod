@@ -3,22 +3,39 @@
 > Source of original requirements: `EMOTSY - A BUG FIX ANALYSIS REPORT.pdf` (v1.0, created 2026-05-05 by **Adnan Nazeer**, directed to **Arturs Bernovskis**).
 > This is the **first task list** for the Emotsy project. No team sheet yet — format mirrors `career/docs/CAREER_TASKS.md`.
 > Status legend: **NEW** = reported, not started · **IN PROGRESS** · **QA** = fixed, awaiting verify · **DONE** = shipped & verified · **NEEDS INFO** = blocked on repro/decision.
-> Environment in report: **Staging - Brave** (browser). Local dev now mirrors prod at `app.emotsy.local` (see [SETUP](#) / `CLAUDE.md`).
-> Last updated: 2026-06-17 (checklist created from the PDF; all items NEW pending investigation).
+> Environment in report: **Staging - Brave** (browser). Local dev now mirrors prod at `app.emotsy.local` (see `CLAUDE.md`).
+> Last updated: 2026-06-18 (4 of 5 investigated; 3 fixed + locally verified, 1 needs info, 1 needs a plugin-asset decision).
 
 ---
 
 ## 🗂️ Checklist (mirrors the bug report)
 
-| Bug ID | Page / Area | Title | Severity | Priority | Status | Reporter | DEV note (first look) |
+| Bug ID | Page / Area | Title | Severity | Priority | Status | Reporter | DEV note (verified) |
 |--------|-------------|-------|:--------:|:--------:|:------:|----------|------------------------|
-| BUG-001 | Subscriber | Updated timestamp not working | LOW | P4 | NEW | Adnan | Editing a subscriber doesn't bump `updated_at` — "Created time is same as edited time stamp". Likely the subscriber update path saves without touching `updated_at` (mass-update / `timestamps=false` / direct query builder bypassing Eloquent). Check `emt_subscribers.updated_at` after an edit. |
-| BUG-001.1 | Campaign Page | Feature not working (unspecified) | HIGH | P4 | NEEDS INFO | Adnan | Report row has **no repro / expected / actual** — only "Campaign Page". Need exact steps from Adnan before targeting. May relate to the `Campaign.php` subscriber-count change already on prod (uncommitted hotfix, now committed to `emotsy_prod`). |
-| BUG-001.x (SMTP) | Subscribe → Welcome email | SMTP 403 "from address does not…" on Welcome email | HIGH | P4 | NEW | Adnan | Stack: `MailList.php:1693 sendMail` ← `:886 sendSubscriptionWelcomeEmail` ← `SendListNotificationToSubscriber:36` ← `:1956 subscribe`. SES rejects the `from_email` (`$subscriber->mailList->from_email`) because it isn't a verified sender / domain. Mostly a sending-server / SES verification config issue, but the welcome-email path should fail gracefully (it currently throws to the user). PHP 8.3.15. |
-| BUG-002 (a) | Content › Products | Products page shows backend code | HIGH | P4 | NEW | Adnan | Click **Products** submenu under Content → instead of the product page it shows "Back end code" (raw error / stack instead of a rendered page). Likely an unhandled exception or a debug dump on the products route/controller. Reproduce on local then read the actual exception. |
-| BUG-002 (b) | Store & Connections | WordPress plugin install link → 404 | HIGH | P4 | NEW | Adnan | The "Install WordPress plugin" link on the Store/Connections page points at a dead URL (404). Expected: opens the WP plugin download page. Find the hard-coded link and point it at the correct/current plugin URL. |
+| BUG-001 | Subscriber | Updated timestamp not working | LOW | P4 | **DONE** | Adnan | **Root cause:** custom field values map to `custom_*` columns; when an edit doesn't change a tracked column the Subscriber model isn't dirty, so `save()` runs no UPDATE and `updated_at` stays == `created_at`. **Fix:** `Subscriber::updateFields()` now sets `updated_at = now()` before save, so every edit records the edit time. Verified locally: a no-op edit now bumps `updated_at`. |
+| BUG-001.1 | Campaign Page | Feature not working (unspecified) | HIGH | P4 | **NEEDS INFO** | Adnan | Report row has **no repro / expected / actual** — only "Campaign Page". Tested locally (admin@emotsy.com): campaigns **list**, **create**, and the **recipients wizard** all load HTTP 200 with no errors. Could not reproduce a failure. *(Note: the prod `Campaign.php` hotfix — now in `emotsy_prod` — only changed `subscribersCount()` behaviour, NOT a crash; not the cause here.)* **Need exact repro steps from Adnan.** |
+| SMTP-403 | Subscribe → Welcome email | SMTP 403 "from address does not…" on Welcome email | HIGH | P4 | **DONE** (code) / ops | Adnan | **Two parts.** (1) **Root cause** = SES rejects the list `from_email` because it isn't a verified sender/domain → 403. That's a sending-server/SES **config** fix (verify the sender or set a verified `from_email`). (2) **Code bug** = the welcome-email send ran synchronously and unguarded, so the 403 threw all the way up and **500'd the subscribe flow** even though the subscriber was already saved. **Fix:** wrapped the welcome / goodbye / owner-notification sends in `SendListNotificationToSubscriber` + `SendListNotificationToOwner` in try/catch + `Log::warning` — a mail failure no longer breaks subscribe/unsubscribe. |
+| BUG-002 (a) | Content › Products | Products page shows backend code | HIGH | P4 | **DONE** | Adnan | **Reproduced:** `/products` returned **HTTP 500 "Trying to access array offset on null"** = `Source.php:126`. A not-yet-connected WooCommerce source has meta `{"data":null}`, so `getData()['data']['name']` walks through null; Laravel turns the warning into a 500 and (with `APP_DEBUG=true` on prod) renders the debug page = the "back end code" the reporter saw. **Fix:** `Source::getName()` now null-coalesces to `'WooCommerce'`. Verified: `/products` → HTTP 200. |
+| BUG-002 (b) | Store & Connections | WordPress plugin install link → 404 | HIGH | P4 | **DIAGNOSED** (needs asset) | Adnan | **Root cause:** the "WordPress Integration" link → `route('download', ['name' => 'acelle-sync.zip'])` → `AssetController@download` serves from `storage/app/download/acelle-sync.zip`, **which doesn't exist** (the whole `storage/app/download/` dir is absent on local AND prod). So it 404s. **Fix path:** build `acelle-sync.zip` from the WordPress integration plugin (`luanpm88/acmsync` = "WordPress Plugin for Acelle" v2.1) and place it in `storage/app/download/` on the server. **Held:** that plugin is a full Laravel app needing a proper build (`composer --no-dev`, npm build, strip `.env`/`.git`/tests); shipping an untested dev build to every customer would be worse than the 404 — needs a decision / the canonical zip. |
 
 > ⚠️ The report reuses **BUG-002** for two different bugs (Products page + WordPress link). Tracked here as **BUG-002 (a)** and **BUG-002 (b)**.
+
+---
+
+## ✅ Fix log — 2026-06-18
+
+All verified on the local prod-mirror (`app.emotsy.local`, prod DB clone).
+
+- **BUG-001** — `app/Model/Subscriber.php` `updateFields()`: set `updated_at = Carbon::now()` before `save()`. A no-op edit now bumps the timestamp (tested: `2020-01-01` → current time).
+- **BUG-002 (a)** — `app/Model/Source.php` `getName()`: `return $this->getData()['data']['name'] ?? 'WooCommerce';`. `/products` went from HTTP 500 → 200.
+- **SMTP-403** — `app/Listeners/SendListNotificationToSubscriber.php` + `app/Listeners/SendListNotificationToOwner.php`: welcome / goodbye / owner-notification sends wrapped in try/catch + `Log::warning`, so an SES failure no longer 500s subscribe/unsubscribe.
+- **BUG-001.1** — investigated, no reproducible failure; awaiting repro steps.
+- **BUG-002 (b)** — diagnosed; needs the plugin zip placed in `storage/app/download/` (build decision pending).
+
+### Still needs input
+- **BUG-001.1**: exact repro steps for the Campaign Page issue.
+- **BUG-002 (b)**: provide the canonical `acelle-sync.zip`, or approve building it from `acmsync`.
+- **SMTP-403 (ops)**: verify the list `from_email` as an SES sender/domain so the welcome email actually delivers (the code fix only stops it from breaking subscribe).
 
 ---
 
