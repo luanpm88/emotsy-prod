@@ -270,6 +270,11 @@ class Subscriber extends Model
             }
         }
 
+        // Always record the edit time. Field values map to custom_* columns, so when an
+        // edit doesn't change a tracked column the model isn't dirty and a plain save()
+        // would leave updated_at == created_at. Bump it so "last updated" reflects the
+        // edit action. (BUG-001)
+        $this->updated_at = Carbon::now();
         $this->save();
 
         $changes = $this->findDifferentCustomAttributes($before);
