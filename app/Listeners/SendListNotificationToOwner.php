@@ -5,6 +5,7 @@ namespace Acelle\Listeners;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUnsubscription;
 use Acelle\Model\Setting;
@@ -33,8 +34,12 @@ class SendListNotificationToOwner
         $list = $subscriber->mailList;
 
         if (Setting::isYes('send_notification_email_for_list_subscription')) {
-            // Send notification
-            $list->sendSubscriptionNotificationEmailToListOwner($subscriber);
+            // Owner-notification send failure must not break the subscribe flow. (SMTP-403)
+            try {
+                $list->sendSubscriptionNotificationEmailToListOwner($subscriber);
+            } catch (\Exception $ex) {
+                Log::warning('Subscription owner-notification email failed on list ' . $list->id . ': ' . $ex->getMessage());
+            }
         }
     }
 
@@ -50,7 +55,11 @@ class SendListNotificationToOwner
         $list = $subscriber->mailList;
 
         if (Setting::isYes('send_notification_email_for_list_subscription')) {
-            $list->sendUnsubscriptionNotificationEmailToListOwner($subscriber);
+            try {
+                $list->sendUnsubscriptionNotificationEmailToListOwner($subscriber);
+            } catch (\Exception $ex) {
+                Log::warning('Unsubscription owner-notification email failed on list ' . $list->id . ': ' . $ex->getMessage());
+            }
         }
     }
 
