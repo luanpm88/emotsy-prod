@@ -335,8 +335,12 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         $response = $this->client()->client->whitelabel()->domains()->get();
         $domains = json_decode($response->body(), true);
 
+        // SendGrid stores the domain lower-cased, but the name is kept as the
+        // customer typed it ("SteveJober.com"), so compare without case. The
+        // subdomain stays hashed from the name as typed: that is what SendGrid
+        // was given when the domain was added.
         $domains = array_values(array_filter($domains, function ($r) use ($domain) {
-            return $domain == $r['domain'] && $this->getDefaultSubdomainName($domain) == $r['subdomain'];
+            return strcasecmp($domain, $r['domain']) === 0 && $this->getDefaultSubdomainName($domain) == $r['subdomain'];
         }));
 
         if (empty($domains)) {
